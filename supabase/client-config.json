@@ -1,0 +1,10 @@
+{
+  "persistenceMode": "supabase",
+  "activeEnvironment": "homolog",
+  "environmentBaseFiles": {
+    "homolog": "Homologar.xlsx",
+    "producao": "base_producao.xlsx"
+  },
+  "url": "https://lmyrjbzqkixxhaqhramj.supabase.co",
+  "anonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxteXJqYnpxa2l4eGhhcWhyYW1qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NTc0MjQsImV4cCI6MjA5NzAzMzQyNH0.AhkVCI6kO2uNbkGFoQc3Hva_0aQhkVouwAsdaSoTGrs"
+}
