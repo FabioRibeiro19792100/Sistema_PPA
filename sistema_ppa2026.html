@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Sistema de Avaliação — PPA 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -562,6 +565,28 @@ tr:hover td.sticky{background:#FAFAFA}
 .overlay.open{display:flex}
 .modal{background:#fff;border:1px solid #E0E0E0;border-radius:10px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column}
 #overlay .modal{max-width:1120px}
+#overlayAuth{z-index:420;background:rgba(15,23,42,.46);backdrop-filter:blur(3px)}
+#overlayAuth .modal{max-width:430px;border-radius:18px;overflow:hidden;border:1px solid #E6E8EE;box-shadow:0 18px 48px rgba(15,23,42,.18)}
+.auth-modal-head{padding:30px 28px 12px}
+.auth-modal-body{padding:0 28px 28px}
+.auth-error{min-height:18px;font-size:12px;color:#D93025;margin-top:8px}
+.auth-helper{font-size:12px;color:var(--text-secondary);margin-top:4px}
+.login-view{min-height:100%;padding:0 !important;display:none;align-items:center;justify-content:center;background:linear-gradient(180deg,#FBFCFE 0%,#F3F5F8 100%)}
+.login-view.active{display:flex}
+.login-card{width:min(440px,calc(100vw - 48px));background:#fff;border:1px solid #E6E8EE;border-radius:18px;box-shadow:0 18px 48px rgba(15,23,42,.08);padding:42px 44px 30px;display:flex;flex-direction:column;gap:20px}
+.login-mark{width:58px;height:58px;border-radius:18px;background:#EAF2FF;color:#1A73E8;display:flex;align-items:center;justify-content:center;margin:0 auto 6px}
+.login-mark i{font-size:28px}
+.login-title{text-align:center;font-size:24px;font-weight:700;color:#202124;line-height:1.15}
+.login-sub{text-align:center;font-size:13.5px;color:#9AA0A6;margin-top:-8px}
+.login-field{width:100%;box-sizing:border-box;padding:16px 18px;text-align:center;font-size:18px;font-weight:600;line-height:1.1;letter-spacing:.22em;border:1px solid #DADCE0;border-radius:12px;background:#fff;color:#202124;outline:none;transition:border-color .15s, box-shadow .15s}
+.login-field:focus{border-color:#1A73E8;box-shadow:0 0 0 3px rgba(26,115,232,.12)}
+.login-field::placeholder{letter-spacing:.18em;color:#9AA0A6}
+.login-btn{justify-content:center;height:54px;border-radius:12px;font-size:16px;font-weight:600}
+.login-foot{padding-top:18px;border-top:1px solid #ECEFF3;text-align:center;font-size:12px;color:#BDC1C6;letter-spacing:.08em;text-transform:uppercase}
+.login-foot strong{color:#202124;font-weight:700;letter-spacing:.04em;margin-left:6px}
+.admin-fab{position:fixed;right:20px;bottom:18px;width:38px;height:38px;border-radius:999px;border:1px solid #DADCE0;background:#fff;color:#5F6368;display:none;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(15,23,42,.08);cursor:pointer;z-index:140;transition:all .15s}
+.admin-fab:hover{color:#1A73E8;border-color:#AECBFA;background:#F8FBFF}
+.admin-fab i{font-size:16px}
 .mh{padding:16px 20px 14px;border-bottom:1px solid #F1F3F4;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;position:sticky;top:0;background:#fff;z-index:1}
 .mh-ey{font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#9AA0A6;margin-bottom:3px}
 .mh-title{font-size:17px;font-weight:600;color:#202124;line-height:1.25}
@@ -821,7 +846,7 @@ textarea::placeholder{color:#BDC1C6}
 <body>
 <div id="appShell">
 
-<div class="topnav">
+<div class="topnav" id="mainTopnav" style="display:none">
   <div class="topnav-brand">
     <span class="icon icon-md"><i class="ti ti-layout-dashboard"></i></span>
     Sistema de Avaliação de Projetos
@@ -831,33 +856,47 @@ textarea::placeholder{color:#BDC1C6}
   </div>
 </div>
 
-<div class="subnav" id="mainSubnav">
+<div class="subnav" id="mainSubnav" style="display:none">
   <div class="snav" data-view="dashboard"><span class="icon icon-sm"><i class="ti ti-chart-bar"></i></span>Dashboard</div>
   <div class="snav" data-view="resultados"><span class="icon icon-sm"><i class="ti ti-chart-histogram"></i></span>Resultados</div>
-  <div class="snav" data-view="pareceristas"><span class="icon icon-sm"><i class="ti ti-arrows-left-right"></i></span>Pareceristas e atribuições</div>
-  <div class="snav" data-view="auditoria"><span class="icon icon-sm"><i class="ti ti-shield-check"></i></span>Auditoria</div>
+  <div class="snav" data-view="pareceristas" style="display:none"><span class="icon icon-sm"><i class="ti ti-arrows-left-right"></i></span>Pareceristas e atribuições</div>
+  <div class="snav" data-view="auditoria" style="display:none"><span class="icon icon-sm"><i class="ti ti-shield-check"></i></span>Auditoria</div>
   <div class="snav-right">
-    <div class="snav" data-view="config"><span class="icon icon-sm"><i class="ti ti-adjustments-horizontal"></i></span>Configurações</div>
+    <div class="snav" data-view="config" style="display:none"><span class="icon icon-sm"><i class="ti ti-adjustments-horizontal"></i></span>Configurações</div>
   </div>
 </div>
 
 <div id="appScroll">
 
+<div class="view login-view active" id="view-login">
+  <div class="login-card">
+    <div class="login-mark"><i class="ti ti-lock"></i></div>
+    <div class="login-title">Sistema PPA 2026</div>
+    <div class="login-sub">LED Globo · Profissionais do Ano</div>
+    <div>
+      <input type="password" id="loginPassword" class="login-field" placeholder="••••••" onkeydown="if(event.key==='Enter')submitViewerLogin()">
+      <div class="auth-error" id="loginError" style="text-align:center;margin-top:10px"></div>
+    </div>
+    <button class="btn btn-primary login-btn" type="button" onclick="submitViewerLogin()">Entrar</button>
+    <div class="login-foot">Desenvolvido por <strong>Mastertech</strong></div>
+  </div>
+</div>
+
 <!-- ═══════════════════════════════════════════════
      VIEW DASHBOARD
 ════════════════════════════════════════════════ -->
-<div class="view active" id="view-dashboard">
+<div class="view" id="view-dashboard">
 <div style="max-width:1100px;margin:0 auto">
 
   <div style="margin-bottom:20px">
     <div class="page-title">Dashboard</div>
-    <div class="page-sub" id="dashSub">Carregando base oficial do sistema.</div>
+    <div class="page-sub" id="dashSub">Carregando...</div>
   </div>
 
   <div id="dashEmpty" style="text-align:center;padding:64px 0;color:#9AA0A6">
     <i id="dashEmptyIcon" class="ti ti-loader-2" style="font-size:40px;display:block;margin-bottom:12px;color:#DADCE0"></i>
-    <div id="dashEmptyTitle" style="font-size:13px;font-weight:500;color:#5F6368;margin-bottom:8px">Carregando base oficial</div>
-    <div id="dashEmptyBody" style="font-size:12px;margin-bottom:16px">Lendo a planilha padrão da pasta do sistema.</div>
+    <div id="dashEmptyTitle" style="font-size:13px;font-weight:500;color:#5F6368;margin-bottom:8px">Carregando...</div>
+    <div id="dashEmptyBody" style="font-size:12px;margin-bottom:16px"></div>
   </div>
 
   <div id="dashContent" style="display:none">
@@ -872,7 +911,7 @@ textarea::placeholder{color:#BDC1C6}
       <div class="kpi-row" id="dashKpis" style="grid-template-columns:repeat(5,minmax(0,1fr));margin-bottom:20px"></div>
 
       <div class="card">
-        <div class="section-label">Evolução de inscrições por dia</div>
+        <div class="section-label">Inscrições diárias + acumulado</div>
         <div id="slotEvolucao" style="position:relative;height:210px"><canvas id="cEvolucao"></canvas></div>
       </div>
 
@@ -1522,6 +1561,26 @@ textarea::placeholder{color:#BDC1C6}
   </div>
 </div>
 
+<div class="overlay" id="overlayAuth">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <div class="auth-modal-head" style="padding-bottom:24px">
+      <div class="login-mark" style="margin-bottom:14px"><i class="ti ti-lock"></i></div>
+      <div class="section-label" id="authLabel" style="text-align:center">Acesso admin</div>
+      <div class="page-title" id="authTitle" style="text-align:center">Informe a senha admin</div>
+      <div class="page-sub" id="authSub" style="text-align:center">Pareceristas, Auditoria e Configurações pedem validação extra.</div>
+    </div>
+    <div class="auth-modal-body" style="padding-top:0">
+      <input type="password" id="authPassword" class="login-field" placeholder="••••••" onkeydown="if(event.key==='Enter')submitAuthPrompt()">
+      <div class="auth-helper" id="authHelper" style="text-align:center">Ao liberar o admin, as abas administrativas aparecem nesta sessão.</div>
+      <div class="auth-error" id="authError" style="text-align:center"></div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">
+        <button class="btn btn-primary login-btn" type="button" id="authSubmitBtn" onclick="submitAuthPrompt()">Liberar admin</button>
+        <button class="btn btn-secondary" type="button" id="authCancelBtn" onclick="cancelAuthPrompt()" style="display:none">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL INSCRIÇÃO -->
 <div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal" role="dialog" aria-modal="true">
@@ -1579,6 +1638,9 @@ textarea::placeholder{color:#BDC1C6}
 
 <div class="notify" id="notify"></div>
 <div class="loading-nudge" id="loadingNudge">Abrindo próxima avaliação...</div>
+<button class="admin-fab" id="adminAccessFab" type="button" title="Liberar área admin" onclick="requestAdminAccess()">
+  <i class="ti ti-lock"></i>
+</button>
 
 <script>
 // ═══ DADOS BASE ═══════════════════════════════════════════
@@ -1602,6 +1664,11 @@ const PARECERISTAS_DEFAULT = [
   { id:'p2', nome:'Carlos Eduardo Lima', email:'carlos@parecerista.com', inst:'Uninove', cota:null, cotaManual:false },
   { id:'p3', nome:'Fernanda Souza Dias', email:'fernanda@parecerista.com', inst:'FMU', cota:null, cotaManual:false },
 ];
+const VIEWER_PASSWORD = 'teste';
+const ADMIN_PASSWORD = 'fabio';
+const ACCESS_ROLE_KEY = 'ppa2026_access_role_v1';
+const ADMIN_VIEWS = ['pareceristas', 'auditoria', 'config'];
+const VIEWER_VIEWS = ['dashboard', 'resultados', 'portal', 'avaliacao'];
 
 // ═══ ESTADO ═══════════════════════════════════════════════
 let pareceristas = PARECERISTAS_DEFAULT.map(p => ({ ...p }));
@@ -1616,6 +1683,11 @@ let currentParId = null;
 let currentInscId = null;
 let loadingNudgeTimer = null;
 let avaliacaoEmEdicao = false;
+let accessRole = 'guest';
+let authPromptMode = 'viewer';
+let authPromptMandatory = false;
+let authPromptAfterSuccess = null;
+let viewerLoginAfterSuccess = null;
 
 function syncPainelAtivo(panel) {
   const sideCard = document.querySelector('.aval-side-card');
@@ -1636,8 +1708,276 @@ function bindPainelAvaliacao() {
   });
 }
 
+function normalizeSecret(value) {
+  return String(value || '')
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
+function parseBrDateTime(value) {
+  if (value instanceof Date && !isNaN(value)) return value;
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    const epochUtc = Date.UTC(1899, 11, 30);
+    const serialMs = Math.round(value * 86400000);
+    const excelDate = new Date(epochUtc + serialMs);
+    if (!isNaN(excelDate)) {
+      return new Date(
+        excelDate.getUTCFullYear(),
+        excelDate.getUTCMonth(),
+        excelDate.getUTCDate(),
+        excelDate.getUTCHours(),
+        excelDate.getUTCMinutes(),
+        excelDate.getUTCSeconds()
+      );
+    }
+  }
+  const raw = String(value || '').trim();
+  if (!raw) return null;
+  if (/^\d+(?:\.\d+)?$/.test(raw)) {
+    return parseBrDateTime(Number(raw));
+  }
+  const br = raw.match(/^(\d{2})\/(\d{2})\/(\d{4})(?:[ T](\d{2}):(\d{2})(?::(\d{2}))?)?$/);
+  if (br) {
+    const [, dd, mm, yyyy, hh='00', mi='00', ss='00'] = br;
+    const dt = new Date(Number(yyyy), Number(mm) - 1, Number(dd), Number(hh), Number(mi), Number(ss));
+    return isNaN(dt) ? null : dt;
+  }
+  const iso = new Date(raw);
+  return isNaN(iso) ? null : iso;
+}
+
+function hydrateAccessRole() {
+  try {
+    const saved = sessionStorage.getItem(ACCESS_ROLE_KEY) || 'guest';
+    accessRole = ['guest', 'viewer', 'admin'].includes(saved) ? saved : 'guest';
+  } catch(e) {
+    accessRole = 'guest';
+  }
+}
+
+function persistAccessRole() {
+  try {
+    if (accessRole === 'guest') sessionStorage.removeItem(ACCESS_ROLE_KEY);
+    else sessionStorage.setItem(ACCESS_ROLE_KEY, accessRole);
+  } catch(e) {}
+}
+
+function hasViewerAccess() {
+  return accessRole === 'viewer' || accessRole === 'admin';
+}
+
+function hasAdminAccess() {
+  return accessRole === 'admin';
+}
+
+function currentActiveViewName() {
+  return document.querySelector('.view.active')?.id?.replace('view-', '') || 'login';
+}
+
+function updateAdminFabVisibility(viewName = currentActiveViewName()) {
+  const fab = document.getElementById('adminAccessFab');
+  if (!fab) return;
+  const canShow = hasViewerAccess()
+    && !hasAdminAccess()
+    && !reviewerBootMode
+    && ['dashboard', 'resultados'].includes(viewName);
+  fab.style.display = canShow ? 'inline-flex' : 'none';
+}
+
+function applyAccessUi() {
+  const viewerReady = hasViewerAccess();
+  const adminReady = hasAdminAccess();
+  const topnav = document.getElementById('mainTopnav');
+  const subnav = document.getElementById('mainSubnav');
+  const footer = document.getElementById('footerBar');
+
+  if (topnav) topnav.style.display = viewerReady ? '' : 'none';
+  if (subnav) subnav.style.display = viewerReady && !reviewerBootMode ? 'flex' : 'none';
+  if (footer && !viewerReady) footer.style.display = 'none';
+
+  ADMIN_VIEWS.forEach(view => {
+    const el = document.querySelector(`.snav[data-view="${view}"]`);
+    if (!el) return;
+    el.style.display = !reviewerBootMode && adminReady ? '' : 'none';
+  });
+  updateAdminFabVisibility();
+}
+
+function activateView(v) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.snav[data-view]').forEach(el => el.classList.remove('active'));
+  const target = document.getElementById('view-'+v);
+  if (target) target.classList.add('active');
+  const tab = document.querySelector(`.snav[data-view="${v}"]`);
+  if (tab) tab.classList.add('active');
+  document.getElementById('footerBar').style.display = v === 'avaliacao' && hasViewerAccess() ? 'flex' : 'none';
+  updateAdminFabVisibility(v);
+}
+
+function showLoginView(options = {}) {
+  viewerLoginAfterSuccess = typeof options.afterSuccess === 'function' ? options.afterSuccess : null;
+  activateView('login');
+  applyAccessUi();
+  const input = document.getElementById('loginPassword');
+  const error = document.getElementById('loginError');
+  if (error) error.textContent = '';
+  if (input) {
+    input.value = '';
+    setTimeout(() => input.focus(), 20);
+  }
+}
+
+function openAuthPrompt(mode = 'viewer', options = {}) {
+  authPromptMode = mode;
+  authPromptMandatory = !!options.mandatory;
+  authPromptAfterSuccess = typeof options.afterSuccess === 'function' ? options.afterSuccess : null;
+
+  const overlay = document.getElementById('overlayAuth');
+  const title = document.getElementById('authTitle');
+  const sub = document.getElementById('authSub');
+  const helper = document.getElementById('authHelper');
+  const error = document.getElementById('authError');
+  const input = document.getElementById('authPassword');
+  const cancel = document.getElementById('authCancelBtn');
+  const submit = document.getElementById('authSubmitBtn');
+
+  if (!overlay || !title || !sub || !helper || !error || !input || !cancel || !submit) return;
+
+  if (mode === 'admin') {
+    title.textContent = 'Área administrativa';
+    sub.textContent = 'Pareceristas, Auditoria e Configurações pedem a senha admin.';
+    helper.textContent = 'Ao liberar o admin, as abas administrativas aparecem nesta sessão.';
+    submit.textContent = 'Liberar admin';
+  } else {
+    title.textContent = 'Informe a senha de acesso';
+    sub.textContent = 'O acesso inicial libera Dashboard e Resultados.';
+    helper.textContent = 'As áreas administrativas pedem uma segunda senha.';
+    submit.textContent = 'Entrar';
+  }
+
+  cancel.style.display = authPromptMandatory ? 'none' : '';
+  input.value = '';
+  error.textContent = '';
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => input.focus(), 20);
+}
+
+function closeAuthPrompt(force = false) {
+  if (authPromptMandatory && !force) return;
+  const overlay = document.getElementById('overlayAuth');
+  const error = document.getElementById('authError');
+  const input = document.getElementById('authPassword');
+  if (!overlay) return;
+  overlay.classList.remove('open');
+  if (error) error.textContent = '';
+  if (input) input.value = '';
+  document.body.style.overflow = '';
+}
+
+function ensureViewerAccess(options = {}) {
+  if (hasViewerAccess()) return true;
+  showLoginView({ afterSuccess: options.afterSuccess || null });
+  return false;
+}
+
+function requestAdminAccess(targetView = null) {
+  if (!hasViewerAccess()) {
+    openAuthPrompt('viewer', {
+      mandatory:true,
+      afterSuccess: () => requestAdminAccess(targetView)
+    });
+    return false;
+  }
+  if (hasAdminAccess()) {
+    if (targetView) showView(targetView);
+    return true;
+  }
+  openAuthPrompt('admin', {
+    mandatory:false,
+    afterSuccess: () => {
+      if (targetView) showView(targetView);
+    }
+  });
+  return false;
+}
+
+function cancelAuthPrompt() {
+  authPromptAfterSuccess = null;
+  closeAuthPrompt();
+}
+
+function submitAuthPrompt() {
+  const input = document.getElementById('authPassword');
+  const error = document.getElementById('authError');
+  if (!input || !error) return;
+  const secret = normalizeSecret(input.value);
+
+  if (authPromptMode === 'admin') {
+    if (secret !== ADMIN_PASSWORD) {
+      error.textContent = 'Senha admin inválida.';
+      input.focus();
+      input.select();
+      return;
+    }
+    accessRole = 'admin';
+  } else {
+    if (secret !== normalizeSecret(VIEWER_PASSWORD)) {
+      error.textContent = 'Senha de acesso inválida.';
+      input.focus();
+      input.select();
+      return;
+    }
+    if (accessRole !== 'admin') accessRole = 'viewer';
+  }
+
+  persistAccessRole();
+  applyAccessUi();
+  const afterSuccess = authPromptAfterSuccess;
+  closeAuthPrompt(true);
+  authPromptAfterSuccess = null;
+  if (typeof afterSuccess === 'function') afterSuccess();
+}
+
+function submitViewerLogin() {
+  const input = document.getElementById('loginPassword');
+  const error = document.getElementById('loginError');
+  if (!input || !error) return;
+  const secret = normalizeSecret(input.value);
+  if (secret !== normalizeSecret(VIEWER_PASSWORD)) {
+    error.textContent = 'Senha de acesso inválida.';
+    input.focus();
+    input.select();
+    return;
+  }
+  if (accessRole !== 'admin') accessRole = 'viewer';
+  persistAccessRole();
+  applyAccessUi();
+  const afterSuccess = viewerLoginAfterSuccess;
+  viewerLoginAfterSuccess = null;
+  error.textContent = '';
+  input.value = '';
+  if (typeof afterSuccess === 'function') afterSuccess();
+  else showView(requestedParId ? 'portal' : 'dashboard');
+}
+
 // ═══ NAV ══════════════════════════════════════════════════
 function showView(v) {
+  if (v === 'login') {
+    showLoginView();
+    return;
+  }
+  if (VIEWER_VIEWS.includes(v) && !hasViewerAccess()) {
+    ensureViewerAccess({ afterSuccess: () => showView(v) });
+    return;
+  }
+  if (ADMIN_VIEWS.includes(v) && !hasAdminAccess()) {
+    requestAdminAccess(v);
+    return;
+  }
+
   // intercept: se estiver na ficha com avaliação não concluída, alerta sobre reset
   const emAvaliacao = document.getElementById('view-avaliacao')?.classList.contains('active');
   if (emAvaliacao && v !== 'avaliacao' && currentParId && currentInscId) {
@@ -1648,12 +1988,7 @@ function showView(v) {
     }
   }
 
-  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.snav').forEach(el => el.classList.remove('active'));
-  document.getElementById('view-'+v).classList.add('active');
-  const tab = document.querySelector(`.snav[data-view="${v}"]`);
-  if (tab) tab.classList.add('active');
-  document.getElementById('footerBar').style.display = v === 'avaliacao' ? 'flex' : 'none';
+  activateView(v);
 
   if (v === 'avaliacao') {
     if (!currentParId || !currentInscId) {
@@ -1680,7 +2015,7 @@ function showView(v) {
   }
 }
 
-document.querySelectorAll('.snav').forEach(el => {
+document.querySelectorAll('.snav[data-view]').forEach(el => {
   el.addEventListener('click', () => showView(el.dataset.view));
 });
 
@@ -3109,6 +3444,7 @@ let adminImportInFlight = false;
 let remoteThemeColumnsAvailable = null;
 let themeRemoteSyncTimer = null;
 let remoteThemePersistInFlight = false;
+let remoteBootWatchdog = null;
 
 function getAppStateStorageKey() {
   return `${STORAGE_KEY}_${activeEnvironment}`;
@@ -3183,6 +3519,34 @@ async function waitForSupabaseSdk(timeoutMs = 3500) {
     await new Promise(resolve => setTimeout(resolve, 120));
   }
   return !!window.supabase?.createClient;
+}
+
+function withTimeout(promise, timeoutMs, timeoutMessage) {
+  let timerId = null;
+  const timeoutPromise = new Promise((_, reject) => {
+    timerId = setTimeout(() => reject(new Error(timeoutMessage || 'Operação excedeu o tempo limite.')), timeoutMs);
+  });
+  return Promise.race([promise, timeoutPromise]).finally(() => {
+    if (timerId) clearTimeout(timerId);
+  });
+}
+
+function startRemoteBootWatchdog(timeoutMs = 8000) {
+  stopRemoteBootWatchdog();
+  remoteBootWatchdog = setTimeout(() => {
+    carregandoEstadoRemoto = false;
+    portalStateLoading = false;
+    updateSupabaseStatus('A restauração remota demorou além do esperado.', 'danger');
+    renderDashboard();
+    if (requestedParId) renderPortal();
+  }, timeoutMs);
+}
+
+function stopRemoteBootWatchdog() {
+  if (remoteBootWatchdog) {
+    clearTimeout(remoteBootWatchdog);
+    remoteBootWatchdog = null;
+  }
 }
 
 function getSupabaseClient(env = activeEnvironment) {
@@ -4715,12 +5079,12 @@ function renderDashboard() {
     empty.style.display = 'block';
 
     if (carregandoEstadoRemoto) {
-      document.getElementById('dashSub').textContent = 'Restaurando ambiente persistido.';
+      document.getElementById('dashSub').textContent = 'Carregando...';
       icon.className = 'ti ti-cloud-download';
       icon.style.color = '#DADCE0';
       icon.style.animation = 'pulse 1.2s ease-in-out infinite';
-      title.textContent = 'Restaurando dados do Supabase';
-      body.textContent = 'A aplicação está carregando o estado persistido deste ambiente.';
+      title.textContent = 'Carregando...';
+      body.textContent = '';
       return;
     }
 
@@ -4735,43 +5099,43 @@ function renderDashboard() {
     }
 
     if (isSupabaseConfigured() && !environmentRemoteReady[activeEnvironment]) {
-      document.getElementById('dashSub').textContent = 'Ambiente remoto ainda sem base oficial.';
-      icon.className = 'ti ti-cloud-off';
+      document.getElementById('dashSub').textContent = 'Carregando...';
+      icon.className = 'ti ti-loader-2';
       icon.style.color = '#DADCE0';
-      icon.style.animation = '';
-      title.textContent = 'Ambiente remoto vazio';
-      body.innerHTML = `Use <strong>Importar base local para o ambiente</strong> em Configurações para subir <strong>${activeBaseFile()}</strong> ao Supabase.`;
+      icon.style.animation = 'spin 1s linear infinite';
+      title.textContent = 'Carregando...';
+      body.textContent = '';
       return;
     }
 
     if (carregandoBasePadrao) {
-      document.getElementById('dashSub').textContent = 'Carregando base oficial do sistema.';
+      document.getElementById('dashSub').textContent = 'Carregando...';
       icon.className = 'ti ti-loader-2';
       icon.style.color = '#DADCE0';
       icon.style.animation = 'spin 1s linear infinite';
-      title.textContent = 'Carregando base oficial';
-      body.textContent = 'Lendo a planilha padrão da pasta do sistema.';
+      title.textContent = 'Carregando...';
+      body.textContent = '';
       return;
     }
 
-    icon.style.animation = '';
-    icon.className = 'ti ti-database-off';
+    icon.style.animation = 'spin 1s linear infinite';
+    icon.className = 'ti ti-loader-2';
     icon.style.color = '#DADCE0';
     if (falhaCargaBasePadrao) {
-      document.getElementById('dashSub').textContent = 'Não foi possível carregar a base oficial.';
-      title.textContent = 'Base oficial não encontrada';
-      body.innerHTML = `Coloque a planilha padrão na pasta do sistema com o nome <strong>${activeBaseFile()}</strong> e recarregue a página.`;
+      document.getElementById('dashSub').textContent = 'Carregando...';
+      title.textContent = 'Carregando...';
+      body.textContent = '';
       return;
     }
 
-    document.getElementById('dashSub').textContent = 'Aguardando carga da base oficial.';
-    title.textContent = 'Base oficial ainda não carregada';
-    body.textContent = 'A aplicação ainda está preparando a leitura da planilha padrão.';
+    document.getElementById('dashSub').textContent = 'Carregando...';
+    title.textContent = 'Carregando...';
+    body.textContent = '';
     return;
   }
   document.getElementById('dashEmpty').style.display = 'none';
   document.getElementById('dashContent').style.display = 'block';
-  document.getElementById('dashSub').textContent = `${insc.length.toLocaleString('pt-BR')} inscrições carregadas`;
+  let dashSubText = `${insc.length.toLocaleString('pt-BR')} inscrições carregadas`;
 
   Object.values(dashCharts).forEach(c => { try { c.destroy(); } catch(e){} });
   dashCharts = {};
@@ -4888,15 +5252,25 @@ function renderDashboard() {
   const byDay = {};
   insc.forEach(i => {
     const raw = i._raw || {};
-    const dateVal = raw['Data de criação'] || raw['data_criacao'] || raw['Data'] || '';
+    const dateVal = rawVal(raw, ['Data de criação', 'Data de criacao', 'data_criacao', 'Data', 'data']);
     if (!dateVal) return;
-    const d = dateVal instanceof Date ? dateVal : new Date(dateVal);
-    if (isNaN(d)) return;
+    const d = parseBrDateTime(dateVal);
+    if (!d || isNaN(d)) return;
     const iso = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     if (!byDay[iso]) byDay[iso] = { label: d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}), value: 0 };
     byDay[iso].value++;
   });
   const dayEntries = Object.entries(byDay).sort((a,b) => a[0].localeCompare(b[0])).map(([,v]) => v);
+  let acumulado = 0;
+  const daySeries = dayEntries.map(entry => {
+    acumulado += entry.value;
+    return { ...entry, acumulado };
+  });
+  const totalComData = daySeries.length ? daySeries[daySeries.length - 1].acumulado : 0;
+  if (totalComData && totalComData !== insc.length) {
+    dashSubText = `${insc.length.toLocaleString('pt-BR')} inscrições carregadas · ${totalComData.toLocaleString('pt-BR')} com data válida no gráfico`;
+  }
+  document.getElementById('dashSub').textContent = dashSubText;
 
   function makeBarList(elId, entries) {
     const el = document.getElementById(elId);
@@ -4917,11 +5291,66 @@ function renderDashboard() {
     restoreDashSlot('slotModalidade', 'cModalidade', '210px');
     restoreDashSlot('slotIA', 'cIA', '210px');
 
-    if (dayEntries.length > 1) {
+    if (daySeries.length) {
       dashCharts.ev = safeChart('cEvolucao', {
-        type:'line',
-        data:{ labels:dayEntries.map(e=>e.label), datasets:[{ data:dayEntries.map(e=>e.value), borderColor:B1, backgroundColor:'rgba(26,115,232,.07)', fill:true, tension:.35, pointRadius:2.5, pointBackgroundColor:B1, borderWidth:2 }] },
-        options:{ ...CFG, plugins:{legend:{display:false}}, scales:{ y:{grid:{color:'#F1F3F4'},border:{dash:[4,4]}}, x:{grid:{display:false},ticks:{maxRotation:0,autoSkip:true,maxTicksLimit:10}} } }
+        type:'bar',
+        data:{
+          labels:daySeries.map(e => e.label),
+          datasets:[
+            {
+              type:'bar',
+              label:'Inscrições no dia',
+              data:daySeries.map(e => e.value),
+              backgroundColor:'rgba(26,115,232,.26)',
+              borderColor:'rgba(26,115,232,.68)',
+              borderWidth:1,
+              borderRadius:4,
+              borderSkipped:false,
+              yAxisID:'y'
+            },
+            {
+              type:'line',
+              label:'Acumulado',
+              data:daySeries.map(e => e.acumulado),
+              borderColor:'#137333',
+              backgroundColor:'rgba(19,115,51,.12)',
+              pointBackgroundColor:'#137333',
+              pointRadius:2.5,
+              tension:.32,
+              borderWidth:2,
+              fill:false,
+              yAxisID:'y1'
+            }
+          ]
+        },
+        options:{
+          ...CFG,
+          plugins:{
+            legend:{
+              display:true,
+              position:'top',
+              labels:{ boxWidth:10, padding:14 }
+            }
+          },
+          scales:{
+            y:{
+              beginAtZero:true,
+              grid:{ color:'#F1F3F4' },
+              border:{ dash:[4,4] },
+              title:{ display:true, text:'Inscrições / dia' }
+            },
+            y1:{
+              beginAtZero:true,
+              position:'right',
+              grid:{ drawOnChartArea:false },
+              title:{ display:true, text:'Acumulado' }
+            },
+            x:{
+              grid:{ display:false },
+              ticks:{ maxRotation:0, autoSkip:true, maxTicksLimit:10 }
+            }
+          }
+        }
       });
     } else {
       safeFallback('cEvolucao', 'Data de criação não disponível na base');
@@ -5143,12 +5572,14 @@ function applyReviewerShellMode(enabled) {
   if (subnav) subnav.style.display = enabled ? 'none' : '';
   const simulator = document.getElementById('portalSimulatorCard');
   if (simulator) simulator.style.display = enabled ? 'none' : '';
+  if (!enabled) applyAccessUi();
 }
 
 hydrateSupabaseSettings();
 if (persistenceMode !== 'supabase') {
   hydrateAppState();
 }
+hydrateAccessRole();
 applyThemeForEnvironment(activeEnvironment, { persistLocal:false, persistRemote:false });
 document.getElementById('paramTempo').value = Math.max(1, Math.round(TEMPO_MINIMO / 60000));
 document.getElementById('paramInsuf').value = INSUF_OBRIGA_PARECER;
@@ -5157,6 +5588,7 @@ document.getElementById('paramConflitoToggle')?.classList.toggle('on', EVITAR_CO
 populateSupabaseSettingsForm();
 updateSimSelect();
 renderPareceristas();
+applyAccessUi();
 const __startupParams = new URLSearchParams(window.location.search);
 requestedParId = __startupParams.get('par') || null;
 if (requestedParId && !window.location.protocol.startsWith('http')) {
@@ -5204,55 +5636,77 @@ window.addEventListener('load', () => {
       currentInscId = null;
       applyReviewerShellMode(false);
     }
+    applyAccessUi();
     if (isSupabaseConfigured()) {
       carregandoEstadoRemoto = true;
+      startRemoteBootWatchdog();
       renderDashboard();
-      if (requestedParId) {
-        portalStateLoading = true;
-        renderPortal();
-        const reviewerLoaded = await loadReviewerPortalStateFromSupabase(requestedParId);
-        portalStateLoading = false;
-        carregandoEstadoRemoto = false;
+      try {
+        if (requestedParId) {
+          portalStateLoading = true;
+          renderPortal();
+          const reviewerLoaded = await withTimeout(
+            loadReviewerPortalStateFromSupabase(requestedParId),
+            6500,
+            'A restauração do portal do parecerista demorou além do esperado.'
+          );
+          document.getElementById('paramTempo').value = Math.max(1, Math.round(TEMPO_MINIMO / 60000));
+          document.getElementById('paramInsuf').value = INSUF_OBRIGA_PARECER;
+          document.getElementById('paramPareceresEquipe').value = NUM_PARECERES_POR_EQUIPE;
+          document.getElementById('paramConflitoToggle')?.classList.toggle('on', EVITAR_CONFLITO_INSTITUCIONAL);
+          updateSimSelect();
+          renderPortal();
+          showView('portal');
+          if (!reviewerLoaded) {
+            notify('Portal do parecerista aberto sem dados atribuídos persistidos.');
+          }
+          return;
+        }
+        let loaded = false;
+        try {
+          loaded = await withTimeout(
+            loadStateFromSupabase(),
+            6500,
+            'A restauração do ambiente no Supabase demorou além do esperado.'
+          );
+        } catch (err) {
+          console.error('Timeout ao restaurar ambiente remoto:', err);
+          updateSupabaseStatus(`${err.message || err}`, 'danger');
+          notify('A restauração do Supabase demorou demais. Vou seguir sem travar a tela.');
+        }
         document.getElementById('paramTempo').value = Math.max(1, Math.round(TEMPO_MINIMO / 60000));
         document.getElementById('paramInsuf').value = INSUF_OBRIGA_PARECER;
         document.getElementById('paramPareceresEquipe').value = NUM_PARECERES_POR_EQUIPE;
         document.getElementById('paramConflitoToggle')?.classList.toggle('on', EVITAR_CONFLITO_INSTITUCIONAL);
         updateSimSelect();
-        renderPortal();
-        showView('portal');
-        if (!reviewerLoaded) {
-          notify('Portal do parecerista aberto sem dados atribuídos persistidos.');
+        renderPareceristas();
+        renderResultados();
+        renderDashboard();
+        renderAuditoria();
+        if (loaded) {
+          if (requestedParId) {
+            currentParId = requestedParId;
+            const sel = document.getElementById('simParecerista');
+            if (sel) sel.value = requestedParId;
+            renderPortal();
+            showView('portal');
+          } else {
+            showView('dashboard');
+          }
+          return;
         }
-        return;
-      }
-      const loaded = await loadStateFromSupabase();
-      carregandoEstadoRemoto = false;
-      document.getElementById('paramTempo').value = Math.max(1, Math.round(TEMPO_MINIMO / 60000));
-      document.getElementById('paramInsuf').value = INSUF_OBRIGA_PARECER;
-      document.getElementById('paramPareceresEquipe').value = NUM_PARECERES_POR_EQUIPE;
-      document.getElementById('paramConflitoToggle')?.classList.toggle('on', EVITAR_CONFLITO_INSTITUCIONAL);
-      updateSimSelect();
-      renderPareceristas();
-      renderResultados();
-      renderDashboard();
-      renderAuditoria();
-      if (loaded) {
-        if (requestedParId) {
-          currentParId = requestedParId;
-          const sel = document.getElementById('simParecerista');
-          if (sel) sel.value = requestedParId;
-          renderPortal();
-          showView('portal');
-        } else {
+        if (environmentRemoteReady[activeEnvironment]) {
+          updateSupabaseStatus(`O ambiente ${activeEnvironment} já foi persistido, mas não pôde ser restaurado do Supabase.`, 'danger');
+          notify(`Falha ao restaurar ${activeEnvironment} do Supabase. O app não vai recarregar a planilha local automaticamente.`);
           showView('dashboard');
+          return;
         }
-        return;
-      }
-      if (environmentRemoteReady[activeEnvironment]) {
-        updateSupabaseStatus(`O ambiente ${activeEnvironment} já foi persistido, mas não pôde ser restaurado do Supabase.`, 'danger');
-        notify(`Falha ao restaurar ${activeEnvironment} do Supabase. O app não vai recarregar a planilha local automaticamente.`);
-        showView('dashboard');
-        return;
+      } finally {
+        portalStateLoading = false;
+        carregandoEstadoRemoto = false;
+        stopRemoteBootWatchdog();
+        renderDashboard();
+        if (requestedParId) renderPortal();
       }
     }
     carregandoEstadoRemoto = false;
