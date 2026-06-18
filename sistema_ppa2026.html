@@ -1519,23 +1519,21 @@ textarea::placeholder{color:#BDC1C6}
       <div>
         <div class="mh-ey">Confirmação de envio</div>
         <div class="mh-title">Concluir esta avaliação agora?</div>
-        <div class="mh-sub" id="earlySaveSub">Ao confirmar, esta avaliação será registrada e enviada com o conteúdo atualmente preenchido na ficha.</div>
+        <div class="mh-sub" id="earlySaveSub">Esta avaliação foi concluída em cerca de 2 minutos.</div>
       </div>
     </div>
     <div class="mb" style="padding:16px 20px 20px">
-      <div style="font-size:13px;color:#5F6368;line-height:1.5">
-        Se você ainda quiser revisar os critérios, justificativas ou o parecer geral, continue na ficha. Se preferir prosseguir, a operação será concluída com os dados atuais.
+      <div id="earlySaveBody" style="font-size:13px;color:#5F6368;line-height:1.5">
+        Análises completas desta ficha, com os 3 anexos, costumam levar em torno de 5 minutos. Se quiser revisar os critérios ou o parecer, a ficha continua aberta.
       </div>
-      <div id="earlySaveOpcoes" style="display:flex;flex-direction:column;gap:8px;margin-top:14px"></div>
       <div style="margin-top:12px">
         <label class="fl" style="margin-bottom:5px">Observação adicional <span style="color:#9AA0A6;font-weight:400">(opcional)</span></label>
-        <textarea id="earlySaveComentario" placeholder="Se quiser, complemente a justificativa desta conclusão rápida…" style="min-height:64px"></textarea>
+        <textarea id="earlySaveComentario" placeholder="Se quiser, registre uma observação adicional..." style="min-height:64px"></textarea>
       </div>
-      <p id="earlySaveError" style="font-size:11px;color:#D93025;margin-top:6px;display:none">Selecione um motivo para concluir e enviar.</p>
     </div>
     <div class="mf" style="gap:10px">
-      <button class="btn btn-secondary btn-sm" onclick="cancelEarlySave()">Continuar avaliando</button>
-      <button class="btn btn-primary btn-sm" onclick="confirmEarlySave()"><i class="ti ti-device-floppy"></i>Concluir e enviar</button>
+      <button class="btn btn-primary btn-sm" onclick="cancelEarlySave()">Continuar avaliando</button>
+      <button class="btn btn-secondary btn-sm" onclick="confirmEarlySave()">Concluir e enviar</button>
     </div>
   </div>
 </div>
@@ -2834,13 +2832,6 @@ let fichaTimer = null;
 let fichaTempoOk = false;
 let pendingEarlySave = false;
 let pendingEarlySaveReason = '';
-const EARLY_SAVE_OPCOES = [
-  { id:'material_objetivo', label:'Os materiais estavam objetivos e permitiram análise direta' },
-  { id:'criterios_convergentes', label:'Os critérios ficaram claros rapidamente e sem ambiguidade' },
-  { id:'proposta_simples', label:'A proposta tinha baixa complexidade e foi rápida de consolidar' },
-  { id:'materiais_reduzidos', label:'Os materiais submetidos eram curtos e suficientes para decisão segura' },
-  { id:'evidencia_consistente', label:'As evidências da proposta eram consistentes e permitiram fechamento rápido' },
-];
 
 function iniciarTimer() {
   fichaStartTime = new Date();
@@ -2920,13 +2911,11 @@ function cancelExit() {
 function openEarlySaveModal() {
   pendingEarlySave = true;
   pendingEarlySaveReason = '';
-  document.getElementById('earlySaveSub').textContent = 'Ao confirmar, esta avaliação será registrada e enviada com o conteúdo atualmente preenchido na ficha.';
-  document.getElementById('earlySaveOpcoes').innerHTML = EARLY_SAVE_OPCOES.map(o => `
-    <input class="exit-opcao" type="radio" name="earlySaveOp" id="early_${o.id}" value="${o.id}">
-    <label for="early_${o.id}">${o.label}</label>
-  `).join('');
+  const elapsedMs = fichaStartTime ? (Date.now() - fichaStartTime.getTime()) : TEMPO_MINIMO;
+  const elapsedMin = Math.max(1, Math.round(elapsedMs / 60000));
+  document.getElementById('earlySaveSub').textContent = `Esta avaliação foi concluída em cerca de ${elapsedMin} minuto${elapsedMin > 1 ? 's' : ''}.`;
+  document.getElementById('earlySaveBody').textContent = 'Análises completas desta ficha, com os 3 anexos, costumam levar em torno de 5 minutos. Se quiser revisar os critérios ou o parecer, a ficha continua aberta.';
   document.getElementById('earlySaveComentario').value = '';
-  document.getElementById('earlySaveError').style.display = 'none';
   document.getElementById('overlayEarlySave').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -2939,14 +2928,8 @@ function cancelEarlySave() {
 
 function confirmEarlySave() {
   if (!pendingEarlySave) return;
-  const sel = document.querySelector('input[name="earlySaveOp"]:checked');
-  if (!sel) {
-    document.getElementById('earlySaveError').style.display = 'block';
-    return;
-  }
-  const opcaoLabel = EARLY_SAVE_OPCOES.find(o => o.id === sel.value)?.label || sel.value;
   const comentario = document.getElementById('earlySaveComentario').value.trim();
-  pendingEarlySaveReason = comentario ? `${opcaoLabel} — ${comentario}` : opcaoLabel;
+  pendingEarlySaveReason = comentario || '';
   cancelEarlySave();
   executarSalvarAvaliacao(true);
 }
