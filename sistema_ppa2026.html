@@ -1457,6 +1457,7 @@ textarea::placeholder{color:#BDC1C6}
       <option value="concluida">Concluída</option>
       <option value="saida_antecipada">Saída antecipada</option>
       <option value="rascunho">Rascunho</option>
+      <option value="anexo_aberto">Anexo aberto</option>
     </select>
     <select class="finput" id="audFiltNota" style="width:auto" onchange="renderAuditoria()">
       <option value="">Todas as notas</option>
@@ -2353,6 +2354,42 @@ function materialLinks(e) {
   const campanha = raw['Faça o upload do roteiro de uma campanha publicitária multiplataforma sobre o tema O PAPEL DA EDUCAÇÃO NA TRANSFORMAÇÃO SOCIAL'] || '';
   return { video, roteiro30, campanha };
 }
+function registrarCliqueAnexoFromLink(el) {
+  if (!el) return true;
+  const tipo = el.dataset?.anexo || 'material';
+  const origem = el.dataset?.origem || 'desconhecida';
+  const inscricaoId = el.dataset?.inscricao || currentInscId || '';
+  const fullId = inscricaoId ? fullInscId(inscricaoId) : null;
+  const url = el.href || el.dataset?.url || '';
+  const createdAt = new Date().toISOString();
+
+  queueSystemEvent('anexo_aberto', {
+    parecerista_id: currentParId || null,
+    inscricao_id: fullId,
+    tipo_anexo: tipo,
+    origem,
+    url,
+    created_at: createdAt,
+  });
+  registrarEventoAuditoriaAnexo({
+    pareceristaId: currentParId || null,
+    inscricaoId,
+    tipoAnexo: tipo,
+    origem,
+    url,
+    createdAt,
+  });
+  saveAppState();
+
+  if (reviewerBootMode && currentParId && inscricaoId && isSupabaseConfigured()) {
+    persistReviewerEvaluationToSupabase(currentParId, inscricaoId).then((result) => {
+      if (!result?.ok) {
+        console.warn('Falha ao persistir clique de anexo no Supabase:', result?.error || result?.reason);
+      }
+    });
+  }
+  return true;
+}
 function fmtNotaGeral(valor) {
   return valor === null ? '—' : valor.toFixed(1).replace('.', ',');
 }
@@ -2600,9 +2637,9 @@ function openModal(idx) {
     <div class="field s3">
       <div class="mfl">Materiais</div>
       <div class="materiais">
-        ${links.video ? `<a class="mat-btn" href="${links.video}" target="_blank" rel="noopener noreferrer"><i class="ti ti-player-play" style="font-size:13px"></i>Vídeo criativo</a>` : ''}
-        ${links.roteiro30 ? `<a class="mat-btn" href="${links.roteiro30}" target="_blank" rel="noopener noreferrer"><i class="ti ti-file" style="font-size:13px"></i>Roteiro 30s</a>` : ''}
-        ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer"><i class="ti ti-file" style="font-size:13px"></i>Campanha</a>` : ''}
+        ${links.video ? `<a class="mat-btn" href="${links.video}" target="_blank" rel="noopener noreferrer" data-anexo="video_criativo" data-origem="modal_inscricao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-player-play" style="font-size:13px"></i>Vídeo criativo</a>` : ''}
+        ${links.roteiro30 ? `<a class="mat-btn" href="${links.roteiro30}" target="_blank" rel="noopener noreferrer" data-anexo="roteiro_30s" data-origem="modal_inscricao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Roteiro 30s</a>` : ''}
+        ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer" data-anexo="campanha_multiplataforma" data-origem="modal_inscricao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Campanha</a>` : ''}
       </div>
     </div>
     <div class="field s3"><div class="mfl">Objetivos da campanha</div><div class="mfv-light">${objetivos}</div></div>
@@ -2981,6 +3018,34 @@ function confirmExit() {
 
 // ═══ AUDITORIA ════════════════════════════════════════════
 let logAuditoria = [];
+let logAuditoriaEventos = [];
+
+function labelAnexo(tipo) {
+  const map = {
+    video_criativo: 'Vídeo criativo',
+    roteiro_30s: 'Roteiro 30s',
+    campanha_multiplataforma: 'Campanha multiplataforma',
+  };
+  return map[tipo] || 'Anexo';
+}
+
+function registrarEventoAuditoriaAnexo({ pareceristaId, inscricaoId, tipoAnexo, origem, url, createdAt }) {
+  const fullId = inscricaoId ? fullInscId(inscricaoId) : null;
+  const inscCurto = fullId ? shortInscId(fullId) : '';
+  const par = pareceristas.find(p => p.id === pareceristaId);
+  const e = INSCRICOES.find(x => x.id === inscCurto);
+  logAuditoriaEventos.push({
+    tipo: 'anexo_aberto',
+    parId: pareceristaId || '',
+    parNome: par?.nome || '—',
+    inscId: inscCurto || '',
+    lider: e?.lider || '—',
+    createdAt: createdAt || new Date().toISOString(),
+    material: labelAnexo(tipoAnexo),
+    origem: origem || 'desconhecida',
+    url: url || '',
+  });
+}
 
 function registrarAuditoria({ saida, motivoSaida, notas, parecer }) {
   const par = pareceristas.find(p => p.id === currentParId);
@@ -3040,21 +3105,29 @@ function renderAuditoria() {
       pareceristas.map(p => `<option value="${p.id}" ${p.id===cur?'selected':''}>${p.nome}</option>`).join('');
   }
 
-  let rows = [...logAuditoria];
-  if (filtPar)    rows = rows.filter(r => r.parId === filtPar);
+  let rows = [
+    ...logAuditoria.map(r => ({ kind:'avaliacao', ...r, sortAt: r.fim || r.inicio || new Date(0) })),
+    ...logAuditoriaEventos.map(r => ({ kind:'anexo', ...r, status:'anexo_aberto', nota:null, sortAt: new Date(r.createdAt) })),
+  ];
+  if (filtPar) rows = rows.filter(r => r.parId === filtPar);
   if (filtStatus) rows = rows.filter(r => r.status === filtStatus);
-  if (filtNota === 'alta')  rows = rows.filter(r => r.nota !== null && r.nota >= 75);
-  if (filtNota === 'media') rows = rows.filter(r => r.nota !== null && r.nota >= 50 && r.nota < 75);
-  if (filtNota === 'baixa') rows = rows.filter(r => r.nota !== null && r.nota < 50);
-  if (filtBusca)  rows = rows.filter(r => r.lider.toLowerCase().includes(filtBusca) || r.inscId.includes(filtBusca));
+  if (filtNota === 'alta')  rows = rows.filter(r => r.kind === 'avaliacao' && r.nota !== null && r.nota >= 75);
+  if (filtNota === 'media') rows = rows.filter(r => r.kind === 'avaliacao' && r.nota !== null && r.nota >= 50 && r.nota < 75);
+  if (filtNota === 'baixa') rows = rows.filter(r => r.kind === 'avaliacao' && r.nota !== null && r.nota < 50);
+  if (filtBusca) rows = rows.filter(r =>
+    String(r.lider || '').toLowerCase().includes(filtBusca) ||
+    String(r.inscId || '').includes(filtBusca) ||
+    String(r.material || '').toLowerCase().includes(filtBusca)
+  );
+  rows.sort((a, b) => new Date(b.sortAt || 0) - new Date(a.sortAt || 0));
 
   document.getElementById('audCount').textContent = `${rows.length} registro${rows.length !== 1 ? 's' : ''}`;
 
   const fmt = d => d ? d.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit',second:'2-digit'}) : '—';
   const fmtData = d => d ? d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}) : '—';
 
-  const statusLabel = { concluida:'Concluída', saida_antecipada:'Saída antecipada', rascunho:'Rascunho' };
-  const statusCls   = { concluida:'b-concluida', saida_antecipada:'b-antecipada', rascunho:'b-rascunho' };
+  const statusLabel = { concluida:'Concluída', saida_antecipada:'Saída antecipada', rascunho:'Rascunho', anexo_aberto:'Anexo aberto' };
+  const statusCls   = { concluida:'b-concluida', saida_antecipada:'b-antecipada', rascunho:'b-rascunho', anexo_aberto:'b-par' };
 
   document.getElementById('tblAuditoria').innerHTML = rows.length === 0
     ? `<tr><td colspan="9" style="text-align:center;padding:32px;color:#BDC1C6">Nenhum registro de auditoria ainda. As avaliações salvas aparecerão aqui.</td></tr>`
@@ -3063,26 +3136,38 @@ function renderAuditoria() {
         <td style="font-weight:500;color:#202124">${r.parNome}</td>
         <td>${r.lider}</td>
         <td style="font-family:monospace;font-size:11px;color:#1A73E8">PPA2026-${r.inscId}</td>
-        <td style="font-size:11px;color:#5F6368">${fmtData(r.inicio)} ${fmt(r.inicio)}</td>
-        <td style="font-size:11px;color:#5F6368">${fmtData(r.fim)} ${fmt(r.fim)}</td>
-        <td class="${r.duracaoMs >= TEMPO_MINIMO ? 'dur-ok' : 'dur-low'}">${formatDuracao(r.duracaoMs)}</td>
-        <td>${r.nota !== null ? `<span style="font-size:14px;font-weight:600;color:#202124">${r.nota}</span>` : '<span style="color:#DADCE0">—</span>'}</td>
+        <td style="font-size:11px;color:#5F6368">${r.kind === 'anexo' ? `${fmtData(new Date(r.createdAt))} ${fmt(new Date(r.createdAt))}` : `${fmtData(r.inicio)} ${fmt(r.inicio)}`}</td>
+        <td style="font-size:11px;color:#5F6368">${r.kind === 'anexo' ? '—' : `${fmtData(r.fim)} ${fmt(r.fim)}`}</td>
+        <td class="${r.kind === 'anexo' ? '' : (r.duracaoMs >= TEMPO_MINIMO ? 'dur-ok' : 'dur-low')}">${r.kind === 'anexo' ? '—' : formatDuracao(r.duracaoMs)}</td>
+        <td>${r.kind === 'anexo' ? '<span style="color:#DADCE0">—</span>' : (r.nota !== null ? `<span style="font-size:14px;font-weight:600;color:#202124">${r.nota}</span>` : '<span style="color:#DADCE0">—</span>')}</td>
         <td><span class="badge ${statusCls[r.status]}">${statusLabel[r.status]}</span></td>
-        <td style="font-size:11px;color:#9AA0A6;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.motivoSaida || '—'}</td>
+        <td style="font-size:11px;color:#9AA0A6;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.kind === 'anexo' ? `${r.material} · ${r.origem === 'modal_inscricao' ? 'modal' : 'ficha'}` : (r.motivoSaida || '—')}</td>
       </tr>`).join('');
 }
 
 function exportAuditoria() {
   const h = 'Parecerista,Candidato,ID,Data início,Hora início,Hora fim,Duração (s),Nota,Status,Obs. saída';
-  const rows = logAuditoria.map(r => [
-    r.parNome, r.lider, 'PPA2026-'+r.inscId,
-    r.inicio?.toLocaleDateString('pt-BR')||'',
-    r.inicio?.toLocaleTimeString('pt-BR')||'',
-    r.fim?.toLocaleTimeString('pt-BR')||'',
-    Math.floor(r.duracaoMs/1000),
-    r.nota ?? '',
-    r.status, r.motivoSaida
-  ].map(v=>`"${v}"`).join(','));
+  const rows = [
+    ...logAuditoria.map(r => [
+      r.parNome, r.lider, 'PPA2026-'+r.inscId,
+      r.inicio?.toLocaleDateString('pt-BR')||'',
+      r.inicio?.toLocaleTimeString('pt-BR')||'',
+      r.fim?.toLocaleTimeString('pt-BR')||'',
+      Math.floor(r.duracaoMs/1000),
+      r.nota ?? '',
+      r.status, r.motivoSaida
+    ]),
+    ...logAuditoriaEventos.map(r => [
+      r.parNome, r.lider, 'PPA2026-'+r.inscId,
+      new Date(r.createdAt).toLocaleDateString('pt-BR'),
+      new Date(r.createdAt).toLocaleTimeString('pt-BR'),
+      '',
+      '',
+      '',
+      'anexo_aberto',
+      `${r.material} · ${r.origem === 'modal_inscricao' ? 'modal' : 'ficha'}`
+    ]),
+  ].map(row => row.map(v=>`"${v}"`).join(','));
   const b = new Blob(['\uFEFF'+[h,...rows].join('\n')],{type:'text/csv;charset=utf-8'});
   const a = document.createElement('a'); a.href=URL.createObjectURL(b); a.download='auditoria_ppa2026.csv'; a.click();
 }
@@ -3105,7 +3190,7 @@ let currentLayout = 'split';
 function avalGridHTML(e, mode) {
   // mode: 'seq' = 3 colunas | 'split' = 1 coluna (painel lateral)
   const isSplit = mode === 'split';
-  const base = `https://ppa-storage.fake/PPA2026-${e.id}`;
+  const links = materialLinks(e);
 
   const objetivos = e._raw?.['Objetivos da campanha'] || e._raw?.['Objetivos'] || e._raw?.['objetivos'] || 'Aumentar o reconhecimento do papel da educação como motor de transformação social, atingindo jovens de 16 a 25 anos em plataformas digitais e TV aberta.';
   const estrategia = e._raw?.['Estratégia de distribuição'] || e._raw?.['Estrategia de distribuicao'] || e._raw?.['estrategia'] || 'Distribuição integrada via Globoplay, Instagram, TikTok e inserções no Jornal Nacional, com peça de 30s e campanha multiplataforma ativada em sequência.';
@@ -3128,9 +3213,9 @@ function avalGridHTML(e, mode) {
       <div class="sfield">
         <div class="mfl">Materiais</div>
         <div class="materiais" style="margin-top:6px;flex-direction:column">
-          <a class="mat-btn" href="${base}/video.mp4" target="_blank"><i class="ti ti-player-play" style="font-size:13px"></i>Vídeo criativo</a>
-          <a class="mat-btn" href="${base}/roteiro.pdf" target="_blank"><i class="ti ti-file" style="font-size:13px"></i>Roteiro 30s</a>
-          <a class="mat-btn" href="${base}/campanha.pdf" target="_blank"><i class="ti ti-file" style="font-size:13px"></i>Campanha multiplataforma</a>
+          ${links.video ? `<a class="mat-btn" href="${links.video}" target="_blank" rel="noopener noreferrer" data-anexo="video_criativo" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-player-play" style="font-size:13px"></i>Vídeo criativo</a>` : ''}
+          ${links.roteiro30 ? `<a class="mat-btn" href="${links.roteiro30}" target="_blank" rel="noopener noreferrer" data-anexo="roteiro_30s" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Roteiro 30s</a>` : ''}
+          ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer" data-anexo="campanha_multiplataforma" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Campanha multiplataforma</a>` : ''}
         </div>
       </div>
       <div class="sfield"><div class="mfl">Objetivos da campanha</div><div class="mfv-light">${objetivos}</div></div>
@@ -3153,9 +3238,9 @@ function avalGridHTML(e, mode) {
     <div class="field s3">
       <div class="mfl">Materiais</div>
       <div class="materiais">
-        <a class="mat-btn" href="${base}/video.mp4" target="_blank"><i class="ti ti-player-play" style="font-size:13px"></i>Vídeo criativo</a>
-        <a class="mat-btn" href="${base}/roteiro.pdf" target="_blank"><i class="ti ti-file" style="font-size:13px"></i>Roteiro 30s</a>
-        <a class="mat-btn" href="${base}/campanha.pdf" target="_blank"><i class="ti ti-file" style="font-size:13px"></i>Campanha</a>
+        ${links.video ? `<a class="mat-btn" href="${links.video}" target="_blank" rel="noopener noreferrer" data-anexo="video_criativo" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-player-play" style="font-size:13px"></i>Vídeo criativo</a>` : ''}
+        ${links.roteiro30 ? `<a class="mat-btn" href="${links.roteiro30}" target="_blank" rel="noopener noreferrer" data-anexo="roteiro_30s" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Roteiro 30s</a>` : ''}
+        ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer" data-anexo="campanha_multiplataforma" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Campanha</a>` : ''}
       </div>
     </div>
     <div class="field s3"><div class="mfl">Objetivos da campanha</div><div class="mfv-light">${objetivos}</div></div>
@@ -4346,6 +4431,28 @@ function remoteAuditToLocal(events) {
     }));
 }
 
+function remoteSystemEventsToLocal(events) {
+  return (events || []).map(r => {
+    const payload = r.payload_json || {};
+    const fullId = r.inscricao_id || payload.inscricao_id || '';
+    const inscId = fullId ? shortInscId(fullId) : '';
+    const parId = r.parecerista_id || payload.parecerista_id || r.actor_id || '';
+    const par = pareceristas.find(p => p.id === parId);
+    const e = INSCRICOES.find(x => x.id === inscId);
+    return {
+      tipo: 'anexo_aberto',
+      parId,
+      parNome: par?.nome || '—',
+      inscId,
+      lider: e?.lider || '—',
+      createdAt: r.created_at || payload.created_at || new Date().toISOString(),
+      material: labelAnexo(payload.tipo_anexo),
+      origem: payload.origem || 'desconhecida',
+      url: payload.url || '',
+    };
+  });
+}
+
 function inscricoesFromRemote(rows, participants) {
   const group = {};
   (participants || []).forEach(p => {
@@ -4491,6 +4598,7 @@ async function loadStateFromSupabase() {
 
     avaliaçõesFromRemote(avalData || [], critData || []);
     logAuditoria = remoteAuditToLocal((auditData || []).filter(r => String(r.event_type || '').startsWith('auditoria_')));
+    logAuditoriaEventos = remoteSystemEventsToLocal((auditData || []).filter(r => String(r.event_type || '') === 'anexo_aberto'));
 
     if (cfgRes.data) {
       TEMPO_MINIMO = Number(cfgRes.data.tempo_minimo_ms) || TEMPO_MINIMO;
@@ -4540,6 +4648,7 @@ async function loadReviewerPortalStateFromSupabase(parId) {
     atribuicoes = {};
     avaliacoes = {};
     logAuditoria = [];
+    logAuditoriaEventos = [];
 
     if (cfgRes.data) {
       TEMPO_MINIMO = Number(cfgRes.data.tempo_minimo_ms) || TEMPO_MINIMO;
@@ -4610,6 +4719,7 @@ function saveAppState(opts = {}) {
       atribuicoes,
       avaliacoes,
       logAuditoria,
+      logAuditoriaEventos,
       parametros: {
         tempoMinimo: TEMPO_MINIMO,
         insufObrigaParecer: INSUF_OBRIGA_PARECER,
@@ -4650,6 +4760,9 @@ function hydrateAppState() {
         fim: r.fim ? new Date(r.fim) : null,
       }));
     }
+    if (Array.isArray(data.logAuditoriaEventos)) {
+      logAuditoriaEventos = data.logAuditoriaEventos.map(r => ({ ...r }));
+    }
     if (data.parametros) {
       TEMPO_MINIMO = Number(data.parametros.tempoMinimo) || TEMPO_MINIMO;
       INSUF_OBRIGA_PARECER = Number(data.parametros.insufObrigaParecer) || INSUF_OBRIGA_PARECER;
@@ -4676,6 +4789,7 @@ function restaurarPareceristasPadrao() {
   atribuicoes = {};
   avaliacoes = {};
   logAuditoria = [];
+  logAuditoriaEventos = [];
 }
 
 function syncPersistedStateWithBase() {
@@ -4701,6 +4815,7 @@ function syncPersistedStateWithBase() {
   );
 
   logAuditoria = logAuditoria.filter(r => inscIds.has(r.inscId) && pareceristaIds.has(r.parId));
+  logAuditoriaEventos = logAuditoriaEventos.filter(r => inscIds.has(r.inscId) && pareceristaIds.has(r.parId));
 }
 
 function normalizarAtribuicoesPorCota() {
@@ -4745,6 +4860,7 @@ function normalizarAtribuicoesPorCota() {
     });
 
     logAuditoria = logAuditoria.filter(r => !removidas.has(`${r.parId}::${r.inscId}`));
+    logAuditoriaEventos = logAuditoriaEventos.filter(r => !removidas.has(`${r.parId}::${r.inscId}`));
   }
 }
 
@@ -4932,6 +5048,7 @@ function confirmarBase() {
     atribuicoes = {};
     avaliacoes = {};
     logAuditoria = [];
+    logAuditoriaEventos = [];
   }
   saveAppState();
   scheduleSupabaseSync('base_import');
