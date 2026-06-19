@@ -65,6 +65,8 @@ html, body {
 body{margin:0;overflow:hidden;background:var(--bg)}
 #appShell{height:100vh;display:flex;flex-direction:column;overflow:hidden}
 #appScroll{flex:1;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:none;-webkit-overflow-scrolling:auto}
+#appScroll.portal-mode,
+#appScroll.avaliacao-mode{overflow:hidden}
 
 /* ── DENSE ── */
 [data-theme="dense"] {
@@ -325,6 +327,30 @@ body {
 .topnav-brand{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:var(--font-weight-bold);color:var(--text-primary)}
 .topnav-right{font-size:12px;color:var(--text-tertiary);display:flex;align-items:center;gap:8px}
 .topnav-right span{color:var(--text-primary);font-weight:var(--font-weight-bold)}
+.topnav-ficha-controls{display:none;align-items:center;gap:12px;margin-right:8px}
+.topnav-ficha-controls .btn.btn-secondary.btn-sm{
+  padding:0;
+  border:none;
+  background:transparent;
+  border-radius:0;
+  box-shadow:none;
+  min-height:auto;
+  color:#5F6368;
+  font-weight:600;
+  text-decoration:none;
+  border-bottom:1px solid currentColor;
+  padding-bottom:1px;
+}
+.topnav-ficha-controls .btn.btn-secondary.btn-sm:hover{
+  border:none;
+  background:transparent;
+  box-shadow:none;
+  color:#202124;
+}
+.topnav-ficha-controls .btn.btn-secondary.btn-sm i{
+  text-decoration:none;
+  border-bottom:none;
+}
 
 .subnav{background:var(--nav-bg);border-bottom:1px solid var(--nav-border);padding:0 28px;display:flex;align-items:center;height:44px;overflow-x:auto;transition:background .2s;flex-shrink:0}
 .subnav::-webkit-scrollbar{display:none}
@@ -447,6 +473,12 @@ tr:hover td.sticky{background:#FAFAFA}
   position:relative;
   overscroll-behavior:contain;
   background:var(--surface);
+  display:flex;
+  align-items:stretch;
+}
+#view-resultados .tbl-scroll::after{
+  content:'';
+  flex:0 0 20px;
 }
 #view-resultados th{border-bottom-color:#C7CDD6}
 #view-resultados td{border-bottom-color:#D3D8E0}
@@ -491,6 +523,7 @@ tr:hover td.sticky{background:#FAFAFA}
 }
 #view-resultados .results-table{
   table-layout:fixed;
+  flex:0 0 auto;
 }
 #view-resultados .results-table th,
 #view-resultados .results-table td{
@@ -498,6 +531,11 @@ tr:hover td.sticky{background:#FAFAFA}
 }
 #view-resultados .results-table tbody > tr:not(.sub-row) > td{
   height:96px;
+}
+#view-resultados .results-table thead tr:first-child th:last-child,
+#view-resultados .results-table thead tr:nth-child(2) th:last-child,
+#view-resultados .results-table tbody tr > td:last-child{
+  border-right:1px solid #D3D8E0;
 }
 
 /* ── BADGES ── */
@@ -544,6 +582,16 @@ tr:hover td.sticky{background:#FAFAFA}
 .prog-bar{flex:1;height:6px;background:rgba(255,255,255,.3);border-radius:3px;overflow:hidden}
 .prog-fill{height:100%;background:#fff;border-radius:3px;transition:width .3s}
 .prog-label{font-size:12px;opacity:.9;white-space:nowrap}
+#view-portal{padding:0;height:100%;overflow:hidden}
+.portal-scroll-shell{
+  height:100%;
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior-y:none;
+  -webkit-overflow-scrolling:auto;
+  padding:24px 28px 40px;
+  scrollbar-gutter:stable;
+}
 
 .ficha-item{background:#fff;border:1px solid #E0E0E0;border-radius:8px;padding:14px 18px;margin-bottom:10px;display:grid;grid-template-columns:185px minmax(0,1fr) auto auto;align-items:center;column-gap:18px;cursor:pointer;transition:border-color .12s}
 .ficha-item:hover{border-color:#1A73E8}
@@ -619,14 +667,25 @@ tr:hover td.sticky{background:#FAFAFA}
 .materiais{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .mat-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#1A73E8;background:#E8F0FE;border:1px solid #AECBFA;border-radius:6px;padding:6px 13px;text-decoration:none;cursor:pointer;white-space:nowrap}
 .mat-btn:hover{background:#D2E3FC}
-.ia-note{font-size:11px;color:#BDC1C6;padding-top:12px;border-top:1px solid #F1F3F4;margin-top:6px}
+.ia-note{
+  margin-top:12px;
+  padding:12px 14px;
+  border:1px solid #D2E3FC;
+  border-radius:10px;
+  background:#F8FBFF;
+  font-size:12px;
+  color:#3367D6;
+  font-weight:600;
+  line-height:1.55;
+}
 .mf{padding:12px 20px;border-top:1px solid #F1F3F4;display:flex;justify-content:flex-end;position:sticky;bottom:0;background:#fff}
 .btn-fechar{padding:7px 20px;border-radius:6px;border:1px solid #DADCE0;background:#fff;font-size:12.5px;font-weight:500;color:#5F6368;cursor:pointer}
 .btn-fechar:hover{background:#F1F3F4}
 
 /* ── AVALIAÇÃO MODAL ── */
-.criterio{background:#fff;border:1px solid #E0E0E0;border-radius:8px;padding:16px 18px;margin-bottom:10px;transition:border-color .15s}
+.criterio{background:#fff;border:1px solid #E0E0E0;border-radius:8px;padding:16px 18px;margin-bottom:10px;transition:border-color .15s, box-shadow .15s}
 .criterio:focus-within{border-color:#1A73E8}
+.criterio.is-missing{border-color:#D93025;box-shadow:0 0 0 2px rgba(217,48,37,.10)}
 .crit-num{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#9AA0A6;margin-bottom:2px}
 .crit-nome{font-size:13px;font-weight:600;color:#202124;margin-bottom:2px}
 .crit-desc{font-size:12px;color:#5F6368;line-height:1.55}
@@ -655,8 +714,26 @@ textarea::placeholder{color:#BDC1C6}
 /* ── NOTIFY ── */
 .notify{position:fixed;bottom:70px;right:24px;background:#202124;color:#fff;font-size:12px;font-weight:500;padding:10px 16px;border-radius:8px;z-index:999;opacity:0;transition:opacity .2s;pointer-events:none}
 .notify.show{opacity:1}
-.loading-nudge{position:fixed;top:20px;left:50%;transform:translate(-50%,-8px);background:#202124;color:#fff;font-size:12px;font-weight:600;padding:10px 16px;border-radius:999px;z-index:1000;opacity:0;transition:opacity .18s, transform .18s;pointer-events:none;box-shadow:0 10px 30px rgba(0,0,0,.16)}
-.loading-nudge.show{opacity:1;transform:translate(-50%,0)}
+.loading-nudge{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%) scale(.98);
+  background:rgba(32,33,36,.94);
+  color:#fff;
+  font-size:13px;
+  font-weight:600;
+  padding:14px 18px;
+  border-radius:14px;
+  z-index:1000;
+  opacity:0;
+  transition:opacity .18s, transform .18s;
+  pointer-events:none;
+  box-shadow:0 18px 44px rgba(0,0,0,.24);
+  min-width:240px;
+  text-align:center;
+}
+.loading-nudge.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
 
 /* ── EXIT OPTIONS ── */
 .exit-opcao { display:none; }
@@ -678,15 +755,127 @@ textarea::placeholder{color:#BDC1C6}
 .dur-low { color:#D97706;font-weight:600; }
 
 /* ── SFIELD — coluna única no painel split ── */
-.sfield {
-  padding: 10px 14px;
-  border-bottom: 1px solid #F1F3F4;
+.split-reference-grid{display:flex;flex-direction:column;min-height:100%}
+.split-hero{
+  padding:14px 16px 12px;
+  border-bottom:1px solid #E8EAED;
+  background:#F8F9FA;
 }
-.sfield.last { border-bottom: none; }
-.sfield.two {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+.split-kicker{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:6px;
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin-bottom:4px;
+}
+.split-kicker-id{
+  font-family:monospace;
+  font-size:11px;
+  letter-spacing:0;
+  text-transform:none;
+  color:#1A73E8;
+}
+.split-kicker-dot{
+  color:#BDC1C6;
+}
+.split-kicker-meta{
+  color:#9AA0A6;
+}
+.split-leader{
+  font-size:14px;
+  font-weight:600;
+  color:#202124;
+  line-height:1.25;
+}
+.split-inst{
+  font-size:11px;
+  color:#9AA0A6;
+  margin-top:4px;
+}
+.split-hero-meta{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:2px;
+}
+.split-hero-course{
+  font-size:11px;
+  color:#9AA0A6;
+}
+.split-meta-rows{
+  padding:10px 16px;
+  border-bottom:1px solid #F1F3F4;
+}
+.split-meta-row{
+  display:grid;
+  grid-template-columns:48px minmax(0,1fr);
+  gap:12px;
+  align-items:start;
+  padding:5px 0;
+}
+.split-meta-label{
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#BDC1C6;
+}
+.split-meta-value{
+  font-size:12px;
+  font-weight:600;
+  color:#202124;
+  line-height:1.45;
+}
+.split-meta-subline{
+  font-size:11px;
+  color:#9AA0A6;
+  margin-top:3px;
+  line-height:1.45;
+}
+.split-materials-wrap{
+  padding:10px 16px;
+  border-bottom:1px solid #F1F3F4;
+}
+.split-materials-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.split-copy-section{
+  padding:14px 16px 0;
+}
+.split-copy-section.last{
+  padding-bottom:16px;
+}
+.split-copy-title{
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#5F6368;
+  padding-bottom:7px;
+  border-bottom:1px solid #E0E0E0;
+  margin-bottom:10px;
+}
+.split-copy-body{
+  font-size:12px;
+  line-height:1.65;
+  color:#5F6368;
+}
+.split-ia-note{
+  margin-top:12px;
+  border:1px solid #D2E3FC;
+  border-radius:10px;
+  background:#F6F9FF;
+  padding:10px 12px;
+  color:#3367D6;
+  font-size:11px;
+  font-weight:600;
+  line-height:1.55;
 }
 
 /* ── LAYOUT TOGGLE ── */
@@ -700,18 +889,22 @@ textarea::placeholder{color:#BDC1C6}
 .layout-btn.active { background:#fff;color:#1A73E8;box-shadow:0 1px 3px rgba(0,0,0,.12); }
 
 #view-avaliacao {
-  padding:0 28px 100px;
+  height:100%;
+  overflow:hidden;
+  padding:0 28px 0;
   overscroll-behavior-y:none;
   -webkit-overflow-scrolling:auto;
 }
-#avalWrap { max-width:1240px;margin:0 auto; }
+#avalWrap { max-width:1240px;margin:0 auto;height:100%;display:flex;flex-direction:column;min-height:0; }
+#layoutSeq{
+  height:100%;
+  overflow-y:auto;
+  overflow-x:hidden;
+  scrollbar-gutter:stable;
+  padding:20px 0 96px;
+}
 .aval-header-shell{
-  position:sticky;
-  top:0;
-  z-index:28;
-  background:var(--bg);
-  padding:18px 0 18px;
-  border-bottom:1px solid rgba(224,224,224,.7);
+  display:none;
 }
 .aval-header{
   display:grid;
@@ -729,43 +922,70 @@ textarea::placeholder{color:#BDC1C6}
 .aval-header-copy{min-width:0;display:flex;flex-direction:column;gap:2px}
 .aval-header-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
 .aval-layout-switch{display:flex;align-items:center;gap:4px;background:#F1F3F4;border-radius:10px;padding:4px}
-.aval-split-grid{display:grid;grid-template-columns:360px minmax(0,1fr);gap:22px;align-items:start;padding-top:20px}
-.aval-side-panel,.aval-main-panel{position:sticky;top:112px;height:calc(100vh - 236px)}
+.aval-split-grid{display:grid;grid-template-columns:401px minmax(0,1fr);gap:26px;align-items:start;padding-top:20px;padding-bottom:84px;flex:1;min-height:0}
+.aval-side-panel,.aval-main-panel{position:sticky;top:58px;height:calc(100vh - 146px)}
 .aval-side-card,.aval-main-card{
   height:100%;
   margin-bottom:0;
-  padding:18px;
-  border-radius:16px;
-  box-shadow:0 12px 24px rgba(32,33,36,.04);
+  padding:0;
+  border-radius:8px;
+  border:1px solid var(--border);
+  background:var(--surface);
+  box-shadow:none;
   display:flex;
   flex-direction:column;
   min-height:0;
+  overflow:hidden;
   transition:border-color .12s, box-shadow .12s;
+}
+.aval-main-card{position:relative}
+.aval-main-card::after{
+  content:'';
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:28px;
+  pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(248,249,250,.88) 100%);
 }
 .aval-side-card.is-active,.aval-main-card.is-active{
   border-color:var(--accent-border);
-  box-shadow:0 14px 30px rgba(26,115,232,.10);
+  box-shadow:0 0 0 1px rgba(26,115,232,.08);
 }
 .aval-panel-head{
   position:sticky;
   top:0;
   z-index:4;
   display:flex;
-  align-items:center;
+  align-items:flex-start;
   justify-content:space-between;
-  gap:10px;
+  gap:16px;
   background:var(--surface);
-  padding-bottom:12px;
-  margin-bottom:14px;
+  padding:16px 18px 12px;
+  margin-bottom:0;
   border-bottom:1px solid var(--border-light);
 }
 .aval-panel-head .section-label{margin-bottom:0}
+.aval-panel-head-note{
+  max-width:360px;
+  font-size:11px;
+  color:#6B7280;
+  line-height:1.5;
+  text-align:right;
+}
 .aval-side-scroll,.aval-main-scroll{
   overflow-y:auto;
+  flex:1;
   min-height:0;
-  padding-right:4px;
+  padding-right:0;
   scrollbar-gutter:stable;
+  overflow-anchor:none;
+  overscroll-behavior:contain;
+  scroll-behavior:auto;
 }
+.aval-main-scroll{padding:0 18px 20px}
+.aval-side-scroll{padding-bottom:14px}
 .aval-side-scroll::-webkit-scrollbar,.aval-main-scroll::-webkit-scrollbar{width:6px}
 .aval-side-scroll::-webkit-scrollbar-thumb,.aval-main-scroll::-webkit-scrollbar-thumb{background:#DADCE0;border-radius:999px}
 .aval-main-panel{min-width:0}
@@ -802,6 +1022,8 @@ textarea::placeholder{color:#BDC1C6}
   .aval-side-scroll,.aval-main-scroll { overflow:visible;padding-right:0; }
   .aval-form-head { position:static; }
   .aval-panel-head { position:static; }
+  .aval-panel-head{flex-direction:column;align-items:flex-start}
+  .aval-panel-head-note{max-width:none;text-align:left}
 }
 
 /* ── PARECERES MODAL ── */
@@ -852,6 +1074,11 @@ textarea::placeholder{color:#BDC1C6}
     Sistema de Avaliação de Projetos
   </div>
   <div class="topnav-right">
+    <div class="topnav-ficha-controls" id="topnavFichaControls">
+      <button class="btn btn-secondary btn-sm" type="button" onclick="voltarPortal()">
+        <i class="ti ti-arrow-left"></i>Voltar
+      </button>
+    </div>
     <span>Desafio: <span>PPA 2026</span></span>
   </div>
 </div>
@@ -1146,6 +1373,20 @@ textarea::placeholder{color:#BDC1C6}
   <div class="tbl-card">
     <div class="tbl-scroll" id="resultsBodyScroll">
       <table class="results-table" style="width:max-content;min-width:100%">
+        <colgroup>
+          <col style="width:118px">
+          <col style="width:96px">
+          <col style="width:332px">
+          <col style="width:112px">
+          <col style="width:112px">
+          <col style="width:112px">
+          <col style="width:112px">
+          <col style="width:112px">
+          <col style="width:112px">
+          <col style="width:112px">
+          <col style="width:112px">
+          <col style="width:112px">
+        </colgroup>
         <thead>
           <tr>
             <th class="sticky s0" rowspan="2">Ranking</th>
@@ -1180,6 +1421,7 @@ textarea::placeholder{color:#BDC1C6}
      VIEW 3: PORTAL DO PARECERISTA
 ════════════════════════════════════════════════ -->
 <div class="view" id="view-portal">
+<div class="portal-scroll-shell">
 <div style="max-width:760px;margin:0 auto">
 
   <div class="portal-header">
@@ -1215,6 +1457,7 @@ textarea::placeholder{color:#BDC1C6}
 
 </div>
 </div>
+</div>
 
 <!-- ═══════════════════════════════════════════════
      VIEW 4: FICHA DE AVALIAÇÃO
@@ -1226,21 +1469,13 @@ textarea::placeholder{color:#BDC1C6}
   <div class="aval-header-shell">
     <div class="aval-header">
       <div class="aval-header-main">
-        <button class="btn btn-secondary btn-sm" onclick="showView('portal')"><i class="ti ti-arrow-left"></i>Voltar</button>
+        <button class="btn btn-secondary btn-sm" onclick="voltarPortal()"><i class="ti ti-arrow-left"></i>Voltar</button>
         <div class="aval-header-copy">
           <div class="page-title" id="avalTitle" style="font-size:15px">Ficha de avaliação</div>
           <div class="page-sub" id="avalSub">—</div>
         </div>
       </div>
       <div class="aval-header-actions">
-        <div class="aval-layout-switch">
-          <button id="btnLayoutSeq" class="layout-btn" onclick="setLayout('seq')" title="Modo sequencial">
-            <i class="ti ti-layout-list"></i>
-          </button>
-          <button id="btnLayoutSplit" class="layout-btn active" onclick="setLayout('split')" title="Modo painel dividido">
-            <i class="ti ti-layout-columns"></i>
-          </button>
-        </div>
         <button class="btn btn-secondary btn-sm" id="btnEditarAvaliacao" onclick="ativarEdicaoAvaliacao()" style="display:none"><i class="ti ti-pencil"></i>Editar</button>
         <span class="badge b-pend" id="avalBadge">Pendente</span>
       </div>
@@ -1258,7 +1493,7 @@ textarea::placeholder{color:#BDC1C6}
       <div class="aval-form-head-card">
         <div class="aval-form-head-copy">
           <div class="section-label">Critérios de avaliação</div>
-          <div class="aval-form-head-note">Avalie os 8 critérios e registre uma justificativa breve para cada um deles.</div>
+          <div class="aval-form-head-note">Avalie os 8 critérios com atenção. As justificativas de cada critério são opcionais.</div>
         </div>
       </div>
     </div>
@@ -1276,29 +1511,22 @@ textarea::placeholder{color:#BDC1C6}
 
       <!-- painel esquerdo: resumo fixo -->
       <div id="splitLeft" class="aval-side-panel">
-        <div class="card aval-side-card">
+        <div class="aval-side-card">
           <div class="aval-side-scroll" data-panel="side">
-            <div class="aval-panel-head">
-              <div>
-                <div class="section-label">Resumo da inscrição</div>
-                <div style="font-size:12px;color:#5F6368;margin-top:4px">Contexto completo da equipe, materiais e dados da proposta.</div>
-              </div>
-            </div>
-            <div id="avalGridSplit" style="display:flex;flex-direction:column;border:1px solid #E0E0E0;border-radius:8px;overflow:hidden"></div>
-            <div class="ia-note" id="avalIASplit"></div>
+            <div id="avalGridSplit" class="split-reference-grid"></div>
           </div>
         </div>
       </div>
 
       <!-- painel direito: formulário -->
       <div class="aval-main-panel">
-        <div class="card aval-main-card">
+        <div class="aval-main-card">
           <div class="aval-main-scroll" data-panel="main">
             <div class="aval-panel-head">
               <div class="aval-form-head-copy">
                 <div class="section-label">Critérios de avaliação</div>
-                <div class="aval-form-head-note">Preencha cada critério com atenção e documente a justificativa antes do parecer geral.</div>
               </div>
+              <div class="aval-panel-head-note">Justificativas dos critérios são opcionais.</div>
             </div>
             <div id="critGridSplit"></div>
             <div class="parecer-box">
@@ -1457,13 +1685,27 @@ textarea::placeholder{color:#BDC1C6}
       <option value="concluida">Concluída</option>
       <option value="saida_antecipada">Saída antecipada</option>
       <option value="rascunho">Rascunho</option>
-      <option value="anexo_aberto">Anexo aberto</option>
     </select>
     <select class="finput" id="audFiltNota" style="width:auto" onchange="renderAuditoria()">
       <option value="">Todas as notas</option>
       <option value="alta">Alta (75–100)</option>
       <option value="media">Média (50–74)</option>
       <option value="baixa">Baixa (0–49)</option>
+    </select>
+    <select class="finput" id="audFiltVideo" style="width:auto" onchange="renderAuditoria()">
+      <option value="">Vídeo: todos</option>
+      <option value="sim">Vídeo aberto</option>
+      <option value="nao">Vídeo não aberto</option>
+    </select>
+    <select class="finput" id="audFiltRoteiro" style="width:auto" onchange="renderAuditoria()">
+      <option value="">Roteiro: todos</option>
+      <option value="sim">Roteiro aberto</option>
+      <option value="nao">Roteiro não aberto</option>
+    </select>
+    <select class="finput" id="audFiltCampanha" style="width:auto" onchange="renderAuditoria()">
+      <option value="">Campanha: todos</option>
+      <option value="sim">Campanha aberta</option>
+      <option value="nao">Campanha não aberta</option>
     </select>
     <input type="text" id="audFiltBusca" class="finput" style="width:200px" placeholder="Buscar candidato ou ID…" oninput="renderAuditoria()">
     <div style="margin-left:auto;font-size:11px;color:#9AA0A6" id="audCount"></div>
@@ -1480,6 +1722,9 @@ textarea::placeholder{color:#BDC1C6}
           <th style="width:80px">Fim</th>
           <th style="width:70px">Duração</th>
           <th style="width:80px">Nota</th>
+          <th style="width:74px;text-align:center">Vídeo</th>
+          <th style="width:74px;text-align:center">Roteiro</th>
+          <th style="width:86px;text-align:center">Campanha</th>
           <th style="width:100px">Status</th>
           <th>Obs. saída</th>
         </tr>
@@ -1560,6 +1805,32 @@ textarea::placeholder{color:#BDC1C6}
   </div>
 </div>
 
+<!-- MODAL ANEXOS OBRIGATÓRIOS -->
+<div class="overlay" id="overlayMissingAttachments" style="z-index:300">
+  <div class="modal" style="max-width:460px">
+    <div class="mh">
+      <div>
+        <div class="mh-ey">Análise dos materiais obrigatórios</div>
+        <div class="mh-title">Falta analisar os anexos obrigatórios</div>
+        <div class="mh-sub">Esta avaliação não pode ser encerrada porque ainda há materiais sem abertura registrada.</div>
+      </div>
+    </div>
+    <div class="mb" style="padding:16px 20px 20px">
+      <div style="font-size:13px;color:#5F6368;line-height:1.5;margin-bottom:12px">
+        Para concluir o parecer, é necessário analisar todos os anexos obrigatórios da inscrição.
+      </div>
+      <div class="fl" style="margin-bottom:6px">Pendências</div>
+      <div id="missingAttachmentsList" style="display:flex;flex-direction:column;gap:8px"></div>
+      <div style="font-size:12px;color:#5F6368;line-height:1.5;margin-top:12px">
+        Enquanto houver anexos sem abertura registrada, a avaliação não poderá ser concluída.
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-primary btn-sm" onclick="closeMissingAttachmentsModal()">Entendi</button>
+    </div>
+  </div>
+</div>
+
 <div class="overlay" id="overlayAuth">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="authTitle">
     <div class="auth-modal-head" style="padding-bottom:24px">
@@ -1629,7 +1900,6 @@ textarea::placeholder{color:#BDC1C6}
     <div class="prog-bar-sm"><div class="prog-fill-sm" id="footerFill" style="width:0%"></div></div>
   </div>
   <div style="display:flex;gap:10px">
-    <button class="btn btn-secondary btn-sm" onclick="window.print()"><i class="ti ti-printer"></i>Imprimir</button>
     <button class="btn btn-secondary btn-sm" id="btnEditarAvaliacaoFooter" onclick="ativarEdicaoAvaliacao()" style="display:none"><i class="ti ti-pencil"></i>Editar</button>
     <button class="btn btn-primary btn-sm" id="btnSalvarAvaliacao" onclick="salvarAvaliacao()"><i class="ti ti-device-floppy"></i>Salvar avaliação</button>
   </div>
@@ -1785,6 +2055,12 @@ function updateAdminFabVisibility(viewName = currentActiveViewName()) {
   fab.style.display = canShow ? 'inline-flex' : 'none';
 }
 
+function updateAvaliacaoTopnavControls(viewName = currentActiveViewName()) {
+  const controls = document.getElementById('topnavFichaControls');
+  if (!controls) return;
+  controls.style.display = viewName === 'avaliacao' && hasViewerAccess() ? 'inline-flex' : 'none';
+}
+
 function applyAccessUi() {
   const viewerReady = hasViewerAccess();
   const adminReady = hasAdminAccess();
@@ -1802,6 +2078,7 @@ function applyAccessUi() {
     el.style.display = !reviewerBootMode && adminReady ? '' : 'none';
   });
   updateAdminFabVisibility();
+  updateAvaliacaoTopnavControls();
 }
 
 function activateView(v) {
@@ -1812,7 +2089,10 @@ function activateView(v) {
   const tab = document.querySelector(`.snav[data-view="${v}"]`);
   if (tab) tab.classList.add('active');
   document.getElementById('footerBar').style.display = v === 'avaliacao' && hasViewerAccess() ? 'flex' : 'none';
+  document.getElementById('appScroll')?.classList.toggle('portal-mode', v === 'portal');
+  document.getElementById('appScroll')?.classList.toggle('avaliacao-mode', v === 'avaliacao');
   updateAdminFabVisibility(v);
+  updateAvaliacaoTopnavControls(v);
 }
 
 function showLoginView(options = {}) {
@@ -2390,6 +2670,41 @@ function registrarCliqueAnexoFromLink(el) {
   }
   return true;
 }
+
+function registrarInteracaoAnexoDelegada(el) {
+  if (!el || !el.dataset?.anexo) return;
+  const now = Date.now();
+  const last = Number(el.dataset.auditTs || 0);
+  if (now - last < 400) return;
+  el.dataset.auditTs = String(now);
+  registrarCliqueAnexoFromLink(el);
+}
+
+document.addEventListener('click', (event) => {
+  const link = event.target.closest('a[data-anexo]');
+  if (!link) return;
+  registrarInteracaoAnexoDelegada(link);
+}, true);
+
+document.addEventListener('auxclick', (event) => {
+  const link = event.target.closest('a[data-anexo]');
+  if (!link) return;
+  registrarInteracaoAnexoDelegada(link);
+}, true);
+
+document.addEventListener('contextmenu', (event) => {
+  const link = event.target.closest('a[data-anexo]');
+  if (!link) return;
+  registrarInteracaoAnexoDelegada(link);
+}, true);
+
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Enter' && event.key !== ' ') return;
+  const link = event.target.closest('a[data-anexo]');
+  if (!link) return;
+  registrarInteracaoAnexoDelegada(link);
+}, true);
+
 function fmtNotaGeral(valor) {
   return valor === null ? '—' : valor.toFixed(1).replace('.', ',');
 }
@@ -2642,9 +2957,9 @@ function openModal(idx) {
         ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer" data-anexo="campanha_multiplataforma" data-origem="modal_inscricao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Campanha</a>` : ''}
       </div>
     </div>
+    <div class="field s3"><div class="mfl">Defesa conceitual</div><div class="mfv-light">${e.defesa}</div></div>
     <div class="field s3"><div class="mfl">Objetivos da campanha</div><div class="mfv-light">${objetivos}</div></div>
-    <div class="field s3"><div class="mfl">Estratégia de distribuição</div><div class="mfv-light">${estrategia}</div></div>
-    <div class="field s3 last"><div class="mfl">Defesa conceitual</div><div class="mfv-light">${e.defesa}</div></div>`;
+    <div class="field s3 last"><div class="mfl">Estratégia de distribuição</div><div class="mfv-light">${estrategia}</div></div>`;
   document.getElementById('overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -2987,6 +3302,53 @@ function closeRequiredParecerModal() {
   }
 }
 
+function anexosObrigatoriosDaInscricao(inscId) {
+  const e = INSCRICOES.find(x => x.id === inscId);
+  if (!e) return [];
+  const links = materialLinks(e);
+  return [
+    links.video ? { key:'video_criativo', label:'Vídeo criativo' } : null,
+    links.roteiro30 ? { key:'roteiro_30s', label:'Roteiro 30s' } : null,
+    links.campanha ? { key:'campanha_multiplataforma', label:'Campanha multiplataforma' } : null,
+  ].filter(Boolean);
+}
+
+function anexosAbertosPorParecerista(parId, inscId) {
+  const opened = new Set();
+  logAuditoriaEventos.forEach(r => {
+    if (r.parId !== parId || r.inscId !== inscId) return;
+    if (r.material === 'Vídeo criativo') opened.add('video_criativo');
+    if (r.material === 'Roteiro 30s') opened.add('roteiro_30s');
+    if (r.material === 'Campanha multiplataforma') opened.add('campanha_multiplataforma');
+  });
+  return opened;
+}
+
+function anexosPendentesDaAvaliacao(parId, inscId) {
+  const obrigatorios = anexosObrigatoriosDaInscricao(inscId);
+  const abertos = anexosAbertosPorParecerista(parId, inscId);
+  return obrigatorios.filter(item => !abertos.has(item.key));
+}
+
+function openMissingAttachmentsModal(pendencias) {
+  const list = document.getElementById('missingAttachmentsList');
+  if (list) {
+    list.innerHTML = (pendencias || []).map(item => `
+      <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:#202124">
+        <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:999px;background:#FEE2E2;color:#B3261E;font-weight:700;font-size:12px">!</span>
+        <span>${item.label}</span>
+      </div>
+    `).join('');
+  }
+  document.getElementById('overlayMissingAttachments').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMissingAttachmentsModal() {
+  document.getElementById('overlayMissingAttachments').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
 function confirmExit() {
   const parId = currentParId;
   const inscId = currentInscId;
@@ -3047,6 +3409,37 @@ function registrarEventoAuditoriaAnexo({ pareceristaId, inscricaoId, tipoAnexo, 
   });
 }
 
+function auditoriaAttachmentMap() {
+  const map = {};
+  logAuditoriaEventos.forEach(r => {
+    const key = `${r.parId}::${r.inscId}`;
+    if (!map[key]) {
+      map[key] = {
+        video_criativo: false,
+        roteiro_30s: false,
+        campanha_multiplataforma: false,
+      };
+    }
+    if (r.material === 'Vídeo criativo') map[key].video_criativo = true;
+    if (r.material === 'Roteiro 30s') map[key].roteiro_30s = true;
+    if (r.material === 'Campanha multiplataforma') map[key].campanha_multiplataforma = true;
+  });
+  return map;
+}
+
+function auditCheckCell(isOn) {
+  return isOn
+    ? '<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:999px;background:#E6F4EA;color:#137333;font-size:13px;font-weight:700">✓</span>'
+    : '<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:999px;background:#F1F3F4;color:#BDC1C6;font-size:13px;font-weight:700">—</span>';
+}
+
+function matchAuditAttachmentFilter(value, isOpen) {
+  if (!value) return true;
+  if (value === 'sim') return !!isOpen;
+  if (value === 'nao') return !isOpen;
+  return true;
+}
+
 function registrarAuditoria({ saida, motivoSaida, notas, parecer }) {
   const par = pareceristas.find(p => p.id === currentParId);
   const e = INSCRICOES.find(x => x.id === currentInscId);
@@ -3095,6 +3488,9 @@ function renderAuditoria() {
   const filtPar = document.getElementById('audFiltPar')?.value || '';
   const filtStatus = document.getElementById('audFiltStatus')?.value || '';
   const filtNota = document.getElementById('audFiltNota')?.value || '';
+  const filtVideo = document.getElementById('audFiltVideo')?.value || '';
+  const filtRoteiro = document.getElementById('audFiltRoteiro')?.value || '';
+  const filtCampanha = document.getElementById('audFiltCampanha')?.value || '';
   const filtBusca = (document.getElementById('audFiltBusca')?.value || '').toLowerCase();
 
   // atualiza select de pareceristas
@@ -3105,19 +3501,30 @@ function renderAuditoria() {
       pareceristas.map(p => `<option value="${p.id}" ${p.id===cur?'selected':''}>${p.nome}</option>`).join('');
   }
 
-  let rows = [
-    ...logAuditoria.map(r => ({ kind:'avaliacao', ...r, sortAt: r.fim || r.inicio || new Date(0) })),
-    ...logAuditoriaEventos.map(r => ({ kind:'anexo', ...r, status:'anexo_aberto', nota:null, sortAt: new Date(r.createdAt) })),
-  ];
+  const anexosByRow = auditoriaAttachmentMap();
+  let rows = logAuditoria.map(r => {
+    const anexos = anexosByRow[`${r.parId}::${r.inscId}`] || {
+      video_criativo: false,
+      roteiro_30s: false,
+      campanha_multiplataforma: false,
+    };
+    return {
+      ...r,
+      sortAt: r.fim || r.inicio || new Date(0),
+      anexos,
+    };
+  });
   if (filtPar) rows = rows.filter(r => r.parId === filtPar);
   if (filtStatus) rows = rows.filter(r => r.status === filtStatus);
-  if (filtNota === 'alta')  rows = rows.filter(r => r.kind === 'avaliacao' && r.nota !== null && r.nota >= 75);
-  if (filtNota === 'media') rows = rows.filter(r => r.kind === 'avaliacao' && r.nota !== null && r.nota >= 50 && r.nota < 75);
-  if (filtNota === 'baixa') rows = rows.filter(r => r.kind === 'avaliacao' && r.nota !== null && r.nota < 50);
+  if (filtNota === 'alta')  rows = rows.filter(r => r.nota !== null && r.nota >= 75);
+  if (filtNota === 'media') rows = rows.filter(r => r.nota !== null && r.nota >= 50 && r.nota < 75);
+  if (filtNota === 'baixa') rows = rows.filter(r => r.nota !== null && r.nota < 50);
+  rows = rows.filter(r => matchAuditAttachmentFilter(filtVideo, r.anexos.video_criativo));
+  rows = rows.filter(r => matchAuditAttachmentFilter(filtRoteiro, r.anexos.roteiro_30s));
+  rows = rows.filter(r => matchAuditAttachmentFilter(filtCampanha, r.anexos.campanha_multiplataforma));
   if (filtBusca) rows = rows.filter(r =>
     String(r.lider || '').toLowerCase().includes(filtBusca) ||
-    String(r.inscId || '').includes(filtBusca) ||
-    String(r.material || '').toLowerCase().includes(filtBusca)
+    String(r.inscId || '').includes(filtBusca)
   );
   rows.sort((a, b) => new Date(b.sortAt || 0) - new Date(a.sortAt || 0));
 
@@ -3126,48 +3533,51 @@ function renderAuditoria() {
   const fmt = d => d ? d.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit',second:'2-digit'}) : '—';
   const fmtData = d => d ? d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}) : '—';
 
-  const statusLabel = { concluida:'Concluída', saida_antecipada:'Saída antecipada', rascunho:'Rascunho', anexo_aberto:'Anexo aberto' };
-  const statusCls   = { concluida:'b-concluida', saida_antecipada:'b-antecipada', rascunho:'b-rascunho', anexo_aberto:'b-par' };
+  const statusLabel = { concluida:'Concluída', saida_antecipada:'Saída antecipada', rascunho:'Rascunho' };
+  const statusCls   = { concluida:'b-concluida', saida_antecipada:'b-antecipada', rascunho:'b-rascunho' };
 
   document.getElementById('tblAuditoria').innerHTML = rows.length === 0
-    ? `<tr><td colspan="9" style="text-align:center;padding:32px;color:#BDC1C6">Nenhum registro de auditoria ainda. As avaliações salvas aparecerão aqui.</td></tr>`
+    ? `<tr><td colspan="12" style="text-align:center;padding:32px;color:#BDC1C6">Nenhum registro de auditoria ainda. As avaliações salvas aparecerão aqui.</td></tr>`
     : rows.map(r => `
       <tr>
         <td style="font-weight:500;color:#202124">${r.parNome}</td>
         <td>${r.lider}</td>
         <td style="font-family:monospace;font-size:11px;color:#1A73E8">PPA2026-${r.inscId}</td>
-        <td style="font-size:11px;color:#5F6368">${r.kind === 'anexo' ? `${fmtData(new Date(r.createdAt))} ${fmt(new Date(r.createdAt))}` : `${fmtData(r.inicio)} ${fmt(r.inicio)}`}</td>
-        <td style="font-size:11px;color:#5F6368">${r.kind === 'anexo' ? '—' : `${fmtData(r.fim)} ${fmt(r.fim)}`}</td>
-        <td class="${r.kind === 'anexo' ? '' : (r.duracaoMs >= TEMPO_MINIMO ? 'dur-ok' : 'dur-low')}">${r.kind === 'anexo' ? '—' : formatDuracao(r.duracaoMs)}</td>
-        <td>${r.kind === 'anexo' ? '<span style="color:#DADCE0">—</span>' : (r.nota !== null ? `<span style="font-size:14px;font-weight:600;color:#202124">${r.nota}</span>` : '<span style="color:#DADCE0">—</span>')}</td>
+        <td style="font-size:11px;color:#5F6368">${fmtData(r.inicio)} ${fmt(r.inicio)}</td>
+        <td style="font-size:11px;color:#5F6368">${fmtData(r.fim)} ${fmt(r.fim)}</td>
+        <td class="${r.duracaoMs >= TEMPO_MINIMO ? 'dur-ok' : 'dur-low'}">${formatDuracao(r.duracaoMs)}</td>
+        <td>${r.nota !== null ? `<span style="font-size:14px;font-weight:600;color:#202124">${r.nota}</span>` : '<span style="color:#DADCE0">—</span>'}</td>
+        <td style="text-align:center">${auditCheckCell(r.anexos.video_criativo)}</td>
+        <td style="text-align:center">${auditCheckCell(r.anexos.roteiro_30s)}</td>
+        <td style="text-align:center">${auditCheckCell(r.anexos.campanha_multiplataforma)}</td>
         <td><span class="badge ${statusCls[r.status]}">${statusLabel[r.status]}</span></td>
-        <td style="font-size:11px;color:#9AA0A6;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.kind === 'anexo' ? `${r.material} · ${r.origem === 'modal_inscricao' ? 'modal' : 'ficha'}` : (r.motivoSaida || '—')}</td>
+        <td style="font-size:11px;color:#9AA0A6;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.motivoSaida || '—'}</td>
       </tr>`).join('');
 }
 
 function exportAuditoria() {
-  const h = 'Parecerista,Candidato,ID,Data início,Hora início,Hora fim,Duração (s),Nota,Status,Obs. saída';
-  const rows = [
-    ...logAuditoria.map(r => [
+  const anexosByRow = auditoriaAttachmentMap();
+  const h = 'Parecerista,Candidato,ID,Data início,Hora início,Hora fim,Duração (s),Nota,Video aberto,Roteiro aberto,Campanha aberta,Status,Obs. saída';
+  const rows = logAuditoria.map(r => {
+    const anexos = anexosByRow[`${r.parId}::${r.inscId}`] || {
+      video_criativo: false,
+      roteiro_30s: false,
+      campanha_multiplataforma: false,
+    };
+    return [
       r.parNome, r.lider, 'PPA2026-'+r.inscId,
       r.inicio?.toLocaleDateString('pt-BR')||'',
       r.inicio?.toLocaleTimeString('pt-BR')||'',
       r.fim?.toLocaleTimeString('pt-BR')||'',
       Math.floor(r.duracaoMs/1000),
       r.nota ?? '',
-      r.status, r.motivoSaida
-    ]),
-    ...logAuditoriaEventos.map(r => [
-      r.parNome, r.lider, 'PPA2026-'+r.inscId,
-      new Date(r.createdAt).toLocaleDateString('pt-BR'),
-      new Date(r.createdAt).toLocaleTimeString('pt-BR'),
-      '',
-      '',
-      '',
-      'anexo_aberto',
-      `${r.material} · ${r.origem === 'modal_inscricao' ? 'modal' : 'ficha'}`
-    ]),
-  ].map(row => row.map(v=>`"${v}"`).join(','));
+      anexos.video_criativo ? 'sim' : 'nao',
+      anexos.roteiro_30s ? 'sim' : 'nao',
+      anexos.campanha_multiplataforma ? 'sim' : 'nao',
+      r.status,
+      r.motivoSaida
+    ];
+  }).map(row => row.map(v=>`"${v}"`).join(','));
   const b = new Blob(['\uFEFF'+[h,...rows].join('\n')],{type:'text/csv;charset=utf-8'});
   const a = document.createElement('a'); a.href=URL.createObjectURL(b); a.download='auditoria_ppa2026.csv'; a.click();
 }
@@ -3175,15 +3585,13 @@ function exportAuditoria() {
 // ═══ FICHA DE AVALIAÇÃO ═══════════════════════════════════
 
 function setLayout(mode) {
-  currentLayout = mode;
-  document.getElementById('layoutSeq').style.display = mode === 'seq' ? 'block' : 'none';
-  document.getElementById('layoutSplit').style.display = mode === 'split' ? 'block' : 'none';
-  document.getElementById('btnLayoutSeq').classList.toggle('active', mode === 'seq');
-  document.getElementById('btnLayoutSplit').classList.toggle('active', mode === 'split');
-  if (mode === 'split') {
-    bindPainelAvaliacao();
-    syncPainelAtivo('main');
-  }
+  currentLayout = 'split';
+  const seq = document.getElementById('layoutSeq');
+  const split = document.getElementById('layoutSplit');
+  if (seq) seq.style.display = 'none';
+  if (split) split.style.display = 'block';
+  bindPainelAvaliacao();
+  syncPainelAtivo('main');
 }
 
 let currentLayout = 'split';
@@ -3196,31 +3604,74 @@ function avalGridHTML(e, mode) {
   const estrategia = e._raw?.['Estratégia de distribuição'] || e._raw?.['Estrategia de distribuicao'] || e._raw?.['estrategia'] || 'Distribuição integrada via Globoplay, Instagram, TikTok e inserções no Jornal Nacional, com peça de 30s e campanha multiplataforma ativada em sequência.';
 
   if (isSplit) {
-    // layout coluna única — cada campo ocupa 100%
-    const p2 = e.p2 ? `<div class="sfield"><div class="mfl">Participante 2</div><div class="mfv">${e.p2}</div><div class="mfv-sub">${e.p2e||''}</div></div>` : '';
-    const p3 = e.p3 ? `<div class="sfield"><div class="mfl">Participante 3</div><div class="mfv">${e.p3}</div><div class="mfv-sub">${e.p3e||''}</div></div>` : '';
+    const curso = e._raw?.['Curso no qual você tem matrícula ativa?'] || e._raw?.['Curso'] || 'Publicidade e Propaganda';
+    const marker = teamMarker(e.mod);
+    const kicker = `
+      <span class="split-kicker-id">PPA2026-${e.id}</span>
+      <span class="split-kicker-dot">·</span>
+      <span class="split-kicker-meta">${String(e.mod || '').toUpperCase()}</span>
+      <span class="team-marker-stack">${marker}</span>
+      <span class="split-kicker-dot">·</span>
+      <span class="split-kicker-meta">${e.uf || '—'}</span>`;
+    const p2 = e.p2 ? `
+      <div class="split-meta-row">
+        <div class="split-meta-label">P2</div>
+        <div>
+          <div class="split-meta-value">${e.p2}</div>
+          ${e.p2e ? `<div class="split-meta-subline">${e.p2e}</div>` : ''}
+        </div>
+      </div>` : '';
+    const p3 = e.p3 ? `
+      <div class="split-meta-row">
+        <div class="split-meta-label">P3</div>
+        <div>
+          <div class="split-meta-value">${e.p3}</div>
+          ${e.p3e ? `<div class="split-meta-subline">${e.p3e}</div>` : ''}
+        </div>
+      </div>` : '';
     return `
-      <div class="sfield"><div class="mfl">ID</div><div class="mfv mono">PPA2026-${e.id}</div></div>
-      <div class="sfield two">
-        <div><div class="mfl">Modalidade</div><div class="mfv">${e.mod}</div></div>
-        <div><div class="mfl">UF</div><div class="mfv">${e.uf}</div></div>
-      </div>
-      <div class="sfield"><div class="mfl">Instituição</div><div class="mfv">${e.inst}</div></div>
-      <div class="sfield"><div class="mfl">Curso</div><div class="mfv">${e._raw?.['Curso no qual você tem matrícula ativa?'] || e._raw?.['Curso'] || 'Publicidade e Propaganda'}</div></div>
-      <div class="sfield"><div class="mfl">Líder</div><div class="mfv">${e.lider}</div><div class="mfv-sub">${e.le||''}</div></div>
-      ${p2}${p3}
-      <div class="sfield"><div class="mfl">Mentor</div><div class="mfv">${e.mentor}</div><div class="mfv-sub">${e.me||''}</div></div>
-      <div class="sfield">
-        <div class="mfl">Materiais</div>
-        <div class="materiais" style="margin-top:6px;flex-direction:column">
-          ${links.video ? `<a class="mat-btn" href="${links.video}" target="_blank" rel="noopener noreferrer" data-anexo="video_criativo" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-player-play" style="font-size:13px"></i>Vídeo criativo</a>` : ''}
-          ${links.roteiro30 ? `<a class="mat-btn" href="${links.roteiro30}" target="_blank" rel="noopener noreferrer" data-anexo="roteiro_30s" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Roteiro 30s</a>` : ''}
-          ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer" data-anexo="campanha_multiplataforma" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Campanha multiplataforma</a>` : ''}
+      <div class="split-hero">
+        <div class="split-kicker">${kicker}</div>
+        <div class="split-leader">${e.lider}</div>
+        <div class="split-inst">${e.inst}</div>
+        <div class="split-hero-meta">
+          <div class="split-hero-course">${curso}</div>
         </div>
       </div>
-      <div class="sfield"><div class="mfl">Objetivos da campanha</div><div class="mfv-light">${objetivos}</div></div>
-      <div class="sfield"><div class="mfl">Estratégia de distribuição</div><div class="mfv-light">${estrategia}</div></div>
-      <div class="sfield last"><div class="mfl">Defesa conceitual</div><div class="mfv-light">${e.defesa}</div></div>`;
+
+      <div class="split-meta-rows">
+        ${p2}
+        ${p3}
+        <div class="split-meta-row">
+          <div class="split-meta-label">Mentor</div>
+          <div>
+            <div class="split-meta-value">${e.mentor}</div>
+            ${e.me ? `<div class="split-meta-subline">${e.me}</div>` : ''}
+          </div>
+        </div>
+      </div>
+
+      <div class="split-materials-wrap">
+        <div class="split-materials-list">
+          ${links.video ? `<a class="mat-btn" href="${links.video}" target="_blank" rel="noopener noreferrer" data-anexo="video_criativo" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-player-play" style="font-size:13px"></i>Vídeo</a>` : ''}
+          ${links.roteiro30 ? `<a class="mat-btn" href="${links.roteiro30}" target="_blank" rel="noopener noreferrer" data-anexo="roteiro_30s" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Roteiro 30s</a>` : ''}
+          ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer" data-anexo="campanha_multiplataforma" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Campanha</a>` : ''}
+        </div>
+        <div class="ia-note split-ia-note" id="avalIASplit"></div>
+      </div>
+
+      <div class="split-copy-section">
+        <div class="split-copy-title">Defesa conceitual</div>
+        <div class="split-copy-body">${e.defesa}</div>
+      </div>
+      <div class="split-copy-section">
+        <div class="split-copy-title">Objetivos da campanha</div>
+        <div class="split-copy-body">${objetivos}</div>
+      </div>
+      <div class="split-copy-section last">
+        <div class="split-copy-title">Estratégia de distribuição</div>
+        <div class="split-copy-body">${estrategia}</div>
+      </div>`;
   }
 
   // modo sequencial — grid 3 colunas
@@ -3243,9 +3694,9 @@ function avalGridHTML(e, mode) {
         ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer" data-anexo="campanha_multiplataforma" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Campanha</a>` : ''}
       </div>
     </div>
+    <div class="field s3"><div class="mfl">Defesa conceitual</div><div class="mfv-light">${e.defesa}</div></div>
     <div class="field s3"><div class="mfl">Objetivos da campanha</div><div class="mfv-light">${objetivos}</div></div>
-    <div class="field s3"><div class="mfl">Estratégia de distribuição</div><div class="mfv-light">${estrategia}</div></div>
-    <div class="field s3 last"><div class="mfl">Defesa conceitual</div><div class="mfv-light">${e.defesa}</div></div>`;
+    <div class="field s3 last"><div class="mfl">Estratégia de distribuição</div><div class="mfv-light">${estrategia}</div></div>`;
 }
 
 function critGridHTML(av, prefix) {
@@ -3262,8 +3713,8 @@ function critGridHTML(av, prefix) {
           <input type="radio" name="${prefix}crit_${i}" id="${prefix}cr_${i}_${v}" value="${v}" ${nota===v?'checked':''} onchange="updateFooter()">
           <label for="${prefix}cr_${i}_${v}">${v}</label>`).join('')}
       </div>
-      <span class="just-label">Justificativa</span>
-      <textarea id="${prefix}just_${i}" placeholder="Descreva brevemente o que fundamenta esta avaliação…">${just}</textarea>
+      <span class="just-label">Justificativa (opcional)</span>
+      <textarea id="${prefix}just_${i}" placeholder="Se quiser, registre aqui uma observação breve sobre este critério…">${just}</textarea>
     </div>`;
   }).join('');
 }
@@ -3303,6 +3754,25 @@ function ativarEdicaoAvaliacao() {
   notify('Modo de edição ativo para esta avaliação.');
 }
 
+function resetAvaliacaoSplitScroll() {
+  const scrollers = Array.from(document.querySelectorAll('.aval-side-scroll, .aval-main-scroll'));
+  if (!scrollers.length) return;
+  scrollers.forEach(el => {
+    el.scrollTop = 0;
+  });
+}
+
+function alinharAberturaAvaliacao() {
+  resetAvaliacaoSplitScroll();
+  requestAnimationFrame(() => {
+    resetAvaliacaoSplitScroll();
+    requestAnimationFrame(() => {
+      resetAvaliacaoSplitScroll();
+      setTimeout(resetAvaliacaoSplitScroll, 30);
+    });
+  });
+}
+
 function abrirFicha(parId, inscId, abrirEmEdicao = false) {
   scrollAppTop();
   currentParId = parId;
@@ -3338,8 +3808,8 @@ function abrirFicha(parId, inscId, abrirEmEdicao = false) {
   updateFooter();
   showView('avaliacao');
   bindPainelAvaliacao();
+  alinharAberturaAvaliacao();
   syncPainelAtivo('main');
-  document.querySelectorAll('.aval-side-scroll, .aval-main-scroll').forEach(el => { el.scrollTop = 0; });
 }
 
 function updateFooter() {
@@ -3348,6 +3818,25 @@ function updateFooter() {
   const n = notas.filter(Boolean).length;
   document.getElementById('footerLabel').textContent = `${n} de 8 critérios avaliados`;
   document.getElementById('footerFill').style.width = Math.round(n/8*100) + '%';
+  CRITERIOS.forEach((_, i) => {
+    const card = document.getElementById(`${prefix}crit-card-${i}`);
+    if (!card) return;
+    if (notas[i]) card.classList.remove('is-missing');
+  });
+}
+
+function destacarCriteriosPendentes(prefix, notas) {
+  let firstMissingCard = null;
+  CRITERIOS.forEach((_, i) => {
+    const card = document.getElementById(`${prefix}crit-card-${i}`);
+    if (!card) return;
+    const missing = !notas[i];
+    card.classList.toggle('is-missing', missing);
+    if (missing && !firstMissingCard) firstMissingCard = card;
+  });
+  if (firstMissingCard) {
+    firstMissingCard.scrollIntoView({ behavior:'smooth', block:'center' });
+  }
 }
 
 function proximaInscricaoDoParecerista(parId, inscIdAtual) {
@@ -3377,6 +3866,7 @@ async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
   const done = notas.every(Boolean);
 
   if (!done) {
+    destacarCriteriosPendentes(prefix, notas);
     notify('Preencha todos os 8 critérios antes de concluir a avaliação.');
     return;
   }
@@ -3386,6 +3876,12 @@ async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
   if (numInsuf >= INSUF_OBRIGA_PARECER && !parecer) {
     document.getElementById('requiredParecerSub').textContent = `Esta avaliação tem ${numInsuf} critérios marcados como Insuficiente. Preencha o parecer geral para concluir o salvamento.`;
     openRequiredParecerModal();
+    return;
+  }
+
+  const anexosPendentes = anexosPendentesDaAvaliacao(parId, inscId);
+  if (anexosPendentes.length) {
+    openMissingAttachmentsModal(anexosPendentes);
     return;
   }
 
@@ -3428,12 +3924,12 @@ async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
   renderPortal();
 
   if (proximaInscId) {
-    showLoadingNudge('Abrindo próxima avaliação...');
+    showLoadingNudge('Preparando a próxima avaliação...');
     scrollAppTop();
     setTimeout(() => {
       abrirFicha(parId, proximaInscId);
       hideLoadingNudge(450);
-    }, 180);
+    }, 1200);
     return;
   }
 
@@ -3449,6 +3945,16 @@ function salvarAvaliacao() {
     return;
   }
   executarSalvarAvaliacao(false);
+}
+
+function voltarPortal() {
+  if (!currentParId) {
+    showView('dashboard');
+    return;
+  }
+  currentInscId = null;
+  renderPortal();
+  showView('portal');
 }
 
 // ═══ UTILS ════════════════════════════════════════════════
