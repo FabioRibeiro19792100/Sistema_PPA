@@ -2647,8 +2647,22 @@ function materialLinks(e) {
   const campanha = raw['Faça o upload do roteiro de uma campanha publicitária multiplataforma sobre o tema O PAPEL DA EDUCAÇÃO NA TRANSFORMAÇÃO SOCIAL'] || '';
   return { video, roteiro30, campanha };
 }
-function registrarCliqueAnexoFromLink(el) {
+function registrarCliqueAnexoFromLink(el, event) {
   if (!el) return true;
+  const interactionType = event?.type || 'click';
+  const dedupeKey = [
+    interactionType,
+    event?.button ?? 'na',
+    el.dataset?.anexo || 'material',
+    el.dataset?.inscricao || currentInscId || '',
+  ].join('::');
+  const lastTrackedKey = el.dataset?.lastAnexoTrackKey || '';
+  const lastTrackedAt = Number(el.dataset?.lastAnexoTrackAt || 0);
+  const now = Date.now();
+  if (lastTrackedKey === dedupeKey && (now - lastTrackedAt) < 1200) return true;
+  el.dataset.lastAnexoTrackKey = dedupeKey;
+  el.dataset.lastAnexoTrackAt = String(now);
+
   const tipo = el.dataset?.anexo || 'material';
   const origem = el.dataset?.origem || 'desconhecida';
   const inscricaoId = el.dataset?.inscricao || currentInscId || '';
@@ -2684,38 +2698,38 @@ function registrarCliqueAnexoFromLink(el) {
   return true;
 }
 
-function registrarInteracaoAnexoDelegada(el) {
+function registrarInteracaoAnexoDelegada(el, event) {
   if (!el || !el.dataset?.anexo) return;
   const now = Date.now();
   const last = Number(el.dataset.auditTs || 0);
   if (now - last < 400) return;
   el.dataset.auditTs = String(now);
-  registrarCliqueAnexoFromLink(el);
+  registrarCliqueAnexoFromLink(el, event);
 }
 
 document.addEventListener('click', (event) => {
   const link = event.target.closest('a[data-anexo]');
   if (!link) return;
-  registrarInteracaoAnexoDelegada(link);
+  registrarInteracaoAnexoDelegada(link, event);
 }, true);
 
 document.addEventListener('auxclick', (event) => {
   const link = event.target.closest('a[data-anexo]');
   if (!link) return;
-  registrarInteracaoAnexoDelegada(link);
+  registrarInteracaoAnexoDelegada(link, event);
 }, true);
 
 document.addEventListener('contextmenu', (event) => {
   const link = event.target.closest('a[data-anexo]');
   if (!link) return;
-  registrarInteracaoAnexoDelegada(link);
+  registrarInteracaoAnexoDelegada(link, event);
 }, true);
 
 document.addEventListener('keydown', (event) => {
   if (event.key !== 'Enter' && event.key !== ' ') return;
   const link = event.target.closest('a[data-anexo]');
   if (!link) return;
-  registrarInteracaoAnexoDelegada(link);
+  registrarInteracaoAnexoDelegada(link, event);
 }, true);
 
 function fmtNotaGeral(valor) {
@@ -4020,8 +4034,10 @@ let supabaseClient = null;
 let remoteStateLoaded = false;
 let carregandoEstadoRemoto = false;
 let remoteSyncTimer = null;
+let remoteSyncQueued = false;
 let remoteSyncInFlight = false;
 let remoteRefreshInFlight = false;
+let lastLocalAdminMutationAt = 0;
 let currentImportHash = null;
 let currentImportIdByEnvironment = { homolog:null, producao:null };
 let environmentRemoteReady = { homolog:false, producao:false };
@@ -4118,6 +4134,12 @@ function withTimeout(promise, timeoutMs, timeoutMessage) {
   return Promise.race([promise, timeoutPromise]).finally(() => {
     if (timerId) clearTimeout(timerId);
   });
+}
+
+async function runSupabaseQuery(queryPromise) {
+  const result = await queryPromise;
+  if (result?.error) throw result.error;
+  return result?.data;
 }
 
 function startRemoteBootWatchdog(timeoutMs = 8000) {
@@ -4260,6 +4282,7 @@ function resetRuntimeStateForEnvironment() {
   atribuicoes = {};
   avaliacoes = {};
   logAuditoria = [];
+  logAuditoriaEventos = [];
   rawRows = [];
   rawParticipantes = [];
   baseConfirmada = false;
@@ -4267,6 +4290,13 @@ function resetRuntimeStateForEnvironment() {
   falhaCargaBasePadrao = false;
   currentImportHash = null;
   pendingDistributionSnapshot = null;
+  window.__pendingSystemEvents = [];
+  lastLocalAdminMutationAt = 0;
+  remoteSyncQueued = false;
+  if (remoteSyncTimer) {
+    clearTimeout(remoteSyncTimer);
+    remoteSyncTimer = null;
+  }
 }
 
 async function reloadEnvironmentState() {
@@ -4333,14 +4363,24 @@ async function testSupabaseConnection() {
     return;
   }
   updateSupabaseStatus(`Testando conexão em ${activeEnvironment}...`);
-  const { error } = await client.from('configuracoes_sistema').select('id').limit(1);
-  if (error && !String(error.message || '').includes('0 rows')) {
-    updateSupabaseStatus(`Conexão estabelecida, mas o schema ainda não está pronto em ${activeEnvironment}.`, 'danger');
-    notify(`Supabase respondeu em ${activeEnvironment}, mas o schema ainda não está aplicado.`);
-    return;
+  try {
+    const result = await withTimeout(
+      client.from('configuracoes_sistema').select('id').limit(1),
+      5000,
+      'A conexão com o Supabase demorou além do esperado.'
+    );
+    const error = result?.error || null;
+    if (error && !String(error.message || '').includes('0 rows')) {
+      updateSupabaseStatus(`Conexão estabelecida, mas o schema ainda não está pronto em ${activeEnvironment}.`, 'danger');
+      notify(`Supabase respondeu em ${activeEnvironment}, mas o schema ainda não está aplicado.`);
+      return;
+    }
+    updateSupabaseStatus(`Conexão Supabase ${activeEnvironment} validada.`, 'ok');
+    notify(`Supabase ${activeEnvironment} conectado.`);
+  } catch (err) {
+    updateSupabaseStatus(`Falha ao testar ${activeEnvironment}: ${err.message || err}`, 'danger');
+    notify(`Falha ao testar conexão com o Supabase: ${err.message || err}`);
   }
-  updateSupabaseStatus(`Conexão Supabase ${activeEnvironment} validada.`, 'ok');
-  notify(`Supabase ${activeEnvironment} conectado.`);
 }
 
 function actorContext() {
@@ -4722,6 +4762,11 @@ async function syncStateToSupabase(reason) {
   if (!client) return { ok:false, reason:'unconfigured' };
   if (remoteSyncInFlight) return { ok:false, reason:'busy' };
   if (!INSCRICOES.length) return { ok:false, reason:'empty' };
+  if (remoteSyncTimer) {
+    clearTimeout(remoteSyncTimer);
+    remoteSyncTimer = null;
+  }
+  remoteSyncQueued = false;
   remoteSyncInFlight = true;
   updateSupabaseStatus(`Sincronizando ${activeEnvironment}...`);
   try {
@@ -4732,7 +4777,9 @@ async function syncStateToSupabase(reason) {
       configPayload.theme_name = currentTheme;
       configPayload.theme_dark = !!isDark;
     }
-    await client.from('configuracoes_sistema').upsert(configPayload, { onConflict:'id' });
+    await runSupabaseQuery(
+      client.from('configuracoes_sistema').upsert(configPayload, { onConflict:'id' })
+    );
 
     const inscRows = inscricoesPayload().map(row => ({ ...row, import_id: importId }));
     const partRows = participantesPayload();
@@ -4742,8 +4789,12 @@ async function syncStateToSupabase(reason) {
     const auditRows = [...auditoriaPayload(), ...((window.__pendingSystemEvents || []))];
     const syncCanReplaceAssignments = ['distribution_update', 'manual_import'].includes(reason);
 
-    await client.from('inscricoes').upsert(inscRows, { onConflict:'environment,id_externo' });
-    await client.from('participantes').upsert(partRows, { onConflict:'environment,inscricao_id_externo,papel,ordem' });
+    await runSupabaseQuery(
+      client.from('inscricoes').upsert(inscRows, { onConflict:'environment,id_externo' })
+    );
+    await runSupabaseQuery(
+      client.from('participantes').upsert(partRows, { onConflict:'environment,inscricao_id_externo,papel,ordem' })
+    );
     const { data: remotePareceristas, error: remotePareceristasError } = await client
       .from('pareceristas')
       .select('id_externo')
@@ -4762,7 +4813,9 @@ async function syncStateToSupabase(reason) {
         .in('id_externo', removidos);
       if (deactivateError) throw deactivateError;
     }
-    await client.from('pareceristas').upsert(parsRows, { onConflict:'environment,id_externo' });
+    await runSupabaseQuery(
+      client.from('pareceristas').upsert(parsRows, { onConflict:'environment,id_externo' })
+    );
 
     const { data: remoteAtribRows, error: remoteAtribError } = await client
       .from('atribuicoes')
@@ -4772,9 +4825,11 @@ async function syncStateToSupabase(reason) {
     if (remoteAtribError) throw remoteAtribError;
 
     if (atribRows.length) {
-      await client.from('atribuicoes').upsert(atribRows, {
-        onConflict:'environment,inscricao_id_externo,parecerista_id_externo'
-      });
+      await runSupabaseQuery(
+        client.from('atribuicoes').upsert(atribRows, {
+          onConflict:'environment,inscricao_id_externo,parecerista_id_externo'
+        })
+      );
     }
 
     if (syncCanReplaceAssignments) {
@@ -4796,39 +4851,48 @@ async function syncStateToSupabase(reason) {
     }
 
     if (avRows.length) {
-      await client.from('avaliacoes').upsert(avRows, {
-        onConflict:'environment,inscricao_id_externo,parecerista_id_externo'
-      });
+      await runSupabaseQuery(
+        client.from('avaliacoes').upsert(avRows, {
+          onConflict:'environment,inscricao_id_externo,parecerista_id_externo'
+        })
+      );
     }
 
     if (criterios.length) {
       const chunkSize = 250;
       for (let i = 0; i < criterios.length; i += chunkSize) {
-        await client.from('avaliacao_criterios').upsert(
-          criterios.slice(i, i + chunkSize),
-          { onConflict:'environment,inscricao_id_externo,parecerista_id_externo,criterio_ordem' }
+        await runSupabaseQuery(
+          client.from('avaliacao_criterios').upsert(
+            criterios.slice(i, i + chunkSize),
+            { onConflict:'environment,inscricao_id_externo,parecerista_id_externo,criterio_ordem' }
+          )
         );
       }
     }
 
     if (auditRows.length) {
-      await client.from('eventos_auditoria').upsert(
-        auditRows.map(row => ({
-          ...row,
-          payload_json: { ...(row.payload_json || {}), sync_reason: reason || 'auto' },
-        })),
-        { onConflict:'environment,event_type,correlation_id' }
+      await runSupabaseQuery(
+        client.from('eventos_auditoria').upsert(
+          auditRows.map(row => ({
+            ...row,
+            payload_json: { ...(row.payload_json || {}), sync_reason: reason || 'auto' },
+          })),
+          { onConflict:'environment,event_type,correlation_id' }
+        )
       );
       window.__pendingSystemEvents = [];
     }
 
     if (pendingDistributionSnapshot) {
-      await client.from('distribuicoes').insert(pendingDistributionSnapshot);
+      await runSupabaseQuery(
+        client.from('distribuicoes').insert(pendingDistributionSnapshot)
+      );
       pendingDistributionSnapshot = null;
     }
 
     remoteStateLoaded = true;
     environmentRemoteReady[activeEnvironment] = true;
+    lastLocalAdminMutationAt = 0;
     persistSupabaseSettings();
     updateSupabaseStatus(`Sincronização concluída em ${activeEnvironment}.`, 'ok');
     return { ok:true };
@@ -4843,13 +4907,18 @@ async function syncStateToSupabase(reason) {
 
 function scheduleSupabaseSync(reason) {
   if (!isSupabaseConfigured()) return;
+  remoteSyncQueued = true;
   clearTimeout(remoteSyncTimer);
-  remoteSyncTimer = setTimeout(() => { syncStateToSupabase(reason); }, 600);
+  remoteSyncTimer = setTimeout(() => {
+    remoteSyncTimer = null;
+    syncStateToSupabase(reason);
+  }, 600);
 }
 
 async function refreshStateFromSupabaseInBackground() {
   if (reviewerBootMode || adminImportInFlight || !isSupabaseConfigured() || !environmentRemoteReady[activeEnvironment]) return false;
-  if (remoteRefreshInFlight || remoteSyncInFlight) return false;
+  if (remoteRefreshInFlight || remoteSyncInFlight || remoteSyncQueued) return false;
+  if (lastLocalAdminMutationAt && (Date.now() - lastLocalAdminMutationAt) < 3000) return false;
   remoteRefreshInFlight = true;
   try {
     const loaded = await loadStateFromSupabase();
@@ -4901,16 +4970,16 @@ async function syncNowToSupabase() {
 async function clearRemoteEnvironmentData() {
   const client = getSupabaseClient();
   if (!client) throw new Error('Supabase não configurado');
-  await client.from('avaliacao_criterios').delete().eq('environment', activeEnvironment);
-  await client.from('avaliacoes').delete().eq('environment', activeEnvironment);
-  await client.from('atribuicoes').delete().eq('environment', activeEnvironment);
-  await client.from('distribuicoes').delete().eq('environment', activeEnvironment);
-  await client.from('eventos_auditoria').delete().eq('environment', activeEnvironment);
-  await client.from('participantes').delete().eq('environment', activeEnvironment);
-  await client.from('inscricoes').delete().eq('environment', activeEnvironment);
-  await client.from('import_rows_raw').delete().eq('environment', activeEnvironment);
-  await client.from('imports').delete().eq('environment', activeEnvironment);
-  await client.from('configuracoes_sistema').delete().eq('id', activeEnvironment);
+  await runSupabaseQuery(client.from('avaliacao_criterios').delete().eq('environment', activeEnvironment));
+  await runSupabaseQuery(client.from('avaliacoes').delete().eq('environment', activeEnvironment));
+  await runSupabaseQuery(client.from('atribuicoes').delete().eq('environment', activeEnvironment));
+  await runSupabaseQuery(client.from('distribuicoes').delete().eq('environment', activeEnvironment));
+  await runSupabaseQuery(client.from('eventos_auditoria').delete().eq('environment', activeEnvironment));
+  await runSupabaseQuery(client.from('participantes').delete().eq('environment', activeEnvironment));
+  await runSupabaseQuery(client.from('inscricoes').delete().eq('environment', activeEnvironment));
+  await runSupabaseQuery(client.from('import_rows_raw').delete().eq('environment', activeEnvironment));
+  await runSupabaseQuery(client.from('imports').delete().eq('environment', activeEnvironment));
+  await runSupabaseQuery(client.from('configuracoes_sistema').delete().eq('id', activeEnvironment));
 }
 
 function enterAdminShell(viewName = 'pareceristas') {
@@ -5140,7 +5209,10 @@ async function loadStateFromSupabase() {
     if (cfgRes.error) throw cfgRes.error;
 
     if (!inscData.length) {
+      resetRuntimeStateForEnvironment();
+      clearLocalAppStateForEnvironment(activeEnvironment);
       remoteStateLoaded = false;
+      environmentRemoteReady[activeEnvironment] = false;
       updateSupabaseStatus(`Nenhuma inscrição ativa encontrada em ${activeEnvironment}.`, 'danger');
       return false;
     }
@@ -5200,11 +5272,12 @@ async function loadReviewerPortalStateFromSupabase(parId) {
   const client = getSupabaseClient();
   if (!client || !parId) return false;
   try {
-    const [cfgRes, parRes, atribData, avalData] = await Promise.all([
+    const [cfgRes, parRes, atribData, avalData, reviewerAuditData] = await Promise.all([
       client.from('configuracoes_sistema').select('*').eq('id', activeEnvironment).maybeSingle(),
       client.from('pareceristas').select('*').eq('environment', activeEnvironment).eq('id_externo', parId).eq('ativo', true).maybeSingle(),
       fetchAllSupabaseRows(() => client.from('atribuicoes').select('*').eq('environment', activeEnvironment).eq('parecerista_id_externo', parId).eq('ativo', true).order('ordem')),
       fetchAllSupabaseRows(() => client.from('avaliacoes').select('*').eq('environment', activeEnvironment).eq('parecerista_id_externo', parId).order('id')),
+      fetchAllSupabaseRows(() => client.from('eventos_auditoria').select('*').eq('environment', activeEnvironment).eq('parecerista_id', parId).order('created_at')),
     ]);
 
     if (cfgRes.error) throw cfgRes.error;
@@ -5263,7 +5336,15 @@ async function loadReviewerPortalStateFromSupabase(parId) {
       atribuicoes[key].push(r.parecerista_id_externo);
     });
 
+    const inscIdsPermitidos = new Set(inscIdsFull.map(shortInscId));
+    const reviewerEvents = (reviewerAuditData || []).filter(row => {
+      const shortId = shortInscId(row.inscricao_id || '');
+      return shortId && inscIdsPermitidos.has(shortId);
+    });
+
     avaliaçõesFromRemote(avalData || [], []);
+    logAuditoria = remoteAuditToLocal(reviewerEvents.filter(r => String(r.event_type || '').startsWith('auditoria_')));
+    logAuditoriaEventos = remoteSystemEventsToLocal(reviewerEvents.filter(r => String(r.event_type || '') === 'anexo_aberto'));
     currentParId = parId;
     baseConfirmada = true;
     remoteStateLoaded = true;
@@ -5280,12 +5361,16 @@ async function loadReviewerPortalStateFromSupabase(parId) {
 
 function saveAppState(opts = {}) {
   try {
+    if (!opts.skipRemoteSync && !reviewerBootMode) {
+      lastLocalAdminMutationAt = Date.now();
+    }
     localStorage.setItem(getAppStateStorageKey(), JSON.stringify({
       pareceristas,
       atribuicoes,
       avaliacoes,
       logAuditoria,
       logAuditoriaEventos,
+      pendingSystemEvents: window.__pendingSystemEvents || [],
       parametros: {
         tempoMinimo: TEMPO_MINIMO,
         insufObrigaParecer: INSUF_OBRIGA_PARECER,
@@ -5328,6 +5413,11 @@ function hydrateAppState() {
     }
     if (Array.isArray(data.logAuditoriaEventos)) {
       logAuditoriaEventos = data.logAuditoriaEventos.map(r => ({ ...r }));
+    }
+    if (Array.isArray(data.pendingSystemEvents)) {
+      window.__pendingSystemEvents = data.pendingSystemEvents.map(r => ({ ...r }));
+    } else if (!Array.isArray(window.__pendingSystemEvents)) {
+      window.__pendingSystemEvents = [];
     }
     if (data.parametros) {
       TEMPO_MINIMO = Number(data.parametros.tempoMinimo) || TEMPO_MINIMO;
@@ -6221,8 +6311,9 @@ async function persistThemePreferenceToSupabase() {
       theme_dark: !!isDark,
       updated_at: new Date().toISOString(),
     };
-    const { error } = await client.from('configuracoes_sistema').upsert(payload, { onConflict:'id' });
-    if (error) throw error;
+    await runSupabaseQuery(
+      client.from('configuracoes_sistema').upsert(payload, { onConflict:'id' })
+    );
     return true;
   } catch (err) {
     console.warn('Falha ao persistir tema visual no Supabase:', err);
