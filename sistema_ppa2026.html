@@ -2316,6 +2316,19 @@ function addParecerista() {
 }
 
 function removeParecerista(id) {
+  const atribuicoesAtivas = getAtrib(id).length;
+  const avaliacoesConcluidas = getDone(id);
+  const avaliacoesIniciadas = Object.keys(avaliacoes[id] || {}).length;
+
+  if (atribuicoesAtivas > 0 || avaliacoesIniciadas > 0) {
+    notify(
+      avaliacoesConcluidas > 0
+        ? 'Este parecerista já tem avaliações salvas. Reatribua ou preserve o histórico antes de remover.'
+        : 'Este parecerista ainda tem inscrições atribuídas. Redistribua a carga antes de remover.'
+    );
+    return;
+  }
+
   queueSystemEvent('parecerista_removido', { parecerista_id:id });
   pareceristas = pareceristas.filter(p => p.id !== id);
   syncPersistedStateWithBase();
@@ -3409,21 +3422,31 @@ function registrarEventoAuditoriaAnexo({ pareceristaId, inscricaoId, tipoAnexo, 
   });
 }
 
-function auditoriaAttachmentMap() {
-  const map = {};
-  logAuditoriaEventos.forEach(r => {
-    const key = `${r.parId}::${r.inscId}`;
-    if (!map[key]) {
-      map[key] = {
-        video_criativo: false,
-        roteiro_30s: false,
-        campanha_multiplataforma: false,
-      };
-    }
-    if (r.material === 'Vídeo criativo') map[key].video_criativo = true;
-    if (r.material === 'Roteiro 30s') map[key].roteiro_30s = true;
-    if (r.material === 'Campanha multiplataforma') map[key].campanha_multiplataforma = true;
+function emptyAttachmentAuditState() {
+  return {
+    video_criativo: false,
+    roteiro_30s: false,
+    campanha_multiplataforma: false,
+  };
+}
+
+function auditoriaAttachmentStateForRegistro(registro) {
+  const map = emptyAttachmentAuditState();
+  const inicioMs = registro?.inicio ? new Date(registro.inicio).getTime() : null;
+  const fimMs = registro?.fim ? new Date(registro.fim).getTime() : null;
+
+  logAuditoriaEventos.forEach(evento => {
+    if (evento.parId !== registro.parId || evento.inscId !== registro.inscId) return;
+    const createdAtMs = evento.createdAt ? new Date(evento.createdAt).getTime() : null;
+    if (!Number.isFinite(createdAtMs)) return;
+    if (Number.isFinite(inicioMs) && createdAtMs < inicioMs) return;
+    if (Number.isFinite(fimMs) && createdAtMs > fimMs) return;
+
+    if (evento.material === 'Vídeo criativo') map.video_criativo = true;
+    if (evento.material === 'Roteiro 30s') map.roteiro_30s = true;
+    if (evento.material === 'Campanha multiplataforma') map.campanha_multiplataforma = true;
   });
+
   return map;
 }
 
@@ -3501,13 +3524,8 @@ function renderAuditoria() {
       pareceristas.map(p => `<option value="${p.id}" ${p.id===cur?'selected':''}>${p.nome}</option>`).join('');
   }
 
-  const anexosByRow = auditoriaAttachmentMap();
   let rows = logAuditoria.map(r => {
-    const anexos = anexosByRow[`${r.parId}::${r.inscId}`] || {
-      video_criativo: false,
-      roteiro_30s: false,
-      campanha_multiplataforma: false,
-    };
+    const anexos = auditoriaAttachmentStateForRegistro(r);
     return {
       ...r,
       sortAt: r.fim || r.inicio || new Date(0),
@@ -3556,14 +3574,9 @@ function renderAuditoria() {
 }
 
 function exportAuditoria() {
-  const anexosByRow = auditoriaAttachmentMap();
   const h = 'Parecerista,Candidato,ID,Data início,Hora início,Hora fim,Duração (s),Nota,Video aberto,Roteiro aberto,Campanha aberta,Status,Obs. saída';
   const rows = logAuditoria.map(r => {
-    const anexos = anexosByRow[`${r.parId}::${r.inscId}`] || {
-      video_criativo: false,
-      roteiro_30s: false,
-      campanha_multiplataforma: false,
-    };
+    const anexos = auditoriaAttachmentStateForRegistro(r);
     return [
       r.parNome, r.lider, 'PPA2026-'+r.inscId,
       r.inicio?.toLocaleDateString('pt-BR')||'',
@@ -4012,6 +4025,8 @@ let remoteRefreshInFlight = false;
 let currentImportHash = null;
 let currentImportIdByEnvironment = { homolog:null, producao:null };
 let environmentRemoteReady = { homolog:false, producao:false };
+let remoteBootResolved = { homolog:false, producao:false };
+let remoteBootFailureReason = { homolog:'', producao:'' };
 let pendingDistributionSnapshot = null;
 let requestedParId = null;
 let adminImportInFlight = false;
@@ -4478,15 +4493,27 @@ function avaliacoesPayload() {
   return { rows, criterios };
 }
 
+function auditCorrelationId(r) {
+  const inicioKey = r.inicio ? new Date(r.inicio).getTime() : 'ni';
+  const fimKey = r.fim ? new Date(r.fim).getTime() : 'nf';
+  return [
+    r.parId || 'np',
+    r.inscId || 'ni',
+    r.status || 'ns',
+    inicioKey,
+    fimKey,
+  ].join('-');
+}
+
 function auditoriaPayload() {
-  return logAuditoria.map((r, idx) => ({
+  return logAuditoria.map((r) => ({
     environment: activeEnvironment,
     event_type: `auditoria_${r.status}`,
     actor_type: 'parecerista',
     actor_id: r.parId,
     parecerista_id: r.parId,
     inscricao_id: fullInscId(r.inscId),
-    correlation_id: `${r.parId}-${r.inscId}-${idx}`,
+    correlation_id: auditCorrelationId(r),
     payload_json: {
       audit_snapshot: {
         parId: r.parId,
@@ -4515,7 +4542,7 @@ function auditoriaPayloadForEvaluation(parId, inscId) {
       actor_id: r.parId,
       parecerista_id: r.parId,
       inscricao_id: fullInscId(r.inscId),
-      correlation_id: `${r.parId}-${r.inscId}-${r.fim ? new Date(r.fim).getTime() : Date.now()}-${r.status}`,
+      correlation_id: auditCorrelationId(r),
       payload_json: {
         audit_snapshot: {
           parId: r.parId,
@@ -4713,6 +4740,7 @@ async function syncStateToSupabase(reason) {
     const atribRows = atribuicoesPayload();
     const { rows: avRows, criterios } = avaliacoesPayload();
     const auditRows = [...auditoriaPayload(), ...((window.__pendingSystemEvents || []))];
+    const syncCanReplaceAssignments = ['distribution_update', 'manual_import'].includes(reason);
 
     await client.from('inscricoes').upsert(inscRows, { onConflict:'environment,id_externo' });
     await client.from('participantes').upsert(partRows, { onConflict:'environment,inscricao_id_externo,papel,ordem' });
@@ -4736,17 +4764,50 @@ async function syncStateToSupabase(reason) {
     }
     await client.from('pareceristas').upsert(parsRows, { onConflict:'environment,id_externo' });
 
-    await client.from('atribuicoes').delete().eq('environment', activeEnvironment);
-    if (atribRows.length) await client.from('atribuicoes').insert(atribRows);
+    const { data: remoteAtribRows, error: remoteAtribError } = await client
+      .from('atribuicoes')
+      .select('inscricao_id_externo,parecerista_id_externo')
+      .eq('environment', activeEnvironment)
+      .eq('ativo', true);
+    if (remoteAtribError) throw remoteAtribError;
 
-    await client.from('avaliacoes').delete().eq('environment', activeEnvironment);
-    if (avRows.length) await client.from('avaliacoes').insert(avRows);
+    if (atribRows.length) {
+      await client.from('atribuicoes').upsert(atribRows, {
+        onConflict:'environment,inscricao_id_externo,parecerista_id_externo'
+      });
+    }
 
-    await client.from('avaliacao_criterios').delete().eq('environment', activeEnvironment);
+    if (syncCanReplaceAssignments) {
+      const currentAtribKeys = new Set(
+        atribRows.map(row => `${row.inscricao_id_externo}::${row.parecerista_id_externo}`)
+      );
+      const staleAtribRows = (remoteAtribRows || []).filter(row => (
+        !currentAtribKeys.has(`${row.inscricao_id_externo}::${row.parecerista_id_externo}`)
+      ));
+      for (const stale of staleAtribRows) {
+        const { error: staleAtribError } = await client
+          .from('atribuicoes')
+          .update({ ativo:false })
+          .eq('environment', activeEnvironment)
+          .eq('inscricao_id_externo', stale.inscricao_id_externo)
+          .eq('parecerista_id_externo', stale.parecerista_id_externo);
+        if (staleAtribError) throw staleAtribError;
+      }
+    }
+
+    if (avRows.length) {
+      await client.from('avaliacoes').upsert(avRows, {
+        onConflict:'environment,inscricao_id_externo,parecerista_id_externo'
+      });
+    }
+
     if (criterios.length) {
       const chunkSize = 250;
       for (let i = 0; i < criterios.length; i += chunkSize) {
-        await client.from('avaliacao_criterios').insert(criterios.slice(i, i + chunkSize));
+        await client.from('avaliacao_criterios').upsert(
+          criterios.slice(i, i + chunkSize),
+          { onConflict:'environment,inscricao_id_externo,parecerista_id_externo,criterio_ordem' }
+        );
       }
     }
 
@@ -5071,7 +5132,7 @@ async function loadStateFromSupabase() {
       fetchAllSupabaseRows(() => client.from('inscricoes').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('id_curto')),
       fetchAllSupabaseRows(() => client.from('participantes').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('id')),
       fetchAllSupabaseRows(() => client.from('pareceristas').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('nome')),
-      fetchAllSupabaseRows(() => client.from('atribuicoes').select('*').eq('environment', activeEnvironment).order('id')),
+      fetchAllSupabaseRows(() => client.from('atribuicoes').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('ordem')),
       fetchAllSupabaseRows(() => client.from('avaliacoes').select('*').eq('environment', activeEnvironment).order('id')),
       fetchAllSupabaseRows(() => client.from('avaliacao_criterios').select('*').eq('environment', activeEnvironment).order('id')),
       fetchAllSupabaseRows(() => client.from('eventos_auditoria').select('*').eq('environment', activeEnvironment).order('created_at')),
@@ -5079,9 +5140,8 @@ async function loadStateFromSupabase() {
     if (cfgRes.error) throw cfgRes.error;
 
     if (!inscData.length) {
-      clearLocalAppStateForEnvironment(activeEnvironment);
-      resetRuntimeStateForEnvironment();
       remoteStateLoaded = false;
+      updateSupabaseStatus(`Nenhuma inscrição ativa encontrada em ${activeEnvironment}.`, 'danger');
       return false;
     }
 
@@ -5704,16 +5764,6 @@ function renderDashboard() {
       return;
     }
 
-    if (isSupabaseConfigured() && !environmentRemoteReady[activeEnvironment]) {
-      document.getElementById('dashSub').textContent = 'Carregando...';
-      icon.className = 'ti ti-loader-2';
-      icon.style.color = '#DADCE0';
-      icon.style.animation = 'spin 1s linear infinite';
-      title.textContent = 'Carregando...';
-      body.textContent = '';
-      return;
-    }
-
     if (carregandoBasePadrao) {
       document.getElementById('dashSub').textContent = 'Carregando...';
       icon.className = 'ti ti-loader-2';
@@ -5728,15 +5778,42 @@ function renderDashboard() {
     icon.className = 'ti ti-loader-2';
     icon.style.color = '#DADCE0';
     if (falhaCargaBasePadrao) {
-      document.getElementById('dashSub').textContent = 'Carregando...';
-      title.textContent = 'Carregando...';
-      body.textContent = '';
+      document.getElementById('dashSub').textContent = 'Base indisponível';
+      icon.className = 'ti ti-alert-circle';
+      icon.style.color = '#D93025';
+      icon.style.animation = '';
+      title.textContent = 'Não foi possível carregar a base';
+      body.textContent = 'A restauração do ambiente falhou e a planilha padrão também não pôde ser lida. Recarregue a página ou importe a base novamente.';
       return;
     }
 
-    document.getElementById('dashSub').textContent = 'Carregando...';
-    title.textContent = 'Carregando...';
-    body.textContent = '';
+    if (isSupabaseConfigured() && !environmentRemoteReady[activeEnvironment]) {
+      if (!remoteBootResolved[activeEnvironment]) {
+        document.getElementById('dashSub').textContent = 'Carregando...';
+        icon.className = 'ti ti-loader-2';
+        icon.style.color = '#DADCE0';
+        icon.style.animation = 'spin 1s linear infinite';
+        title.textContent = 'Carregando...';
+        body.textContent = '';
+        return;
+      }
+      document.getElementById('dashSub').textContent = 'Sem base carregada';
+      icon.className = 'ti ti-database-off';
+      icon.style.color = '#9AA0A6';
+      icon.style.animation = '';
+      title.textContent = 'Nenhum estado persistido encontrado';
+      body.textContent = remoteBootFailureReason[activeEnvironment]
+        ? remoteBootFailureReason[activeEnvironment]
+        : 'Este ambiente ainda não tem uma base ativa. Carregue a planilha ou sincronize o ambiente para continuar.';
+      return;
+    }
+
+    document.getElementById('dashSub').textContent = 'Sem base carregada';
+    icon.className = 'ti ti-database-off';
+    icon.style.color = '#9AA0A6';
+    icon.style.animation = '';
+    title.textContent = 'Nenhuma base disponível';
+    body.textContent = 'Carregue a planilha deste ambiente para começar.';
     return;
   }
   document.getElementById('dashEmpty').style.display = 'none';
@@ -5856,12 +5933,19 @@ function renderDashboard() {
   Chart.defaults.borderColor = '#F1F3F4';
 
   const byDay = {};
+  let inscricoesSemDataValida = 0;
   insc.forEach(i => {
     const raw = i._raw || {};
     const dateVal = rawVal(raw, ['Data de criação', 'Data de criacao', 'data_criacao', 'Data', 'data']);
-    if (!dateVal) return;
+    if (!dateVal) {
+      inscricoesSemDataValida++;
+      return;
+    }
     const d = parseBrDateTime(dateVal);
-    if (!d || isNaN(d)) return;
+    if (!d || isNaN(d)) {
+      inscricoesSemDataValida++;
+      return;
+    }
     const iso = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     if (!byDay[iso]) byDay[iso] = { label: d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}), value: 0 };
     byDay[iso].value++;
@@ -5872,9 +5956,17 @@ function renderDashboard() {
     acumulado += entry.value;
     return { ...entry, acumulado };
   });
-  const totalComData = daySeries.length ? daySeries[daySeries.length - 1].acumulado : 0;
-  if (totalComData && totalComData !== insc.length) {
-    dashSubText = `${insc.length.toLocaleString('pt-BR')} inscrições carregadas · ${totalComData.toLocaleString('pt-BR')} com data válida no gráfico`;
+  if (inscricoesSemDataValida > 0) {
+    acumulado += inscricoesSemDataValida;
+    daySeries.push({
+      label:'Sem data',
+      value: inscricoesSemDataValida,
+      acumulado,
+      semData:true,
+    });
+  }
+  if (inscricoesSemDataValida > 0) {
+    dashSubText = `${insc.length.toLocaleString('pt-BR')} inscrições carregadas · ${inscricoesSemDataValida.toLocaleString('pt-BR')} sem data válida identificada`;
   }
   document.getElementById('dashSub').textContent = dashSubText;
 
@@ -5898,6 +5990,9 @@ function renderDashboard() {
     restoreDashSlot('slotIA', 'cIA', '210px');
 
     if (daySeries.length) {
+      const barrasBg = daySeries.map(e => e.semData ? 'rgba(154,160,166,.26)' : 'rgba(26,115,232,.26)');
+      const barrasBorder = daySeries.map(e => e.semData ? 'rgba(154,160,166,.72)' : 'rgba(26,115,232,.68)');
+      const pontosLinha = daySeries.map(e => e.semData ? '#5F6368' : '#137333');
       dashCharts.ev = safeChart('cEvolucao', {
         type:'bar',
         data:{
@@ -5907,8 +6002,8 @@ function renderDashboard() {
               type:'bar',
               label:'Inscrições no dia',
               data:daySeries.map(e => e.value),
-              backgroundColor:'rgba(26,115,232,.26)',
-              borderColor:'rgba(26,115,232,.68)',
+              backgroundColor:barrasBg,
+              borderColor:barrasBorder,
               borderWidth:1,
               borderRadius:4,
               borderSkipped:false,
@@ -5920,7 +6015,7 @@ function renderDashboard() {
               data:daySeries.map(e => e.acumulado),
               borderColor:'#137333',
               backgroundColor:'rgba(19,115,51,.12)',
-              pointBackgroundColor:'#137333',
+              pointBackgroundColor:pontosLinha,
               pointRadius:2.5,
               tension:.32,
               borderWidth:2,
@@ -6244,6 +6339,8 @@ window.addEventListener('load', () => {
     }
     applyAccessUi();
     if (isSupabaseConfigured()) {
+      remoteBootResolved[activeEnvironment] = false;
+      remoteBootFailureReason[activeEnvironment] = '';
       carregandoEstadoRemoto = true;
       startRemoteBootWatchdog();
       renderDashboard();
@@ -6263,7 +6360,9 @@ window.addEventListener('load', () => {
           updateSimSelect();
           renderPortal();
           showView('portal');
+          remoteBootResolved[activeEnvironment] = true;
           if (!reviewerLoaded) {
+            remoteBootFailureReason[activeEnvironment] = 'O portal foi autenticado, mas não há atribuições persistidas para este parecerista neste ambiente.';
             notify('Portal do parecerista aberto sem dados atribuídos persistidos.');
           }
           return;
@@ -6277,6 +6376,8 @@ window.addEventListener('load', () => {
           );
         } catch (err) {
           console.error('Timeout ao restaurar ambiente remoto:', err);
+          remoteBootResolved[activeEnvironment] = true;
+          remoteBootFailureReason[activeEnvironment] = 'A restauração do Supabase demorou além do esperado.';
           updateSupabaseStatus(`${err.message || err}`, 'danger');
           notify('A restauração do Supabase demorou demais. Vou seguir sem travar a tela.');
         }
@@ -6290,6 +6391,8 @@ window.addEventListener('load', () => {
         renderDashboard();
         renderAuditoria();
         if (loaded) {
+          remoteBootResolved[activeEnvironment] = true;
+          remoteBootFailureReason[activeEnvironment] = '';
           if (requestedParId) {
             currentParId = requestedParId;
             const sel = document.getElementById('simParecerista');
@@ -6302,10 +6405,23 @@ window.addEventListener('load', () => {
           return;
         }
         if (environmentRemoteReady[activeEnvironment]) {
+          remoteBootResolved[activeEnvironment] = true;
+          remoteBootFailureReason[activeEnvironment] = 'O ambiente já foi persistido, mas a restauração do estado falhou.';
           updateSupabaseStatus(`O ambiente ${activeEnvironment} já foi persistido, mas não pôde ser restaurado do Supabase.`, 'danger');
           notify(`Falha ao restaurar ${activeEnvironment} do Supabase. O app não vai recarregar a planilha local automaticamente.`);
           showView('dashboard');
           return;
+        }
+        if (!requestedParId) {
+          const loadedFromFile = await tentarCarregarArquivoPadrao();
+          remoteBootResolved[activeEnvironment] = true;
+          remoteBootFailureReason[activeEnvironment] = loadedFromFile
+            ? ''
+            : 'Nenhum estado persistido foi encontrado no Supabase e a base local padrão não pôde ser carregada.';
+          if (loadedFromFile) return;
+        } else {
+          remoteBootResolved[activeEnvironment] = true;
+          remoteBootFailureReason[activeEnvironment] = 'Este parecerista não tem dados persistidos disponíveis neste ambiente.';
         }
       } finally {
         portalStateLoading = false;
