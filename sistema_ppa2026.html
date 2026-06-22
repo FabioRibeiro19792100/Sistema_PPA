@@ -1559,7 +1559,7 @@ textarea::placeholder{color:#BDC1C6}
     <div class="form-row cols-3">
       <div>
         <label class="fl">Ambiente ativo</label>
-        <select class="finput" id="sbEnvActive" onchange="activeEnvironment=this.value;populateSupabaseSettingsForm()">
+        <select class="finput" id="sbEnvActive" onchange="handleSupabaseEnvironmentChange(this.value)">
           <option value="homolog">Homologação</option>
           <option value="producao">Produção</option>
         </select>
@@ -1952,6 +1952,7 @@ let currentParId = null;
 let currentInscId = null;
 let loadingNudgeTimer = null;
 let avaliacaoEmEdicao = false;
+let avaliacaoOriginalConcluida = false;
 let accessRole = 'guest';
 let authPromptMode = 'viewer';
 let authPromptMandatory = false;
@@ -2286,8 +2287,17 @@ function showView(v, opts = {}) {
   if (v === 'dashboard') renderDashboard();
   if (v === 'resultados') renderResultados();
   if (v === 'pareceristas') renderPareceristas();
-  if (v === 'portal') renderPortal();
-  if (v === 'auditoria') renderAuditoria();
+  if (v === 'portal') {
+    const portalParId = currentParId || document.getElementById('simParecerista')?.value || '';
+    if (portalParId) {
+      queueSystemEvent('portal_aberto', { parecerista_id: portalParId, filtro: currentPortalFilter || 'all' });
+    }
+    renderPortal();
+  }
+  if (v === 'auditoria') {
+    renderAuditoria();
+    ensureAuditDataLoaded();
+  }
   if (v === 'config') {} // static view
 
   if (!reviewerBootMode && !adminImportInFlight && ['dashboard','resultados','pareceristas','auditoria'].includes(v)) {
@@ -2690,7 +2700,7 @@ function registrarCliqueAnexoFromLink(el, event) {
   saveAppState();
 
   if (reviewerBootMode && currentParId && inscricaoId && isSupabaseConfigured()) {
-    persistReviewerEvaluationToSupabase(currentParId, inscricaoId).then((result) => {
+    persistReviewerEvaluationToSupabase(currentParId, inscricaoId, { deleteWhenMissing:false }).then((result) => {
       if (!result?.ok) {
         console.warn('Falha ao persistir clique de anexo no Supabase:', result?.error || result?.reason);
       }
@@ -3122,7 +3132,6 @@ function renderPortal() {
   }
 
   currentParId = parId;
-  queueSystemEvent('portal_aberto', { parecerista_id: parId, filtro: currentPortalFilter || 'all' });
   if (sel && sel.value !== parId) sel.value = parId;
   document.getElementById('portalNome').textContent = par.nome;
 
@@ -3267,6 +3276,7 @@ function resetEvaluationRuntime({ preserveReviewer = false } = {}) {
   pendingEarlySave = false;
   pendingEarlySaveReason = '';
   avaliacaoEmEdicao = false;
+  avaliacaoOriginalConcluida = false;
   currentInscId = null;
   if (!preserveReviewer) currentParId = null;
 }
@@ -3385,7 +3395,7 @@ function confirmExit() {
   saveAppState();
 
   if (reviewerBootMode && parId && inscId && isSupabaseConfigured()) {
-    persistReviewerEvaluationToSupabase(parId, inscId).then((result) => {
+    persistReviewerEvaluationToSupabase(parId, inscId, { deleteWhenMissing:true }).then((result) => {
       if (!result?.ok) {
         notify(`Reset feito localmente, mas falhou ao persistir no Supabase: ${result?.error?.message || result?.reason || 'erro desconhecido'}`);
       }
@@ -3519,7 +3529,45 @@ function registrarAuditoria({ saida, motivoSaida, notas, parecer }) {
   saveAppState();
 }
 
+async function ensureAuditDataLoaded(force = false) {
+  if (reviewerBootMode || adminImportInFlight || !isSupabaseConfigured() || !environmentRemoteReady[activeEnvironment]) return false;
+  if (!force && environmentAuditReady[activeEnvironment]) return true;
+  if (remoteAuditLoading) return false;
+
+  const client = getSupabaseClient();
+  if (!client) return false;
+
+  remoteAuditLoading = true;
+  logAuditoria = [];
+  logAuditoriaEventos = [];
+  renderAuditoria();
+  try {
+    const auditData = await fetchAllSupabaseRows(() =>
+      client.from('eventos_auditoria').select('*').eq('environment', activeEnvironment).order('created_at')
+    );
+    logAuditoria = remoteAuditToLocal((auditData || []).filter(r => String(r.event_type || '').startsWith('auditoria_')));
+    logAuditoriaEventos = remoteSystemEventsToLocal((auditData || []).filter(r => String(r.event_type || '') === 'anexo_aberto'));
+    environmentAuditReady[activeEnvironment] = true;
+    updateSupabaseStatus(`Auditoria carregada de ${activeEnvironment}.`, 'ok');
+    renderAuditoria();
+    return true;
+  } catch (err) {
+    console.error('Falha ao carregar auditoria do Supabase:', err);
+    updateSupabaseStatus(`Falha ao carregar auditoria: ${err.message || err}`, 'danger');
+    renderAuditoria();
+    return false;
+  } finally {
+    remoteAuditLoading = false;
+  }
+}
+
 function renderAuditoria() {
+  if (remoteAuditLoading) {
+    document.getElementById('audCount').textContent = 'carregando...';
+    document.getElementById('tblAuditoria').innerHTML = `<tr><td colspan="12" style="text-align:center;padding:32px;color:#9AA0A6">Carregando auditoria do ambiente...</td></tr>`;
+    return;
+  }
+
   const filtPar = document.getElementById('audFiltPar')?.value || '';
   const filtStatus = document.getElementById('audFiltStatus')?.value || '';
   const filtNota = document.getElementById('audFiltNota')?.value || '';
@@ -3806,6 +3854,7 @@ function abrirFicha(parId, inscId, abrirEmEdicao = false) {
   const e = INSCRICOES.find(x => x.id === inscId);
   const par = pareceristas.find(p => p.id === parId);
   const av = avaliacoes[parId]?.[inscId];
+  avaliacaoOriginalConcluida = !!av?.done;
 
   document.getElementById('avalTitle').textContent = fullInscId(e.id) + ' · ' + e.lider;
   document.getElementById('avalSub').textContent = par.nome + ' · ' + e.mod + ' · ' + e.inst;
@@ -3879,12 +3928,18 @@ function proximaInscricaoDoParecerista(parId, inscIdAtual) {
   return null;
 }
 
+function isEditingPreviouslyCompletedEvaluation(parId = currentParId, inscId = currentInscId) {
+  if (!avaliacaoEmEdicao) return false;
+  const av = avaliacoes[parId]?.[inscId];
+  return !!av?.done || avaliacaoOriginalConcluida;
+}
+
 async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
   if (!currentParId || !currentInscId) return;
   const parId = currentParId;
   const inscId = currentInscId;
   const avAnterior = avaliacoes[parId]?.[inscId] || null;
-  const editingConcluded = !!avAnterior?.done && avaliacaoEmEdicao;
+  const editingConcluded = isEditingPreviouslyCompletedEvaluation(parId, inscId);
   const motivoCurtaDuracao = editingConcluded
     ? (avAnterior?.motivoCurtaDuracao || '')
     : pendingEarlySaveReason;
@@ -3954,6 +4009,7 @@ async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
   fichaStartTime = null;
   pendingEarlySaveReason = '';
   avaliacaoEmEdicao = false;
+  avaliacaoOriginalConcluida = false;
 
   document.getElementById('avalBadge').textContent = done ? 'Concluída' : 'Pendente';
   document.getElementById('avalBadge').className = 'badge ' + (done ? 'b-ok' : 'b-pend');
@@ -4000,6 +4056,8 @@ function voltarPortal() {
     return;
   }
   currentInscId = null;
+  avaliacaoEmEdicao = false;
+  avaliacaoOriginalConcluida = false;
   renderPortal();
   showView('portal');
 }
@@ -4059,10 +4117,12 @@ let remoteSyncTimer = null;
 let remoteSyncQueued = false;
 let remoteSyncInFlight = false;
 let remoteRefreshInFlight = false;
+let lastRemoteRefreshAt = 0;
 let lastLocalAdminMutationAt = 0;
 let currentImportHash = null;
 let currentImportIdByEnvironment = { homolog:null, producao:null };
 let environmentRemoteReady = { homolog:false, producao:false };
+let environmentAuditReady = { homolog:false, producao:false };
 let remoteBootResolved = { homolog:false, producao:false };
 let remoteBootFailureReason = { homolog:'', producao:'' };
 let pendingDistributionSnapshot = null;
@@ -4072,6 +4132,8 @@ let remoteThemeColumnsAvailable = null;
 let themeRemoteSyncTimer = null;
 let remoteThemePersistInFlight = false;
 let remoteBootWatchdog = null;
+let remoteAuditLoading = false;
+const REMOTE_REFRESH_MIN_INTERVAL_MS = 12000;
 
 function getAppStateStorageKey() {
   return `${STORAGE_KEY}_${activeEnvironment}`;
@@ -4335,6 +4397,8 @@ function resetRuntimeStateForEnvironment() {
   carregandoBasePadrao = false;
   falhaCargaBasePadrao = false;
   currentImportHash = null;
+  environmentAuditReady[activeEnvironment] = false;
+  remoteAuditLoading = false;
   pendingDistributionSnapshot = null;
   window.__pendingSystemEvents = [];
   lastLocalAdminMutationAt = 0;
@@ -4359,7 +4423,10 @@ async function reloadEnvironmentState() {
   renderDashboard();
 
   if (isSupabaseConfigured()) {
-    const loaded = await loadStateFromSupabase();
+    const loaded = await loadStateFromSupabase({
+      includeAudit: currentActiveViewName() === 'auditoria',
+      includeCriteria: false,
+    });
     if (loaded) {
       renderPareceristas();
       renderResultados();
@@ -4394,6 +4461,22 @@ async function saveSupabaseSettings() {
     await reloadEnvironmentState();
   }
   notify(`Configuração de persistência salva para ${activeEnvironment}.`);
+}
+
+async function handleSupabaseEnvironmentChange(nextEnvironment) {
+  const normalized = nextEnvironment === 'producao' ? 'producao' : 'homolog';
+  if (normalized === activeEnvironment) {
+    populateSupabaseSettingsForm();
+    return;
+  }
+
+  activeEnvironment = normalized;
+  persistSupabaseSettings();
+  applyThemeForEnvironment(activeEnvironment, { persistLocal:false, persistRemote:false });
+  populateSupabaseSettingsForm();
+  updateSupabaseStatus(`Trocando para ${activeEnvironment}...`);
+  await reloadEnvironmentState();
+  notify(`Ambiente ativo alterado para ${activeEnvironment}.`);
 }
 
 async function testSupabaseConnection() {
@@ -4435,21 +4518,31 @@ function actorContext() {
     : { actor_type:'admin', actor_id:'local-admin' };
 }
 
+function normalizeEventInscricaoId(value) {
+  if (!value) return null;
+  return fullInscId(value);
+}
+
 function queueSystemEvent(eventType, payload) {
   const { actor_type, actor_id } = actorContext();
+  const pareceristaId = currentParId || payload?.parecerista_id || null;
+  const inscricaoId = normalizeEventInscricaoId(currentInscId || payload?.inscricao_id || null);
   const entry = {
     environment: activeEnvironment,
     event_type: eventType,
     actor_type,
     actor_id,
-    parecerista_id: currentParId || payload?.parecerista_id || null,
-    inscricao_id: currentInscId || payload?.inscricao_id || null,
+    parecerista_id: pareceristaId,
+    inscricao_id: inscricaoId,
     correlation_id: payload?.correlation_id || `${eventType}-${Date.now()}`,
     payload_json: payload || {},
     created_at: new Date().toISOString(),
   };
   if (!window.__pendingSystemEvents) window.__pendingSystemEvents = [];
   window.__pendingSystemEvents.push(entry);
+  if (reviewerBootMode && pareceristaId && isSupabaseConfigured()) {
+    flushPendingReviewerEvents(pareceristaId, inscricaoId);
+  }
 }
 
 function configSnapshotPayload() {
@@ -4647,29 +4740,32 @@ function auditoriaPayloadForEvaluation(parId, inscId) {
     }));
 }
 
-async function persistReviewerEvaluationToSupabase(parId, inscId) {
+async function persistReviewerEvaluationToSupabase(parId, inscId, options = {}) {
   const client = getSupabaseClient();
   if (!client) return { ok:false, reason:'unconfigured' };
   const fullId = fullInscId(inscId);
   const av = avaliacoes[parId]?.[inscId] || null;
+  const deleteWhenMissing = options.deleteWhenMissing === true;
 
   try {
     if (!av) {
-      const { error: critDeleteError } = await client
-        .from('avaliacao_criterios')
-        .delete()
-        .eq('environment', activeEnvironment)
-        .eq('parecerista_id_externo', parId)
-        .eq('inscricao_id_externo', fullId);
-      if (critDeleteError) throw critDeleteError;
+      if (deleteWhenMissing) {
+        const { error: critDeleteError } = await client
+          .from('avaliacao_criterios')
+          .delete()
+          .eq('environment', activeEnvironment)
+          .eq('parecerista_id_externo', parId)
+          .eq('inscricao_id_externo', fullId);
+        if (critDeleteError) throw critDeleteError;
 
-      const { error: evalDeleteError } = await client
-        .from('avaliacoes')
-        .delete()
-        .eq('environment', activeEnvironment)
-        .eq('parecerista_id_externo', parId)
-        .eq('inscricao_id_externo', fullId);
-      if (evalDeleteError) throw evalDeleteError;
+        const { error: evalDeleteError } = await client
+          .from('avaliacoes')
+          .delete()
+          .eq('environment', activeEnvironment)
+          .eq('parecerista_id_externo', parId)
+          .eq('inscricao_id_externo', fullId);
+        if (evalDeleteError) throw evalDeleteError;
+      }
     } else {
       const status = av.done ? 'concluida' : (av.notas?.some(Boolean) ? 'em_andamento' : 'nao_iniciada');
       const row = {
@@ -4721,28 +4817,80 @@ async function persistReviewerEvaluationToSupabase(parId, inscId) {
       if (auditUpsertError) throw auditUpsertError;
     }
 
-    const pendingEvents = (window.__pendingSystemEvents || []).filter(row =>
-      row.parecerista_id === parId || row.inscricao_id === fullId || row.actor_id === parId
-    );
-    if (pendingEvents.length) {
-      const { error: eventsUpsertError } = await client
-        .from('eventos_auditoria')
-        .upsert(
-          pendingEvents.map(row => ({
-            ...row,
-            payload_json: { ...(row.payload_json || {}), sync_reason: 'reviewer_evaluation' },
-          })),
-          { onConflict:'environment,event_type,correlation_id' }
-        );
-      if (eventsUpsertError) throw eventsUpsertError;
-      window.__pendingSystemEvents = (window.__pendingSystemEvents || []).filter(row => !pendingEvents.includes(row));
-    }
+    const eventFlush = await flushPendingReviewerEvents(parId, fullId, {
+      client,
+      syncReason: 'reviewer_evaluation',
+    });
+    if (!eventFlush.ok) throw eventFlush.error || new Error(eventFlush.reason || 'Falha ao persistir eventos do parecerista');
 
     return { ok:true };
   } catch (err) {
     console.error('Falha ao persistir avaliação do parecerista no Supabase:', err);
     return { ok:false, reason:'error', error: err };
   }
+}
+
+async function flushPendingReviewerEvents(parId, inscricaoId = null, options = {}) {
+  const client = options.client || getSupabaseClient();
+  if (!client || !parId) return { ok:false, reason:'unconfigured' };
+  const fullId = inscricaoId ? normalizeEventInscricaoId(inscricaoId) : null;
+  const pendingEvents = (window.__pendingSystemEvents || []).filter(row =>
+    row.parecerista_id === parId || row.actor_id === parId || (fullId && row.inscricao_id === fullId)
+  );
+  if (!pendingEvents.length) return { ok:true, flushed:0 };
+  try {
+    const { error } = await client
+      .from('eventos_auditoria')
+      .upsert(
+        pendingEvents.map(row => ({
+          ...row,
+          payload_json: { ...(row.payload_json || {}), sync_reason: options.syncReason || 'reviewer_event' },
+        })),
+        { onConflict:'environment,event_type,correlation_id' }
+      );
+    if (error) throw error;
+    window.__pendingSystemEvents = (window.__pendingSystemEvents || []).filter(row => !pendingEvents.includes(row));
+    saveAppState({ skipRemoteSync:true });
+    return { ok:true, flushed: pendingEvents.length };
+  } catch (error) {
+    console.warn('Falha ao persistir eventos pendentes do parecerista no Supabase:', error);
+    return { ok:false, reason:'error', error };
+  }
+}
+
+async function deleteRemoteEvaluationPair(client, parId, fullInscIdValue) {
+  const { error: critDeleteError } = await client
+    .from('avaliacao_criterios')
+    .delete()
+    .eq('environment', activeEnvironment)
+    .eq('parecerista_id_externo', parId)
+    .eq('inscricao_id_externo', fullInscIdValue);
+  if (critDeleteError) throw critDeleteError;
+
+  const { error: evalDeleteError } = await client
+    .from('avaliacoes')
+    .delete()
+    .eq('environment', activeEnvironment)
+    .eq('parecerista_id_externo', parId)
+    .eq('inscricao_id_externo', fullInscIdValue);
+  if (evalDeleteError) throw evalDeleteError;
+}
+
+async function deleteRemoteEvaluationsByReviewer(client, reviewerIds) {
+  if (!reviewerIds.length) return;
+  const { error: critDeleteError } = await client
+    .from('avaliacao_criterios')
+    .delete()
+    .eq('environment', activeEnvironment)
+    .in('parecerista_id_externo', reviewerIds);
+  if (critDeleteError) throw critDeleteError;
+
+  const { error: evalDeleteError } = await client
+    .from('avaliacoes')
+    .delete()
+    .eq('environment', activeEnvironment)
+    .in('parecerista_id_externo', reviewerIds);
+  if (evalDeleteError) throw evalDeleteError;
 }
 
 async function ensureImportRecord(client) {
@@ -4858,6 +5006,7 @@ async function syncStateToSupabase(reason) {
         .eq('environment', activeEnvironment)
         .in('id_externo', removidos);
       if (deactivateError) throw deactivateError;
+      await deleteRemoteEvaluationsByReviewer(client, removidos);
     }
     await runSupabaseQuery(
       client.from('pareceristas').upsert(parsRows, { onConflict:'environment,id_externo' })
@@ -4893,6 +5042,7 @@ async function syncStateToSupabase(reason) {
           .eq('inscricao_id_externo', stale.inscricao_id_externo)
           .eq('parecerista_id_externo', stale.parecerista_id_externo);
         if (staleAtribError) throw staleAtribError;
+        await deleteRemoteEvaluationPair(client, stale.parecerista_id_externo, stale.inscricao_id_externo);
       }
     }
 
@@ -4938,6 +5088,7 @@ async function syncStateToSupabase(reason) {
 
     remoteStateLoaded = true;
     environmentRemoteReady[activeEnvironment] = true;
+    lastRemoteRefreshAt = Date.now();
     lastLocalAdminMutationAt = 0;
     persistSupabaseSettings();
     updateSupabaseStatus(`Sincronização concluída em ${activeEnvironment}.`, 'ok');
@@ -4964,10 +5115,17 @@ function scheduleSupabaseSync(reason) {
 async function refreshStateFromSupabaseInBackground() {
   if (reviewerBootMode || adminImportInFlight || !isSupabaseConfigured() || !environmentRemoteReady[activeEnvironment]) return false;
   if (remoteRefreshInFlight || remoteSyncInFlight || remoteSyncQueued) return false;
+  const activeView = currentActiveViewName();
+  if (!['dashboard','resultados','pareceristas','auditoria'].includes(activeView)) return false;
+  if (lastRemoteRefreshAt && (Date.now() - lastRemoteRefreshAt) < REMOTE_REFRESH_MIN_INTERVAL_MS) return false;
   if (lastLocalAdminMutationAt && (Date.now() - lastLocalAdminMutationAt) < 3000) return false;
   remoteRefreshInFlight = true;
+  lastRemoteRefreshAt = Date.now();
   try {
-    const loaded = await loadStateFromSupabase();
+    const loaded = await loadStateFromSupabase({
+      includeAudit: activeView === 'auditoria',
+      includeCriteria: false,
+    });
     if (!loaded) return false;
     renderPareceristas();
     renderResultados();
@@ -5084,6 +5242,7 @@ async function resetRemoteEnvironment() {
     updateSupabaseStatus(`Zerando ambiente remoto ${activeEnvironment}...`);
     await clearRemoteEnvironmentData();
     environmentRemoteReady[activeEnvironment] = false;
+    environmentAuditReady[activeEnvironment] = false;
     currentImportIdByEnvironment[activeEnvironment] = null;
     currentImportHash = null;
     persistSupabaseSettings();
@@ -5229,7 +5388,9 @@ async function fetchAllSupabaseRowsByIds(tableName, ids, options = {}) {
   return rows;
 }
 
-async function loadStateFromSupabase() {
+async function loadStateFromSupabase(options = {}) {
+  const includeAudit = options.includeAudit !== false;
+  const includeCriteria = options.includeCriteria !== false;
   const client = getSupabaseClient();
   if (!client) return false;
   try {
@@ -5249,8 +5410,12 @@ async function loadStateFromSupabase() {
       fetchAllSupabaseRows(() => client.from('pareceristas').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('nome')),
       fetchAllSupabaseRows(() => client.from('atribuicoes').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('ordem')),
       fetchAllSupabaseRows(() => client.from('avaliacoes').select('*').eq('environment', activeEnvironment).order('id')),
-      fetchAllSupabaseRows(() => client.from('avaliacao_criterios').select('*').eq('environment', activeEnvironment).order('id')),
-      fetchAllSupabaseRows(() => client.from('eventos_auditoria').select('*').eq('environment', activeEnvironment).order('created_at')),
+      includeCriteria
+        ? fetchAllSupabaseRows(() => client.from('avaliacao_criterios').select('*').eq('environment', activeEnvironment).order('id'))
+        : Promise.resolve([]),
+      includeAudit
+        ? fetchAllSupabaseRows(() => client.from('eventos_auditoria').select('*').eq('environment', activeEnvironment).order('created_at'))
+        : Promise.resolve([]),
     ]);
     if (cfgRes.error) throw cfgRes.error;
 
@@ -5281,8 +5446,13 @@ async function loadStateFromSupabase() {
     });
 
     avaliaçõesFromRemote(avalData || [], critData || []);
-    logAuditoria = remoteAuditToLocal((auditData || []).filter(r => String(r.event_type || '').startsWith('auditoria_')));
-    logAuditoriaEventos = remoteSystemEventsToLocal((auditData || []).filter(r => String(r.event_type || '') === 'anexo_aberto'));
+    if (includeAudit) {
+      logAuditoria = remoteAuditToLocal((auditData || []).filter(r => String(r.event_type || '').startsWith('auditoria_')));
+      logAuditoriaEventos = remoteSystemEventsToLocal((auditData || []).filter(r => String(r.event_type || '') === 'anexo_aberto'));
+      environmentAuditReady[activeEnvironment] = true;
+    } else {
+      environmentAuditReady[activeEnvironment] = false;
+    }
 
     if (cfgRes.data) {
       TEMPO_MINIMO = Number(cfgRes.data.tempo_minimo_ms) || TEMPO_MINIMO;
@@ -5301,6 +5471,7 @@ async function loadStateFromSupabase() {
     baseConfirmada = true;
     remoteStateLoaded = true;
     environmentRemoteReady[activeEnvironment] = true;
+    lastRemoteRefreshAt = Date.now();
     cancelPendingBaseLoadRetries();
     persistSupabaseSettings();
     falhaCargaBasePadrao = false;
@@ -5319,11 +5490,12 @@ async function loadReviewerPortalStateFromSupabase(parId) {
   const client = getSupabaseClient();
   if (!client || !parId) return false;
   try {
-    const [cfgRes, parRes, atribData, avalData, reviewerAuditData] = await Promise.all([
+    const [cfgRes, parRes, atribData, avalData, reviewerCritData, reviewerAuditData] = await Promise.all([
       client.from('configuracoes_sistema').select('*').eq('id', activeEnvironment).maybeSingle(),
       client.from('pareceristas').select('*').eq('environment', activeEnvironment).eq('id_externo', parId).eq('ativo', true).maybeSingle(),
       fetchAllSupabaseRows(() => client.from('atribuicoes').select('*').eq('environment', activeEnvironment).eq('parecerista_id_externo', parId).eq('ativo', true).order('ordem')),
       fetchAllSupabaseRows(() => client.from('avaliacoes').select('*').eq('environment', activeEnvironment).eq('parecerista_id_externo', parId).order('id')),
+      fetchAllSupabaseRows(() => client.from('avaliacao_criterios').select('*').eq('environment', activeEnvironment).eq('parecerista_id_externo', parId).order('id')),
       fetchAllSupabaseRows(() => client.from('eventos_auditoria').select('*').eq('environment', activeEnvironment).eq('parecerista_id', parId).order('created_at')),
     ]);
 
@@ -5374,7 +5546,13 @@ async function loadReviewerPortalStateFromSupabase(parId) {
         orderBy: 'id_curto',
         batchSize: 1000,
       });
-      inscricoesFromRemote(inscRows || [], []);
+      const participantRows = await fetchAllSupabaseRowsByIds('participantes', inscIdsFull, {
+        idColumn: 'inscricao_id_externo',
+        extraEq: { environment: activeEnvironment, ativo: true },
+        orderBy: 'id',
+        batchSize: 1000,
+      });
+      inscricoesFromRemote(inscRows || [], participantRows || []);
     }
 
     (atribData || []).forEach(r => {
@@ -5389,13 +5567,15 @@ async function loadReviewerPortalStateFromSupabase(parId) {
       return shortId && inscIdsPermitidos.has(shortId);
     });
 
-    avaliaçõesFromRemote(avalData || [], []);
+    avaliaçõesFromRemote(avalData || [], reviewerCritData || []);
     logAuditoria = remoteAuditToLocal(reviewerEvents.filter(r => String(r.event_type || '').startsWith('auditoria_')));
     logAuditoriaEventos = remoteSystemEventsToLocal(reviewerEvents.filter(r => String(r.event_type || '') === 'anexo_aberto'));
     currentParId = parId;
     baseConfirmada = true;
     remoteStateLoaded = true;
     environmentRemoteReady[activeEnvironment] = true;
+    environmentAuditReady[activeEnvironment] = false;
+    lastRemoteRefreshAt = Date.now();
     cancelPendingBaseLoadRetries();
     persistSupabaseSettings();
     updateSupabaseStatus(`Portal do parecerista carregado em ${activeEnvironment}.`, 'ok');
@@ -5480,26 +5660,44 @@ function hydrateAppState() {
   }
 }
 
-function estadoPareceristasCorrompido() {
-  if (pareceristas.length !== PARECERISTAS_DEFAULT.length) return false;
-  const idsAtuais = pareceristas.map(p => p.id).sort().join(',');
-  const idsDefault = PARECERISTAS_DEFAULT.map(p => p.id).sort().join(',');
-  if (idsAtuais !== idsDefault) return false;
-  return pareceristas.some(p => p.cotaManual && (parseInt(p.cota, 10) || 0) > 50);
-}
+function sanitizePareceristasState() {
+  if (!Array.isArray(pareceristas)) {
+    pareceristas = [];
+    return;
+  }
 
-function restaurarPareceristasPadrao() {
-  pareceristas = PARECERISTAS_DEFAULT.map(p => ({ ...p }));
-  atribuicoes = {};
-  avaliacoes = {};
-  logAuditoria = [];
-  logAuditoriaEventos = [];
+  const seen = new Set();
+  pareceristas = pareceristas.reduce((acc, raw) => {
+    const fallback = raw?.id ? PARECERISTAS_DEFAULT.find(p => p.id === raw.id) : null;
+    const id = String(raw?.id || fallback?.id || '').trim();
+    if (!id || seen.has(id)) return acc;
+    seen.add(id);
+
+    const nome = String(raw?.nome || fallback?.nome || '').trim();
+    const email = String(raw?.email || fallback?.email || '').trim();
+    if (!nome || !email) return acc;
+
+    const inst = String(raw?.inst || fallback?.inst || '').trim();
+    const cotaRaw = raw?.cota;
+    const cotaNum = cotaRaw === '' || cotaRaw === null || cotaRaw === undefined
+      ? null
+      : Math.max(0, parseInt(cotaRaw, 10) || 0);
+    const cotaManual = !!raw?.cotaManual && cotaNum !== null;
+
+    acc.push({
+      id,
+      nome,
+      email,
+      inst: inst || '',
+      cota: cotaNum,
+      cotaManual,
+    });
+    return acc;
+  }, []);
 }
 
 function syncPersistedStateWithBase() {
-  if (estadoPareceristasCorrompido()) {
-    restaurarPareceristasPadrao();
-  }
+  sanitizePareceristasState();
 
   const inscIds = new Set(INSCRICOES.map(i => i.id));
   const pareceristaIds = new Set(pareceristas.map(p => p.id));
@@ -6534,7 +6732,10 @@ window.addEventListener('load', () => {
         let loaded = false;
         try {
           loaded = await withTimeout(
-            loadStateFromSupabase(),
+            loadStateFromSupabase({
+              includeAudit: false,
+              includeCriteria: false,
+            }),
             6500,
             'A restauração do ambiente no Supabase demorou além do esperado.'
           );
