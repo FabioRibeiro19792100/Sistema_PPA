@@ -2243,7 +2243,8 @@ function submitViewerLogin() {
 }
 
 // ═══ NAV ══════════════════════════════════════════════════
-function showView(v) {
+function showView(v, opts = {}) {
+  const skipExitGuard = !!opts.skipExitGuard;
   if (v === 'login') {
     showLoginView();
     return;
@@ -2259,7 +2260,7 @@ function showView(v) {
 
   // intercept: se estiver na ficha com avaliação não concluída, alerta sobre reset
   const emAvaliacao = document.getElementById('view-avaliacao')?.classList.contains('active');
-  if (emAvaliacao && v !== 'avaliacao' && currentParId && currentInscId) {
+  if (!skipExitGuard && emAvaliacao && v !== 'avaliacao' && currentParId && currentInscId) {
     const av = avaliacoes[currentParId]?.[currentInscId];
     if (!av?.done) {
       tentarSair(v);
@@ -3259,24 +3260,21 @@ function tentarSair(destino) {
   document.body.style.overflow = 'hidden';
 }
 
-function _executarSair(destino) {
+function resetEvaluationRuntime({ preserveReviewer = false } = {}) {
   clearTimeout(fichaTimer);
   fichaTempoOk = false;
   fichaStartTime = null;
-  currentParId = null;
+  pendingEarlySave = false;
+  pendingEarlySaveReason = '';
+  avaliacaoEmEdicao = false;
   currentInscId = null;
+  if (!preserveReviewer) currentParId = null;
+}
 
-  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.snav').forEach(el => el.classList.remove('active'));
-  document.getElementById('view-'+destino).classList.add('active');
-  const tab = document.querySelector(`.snav[data-view="${destino}"]`);
-  if (tab) tab.classList.add('active');
-  document.getElementById('footerBar').style.display = 'none';
-  if (destino === 'dashboard') renderDashboard();
-  if (destino === 'resultados') renderResultados();
-  if (destino === 'pareceristas') renderPareceristas();
-  if (destino === 'portal') renderPortal();
-  if (destino === 'auditoria') renderAuditoria();
+function _executarSair(destino) {
+  const preserveReviewer = destino === 'portal';
+  resetEvaluationRuntime({ preserveReviewer });
+  showView(destino, { skipExitGuard: true });
 }
 
 let pendingExit = null;
@@ -3885,7 +3883,11 @@ async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
   if (!currentParId || !currentInscId) return;
   const parId = currentParId;
   const inscId = currentInscId;
-  const motivoCurtaDuracao = pendingEarlySaveReason;
+  const avAnterior = avaliacoes[parId]?.[inscId] || null;
+  const editingConcluded = !!avAnterior?.done && avaliacaoEmEdicao;
+  const motivoCurtaDuracao = editingConcluded
+    ? (avAnterior?.motivoCurtaDuracao || '')
+    : pendingEarlySaveReason;
   const prefix = currentLayout === 'split' ? 'spl_' : 'seq_';
   const notas = CRITERIOS.map((_,i) => document.querySelector(`input[name="${prefix}crit_${i}"]:checked`)?.value || null);
   const justificativas = CRITERIOS.map((_,i) => document.getElementById(`${prefix}just_${i}`)?.value?.trim() || '');
@@ -3906,14 +3908,16 @@ async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
     return;
   }
 
-  const anexosPendentes = anexosPendentesDaAvaliacao(parId, inscId);
-  if (anexosPendentes.length) {
-    openMissingAttachmentsModal(anexosPendentes);
-    return;
+  if (!editingConcluded) {
+    const anexosPendentes = anexosPendentesDaAvaliacao(parId, inscId);
+    if (anexosPendentes.length) {
+      openMissingAttachmentsModal(anexosPendentes);
+      return;
+    }
   }
 
   // trava 2: tempo mínimo invisível
-  if (!fichaTempoOk && !forcarAntesDoTempo) {
+  if (!editingConcluded && !fichaTempoOk && !forcarAntesDoTempo) {
     openEarlySaveModal();
     return;
   }
@@ -3921,7 +3925,15 @@ async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
   if (!avaliacoes[parId]) avaliacoes[parId] = {};
   avaliacoes[parId][inscId] = { notas, justificativas, parecer, done, motivoCurtaDuracao };
 
-  registrarAuditoria({ saida: 'normal', motivoSaida: motivoCurtaDuracao || '', notas, parecer });
+  if (editingConcluded) {
+    queueSystemEvent('avaliacao_editada', {
+      parecerista_id: parId,
+      inscricao_id: fullInscId(inscId),
+      parecer_geral: parecer || '',
+    });
+  } else {
+    registrarAuditoria({ saida: 'normal', motivoSaida: motivoCurtaDuracao || '', notas, parecer });
+  }
   saveAppState();
 
   if (persistenceMode === 'supabase') {
@@ -3945,10 +3957,18 @@ async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
 
   document.getElementById('avalBadge').textContent = done ? 'Concluída' : 'Pendente';
   document.getElementById('avalBadge').className = 'badge ' + (done ? 'b-ok' : 'b-pend');
-  notify('Avaliação concluída e registrada.');
+  notify(editingConcluded ? 'Avaliação atualizada.' : 'Avaliação concluída e registrada.');
   renderPareceristas();
   renderResultados();
   renderPortal();
+
+  if (editingConcluded) {
+    currentParId = parId;
+    currentInscId = null;
+    showView('portal');
+    hideLoadingNudge(150);
+    return;
+  }
 
   if (proximaInscId) {
     showLoadingNudge('Preparando a próxima avaliação...');
@@ -4022,6 +4042,8 @@ let reviewerBootMode = false;
 let tentativasCargaBase = 0;
 let carregandoBasePadrao = false;
 let falhaCargaBasePadrao = false;
+let baseLoadAttemptToken = 0;
+let baseLoadRetryTimer = null;
 let persistenceMode = 'local';
 let activeEnvironment = 'homolog';
 let environmentBaseFiles = { homolog: ARQUIVO_PADRAO_HOMOLOG, producao: ARQUIVO_PADRAO };
@@ -4074,6 +4096,14 @@ function normalizarModalidade(valor, p2, p3) {
   if (p3) return 'Em trio';
   if (p2) return 'Em dupla';
   return 'Individual';
+}
+
+function cancelPendingBaseLoadRetries() {
+  baseLoadAttemptToken++;
+  if (baseLoadRetryTimer) {
+    clearTimeout(baseLoadRetryTimer);
+    baseLoadRetryTimer = null;
+  }
 }
 
 function simpleHash(input) {
@@ -4158,6 +4188,21 @@ function stopRemoteBootWatchdog() {
     clearTimeout(remoteBootWatchdog);
     remoteBootWatchdog = null;
   }
+}
+
+function refreshRuntimeControls() {
+  document.getElementById('paramTempo').value = Math.max(1, Math.round(TEMPO_MINIMO / 60000));
+  document.getElementById('paramInsuf').value = INSUF_OBRIGA_PARECER;
+  document.getElementById('paramPareceresEquipe').value = NUM_PARECERES_POR_EQUIPE;
+  document.getElementById('paramConflitoToggle')?.classList.toggle('on', EVITAR_CONFLITO_INSTITUCIONAL);
+  updateSimSelect();
+}
+
+function refreshRuntimeViews() {
+  renderPareceristas();
+  renderResultados();
+  renderDashboard();
+  renderAuditoria();
 }
 
 function getSupabaseClient(env = activeEnvironment) {
@@ -4277,6 +4322,7 @@ function persistSupabaseSettings() {
 }
 
 function resetRuntimeStateForEnvironment() {
+  cancelPendingBaseLoadRetries();
   INSCRICOES.length = 0;
   pareceristas = PARECERISTAS_DEFAULT.map(p => ({ ...p }));
   atribuicoes = {};
@@ -5255,6 +5301,7 @@ async function loadStateFromSupabase() {
     baseConfirmada = true;
     remoteStateLoaded = true;
     environmentRemoteReady[activeEnvironment] = true;
+    cancelPendingBaseLoadRetries();
     persistSupabaseSettings();
     falhaCargaBasePadrao = false;
     carregandoBasePadrao = false;
@@ -5349,6 +5396,7 @@ async function loadReviewerPortalStateFromSupabase(parId) {
     baseConfirmada = true;
     remoteStateLoaded = true;
     environmentRemoteReady[activeEnvironment] = true;
+    cancelPendingBaseLoadRetries();
     persistSupabaseSettings();
     updateSupabaseStatus(`Portal do parecerista carregado em ${activeEnvironment}.`, 'ok');
     return true;
@@ -5544,6 +5592,7 @@ function carregarWorkbook(workbook) {
 async function tentarCarregarArquivoPadrao(opts = {}) {
   const forceAdmin = !!opts.forceAdmin;
   const successView = opts.successView || 'dashboard';
+  const attemptToken = opts._token ?? (++baseLoadAttemptToken);
   if (baseConfirmada && INSCRICOES.length) {
     carregandoBasePadrao = false;
     falhaCargaBasePadrao = false;
@@ -5563,7 +5612,10 @@ async function tentarCarregarArquivoPadrao(opts = {}) {
   if (typeof XLSX === 'undefined') {
     if (tentativasCargaBase < 20) {
       tentativasCargaBase++;
-      setTimeout(() => { tentarCarregarArquivoPadrao(opts); }, 250);
+      if (baseLoadRetryTimer) clearTimeout(baseLoadRetryTimer);
+      baseLoadRetryTimer = setTimeout(() => {
+        tentarCarregarArquivoPadrao({ ...opts, _token: attemptToken });
+      }, 250);
       renderDashboard();
       return false;
     }
@@ -5586,12 +5638,18 @@ async function tentarCarregarArquivoPadrao(opts = {}) {
       xhr.onerror = () => reject(new Error('Falha de rede ao carregar XLSX padrão'));
       xhr.send();
     });
+    if (attemptToken !== baseLoadAttemptToken) return false;
     const wb = XLSX.read(buffer, { type: 'array', cellDates: true });
     carregarWorkbook(wb);
+    if (attemptToken !== baseLoadAttemptToken) return false;
     carregandoBasePadrao = false;
     falhaCargaBasePadrao = false;
+    if (baseLoadRetryTimer) {
+      clearTimeout(baseLoadRetryTimer);
+      baseLoadRetryTimer = null;
+    }
     queueSystemEvent('planilha_importada', { environment: activeEnvironment, source_name: arquivoAtivo, row_count: rawRows.length, participant_row_count: rawParticipantes.length });
-    confirmarBase();
+    confirmarBase({ notifySuccess:false });
     tentativasCargaBase = 0;
     if (forceAdmin) {
       enterAdminShell(successView);
@@ -5601,15 +5659,23 @@ async function tentarCarregarArquivoPadrao(opts = {}) {
     notify(`Base padrão carregada automaticamente: ${arquivoAtivo}`);
     return true;
   } catch (err) {
+    if (attemptToken !== baseLoadAttemptToken) return false;
     console.warn('Falha ao carregar arquivo padrão:', err);
     if (tentativasCargaBase < 10) {
       tentativasCargaBase++;
-      setTimeout(() => { tentarCarregarArquivoPadrao(opts); }, 400);
+      if (baseLoadRetryTimer) clearTimeout(baseLoadRetryTimer);
+      baseLoadRetryTimer = setTimeout(() => {
+        tentarCarregarArquivoPadrao({ ...opts, _token: attemptToken });
+      }, 400);
       renderDashboard();
       return false;
     }
     carregandoBasePadrao = false;
     falhaCargaBasePadrao = true;
+    if (baseLoadRetryTimer) {
+      clearTimeout(baseLoadRetryTimer);
+      baseLoadRetryTimer = null;
+    }
     if (!forceAdmin && currentParId) {
       renderPortal();
       showView('portal');
@@ -5621,9 +5687,7 @@ async function tentarCarregarArquivoPadrao(opts = {}) {
   }
 }
 
-function confirmarBase() {
-  if (!rawRows.length) return;
-
+function rebuildBaseFromRawRows() {
   const nextImportHash = simpleHash({ rows: rawRows, participantes: rawParticipantes, environment: activeEnvironment });
   if (currentImportHash !== nextImportHash) {
     currentImportHash = nextImportHash;
@@ -5695,6 +5759,15 @@ function confirmarBase() {
       _raw: { ...(participante1?.raw || {}), ...r },
     });
   });
+}
+
+function aplicarPosCargaBase(opts = {}) {
+  const {
+    persistLocal = true,
+    syncRemote = persistenceMode === 'supabase',
+    rerender = true,
+    notifySuccess = true,
+  } = opts;
 
   baseConfirmada = true;
 
@@ -5706,11 +5779,22 @@ function confirmarBase() {
     logAuditoria = [];
     logAuditoriaEventos = [];
   }
-  saveAppState();
-  scheduleSupabaseSync('base_import');
-  renderPareceristas();
-  renderDashboard();
-  notify(`${INSCRICOES.length.toLocaleString('pt-BR')} inscrições carregadas com sucesso.`);
+  if (persistLocal) saveAppState();
+  if (syncRemote) scheduleSupabaseSync('base_import');
+  if (rerender) {
+    renderPareceristas();
+    renderResultados();
+    renderDashboard();
+    renderAuditoria();
+  }
+  if (notifySuccess) notify(`${INSCRICOES.length.toLocaleString('pt-BR')} inscrições carregadas com sucesso.`);
+}
+
+function confirmarBase(opts = {}) {
+  if (!rawRows.length) return false;
+  rebuildBaseFromRawRows();
+  aplicarPosCargaBase(opts);
+  return true;
 }
 
 // ═══ DASHBOARD ════════════════════════════════════════════
@@ -5845,7 +5929,7 @@ function renderDashboard() {
     }
 
     if (persistenceMode === 'supabase' && hasSupabaseCredentials() && !window.supabase?.createClient) {
-      document.getElementById('dashSub').textContent = 'Biblioteca remota ainda não disponível.';
+      document.getElementById('dashSub').textContent = 'Carregando...';
       icon.className = 'ti ti-cloud-off';
       icon.style.color = '#DADCE0';
       icon.style.animation = '';
@@ -5868,7 +5952,7 @@ function renderDashboard() {
     icon.className = 'ti ti-loader-2';
     icon.style.color = '#DADCE0';
     if (falhaCargaBasePadrao) {
-      document.getElementById('dashSub').textContent = 'Base indisponível';
+      document.getElementById('dashSub').textContent = 'Sem base carregada';
       icon.className = 'ti ti-alert-circle';
       icon.style.color = '#D93025';
       icon.style.animation = '';
@@ -6367,16 +6451,32 @@ function applyReviewerShellMode(enabled) {
   if (!enabled) applyAccessUi();
 }
 
+function applyStartupRouteState() {
+  if (requestedParId) {
+    reviewerBootMode = true;
+    currentParId = requestedParId;
+    currentInscId = null;
+    applyReviewerShellMode(true);
+    return 'portal';
+  }
+  reviewerBootMode = false;
+  currentParId = null;
+  currentInscId = null;
+  applyReviewerShellMode(false);
+  return 'dashboard';
+}
+
+function showStartupRoute() {
+  showView(applyStartupRouteState());
+}
+
 hydrateSupabaseSettings();
 if (persistenceMode !== 'supabase') {
   hydrateAppState();
 }
 hydrateAccessRole();
 applyThemeForEnvironment(activeEnvironment, { persistLocal:false, persistRemote:false });
-document.getElementById('paramTempo').value = Math.max(1, Math.round(TEMPO_MINIMO / 60000));
-document.getElementById('paramInsuf').value = INSUF_OBRIGA_PARECER;
-document.getElementById('paramPareceresEquipe').value = NUM_PARECERES_POR_EQUIPE;
-document.getElementById('paramConflitoToggle')?.classList.toggle('on', EVITAR_CONFLITO_INSTITUCIONAL);
+refreshRuntimeControls();
 populateSupabaseSettingsForm();
 updateSimSelect();
 renderPareceristas();
@@ -6386,18 +6486,7 @@ requestedParId = __startupParams.get('par') || null;
 if (requestedParId && !window.location.protocol.startsWith('http')) {
   notify('Abra o sistema via localhost para usar o portal do parecerista com estado persistido.');
 }
-if (requestedParId) {
-  reviewerBootMode = true;
-  currentParId = requestedParId;
-  applyReviewerShellMode(true);
-  showView('portal');
-} else {
-  reviewerBootMode = false;
-  currentParId = null;
-  currentInscId = null;
-  applyReviewerShellMode(false);
-  showView('dashboard');
-}
+showStartupRoute();
 
 window.addEventListener('load', () => {
   setTimeout(async () => {
@@ -6413,21 +6502,9 @@ window.addEventListener('load', () => {
       resetRuntimeStateForEnvironment();
       hydrateAppState();
     }
-    document.getElementById('paramTempo').value = Math.max(1, Math.round(TEMPO_MINIMO / 60000));
-    document.getElementById('paramInsuf').value = INSUF_OBRIGA_PARECER;
-    document.getElementById('paramPareceresEquipe').value = NUM_PARECERES_POR_EQUIPE;
-    document.getElementById('paramConflitoToggle')?.classList.toggle('on', EVITAR_CONFLITO_INSTITUCIONAL);
-    updateSimSelect();
-    renderPareceristas();
-    renderResultados();
-    renderDashboard();
-    renderAuditoria();
-    if (!requestedParId) {
-      reviewerBootMode = false;
-      currentParId = null;
-      currentInscId = null;
-      applyReviewerShellMode(false);
-    }
+    refreshRuntimeControls();
+    refreshRuntimeViews();
+    applyStartupRouteState();
     applyAccessUi();
     if (isSupabaseConfigured()) {
       remoteBootResolved[activeEnvironment] = false;
@@ -6444,13 +6521,9 @@ window.addEventListener('load', () => {
             6500,
             'A restauração do portal do parecerista demorou além do esperado.'
           );
-          document.getElementById('paramTempo').value = Math.max(1, Math.round(TEMPO_MINIMO / 60000));
-          document.getElementById('paramInsuf').value = INSUF_OBRIGA_PARECER;
-          document.getElementById('paramPareceresEquipe').value = NUM_PARECERES_POR_EQUIPE;
-          document.getElementById('paramConflitoToggle')?.classList.toggle('on', EVITAR_CONFLITO_INSTITUCIONAL);
-          updateSimSelect();
+          refreshRuntimeControls();
           renderPortal();
-          showView('portal');
+          showStartupRoute();
           remoteBootResolved[activeEnvironment] = true;
           if (!reviewerLoaded) {
             remoteBootFailureReason[activeEnvironment] = 'O portal foi autenticado, mas não há atribuições persistidas para este parecerista neste ambiente.';
@@ -6472,27 +6545,12 @@ window.addEventListener('load', () => {
           updateSupabaseStatus(`${err.message || err}`, 'danger');
           notify('A restauração do Supabase demorou demais. Vou seguir sem travar a tela.');
         }
-        document.getElementById('paramTempo').value = Math.max(1, Math.round(TEMPO_MINIMO / 60000));
-        document.getElementById('paramInsuf').value = INSUF_OBRIGA_PARECER;
-        document.getElementById('paramPareceresEquipe').value = NUM_PARECERES_POR_EQUIPE;
-        document.getElementById('paramConflitoToggle')?.classList.toggle('on', EVITAR_CONFLITO_INSTITUCIONAL);
-        updateSimSelect();
-        renderPareceristas();
-        renderResultados();
-        renderDashboard();
-        renderAuditoria();
+        refreshRuntimeControls();
+        refreshRuntimeViews();
         if (loaded) {
           remoteBootResolved[activeEnvironment] = true;
           remoteBootFailureReason[activeEnvironment] = '';
-          if (requestedParId) {
-            currentParId = requestedParId;
-            const sel = document.getElementById('simParecerista');
-            if (sel) sel.value = requestedParId;
-            renderPortal();
-            showView('portal');
-          } else {
-            showView('dashboard');
-          }
+          showStartupRoute();
           return;
         }
         if (environmentRemoteReady[activeEnvironment]) {
@@ -6524,9 +6582,8 @@ window.addEventListener('load', () => {
     }
     carregandoEstadoRemoto = false;
     if (requestedParId) {
-      currentParId = requestedParId;
       renderPortal();
-      showView('portal');
+      showStartupRoute();
       notify('O portal do parecerista só usa estado persistido. Configure e sincronize o Supabase antes.');
       return;
     }
