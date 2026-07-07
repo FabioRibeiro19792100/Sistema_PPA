@@ -425,26 +425,28 @@ tr:hover td{background:var(--surface2)}
 
 /* sticky cols for results */
 .sticky{position:sticky;background:#fff;z-index:2}
-.s0{left:0;width:84px;min-width:84px;max-width:84px}
-.s3{left:84px;width:82px;min-width:82px;max-width:82px}
-.s5{left:166px;width:288px;min-width:288px;max-width:288px}
-.s7{left:454px;width:108px;min-width:108px;max-width:108px;box-shadow:2px 0 6px -2px rgba(0,0,0,.08)}
+.s0{left:0;width:70px;min-width:70px;max-width:70px}
+.s3{left:70px;width:124px;min-width:124px;max-width:124px}
+.s5{left:194px;width:262px;min-width:262px;max-width:262px}
+.s7{left:456px;width:96px;min-width:96px;max-width:96px;box-shadow:2px 0 6px -2px rgba(0,0,0,.08)}
 th.sticky{background:#E2E8F0;z-index:3;color:#4B5563;border-bottom-color:#CBD5E1}
 tr:hover td.sticky{background:#FAFAFA}
 
-.crit{border-left:1px solid #E5E7EB;font-size:10px;font-weight:600;letter-spacing:.02em;text-transform:none;color:#6B7280;min-width:92px;text-align:center}
-.crit-td{border-left:1px solid #F1F3F4;text-align:center;min-width:92px}
+.crit{border-left:1px solid #E5E7EB;font-size:10px;font-weight:600;letter-spacing:.02em;text-transform:none;color:#6B7280;width:104px;min-width:104px;max-width:104px;text-align:center}
+.crit-td{border-left:1px solid #F1F3F4;text-align:center;width:104px;min-width:104px;max-width:104px}
 .peso{display:block;font-size:9px;font-weight:500;color:#9CA3AF;margin-top:2px}
 .team-marker-stack{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px;color:#9AA0A6}
 .team-members{display:flex;flex-direction:column;gap:2px;margin-top:3px}
-.team-member-line{font-size:11px;color:#9AA0A6;line-height:1.35}
+.team-member-line{font-size:11.8px;color:#8B949E;line-height:1.4}
 .res-subtle{color:#7A828E !important}
 .res-muted{color:#8B949E !important}
 .res-faint{color:#A0A7B1 !important}
+.res-id-hub{display:grid;grid-template-columns:minmax(0,1fr) 24px;align-items:start;column-gap:8px;width:100%}
+.res-id-meta{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;width:100%;padding-top:1px}
 .res-id{display:block;max-width:100%;overflow-wrap:anywhere;line-height:1.2;text-align:center}
 .res-uf{display:block;margin-top:4px;font-size:10px;font-weight:700;letter-spacing:.04em;color:#7A828E;text-align:center}
-.leader-cell{position:relative;padding-left:40px;min-height:74px}
-.leader-actions{position:absolute;left:0;top:0;display:flex;flex-direction:column;gap:6px}
+.res-id-actions{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:6px;width:24px;min-width:24px;max-width:24px;padding-top:0}
+.leader-cell{position:relative;min-height:74px}
 .nota-cell{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:8px;min-height:74px;padding-top:2px}
 .nota-main{font-size:15px;font-weight:600;color:#202124;line-height:1}
 .nota-actions{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px}
@@ -467,18 +469,13 @@ tr:hover td.sticky{background:#FAFAFA}
 #view-resultados .results-top-shell{
   background:var(--bg);
 }
-#view-resultados .tbl-card{overflow:visible}
+#view-resultados .tbl-card{overflow:hidden}
 #view-resultados .tbl-scroll{
   overflow:auto;
   position:relative;
   overscroll-behavior:contain;
   background:var(--surface);
-  display:flex;
-  align-items:stretch;
-}
-#view-resultados .tbl-scroll::after{
-  content:'';
-  flex:0 0 20px;
+  padding-right:18px;
 }
 #view-resultados th{border-bottom-color:#C7CDD6}
 #view-resultados td{border-bottom-color:#D3D8E0}
@@ -565,8 +562,8 @@ tr:hover td.sticky{background:#FAFAFA}
 .sw-sm{width:28px;height:16px;background:#DADCE0;border-radius:8px;position:relative}
 .sw-sm::after{content:'';width:12px;height:12px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;box-shadow:0 1px 2px rgba(0,0,0,.15)}
 
-.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:6px;border:1px solid #DADCE0;background:#fff;color:#9AA0A6;cursor:pointer;font-size:12px;transition:all .12s}
-.icon-btn:hover{background:#E8F0FE;border-color:#AECBFA;color:#1A73E8}
+.icon-btn{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:6px;border:1px solid #AECBFA;background:#fff;color:#5F6368;cursor:pointer;font-size:12px;transition:all .12s}
+.icon-btn:hover{background:#E8F0FE;border-color:#1A73E8;color:#1A73E8}
 
 /* ── DISTRIBUIÇÃO STATUS ── */
 .dist-status{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:6px;font-size:12px;margin-bottom:16px}
@@ -593,16 +590,19 @@ tr:hover td.sticky{background:#FAFAFA}
   scrollbar-gutter:stable;
 }
 
-.ficha-item{background:#fff;border:1px solid #E0E0E0;border-radius:8px;padding:14px 18px;margin-bottom:10px;display:grid;grid-template-columns:185px minmax(0,1fr) auto auto;align-items:center;column-gap:18px;cursor:pointer;transition:border-color .12s}
+.ficha-item{background:#fff;border:1px solid #E0E0E0;border-radius:8px;padding:16px 18px;margin-bottom:10px;display:grid;grid-template-columns:185px minmax(0,1fr) auto auto;align-items:start;column-gap:18px;cursor:pointer;transition:border-color .12s}
 .ficha-item:hover{border-color:#1A73E8}
 .ficha-item.done{border-left:3px solid #34A853}
 .ficha-item.pending{border-left:3px solid #DADCE0}
-.fi-id{font-family:monospace;font-size:11px;color:#1A73E8;min-width:0}
-.fi-main{min-width:0}
-.fi-nome{font-size:12.5px;font-weight:600;color:#202124}
-.fi-sub{font-size:11px;color:#9AA0A6;margin-top:2px}
-.fi-status{white-space:nowrap;display:flex;align-items:center;justify-content:flex-end;gap:8px}
-.fi-end{display:flex;align-items:center;gap:10px;justify-content:flex-end}
+.fi-id{font-family:monospace;font-size:11px;color:#1A73E8;min-width:0;padding-top:4px}
+.fi-main{min-width:0;padding-top:2px}
+.fi-head{display:flex;align-items:flex-start;gap:8px;min-width:0}
+.fi-nome{font-size:12.5px;font-weight:600;color:#202124;line-height:1.3;min-width:0}
+.fi-team{display:inline-flex;align-items:center;gap:1px;color:#9AA0A6;flex-shrink:0;margin-top:1px}
+.fi-meta{font-size:11px;color:#9AA0A6;margin-top:4px;line-height:1.35}
+.fi-inst{font-size:11px;color:#7A828E;margin-top:3px;line-height:1.45;text-align:left}
+.fi-status{white-space:nowrap;display:flex;align-items:flex-start;justify-content:flex-end;gap:8px;padding-top:2px}
+.fi-end{display:flex;align-items:flex-start;gap:10px;justify-content:flex-end;padding-top:2px}
 .fi-score{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid #E8EAED;border-radius:999px;background:#F8F9FA}
 .fi-score-val{font-size:12px;font-weight:700;color:#202124;min-width:28px;text-align:right}
 .fi-score-bar{width:72px;height:6px;background:#E8EAED;border-radius:999px;overflow:hidden}
@@ -1055,13 +1055,20 @@ textarea::placeholder{color:#BDC1C6}
 .par-tabela.pending-table .par-just { color:#9AA0A6; font-style:normal; }
 
 /* ── BAR LIST ── */
-.bar-list{display:flex;flex-direction:column;gap:8px}
-.bl-item{display:flex;flex-direction:column;gap:3px}
-.bl-meta{display:flex;justify-content:space-between;align-items:baseline}
-.bl-name{font-size:11.5px;color:#202124}
-.bl-n{font-size:10.5px;color:#9AA0A6;font-weight:500}
-.bl-track{height:4px;background:#F1F3F4;border-radius:2px}
+.bar-list{display:flex;flex-direction:column;gap:12px}
+.bl-item{display:flex;flex-direction:column;gap:6px}
+.bl-meta{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.bl-name{font-size:11.5px;color:#202124;line-height:1.35;min-width:0;flex:1;overflow-wrap:anywhere;font-weight:600}
+.bl-n{font-size:10.5px;color:#5F6368;font-weight:700;white-space:nowrap;flex-shrink:0}
+.bl-n-pct{color:#9AA0A6;font-weight:500}
+.bl-track{height:4px;background:#F1F3F4;border-radius:999px}
 .bl-fill{height:100%;border-radius:2px;background:#1A73E8}
+.mini-legend{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.mini-legend-item{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.mini-legend-meta{display:flex;align-items:center;gap:8px;min-width:0}
+.mini-legend-dot{width:10px;height:10px;border-radius:999px;flex:0 0 10px}
+.mini-legend-label{font-size:11.5px;color:#202124;line-height:1.35;min-width:0;flex:1;overflow-wrap:anywhere}
+.mini-legend-value{font-size:10.5px;color:#5F6368;font-weight:700;white-space:nowrap;flex-shrink:0}
 
 </style>
 </head>
@@ -1138,18 +1145,18 @@ textarea::placeholder{color:#BDC1C6}
       <div class="kpi-row" id="dashKpis" style="grid-template-columns:repeat(5,minmax(0,1fr));margin-bottom:20px"></div>
 
       <div class="card">
-        <div class="section-label">Inscrições diárias + acumulado</div>
+        <div class="section-label">Inscrições acumuladas</div>
         <div id="slotEvolucao" style="position:relative;height:210px"><canvas id="cEvolucao"></canvas></div>
       </div>
 
       <div class="grid-2">
         <div class="card" style="margin-bottom:0">
           <div class="section-label">Distribuição por modalidade</div>
-          <div id="slotModalidade" style="position:relative;height:210px"><canvas id="cModalidade"></canvas></div>
+        <div id="slotModalidade" style="position:relative;min-height:120px"><canvas id="cModalidade"></canvas></div>
         </div>
         <div class="card" style="margin-bottom:0">
           <div class="section-label">Uso de IA no vídeo criativo</div>
-          <div id="slotIA" style="position:relative;height:210px"><canvas id="cIA"></canvas></div>
+        <div id="slotIA" style="position:relative;min-height:120px"><canvas id="cIA"></canvas></div>
         </div>
       </div>
     </div>
@@ -1158,49 +1165,54 @@ textarea::placeholder{color:#BDC1C6}
       <div class="grid-2">
         <div class="card" style="margin-bottom:0">
           <div class="section-label">Gênero dos participantes</div>
-          <div id="slotGenero" style="position:relative;height:240px"><canvas id="cGenero"></canvas></div>
+          <div id="slotGenero" style="position:relative;min-height:180px"><canvas id="cGenero"></canvas></div>
         </div>
         <div class="card" style="margin-bottom:0">
           <div class="section-label">Cor / raça autodeclarada</div>
-          <div id="slotRaca" style="position:relative;height:240px"><canvas id="cRaca"></canvas></div>
+          <div id="slotRaca" style="position:relative;min-height:180px"><canvas id="cRaca"></canvas></div>
         </div>
       </div>
 
       <div class="grid-3" style="margin-top:16px">
         <div class="card" style="margin-bottom:0">
           <div class="section-label">Faixa etária</div>
-          <div id="slotIdade" style="position:relative;height:170px"><canvas id="cIdade"></canvas></div>
+          <div id="slotIdade" style="position:relative;min-height:150px"><canvas id="cIdade"></canvas></div>
         </div>
         <div class="card" style="margin-bottom:0">
           <div class="section-label">Deficiência declarada</div>
-          <div id="slotDefic" style="position:relative;height:170px"><canvas id="cDefic"></canvas></div>
+          <div id="slotDefic" style="position:relative;min-height:150px"><canvas id="cDefic"></canvas></div>
         </div>
         <div class="card" style="margin-bottom:0">
           <div class="section-label">Área do domicílio</div>
-          <div id="slotArea" style="position:relative;height:170px"><canvas id="cArea"></canvas></div>
+          <div id="slotArea" style="position:relative;min-height:150px"><canvas id="cArea"></canvas></div>
         </div>
       </div>
 
       <div class="card" style="margin-top:16px">
         <div class="section-label">Como ficou sabendo do edital</div>
-        <div id="slotCanais" style="position:relative;height:210px"><canvas id="cCanais"></canvas></div>
+        <div id="slotCanais" style="position:relative;min-height:160px"><canvas id="cCanais"></canvas></div>
       </div>
     </div>
 
     <div class="dash-page" id="dash-page-geo">
       <div class="card">
-        <div class="section-label">Inscrições por UF — top 15</div>
-        <div id="slotUF" style="position:relative;height:280px"><canvas id="cUF"></canvas></div>
+        <div class="section-label">Inscrições por UF — top 10 + outros</div>
+        <div id="slotUF" style="position:relative;min-height:220px"><canvas id="cUF"></canvas></div>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <div class="section-label">Inscrições por região do país</div>
+        <div id="slotRegiao" style="position:relative;min-height:180px"><canvas id="cRegiao"></canvas></div>
       </div>
 
       <div class="grid-2" style="margin-top:16px">
         <div class="card" style="margin-bottom:0">
           <div class="section-label">Top 10 instituições</div>
-          <div class="bar-list" id="dashInst"></div>
+          <div id="slotInst" style="position:relative;min-height:220px"><canvas id="cInst"></canvas></div>
         </div>
         <div class="card" style="margin-bottom:0">
-          <div class="section-label">Top 10 cursos</div>
-          <div class="bar-list" id="dashCursos"></div>
+          <div class="section-label">Por curso</div>
+          <div id="slotCursos" style="position:relative;min-height:220px"><canvas id="cCursos"></canvas></div>
         </div>
       </div>
     </div>
@@ -1374,24 +1386,24 @@ textarea::placeholder{color:#BDC1C6}
     <div class="tbl-scroll" id="resultsBodyScroll">
       <table class="results-table" style="width:max-content;min-width:100%">
         <colgroup>
-          <col style="width:118px">
+          <col style="width:70px">
+          <col style="width:124px">
+          <col style="width:262px">
           <col style="width:96px">
-          <col style="width:332px">
-          <col style="width:112px">
-          <col style="width:112px">
-          <col style="width:112px">
-          <col style="width:112px">
-          <col style="width:112px">
-          <col style="width:112px">
-          <col style="width:112px">
-          <col style="width:112px">
-          <col style="width:112px">
+          <col style="width:104px">
+          <col style="width:104px">
+          <col style="width:104px">
+          <col style="width:104px">
+          <col style="width:104px">
+          <col style="width:104px">
+          <col style="width:104px">
+          <col style="width:104px">
         </colgroup>
         <thead>
           <tr>
             <th class="sticky s0" rowspan="2">Ranking</th>
             <th class="sticky s3" rowspan="2" style="text-align:center">ID</th>
-            <th class="sticky s5" rowspan="2">Líder</th>
+            <th class="sticky s5" rowspan="2">Time (leader-first)</th>
             <th class="sticky s7" rowspan="2" style="text-align:center;min-width:90px">Nota geral</th>
             <th class="crit crit-group" colspan="2" style="text-align:center;border-left:1px solid #E0E0E0">Proposta</th>
             <th class="crit crit-group" colspan="2" style="text-align:center;border-left:1px solid #E0E0E0">Impacto</th>
@@ -1573,7 +1585,7 @@ textarea::placeholder{color:#BDC1C6}
       </div>
       <div>
         <label class="fl">Base padrão do ambiente</label>
-        <input type="text" id="sbBaseName" placeholder="Ex: base_ficticia_ppa_inscricoes_participantes.xlsx">
+        <input type="text" id="sbBaseName" placeholder="Ex: Inscrições PPA - 06.07.xlsx">
       </div>
     </div>
 
@@ -2368,28 +2380,19 @@ function capacidadeAutomaticaPorParecerista() {
 }
 
 function capacidadeParecerista(parId) {
-  const par = pareceristas.find(p => p.id === parId);
-  if (!par) return 0;
-  if (par.cotaManual && Number.isFinite(parseInt(par.cota, 10))) {
-    return Math.max(0, parseInt(par.cota, 10));
-  }
   return capacidadeAutomaticaPorParecerista()[parId] || 0;
 }
 
-function atualizarCotaParecerista(id, valor) {
-  const par = pareceristas.find(x => x.id === id);
-  if (!par) return;
-  const num = parseInt(valor, 10);
-  if (!Number.isFinite(num) || num < 0) {
-    par.cota = null;
-    par.cotaManual = false;
-  } else {
-    par.cota = num;
-    par.cotaManual = true;
-  }
-  queueSystemEvent('capacidade_ajustada', { parecerista_id:id, capacidade_manual: par.cotaManual ? par.cota : null, capacidade_automatica: capacidadeAutomaticaPorParecerista()[id] || 0 });
-  saveAppState();
-  renderPareceristas();
+function limparCapacidadesManuaisPareceristas() {
+  pareceristas = pareceristas.map(par => ({
+    ...par,
+    cota: null,
+    cotaManual: false,
+  }));
+}
+
+async function atualizarCotaParecerista(id, valor) {
+  return;
 }
 
 function getAtrib(parId) {
@@ -2442,9 +2445,8 @@ function renderPareceristas() {
       <td style="font-family:monospace;font-size:11px">${p.email}</td>
       <td>${p.inst || '<span style="color:#BDC1C6">—</span>'}</td>
       <td>
-        <input type="number" value="${capacidade}" min="0" max="500" style="width:64px;font-family:inherit;font-size:12px;padding:4px 7px;border:1px solid #DADCE0;border-radius:5px;outline:none"
-          onchange="atualizarCotaParecerista('${p.id}', this.value)">
-        <div style="font-size:10px;color:#9AA0A6;margin-top:4px">${p.cotaManual ? `ajustada · auto ${auto}` : `auto ${auto}`}</div>
+        <div style="display:inline-flex;min-width:64px;justify-content:center;align-items:center;font-family:inherit;font-size:12px;font-weight:700;padding:6px 10px;border:1px solid #DADCE0;border-radius:8px;background:#F8F9FA;color:#202124">${capacidade}</div>
+        <div style="font-size:10px;color:#9AA0A6;margin-top:4px">auto ${auto}</div>
       </td>
       <td><span class="badge ${atrib>0?'b-par':'b-pend'}">${atrib}</span></td>
       <td><span class="badge ${done===atrib&&atrib>0?'b-ok':done>0?'b-par':'b-pend'}">${done}/${atrib}</span></td>
@@ -2651,11 +2653,126 @@ function fullInscId(id) {
 function shortInscId(id) {
   return String(id || '').split('-').pop();
 }
+function compactInstitutionLabel(value) {
+  const text = String(value || '').trim();
+  if (!text) return 'N/D';
+  const parens = [...text.matchAll(/\(([^()]+)\)/g)].map(m => String(m[1] || '').trim());
+  const preferred = parens.find(p => /[A-Za-zÀ-ÿ]/.test(p) && p.length <= 24 && !/,\s*[A-Z]{2}$/i.test(p));
+  if (preferred) return preferred;
+  return text.replace(/\s*\([^()]+\)\s*$/,'').trim();
+}
+function portalInstitutionLabel(value) {
+  const text = String(value || '').trim();
+  if (!text) return 'N/D';
+  return text
+    .replace(/\s*\(\s*[^()]*,\s*[A-Z]{2}\s*\)\s*$/,'')
+    .replace(/\s{2,}/g,' ')
+    .trim();
+}
+function displayPersonName(value) {
+  const text = String(value || '').trim();
+  if (!text) return 'N/D';
+  const lowerWords = new Set(['da','de','do','das','dos','e']);
+  return text
+    .toLowerCase()
+    .split(/\s+/)
+    .map((part, idx) => {
+      if (!part) return part;
+      const normalized = part
+        .split('-')
+        .map(piece => piece ? piece.charAt(0).toUpperCase() + piece.slice(1) : piece)
+        .join('-');
+      return idx > 0 && lowerWords.has(normalized) ? normalized.toLowerCase() : normalized;
+    })
+    .join(' ');
+}
+function compactCourseLabel(value) {
+  const text = String(value || '').trim();
+  if (!text) return 'N/D';
+  const parens = [...text.matchAll(/\(([^()]+)\)/g)].map(m => String(m[1] || '').trim());
+  const preferred = parens.find(p => /[A-Za-zÀ-ÿ]/.test(p) && p.length <= 28 && !/,\s*[A-Z]{2}$/i.test(p));
+  if (preferred) return preferred;
+  return truncateLabel(
+    text
+      .replace(/Comunicação Social com habilitação em /i, '')
+      .replace(/Curso de /i, '')
+      .replace(/\s*\([^()]+\)\s*$/,'')
+      .trim(),
+    26
+  );
+}
+function compactUfLabel(value) {
+  const text = String(value || '').trim();
+  if (!text) return 'N/D';
+  const normalized = text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
+  const ufMap = {
+    'acre':'AC',
+    'alagoas':'AL',
+    'amapa':'AP',
+    'amazonas':'AM',
+    'bahia':'BA',
+    'ceara':'CE',
+    'distrito federal':'DF',
+    'espirito santo':'ES',
+    'goias':'GO',
+    'maranhao':'MA',
+    'mato grosso':'MT',
+    'mato grosso do sul':'MS',
+    'minas gerais':'MG',
+    'para':'PA',
+    'paraiba':'PB',
+    'parana':'PR',
+    'pernambuco':'PE',
+    'piaui':'PI',
+    'rio de janeiro':'RJ',
+    'rio grande do norte':'RN',
+    'rio grande do sul':'RS',
+    'rondonia':'RO',
+    'roraima':'RR',
+    'santa catarina':'SC',
+    'sao paulo':'SP',
+    'sergipe':'SE',
+    'tocantins':'TO'
+  };
+  if (ufMap[normalized]) return ufMap[normalized];
+  const match = text.match(/\(([A-Z]{2})\)\s*$|\b([A-Z]{2})\b\s*$/);
+  if (match) return match[1] || match[2];
+  return text;
+}
+function regionFromUf(value) {
+  const uf = compactUfLabel(value);
+  const regionMap = {
+    AC:'Norte', AP:'Norte', AM:'Norte', PA:'Norte', RO:'Norte', RR:'Norte', TO:'Norte',
+    AL:'Nordeste', BA:'Nordeste', CE:'Nordeste', MA:'Nordeste', PB:'Nordeste', PE:'Nordeste', PI:'Nordeste', RN:'Nordeste', SE:'Nordeste',
+    DF:'Centro-Oeste', GO:'Centro-Oeste', MT:'Centro-Oeste', MS:'Centro-Oeste',
+    ES:'Sudeste', MG:'Sudeste', RJ:'Sudeste', SP:'Sudeste',
+    PR:'Sul', RS:'Sul', SC:'Sul'
+  };
+  return regionMap[uf] || 'N/D';
+}
+function isStatusEnviado(value) {
+  return String(value || '').trim().toLowerCase() === 'enviado';
+}
 function materialLinks(e) {
   const raw = e?._raw || {};
-  const video = raw['Faça o upload do vídeo criativo de até 3 minutos, em formato MP4, sobre o tema O PAPEL DA EDUCAÇÃO NA TRANSFORMAÇÃO SOCIAL'] || '';
-  const roteiro30 = raw['Faça o upload do roteiro de uma peça publicitária de 30 segundos sobre o tema O PAPEL DA EDUCAÇÃO NA TRANSFORMAÇÃO SOCIAL'] || '';
-  const campanha = raw['Faça o upload do roteiro de uma campanha publicitária multiplataforma sobre o tema O PAPEL DA EDUCAÇÃO NA TRANSFORMAÇÃO SOCIAL'] || '';
+  const video =
+    e?.videoUrl ||
+    raw['Faça o upload do vídeo criativo de até 3 minutos, em formato MP4, apresentando e defendendo a ideia da campanha proposta sobre o tema O PAPEL DA EDUCAÇÃO NA TRANSFORMAÇÃO SOCIAL.'] ||
+    raw['Faça o upload do vídeo criativo de até 3 minutos, em formato MP4, sobre o tema O PAPEL DA EDUCAÇÃO NA TRANSFORMAÇÃO SOCIAL'] ||
+    '';
+  const roteiro30 =
+    e?.roteiro30Url ||
+    raw['Faça o upload do roteiro de uma peça publicitária de 30 segundos sobre o tema O PAPEL DA EDUCAÇÃO NA TRANSFORMAÇÃO SOCIAL'] ||
+    '';
+  const campanha =
+    e?.campanhaUrl ||
+    raw['Faça o upload do roteiro de uma campanha publicitária multiplataforma sobre o tema O PAPEL DA EDUCAÇÃO NA TRANSFORMAÇÃO SOCIAL'] ||
+    '';
   return { video, roteiro30, campanha };
 }
 function registrarCliqueAnexoFromLink(el, event) {
@@ -2846,7 +2963,7 @@ function filtrarResultados() {
     const statusAtual = c.done === 0 ? 'Não iniciadas' : c.done === c.total ? 'Finalizadas' : 'Parciais';
     if (status !== 'Todas as avaliações' && statusAtual !== status) return false;
     if (time !== 'Todos os times' && e.mod !== time) return false;
-    if (uf !== 'Todos os estados' && e.uf !== uf) return false;
+    if (uf !== 'Todos os estados' && compactUfLabel(e.uf) !== uf) return false;
     if (genero !== 'Todos os gêneros' && generoInscricao(e) !== genero) return false;
     return true;
   });
@@ -2913,16 +3030,20 @@ function renderResultados() {
     return `<tr>
       <td class="sticky s0"><div style="font-size:13px;font-weight:600;color:#202124">${ranking.rank}</div><div style="margin-top:6px"><div class="sw-sm"></div></div>${ranking.tied ? `<div class="res-faint" style="font-size:10px;margin-top:6px">(empate)</div>` : ''}</td>
       <td class="sticky s3" style="text-align:center">
-        <div class="res-muted res-id" style="font-family:monospace;font-size:11px">${shortInscId(e.id)}</div>
-        <div class="team-marker-stack">${teamMarker(e.mod)}</div>
-        <div class="res-uf">${e.uf || '—'}</div>
-      </td>
-      <td class="sticky s5">
-        <div class="leader-cell">
-          <div class="leader-actions">
+        <div class="res-id-hub">
+          <div class="res-id-meta">
+            <div class="res-muted res-id" style="font-family:monospace;font-size:11px">${shortInscId(e.id)}</div>
+            <div class="team-marker-stack">${teamMarker(e.mod)}</div>
+            <div class="res-uf">${compactUfLabel(e.uf) || '—'}</div>
+          </div>
+          <div class="res-id-actions">
             <button class="icon-btn" onclick="openModal(${idx})" title="Ver inscrição"><i class="ti ti-eye"></i></button>
             <button class="icon-btn" onclick="openModalPar(${idx})" title="Ver notas dos pareceristas"><i class="ti ti-notes"></i></button>
           </div>
+        </div>
+      </td>
+      <td class="sticky s5">
+        <div class="leader-cell">
           <div style="font-size:12.5px;font-weight:600;color:#202124">${e.lider}</div>
           ${e.p2 ? `<div class="team-members">
           <div class="team-member-line">${e.p2}</div>
@@ -2976,14 +3097,15 @@ function openModal(idx) {
       <div class="field s2"><div class="mfl">Participante 3</div><div class="mfv">${e.p3}</div><div class="mfv-sub">${e.p3e}</div></div>`;
   }
   const links = materialLinks(e);
-  const objetivos = e._raw?.['Objetivos da campanha'] || e._raw?.['Objetivos'] || e._raw?.['objetivos'] || 'Ampliar a percepção pública sobre o papel da educação na transformação social e mobilizar diferentes públicos.';
-  const estrategia = e._raw?.['Estratégia de distribuição'] || e._raw?.['Estrategia de distribuicao'] || e._raw?.['estrategia'] || 'Distribuição em vídeo curto, peça de 30 segundos, posts sociais, ativação em instituições de ensino e canais digitais.';
+  const objetivos = e.objetivos || e._raw?.['Objetivos da campanha'] || e._raw?.['Objetivos'] || e._raw?.['objetivos'] || 'Ampliar a percepção pública sobre o papel da educação na transformação social e mobilizar diferentes públicos.';
+  const estrategia = e.estrategia || e._raw?.['Estratégia de distribuição'] || e._raw?.['Estrategia de distribuicao'] || e._raw?.['estrategia'] || 'Distribuição em vídeo curto, peça de 30 segundos, posts sociais, ativação em instituições de ensino e canais digitais.';
+  const curso = e.curso || e._raw?.['Curso no qual você tem matrícula ativa?'] || e._raw?.['Curso'] || '—';
   document.getElementById('mGrid').innerHTML = `
     <div class="field"><div class="mfl">ID da inscrição</div><div class="mfv mono">${modalId}</div></div>
     <div class="field"><div class="mfl">Modalidade</div><div class="mfv">${e.mod}</div></div>
-    <div class="field"><div class="mfl">Estado (UF)</div><div class="mfv">${e.uf}</div></div>
+    <div class="field"><div class="mfl">UF</div><div class="mfv">${compactUfLabel(e.uf) || '—'}</div></div>
     <div class="field s2"><div class="mfl">Instituição</div><div class="mfv">${e.inst}</div></div>
-    <div class="field"><div class="mfl">Curso</div><div class="mfv">Publicidade e Propaganda</div></div>
+    <div class="field"><div class="mfl">Curso</div><div class="mfv">${curso}</div></div>
     <div class="field"><div class="mfl">Líder</div><div class="mfv">${e.lider}</div><div class="mfv-sub">${e.le}</div></div>
     ${participantesExtra}
     <div class="field s3"><div class="mfl">Mentor</div><div class="mfv">${e.mentor}</div><div class="mfv-sub">${e.me}</div></div>
@@ -3168,8 +3290,12 @@ function renderPortal() {
     return `<div class="ficha-item ${isDone?'done':'pending'}" onclick="abrirFicha('${parId}','${inscId}')">
       <div class="fi-id">PPA2026-${e.id}</div>
       <div class="fi-main">
-        <div class="fi-nome">${e.lider}</div>
-        <div class="fi-sub">${e.mod} · ${e.uf} · ${e.inst}</div>
+        <div class="fi-head">
+          <div class="fi-nome">${displayPersonName(e.lider)}</div>
+          <div class="fi-team">${teamMarker(e.mod)}</div>
+        </div>
+        <div class="fi-meta">${e.mod}</div>
+        <div class="fi-inst">${portalInstitutionLabel(e.inst)}</div>
       </div>
       <div class="fi-status">
         <span class="badge ${isDone?'b-ok':'b-pend'}">${isDone?'Concluída':'Pendente'}</span>
@@ -4093,7 +4219,7 @@ let rawParticipantes = [];
 let baseConfirmada = false;
 let dashCharts = {};
 const ARQUIVO_PADRAO = 'base_ficticia_ppa_inscricoes_participantes.xlsx';
-const ARQUIVO_PADRAO_HOMOLOG = 'Homologar.xlsx';
+const ARQUIVO_PADRAO_HOMOLOG = 'Inscrições PPA - 06.07.xlsx';
 const STORAGE_KEY = 'ppa2026_app_state_v1';
 const SUPABASE_SETTINGS_KEY = 'ppa2026_supabase_settings_v1';
 let reviewerBootMode = false;
@@ -4186,6 +4312,34 @@ function defaultBaseFileForEnvironment(env) {
   return env === 'homolog' ? ARQUIVO_PADRAO_HOMOLOG : ARQUIVO_PADRAO;
 }
 
+function normalizeEnvironmentBaseFile(env, value) {
+  const fallback = defaultBaseFileForEnvironment(env);
+  const raw = String(value || '').trim();
+  if (!raw) return fallback;
+  if (env === 'homolog') {
+    const lower = raw.toLowerCase();
+    if (
+      lower === 'homologar.xlsx' ||
+      lower === 'base_ficticia_ppa_inscricoes_participantes.xlsx' ||
+      lower === 'inscrições ppa - 06.07 - participantes.csv' ||
+      lower === 'inscricoes ppa - 06.07 - participantes.csv'
+    ) {
+      return ARQUIVO_PADRAO_HOMOLOG;
+    }
+  }
+  return raw;
+}
+
+function isLegacyFakeBaseName(value) {
+  const lower = String(value || '').trim().toLowerCase();
+  return (
+    lower === 'homologar.xlsx' ||
+    lower === 'base_ficticia_ppa_inscricoes_participantes.xlsx' ||
+    lower === 'inscrições ppa - 06.07 - participantes.csv' ||
+    lower === 'inscricoes ppa - 06.07 - participantes.csv'
+  );
+}
+
 function activeBaseFile() {
   return environmentBaseFiles[activeEnvironment] || defaultBaseFileForEnvironment(activeEnvironment);
 }
@@ -4232,6 +4386,35 @@ async function runSupabaseQuery(queryPromise) {
   const result = await queryPromise;
   if (result?.error) throw result.error;
   return result?.data;
+}
+
+async function syncAtribuicoesSnapshot(client, atribRows, reason) {
+  if (!atribRows.length) return;
+  try {
+    await runSupabaseQuery(
+      client.from('atribuicoes').upsert(atribRows, {
+        onConflict:'environment,inscricao_id_externo,parecerista_id_externo'
+      })
+    );
+  } catch (err) {
+    if (err?.code !== '42P10') throw err;
+
+    updateSupabaseStatus(
+      `A tabela de atribuições em ${activeEnvironment} não tem constraint de upsert. Regravando snapshot completo...`,
+      'muted'
+    );
+
+    await runSupabaseQuery(
+      client.from('atribuicoes').delete().eq('environment', activeEnvironment)
+    );
+
+    const chunkSize = 250;
+    for (let i = 0; i < atribRows.length; i += chunkSize) {
+      await runSupabaseQuery(
+        client.from('atribuicoes').insert(atribRows.slice(i, i + chunkSize))
+      );
+    }
+  }
 }
 
 function startRemoteBootWatchdog(timeoutMs = 8000) {
@@ -4306,8 +4489,8 @@ function hydrateSupabaseSettings() {
     persistenceMode = parsed.persistenceMode || persistenceMode;
     activeEnvironment = parsed.activeEnvironment || activeEnvironment;
     environmentBaseFiles = {
-      homolog: parsed.environmentBaseFiles?.homolog || ARQUIVO_PADRAO_HOMOLOG,
-      producao: parsed.environmentBaseFiles?.producao || ARQUIVO_PADRAO,
+      homolog: normalizeEnvironmentBaseFile('homolog', parsed.environmentBaseFiles?.homolog || ARQUIVO_PADRAO_HOMOLOG),
+      producao: normalizeEnvironmentBaseFile('producao', parsed.environmentBaseFiles?.producao || ARQUIVO_PADRAO),
     };
     const migratedUrl =
       parsed.url ||
@@ -4360,8 +4543,8 @@ async function loadSharedSupabaseSettings() {
     if (parsed.persistenceMode) persistenceMode = parsed.persistenceMode;
     if (parsed.activeEnvironment) activeEnvironment = parsed.activeEnvironment;
     environmentBaseFiles = {
-      homolog: parsed.environmentBaseFiles?.homolog || environmentBaseFiles.homolog || ARQUIVO_PADRAO_HOMOLOG,
-      producao: parsed.environmentBaseFiles?.producao || environmentBaseFiles.producao || ARQUIVO_PADRAO,
+      homolog: normalizeEnvironmentBaseFile('homolog', parsed.environmentBaseFiles?.homolog || environmentBaseFiles.homolog || ARQUIVO_PADRAO_HOMOLOG),
+      producao: normalizeEnvironmentBaseFile('producao', parsed.environmentBaseFiles?.producao || environmentBaseFiles.producao || ARQUIVO_PADRAO),
     };
     if (parsed.url) supabaseSettings.url = String(parsed.url).trim();
     if (parsed.anonKey) supabaseSettings.anonKey = String(parsed.anonKey).trim();
@@ -4386,7 +4569,9 @@ function persistSupabaseSettings() {
 function resetRuntimeStateForEnvironment() {
   cancelPendingBaseLoadRetries();
   INSCRICOES.length = 0;
-  pareceristas = PARECERISTAS_DEFAULT.map(p => ({ ...p }));
+  pareceristas = persistenceMode === 'supabase'
+    ? []
+    : PARECERISTAS_DEFAULT.map(p => ({ ...p }));
   atribuicoes = {};
   avaliacoes = {};
   logAuditoria = [];
@@ -4411,7 +4596,9 @@ function resetRuntimeStateForEnvironment() {
 
 async function reloadEnvironmentState() {
   resetRuntimeStateForEnvironment();
-  hydrateAppState();
+  if (persistenceMode !== 'supabase') {
+    hydrateAppState();
+  }
   document.getElementById('paramTempo').value = Math.max(1, Math.round(TEMPO_MINIMO / 60000));
   document.getElementById('paramInsuf').value = INSUF_OBRIGA_PARECER;
   document.getElementById('paramPareceresEquipe').value = NUM_PARECERES_POR_EQUIPE;
@@ -4448,7 +4635,10 @@ async function saveSupabaseSettings() {
   const previousEnvironment = activeEnvironment;
   persistenceMode = document.getElementById('sbPersistenceMode').value;
   activeEnvironment = document.getElementById('sbEnvActive').value;
-  environmentBaseFiles[activeEnvironment] = document.getElementById('sbBaseName').value.trim() || defaultBaseFileForEnvironment(activeEnvironment);
+  environmentBaseFiles[activeEnvironment] = normalizeEnvironmentBaseFile(
+    activeEnvironment,
+    document.getElementById('sbBaseName').value.trim() || defaultBaseFileForEnvironment(activeEnvironment)
+  );
   supabaseSettings = {
     url: document.getElementById('sbProjectUrl').value.trim(),
     anonKey: document.getElementById('sbAnonKey').value.trim(),
@@ -4614,7 +4804,7 @@ function pareceristasPayload() {
     nome: p.nome,
     email: p.email,
     instituicao: p.inst || '',
-    capacidade_manual: p.cotaManual ? (parseInt(p.cota, 10) || 0) : null,
+    capacidade_manual: null,
     capacidade_calculada: autoCap[p.id] || 0,
     ativo: true,
     updated_at: new Date().toISOString(),
@@ -4928,7 +5118,7 @@ async function ensureImportRecord(client) {
     ...rawRows.map((row, idx) => ({
       import_id: data.id,
       environment: activeEnvironment,
-      source_sheet: 'Inscrição',
+      source_sheet: 'Inscrições',
       row_number: idx + 2,
       payload_json: row,
     })),
@@ -5020,11 +5210,7 @@ async function syncStateToSupabase(reason) {
     if (remoteAtribError) throw remoteAtribError;
 
     if (atribRows.length) {
-      await runSupabaseQuery(
-        client.from('atribuicoes').upsert(atribRows, {
-          onConflict:'environment,inscricao_id_externo,parecerista_id_externo'
-        })
-      );
+      await syncAtribuicoesSnapshot(client, atribRows, reason);
     }
 
     if (syncCanReplaceAssignments) {
@@ -5307,6 +5493,7 @@ function inscricoesFromRemote(rows, participants) {
     const pid = group[row.id_externo] || [];
     const p2 = pid.find(p => p.papel === 'participante_2');
     const p3 = pid.find(p => p.papel === 'participante_3');
+    const raw = row.raw_json || {};
     INSCRICOES.push({
       id: shortInscId(row.id_externo),
       lider: row.lider,
@@ -5319,10 +5506,16 @@ function inscricoesFromRemote(rows, participants) {
       me: row.mentor_email,
       inst: row.instituicao,
       mod: row.modalidade,
-      uf: row.uf,
+      uf: compactUfLabel(row.uf),
       defesa: row.defesa_conceitual,
       ia: row.ia_descricao,
-      _raw: row.raw_json || {},
+      objetivos: row.objetivos_campanha || raw['Objetivos da campanha'] || raw['Objetivos'] || raw['objetivos'] || '',
+      estrategia: row.estrategia_distribuicao || raw['Estratégia de distribuição'] || raw['Estrategia de distribuicao'] || raw['estrategia'] || '',
+      curso: row.curso || raw['Curso no qual você tem matrícula ativa?'] || raw['Curso'] || '',
+      videoUrl: row.video_url || '',
+      roteiro30Url: row.roteiro_30_url || '',
+      campanhaUrl: row.campanha_url || '',
+      _raw: raw,
     });
   });
 }
@@ -5391,11 +5584,13 @@ async function fetchAllSupabaseRowsByIds(tableName, ids, options = {}) {
 async function loadStateFromSupabase(options = {}) {
   const includeAudit = options.includeAudit !== false;
   const includeCriteria = options.includeCriteria !== false;
+  const skipLegacyMigration = !!options.skipLegacyMigration;
   const client = getSupabaseClient();
   if (!client) return false;
   try {
     const [
       cfgRes,
+      latestImportRes,
       inscData,
       partData,
       parData,
@@ -5405,6 +5600,7 @@ async function loadStateFromSupabase(options = {}) {
       auditData,
     ] = await Promise.all([
       client.from('configuracoes_sistema').select('*').eq('id', activeEnvironment).maybeSingle(),
+      client.from('imports').select('source_name, imported_at').eq('environment', activeEnvironment).order('imported_at', { ascending:false }).limit(1).maybeSingle(),
       fetchAllSupabaseRows(() => client.from('inscricoes').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('id_curto')),
       fetchAllSupabaseRows(() => client.from('participantes').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('id')),
       fetchAllSupabaseRows(() => client.from('pareceristas').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('nome')),
@@ -5418,6 +5614,33 @@ async function loadStateFromSupabase(options = {}) {
         : Promise.resolve([]),
     ]);
     if (cfgRes.error) throw cfgRes.error;
+    if (latestImportRes.error) throw latestImportRes.error;
+
+    const latestImportSource = String(latestImportRes.data?.source_name || '').trim();
+    const activeSource = String(activeBaseFile() || '').trim();
+    const normalizedLatestSource = normalizeEnvironmentBaseFile(activeEnvironment, latestImportSource);
+    const normalizedActiveSource = normalizeEnvironmentBaseFile(activeEnvironment, activeSource);
+    const shouldMigrateLegacyHomolog =
+      !skipLegacyMigration &&
+      activeEnvironment === 'homolog' &&
+      latestImportSource &&
+      normalizedLatestSource !== normalizedActiveSource;
+
+    if (shouldMigrateLegacyHomolog) {
+      updateSupabaseStatus('Base legacy detectada em homolog. Migrando para a base real...', 'danger');
+      const loadedFromFile = await tentarCarregarArquivoPadrao({ forceAdmin:true, successView:'dashboard' });
+      if (!loadedFromFile || !INSCRICOES.length) {
+        throw new Error(`Não consegui carregar ${activeSource} para substituir a base legacy.`);
+      }
+      await clearRemoteEnvironmentData();
+      currentImportIdByEnvironment[activeEnvironment] = null;
+      currentImportHash = null;
+      environmentRemoteReady[activeEnvironment] = false;
+      persistSupabaseSettings();
+      const migrated = await syncStateToSupabase('legacy_base_migration');
+      if (!migrated?.ok) throw (migrated?.error || new Error('Falha ao migrar a base real para o Supabase.'));
+      return loadStateFromSupabase({ ...options, skipLegacyMigration:true });
+    }
 
     if (!inscData.length) {
       resetRuntimeStateForEnvironment();
@@ -5429,13 +5652,54 @@ async function loadStateFromSupabase(options = {}) {
     }
 
     inscricoesFromRemote(inscData, partData || []);
+    const remoteContainsNonSentRows =
+      activeEnvironment === 'homolog' &&
+      /\.xlsx($|\?)/i.test(activeSource) &&
+      (inscData || []).some(row => {
+        const status = String(row?.raw_json?.Status || row?.raw_json?.['Status inscrição'] || '').trim();
+        return status && !isStatusEnviado(status);
+      });
+    const remoteLooksIncomplete =
+      activeEnvironment === 'homolog' &&
+      /\.xlsx($|\?)/i.test(activeSource) &&
+      INSCRICOES.length > 0 &&
+      INSCRICOES.every(e =>
+        !e.mentor &&
+        !e.me &&
+        !e.defesa &&
+        !e.objetivos &&
+        !e.estrategia &&
+        !materialLinks(e).video &&
+        !materialLinks(e).roteiro30 &&
+        !materialLinks(e).campanha
+      );
+    if (!skipLegacyMigration && (remoteContainsNonSentRows || remoteLooksIncomplete)) {
+      updateSupabaseStatus(
+        remoteContainsNonSentRows
+          ? 'Estado remoto com inscrições fora de "Enviado". Reimportando a planilha oficial...'
+          : 'Estado remoto incompleto detectado. Reimportando a planilha oficial...',
+        'danger'
+      );
+      const loadedFromFile = await tentarCarregarArquivoPadrao({ forceAdmin:true, successView:'dashboard' });
+      if (!loadedFromFile || !INSCRICOES.length) {
+        throw new Error(`Não consegui carregar ${activeSource} para substituir o estado remoto incompleto.`);
+      }
+      await clearRemoteEnvironmentData();
+      currentImportIdByEnvironment[activeEnvironment] = null;
+      currentImportHash = null;
+      environmentRemoteReady[activeEnvironment] = false;
+      persistSupabaseSettings();
+      const migrated = await syncStateToSupabase('incomplete_remote_migration');
+      if (!migrated?.ok) throw (migrated?.error || new Error('Falha ao reimportar a planilha oficial no Supabase.'));
+      return loadStateFromSupabase({ ...options, skipLegacyMigration:true });
+    }
     pareceristas = (parData || []).map(p => ({
       id: p.id_externo,
       nome: p.nome,
       email: p.email,
       inst: p.instituicao,
-      cota: p.capacidade_manual,
-      cotaManual: p.capacidade_manual !== null && p.capacidade_manual !== undefined,
+      cota: null,
+      cotaManual: false,
     }));
 
     atribuicoes = {};
@@ -5534,8 +5798,8 @@ async function loadReviewerPortalStateFromSupabase(parId) {
       nome: parRes.data.nome,
       email: parRes.data.email,
       inst: parRes.data.instituicao,
-      cota: parRes.data.capacidade_manual,
-      cotaManual: parRes.data.capacidade_manual !== null && parRes.data.capacidade_manual !== undefined,
+      cota: null,
+      cotaManual: false,
     }];
 
     const inscIdsFull = [...new Set((atribData || []).map(r => r.inscricao_id_externo))];
@@ -5780,11 +6044,19 @@ function distribuicaoExcedeCotas() {
 }
 
 function carregarWorkbook(workbook) {
-  const inscricaoSheet = workbook.SheetNames.includes('Inscrição') ? 'Inscrição' : workbook.SheetNames[0];
+  const inscricaoSheet =
+    workbook.SheetNames.find(name => ['Inscrições', 'Inscrição', 'Inscricoes', 'Inscricao'].includes(name)) ||
+    workbook.SheetNames.find(name => /inscri/i.test(name)) ||
+    workbook.SheetNames[0];
   const participantesSheet = workbook.SheetNames.includes('Participantes') ? 'Participantes' : null;
   const wsInscricao = workbook.Sheets[inscricaoSheet];
   rawRows = XLSX.utils.sheet_to_json(wsInscricao, { defval: '' });
   rawParticipantes = participantesSheet ? XLSX.utils.sheet_to_json(workbook.Sheets[participantesSheet], { defval: '' }) : [];
+}
+
+function carregarCsvTexto(csvText) {
+  const workbook = XLSX.read(csvText, { type:'string', raw:false });
+  carregarWorkbook(workbook);
 }
 
 async function tentarCarregarArquivoPadrao(opts = {}) {
@@ -5825,20 +6097,25 @@ async function tentarCarregarArquivoPadrao(opts = {}) {
 
   try {
     const arquivoAtivo = activeBaseFile();
-    const buffer = await new Promise((resolve, reject) => {
+    const isCsv = /\.csv($|\?)/i.test(arquivoAtivo);
+    const payload = await new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open('GET', arquivoAtivo + '?t=' + Date.now(), true);
-      xhr.responseType = 'arraybuffer';
+      xhr.responseType = isCsv ? 'text' : 'arraybuffer';
       xhr.onload = () => {
         if (xhr.status >= 200 && xhr.status < 300) resolve(xhr.response);
         else reject(new Error(`HTTP ${xhr.status}`));
       };
-      xhr.onerror = () => reject(new Error('Falha de rede ao carregar XLSX padrão'));
+      xhr.onerror = () => reject(new Error(`Falha de rede ao carregar ${isCsv ? 'CSV' : 'XLSX'} padrão`));
       xhr.send();
     });
     if (attemptToken !== baseLoadAttemptToken) return false;
-    const wb = XLSX.read(buffer, { type: 'array', cellDates: true });
-    carregarWorkbook(wb);
+    if (isCsv) {
+      carregarCsvTexto(String(payload || ''));
+    } else {
+      const wb = XLSX.read(payload, { type: 'array', cellDates: true });
+      carregarWorkbook(wb);
+    }
     if (attemptToken !== baseLoadAttemptToken) return false;
     carregandoBasePadrao = false;
     falhaCargaBasePadrao = false;
@@ -5894,11 +6171,17 @@ function rebuildBaseFromRawRows() {
   }
 
   const col = (row, ...keys) => { for (const k of keys) if (row[k] !== undefined && row[k] !== '') return String(row[k]); return ''; };
+  const normalizeText = value => String(value || '').trim().toLowerCase();
+  const singleFileParticipantsMode = !rawParticipantes.length && rawRows.some(r =>
+    Object.prototype.hasOwnProperty.call(r || {}, 'Papel') || Object.prototype.hasOwnProperty.call(r || {}, 'Status inscrição')
+  );
+  const participantRowsSource = rawParticipantes.length ? rawParticipantes : (singleFileParticipantsMode ? rawRows : []);
   const participantesPorInscricao = {};
 
-  rawParticipantes.forEach(r => {
+  participantRowsSource.forEach(r => {
     const idInscricao = col(r, 'ID inscrição', 'ID Inscrição', 'ID');
     if (!idInscricao) return;
+    if (singleFileParticipantsMode && !isStatusEnviado(col(r, 'Status inscrição'))) return;
 
     const ordem = Number(col(r, 'Ordem'));
     const papel = col(r, 'Papel');
@@ -5929,32 +6212,55 @@ function rebuildBaseFromRawRows() {
   });
 
   INSCRICOES.length = 0;
-  rawRows.forEach((r, i) => {
-    const id = col(r,'ID','id','Nº','Número') || String(i+1).padStart(5,'0');
+  const inscricaoRows = singleFileParticipantsMode
+    ? Object.values(rawRows.reduce((acc, row) => {
+        const status = col(row, 'Status inscrição');
+        if (!isStatusEnviado(status)) return acc;
+        const idInscricao = col(row, 'ID inscrição', 'ID Inscrição', 'ID');
+        if (!idInscricao) return acc;
+        if (!acc[idInscricao]) acc[idInscricao] = [];
+        acc[idInscricao].push(row);
+        return acc;
+      }, {}))
+    : rawRows.filter(row => isStatusEnviado(col(row, 'Status'))).map(row => [row]);
+
+  inscricaoRows.forEach((rowsGroup, i) => {
+    const baseRow = rowsGroup.find(row => {
+      const papel = normalizeText(col(row, 'Papel'));
+      const ordem = Number(col(row, 'Ordem'));
+      return papel === 'líder' || papel === 'lider' || ordem === 1;
+    }) || rowsGroup[0];
+    const id = col(baseRow,'ID inscrição','ID Inscrição','ID','id','Nº','Número') || String(i+1).padStart(5,'0');
     const participantes = participantesPorInscricao[id] || [];
     const participante1 = participantes[0] || null;
     const participante2 = participantes[1] || null;
     const participante3 = participantes[2] || null;
-    const modalidadeRaw = col(r, 'Modalidade');
+    const modalidadeRaw = col(baseRow, 'Modalidade');
     const instFallback = participante1?.inst || participante2?.inst || participante3?.inst || '';
     const ufFallback = participante1?.uf || participante2?.uf || participante3?.uf || '';
 
     INSCRICOES.push({
       id,
-      lider: col(r,'Líder'),
-      le: col(r,'E-mail do líder'),
+      lider: col(baseRow,'Líder') || participante1?.nome || col(baseRow, 'Nome'),
+      le: col(baseRow,'E-mail do líder') || participante1?.email || col(baseRow, 'E-mail', 'Email'),
       p2: participante2?.nome || null,
-      p2e: participante2?.email || col(r,'E-mail participante 2 informado') || null,
+      p2e: participante2?.email || col(baseRow,'E-mail participante 2 informado') || null,
       p3: participante3?.nome || null,
-      p3e: participante3?.email || col(r,'E-mail participante 3 informado') || null,
-      mentor: col(r,'Nome do mentor informado'),
-      me: col(r,'E-mail do mentor informado'),
+      p3e: participante3?.email || col(baseRow,'E-mail participante 3 informado') || null,
+      mentor: col(baseRow,'Nome do mentor informado'),
+      me: col(baseRow,'E-mail do mentor informado'),
       inst: instFallback,
       mod: normalizarModalidade(modalidadeRaw, participante2?.nome, participante3?.nome),
-      uf: ufFallback,
-      defesa: col(r,'Defesa conceitual da campanha'),
-      ia: col(r,'Qual(is) ferramenta(s) de IA foi(ram) utilizada(s)') || (col(r,'Utilizou-se alguma ferramenta de inteligência artificial na criação do vídeo?') === 'Não' ? 'Não utilizou IA' : col(r,'Utilizou-se alguma ferramenta de inteligência artificial na criação do vídeo?')) || 'Não informado',
-      _raw: { ...(participante1?.raw || {}), ...r },
+      uf: compactUfLabel(ufFallback),
+      defesa: col(baseRow,'Defesa conceitual da campanha'),
+      ia: col(baseRow,'Qual(is) ferramenta(s) de IA foi(ram) utilizada(s)') || (col(baseRow,'Utilizou-se alguma ferramenta de inteligência artificial na criação do vídeo?') === 'Não' ? 'Não utilizou IA' : col(baseRow,'Utilizou-se alguma ferramenta de inteligência artificial na criação do vídeo?')) || 'Não informado',
+      objetivos: col(baseRow,'Objetivos da campanha','Objetivos','objetivos'),
+      estrategia: col(baseRow,'Estratégia de distribuição','Estrategia de distribuicao','estrategia'),
+      curso: col(baseRow,'Participante 1 curso','Curso no qual você tem matrícula ativa?','Curso'),
+      videoUrl: col(baseRow,'Faça o upload do vídeo criativo de até 3 minutos, em formato MP4, apresentando e defendendo a ideia da campanha proposta sobre o tema O PAPEL DA EDUCAÇÃO NA TRANSFORMAÇÃO SOCIAL.','Faça o upload do vídeo criativo de até 3 minutos, em formato MP4, sobre o tema O PAPEL DA EDUCAÇÃO NA TRANSFORMAÇÃO SOCIAL'),
+      roteiro30Url: col(baseRow,'Faça o upload do roteiro de uma peça publicitária de 30 segundos sobre o tema O PAPEL DA EDUCAÇÃO NA TRANSFORMAÇÃO SOCIAL'),
+      campanhaUrl: col(baseRow,'Faça o upload do roteiro de uma campanha publicitária multiplataforma sobre o tema O PAPEL DA EDUCAÇÃO NA TRANSFORMAÇÃO SOCIAL'),
+      _raw: { ...(participante1?.raw || {}), ...baseRow },
     });
   });
 }
@@ -5965,11 +6271,13 @@ function aplicarPosCargaBase(opts = {}) {
     syncRemote = persistenceMode === 'supabase',
     rerender = true,
     notifySuccess = true,
+    resetManualCapacities = true,
   } = opts;
 
   baseConfirmada = true;
 
   syncPersistedStateWithBase();
+  if (resetManualCapacities) limparCapacidadesManuaisPareceristas();
   normalizarAtribuicoesPorCota();
   if (distribuicaoExcedeCotas()) {
     atribuicoes = {};
@@ -6006,11 +6314,76 @@ function topN(obj, n) {
   return Object.entries(obj).sort((a,b)=>b[1]-a[1]).slice(0,n);
 }
 
+function renderMiniLegend(elId, entries, colors = []) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  if (!entries?.length) {
+    el.innerHTML = '';
+    return;
+  }
+  el.innerHTML = entries.map(([label, value], idx) => `
+    <div class="mini-legend-item">
+      <div class="mini-legend-meta">
+        <span class="mini-legend-dot" style="background:${colors[idx] || '#AECBFA'}"></span>
+        <span class="mini-legend-label">${label || 'N/D'}</span>
+      </div>
+      <span class="mini-legend-value">${Number(value || 0).toLocaleString('pt-BR')}</span>
+    </div>
+  `).join('');
+}
+
 function safeChart(id, config) {
   const el = document.getElementById(id);
   if (!el) return null;
+  if (window.Chart && !window.__dashboardValueLabelsRegistered) {
+    Chart.register(dashboardValueLabelsPlugin);
+    window.__dashboardValueLabelsRegistered = true;
+  }
   return new Chart(el, config);
 }
+
+const dashboardValueLabelsPlugin = {
+  id: 'dashboardValueLabels',
+  afterDatasetsDraw(chart, args, pluginOptions) {
+    if (!pluginOptions?.enabled) return;
+    const { ctx } = chart;
+    const isHorizontal = chart.options?.indexAxis === 'y';
+    ctx.save();
+    ctx.font = '600 11px Inter, system-ui, sans-serif';
+    ctx.fillStyle = pluginOptions.color || '#5F6368';
+    ctx.textBaseline = 'middle';
+
+    chart.data.datasets.forEach((dataset, datasetIndex) => {
+      const meta = chart.getDatasetMeta(datasetIndex);
+      if (!meta?.data?.length || meta.hidden) return;
+      const kind = dataset.type || chart.config.type;
+      meta.data.forEach((element, index) => {
+        const raw = dataset.data?.[index];
+        const value = Number(raw);
+        if (!Number.isFinite(value)) return;
+        const label = value.toLocaleString('pt-BR');
+        const pos = element.tooltipPosition();
+        if (kind === 'bar' && isHorizontal) {
+          ctx.textAlign = 'left';
+          ctx.fillText(label, pos.x + 8, pos.y);
+          return;
+        }
+        if (kind === 'bar') {
+          ctx.textAlign = 'center';
+          ctx.fillText(label, pos.x, pos.y - 10);
+          return;
+        }
+        if (kind === 'line') {
+          ctx.textAlign = 'center';
+          ctx.fillText(label, pos.x, pos.y - 12);
+        }
+      });
+    });
+    ctx.restore();
+  }
+};
+
+const DASH_CHART_CFG = { responsive:true, maintainAspectRatio:false };
 
 function safeFallback(id, msg) {
   const el = document.getElementById(id);
@@ -6033,6 +6406,167 @@ function restoreDashSlot(slotId, canvasId, height) {
   slot.innerHTML = `<canvas id="${canvasId}"></canvas>`;
   slot.style.position = 'relative';
   slot.style.height = height;
+  slot.style.minHeight = height;
+  slot.style.overflow = 'hidden';
+}
+
+function restoreDashListSlot(slotId) {
+  const slot = document.getElementById(slotId);
+  if (!slot) return;
+  slot.innerHTML = '';
+  slot.style.position = 'relative';
+  slot.style.height = 'auto';
+  slot.style.minHeight = '0';
+  slot.style.overflow = 'hidden';
+}
+
+function dashboardBarChartOptions({ maxTicksLimit = 8, yTitle = '', xTickFontSize = 11 } = {}) {
+  return {
+    ...DASH_CHART_CFG,
+    plugins:{
+      legend:{ display:false },
+      dashboardValueLabels:{ enabled:true }
+    },
+    scales:{
+      y:{
+        beginAtZero:true,
+        grid:{ color:'#F1F3F4' },
+        border:{ dash:[4,4] },
+        title:{ display:!!yTitle, text:yTitle }
+      },
+      x:{
+        grid:{ display:false },
+        ticks:{
+          color:'#5F6368',
+          font:{ size:xTickFontSize, weight:'600' },
+          maxRotation:0,
+          minRotation:0,
+          autoSkip:true,
+          maxTicksLimit
+        }
+      }
+    }
+  };
+}
+
+function renderDashboardVerticalBarChart(id, entries, {
+  colors = [],
+  height = null,
+  labelWrap = 14,
+  maxLines = 3,
+  maxTicksLimit = 8,
+  yTitle = '',
+  xTickFontSize = 11,
+  fallbackMessage = 'Sem dados para exibir'
+} = {}) {
+  if (!entries?.length) {
+    safeFallback(id, fallbackMessage);
+    return null;
+  }
+  const labels = entries.map(([label]) => wrapLabel(label, labelWrap, maxLines));
+  const values = entries.map(([, value]) => value);
+  return safeChart(id, {
+    type:'bar',
+    data:{
+      labels,
+      datasets:[{
+        data: values,
+        backgroundColor: values.map((_, idx) => colors[idx] || '#4285F4'),
+        borderRadius: 4,
+        borderSkipped: false,
+        maxBarThickness: 28,
+        categoryPercentage: 0.72,
+        barPercentage: 0.62
+      }]
+    },
+    options: dashboardBarChartOptions({ maxTicksLimit, yTitle, xTickFontSize })
+  });
+}
+
+function renderDashboardBarListSlot(slotId, entries, {
+  colors = [],
+  limit = 10,
+  fallbackMessage = 'Sem dados para exibir'
+} = {}) {
+  const slot = document.getElementById(slotId);
+  if (!slot) return null;
+  slot.style.height = 'auto';
+  slot.style.minHeight = '0';
+  slot.style.overflow = 'hidden';
+  if (!entries?.length) {
+    slot.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;min-height:84px;padding:8px 0;color:#BDC1C6;font-size:12px;text-align:center">${fallbackMessage}</div>`;
+    return null;
+  }
+  const normalizedEntries = entries
+    .map(([label, value]) => [label, Number(value || 0)]);
+  const total = Math.max(1, normalizedEntries.reduce((acc, [, value]) => acc + value, 0));
+  const sliced = normalizedEntries
+    .slice(0, limit)
+    .map(([label, value]) => [label, value]);
+  const mx = Math.max(1, ...sliced.map(([, value]) => value));
+  slot.innerHTML = `
+    <div class="bar-list">
+      ${sliced.map(([label, value], idx) => `
+        <div class="bl-item">
+          <div class="bl-meta">
+            <span class="bl-name">${label || 'N/D'}</span>
+            <span class="bl-n">${value.toLocaleString('pt-BR')} <span class="bl-n-pct">(${Math.round((value / total) * 100)}%)</span></span>
+          </div>
+          <div class="bl-track">
+            <div class="bl-fill" style="width:${Math.max(4, Math.round((value / mx) * 100))}%;background:${colors[idx] || '#1A73E8'}"></div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  return true;
+}
+
+function truncateLabel(label, max = 30) {
+  const raw = String(label || '').replace(/\s+/g, ' ').trim();
+  if (!raw) return 'N/D';
+  if (raw.length <= max) return raw;
+  return `${raw.slice(0, Math.max(0, max - 1)).trimEnd()}…`;
+}
+
+function wrapLabel(label, lineSize = 16, maxLines = 3) {
+  const raw = String(label || '').replace(/\s+/g, ' ').trim();
+  if (!raw) return ['N/D'];
+  const words = raw.split(' ');
+  const lines = [];
+  let current = '';
+  words.forEach(word => {
+    const candidate = current ? `${current} ${word}` : word;
+    if (candidate.length <= lineSize || !current) {
+      current = candidate;
+      return;
+    }
+    lines.push(current);
+    current = word;
+  });
+  if (current) lines.push(current);
+  if (lines.length > maxLines) {
+    const kept = lines.slice(0, maxLines);
+    kept[maxLines - 1] = truncateLabel(kept[maxLines - 1], lineSize);
+    return kept;
+  }
+  return lines;
+}
+
+function legendLabelConfig(max = 28) {
+  return {
+    boxWidth:10,
+    padding:14,
+    usePointStyle:true,
+    pointStyle:'circle',
+    generateLabels(chart) {
+      const original = Chart.defaults.plugins.legend.labels.generateLabels;
+      return original(chart).map(item => ({
+        ...item,
+        text: truncateLabel(item.text, max),
+      }));
+    }
+  };
 }
 
 function dashboardListRows() {
@@ -6040,9 +6574,9 @@ function dashboardListRows() {
   const modalidade = (document.getElementById('dashFiltroModalidade')?.value || '').trim();
   const instituicao = (document.getElementById('dashFiltroInstituicao')?.value || '').trim();
   return INSCRICOES.filter(e => {
-    if (uf && String(e.uf || '').trim() !== uf) return false;
+    if (uf && compactUfLabel(e.uf) !== uf) return false;
     if (modalidade && String(e.mod || '').trim() !== modalidade) return false;
-    if (instituicao && String(e.inst || '').trim() !== instituicao) return false;
+    if (instituicao && compactInstitutionLabel(e.inst) !== instituicao) return false;
     return true;
   });
 }
@@ -6058,9 +6592,9 @@ function fillDashboardSelect(selectId, values, placeholder) {
 }
 
 function syncDashboardListFilters() {
-  fillDashboardSelect('dashFiltroUf', INSCRICOES.map(e => e.uf), 'Todos os estados');
+  fillDashboardSelect('dashFiltroUf', INSCRICOES.map(e => compactUfLabel(e.uf)), 'Todos os estados');
   fillDashboardSelect('dashFiltroModalidade', INSCRICOES.map(e => e.mod), 'Todas as modalidades');
-  fillDashboardSelect('dashFiltroInstituicao', INSCRICOES.map(e => e.inst), 'Todas as instituições');
+  fillDashboardSelect('dashFiltroInstituicao', INSCRICOES.map(e => compactInstitutionLabel(e.inst)), 'Todas as instituições');
 }
 
 function renderDashboardList() {
@@ -6071,10 +6605,10 @@ function renderDashboardList() {
   tbody.innerHTML = rows.length ? rows.map(e => `
     <tr>
       <td style="font-family:monospace;color:#5F6368">${shortInscId(e.id)}</td>
-      <td>${e.uf || '—'}</td>
+      <td>${compactUfLabel(e.uf)}</td>
       <td>${e.mod || '—'}</td>
       <td style="color:#202124;font-weight:600">${e.lider || '—'}</td>
-      <td>${e.inst || '—'}</td>
+      <td>${compactInstitutionLabel(e.inst)}</td>
       <td>${e.mentor || '—'}</td>
     </tr>
   `).join('') : `<tr><td colspan="6" style="text-align:center;color:#9AA0A6;padding:20px 14px">Nenhum registro encontrado.</td></tr>`;
@@ -6212,9 +6746,27 @@ function renderDashboard() {
   };
 
   const mods = count(insc,'mod');
-  const ufs = count(insc,'uf');
-  const topUFs = topN(ufs,15);
-  const inst = count(insc,'inst');
+  const ufs = {};
+  const regionMap = {};
+  insc.forEach(i => {
+    const ufKey = compactUfLabel(i.uf);
+    if (!ufKey || ufKey === 'N/D') return;
+    ufs[ufKey] = (ufs[ufKey] || 0) + 1;
+    const regionKey = regionFromUf(ufKey);
+    if (regionKey && regionKey !== 'N/D') regionMap[regionKey] = (regionMap[regionKey] || 0) + 1;
+  });
+  const topUFsAll = topN(ufs, 27);
+  const topUFs = topUFsAll.slice(0, 10);
+  const outrosUF = topUFsAll.slice(10).reduce((acc, [, value]) => acc + Number(value || 0), 0);
+  const topUFsComOutros = outrosUF > 0 ? [...topUFs, ['Outros', outrosUF]] : topUFs;
+  const regionEntries = ['Norte','Nordeste','Centro-Oeste','Sudeste','Sul']
+    .map(label => [label, Number(regionMap[label] || 0)])
+    .filter(([, value]) => value > 0);
+  const inst = {};
+  insc.forEach(i => {
+    const key = compactInstitutionLabel(i.inst);
+    inst[key] = (inst[key] || 0) + 1;
+  });
   const topInst = topN(inst,10);
   const cursoMap = {};
   const generoMap = {};
@@ -6230,6 +6782,10 @@ function renderDashboard() {
   let somaIdades = 0;
   let totalIdades = 0;
 
+  const profileRows = rawParticipantes.length
+    ? rawParticipantes.filter(row => isStatusEnviado(String(row?.['Status inscrição'] || '').trim()))
+    : insc.map(i => i._raw || {});
+
   insc.forEach(i => {
     const raw = i._raw || {};
     [
@@ -6242,7 +6798,11 @@ function renderDashboard() {
       studentSet.add((p.email || p.nome || '').toLowerCase());
     });
     if (i.mentor || i.me) mentorSet.add((i.me || i.mentor || '').toLowerCase());
+    const iaRotulo = yesNo(i.ia);
+    iaMap[iaRotulo] = (iaMap[iaRotulo] || 0) + 1;
+  });
 
+  profileRows.forEach(raw => {
     const curso = rawVal(raw, ['Curso no qual você tem matrícula ativa?', 'Curso', 'curso']);
     if (curso) cursoMap[curso] = (cursoMap[curso] || 0) + 1;
 
@@ -6252,54 +6812,72 @@ function renderDashboard() {
     const raca = rawVal(raw, ['Cor/raça', 'Cor/Raça', 'raca']);
     if (raca) racaMap[raca] = (racaMap[raca] || 0) + 1;
 
-    const idadeRaw = rawVal(raw, ['Faixa etária', 'Faixa etaria', 'Faixa de idade', 'Idade']);
-    if (idadeRaw) {
-      const idadeMedia = idadeMediaEstimativa(idadeRaw);
-      if (Number.isFinite(idadeMedia)) {
-        somaIdades += idadeMedia;
+    const nascimento = rawVal(raw, ['Data de nascimento', 'Nascimento']);
+    const nascDate = parseBrDateTime(nascimento);
+    if (nascDate && !isNaN(nascDate)) {
+      const hoje = new Date();
+      let idade = hoje.getFullYear() - nascDate.getFullYear();
+      const aniversarioAindaNaoPassou =
+        hoje.getMonth() < nascDate.getMonth() ||
+        (hoje.getMonth() === nascDate.getMonth() && hoje.getDate() < nascDate.getDate());
+      if (aniversarioAindaNaoPassou) idade--;
+      if (Number.isFinite(idade) && idade > 0 && idade < 120) {
+        somaIdades += idade;
         totalIdades++;
+        let bucket = '25+';
+        if (idade <= 17) bucket = 'Até 17';
+        else if (idade <= 20) bucket = '18–20';
+        else if (idade <= 24) bucket = '21–24';
+        idadeMap[bucket] = (idadeMap[bucket] || 0) + 1;
       }
-      const idadeNum = Number(String(idadeRaw).replace(/\D+/g, ''));
-      let bucket = idadeRaw;
-      if (Number.isFinite(idadeNum) && idadeNum > 0) {
-        if (idadeNum <= 17) bucket = 'Até 17';
-        else if (idadeNum <= 20) bucket = '18–20';
-        else if (idadeNum <= 24) bucket = '21–24';
-        else bucket = '25+';
-      }
-      idadeMap[bucket] = (idadeMap[bucket] || 0) + 1;
     }
 
-    const defic = rawVal(raw, ['Você é uma pessoa com deficiência?', 'Deficiência', 'Deficiencia', 'Pessoa com deficiência']);
+    const defic = rawVal(raw, ['Possui deficiência', 'Você é uma pessoa com deficiência?', 'Pessoa com deficiência', 'Deficiência', 'Deficiencia']);
     if (defic) {
       const rotulo = yesNo(defic);
       deficMap[rotulo] = (deficMap[rotulo] || 0) + 1;
     }
 
-    const area = rawVal(raw, ['Área do domicílio', 'Area do domicilio', 'Área']);
+    const area = rawVal(raw, ['O seu domicílio fica localizado em área urbana ou rural?', 'Área do domicílio', 'Area do domicilio', 'Área']);
     if (area) areaMap[area] = (areaMap[area] || 0) + 1;
 
-    const canal = rawVal(raw, ['Como ficou sabendo do edital', 'Como soube do edital', 'Canal de origem']);
+    const canal = rawVal(raw, ['Como ficou sabendo do edital Profissionais do Ano?', 'Como ficou sabendo do edital', 'Como soube do edital?', 'Como soube do edital', 'Canal de origem']);
     if (canal) canaisMap[canal] = (canaisMap[canal] || 0) + 1;
-
-    const iaRotulo = yesNo(i.ia);
-    iaMap[iaRotulo] = (iaMap[iaRotulo] || 0) + 1;
   });
 
   const participantesTotal = studentSet.size + mentorSet.size;
   const usouIA = iaMap['Sim'] || 0;
   const mediaIdade = totalIdades ? somaIdades / totalIdades : null;
+  const generoTotal = Object.values(generoMap).reduce((acc, value) => acc + value, 0);
+  const mulheresTotal = Object.entries(generoMap).reduce((acc, [label, value]) => {
+    const normalized = String(label || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
+    const isMulher =
+      normalized === 'f' ||
+      normalized === 'feminino' ||
+      normalized.includes('femin') ||
+      normalized.includes('mulher');
+    return acc + (isMulher ? Number(value || 0) : 0);
+  }, 0);
+  const topCursoEntry = topN(cursoMap, 1)[0] || null;
+  const topCursoNome = topCursoEntry ? compactCourseLabel(topCursoEntry[0]) : '—';
+  const topCursoTotal = topCursoEntry ? Number(topCursoEntry[1] || 0) : 0;
+  const topCursoPct = insc.length ? Math.round((topCursoTotal / insc.length) * 100) : 0;
+  const mulheresPct = generoTotal ? Math.round((mulheresTotal / generoTotal) * 100) : null;
+  const iaPct = insc.length ? Math.round((usouIA / insc.length) * 100) : null;
 
   document.getElementById('dashKpis').innerHTML = `
-    <div class="kpi"><div class="kpi-lbl">Inscrições</div><div class="kpi-val">${insc.length.toLocaleString('pt-BR')}</div><div class="kpi-sub">todas enviadas</div></div>
+    <div class="kpi"><div class="kpi-lbl">Inscrições</div><div class="kpi-val">${insc.length.toLocaleString('pt-BR')}</div><div class="kpi-sub">projetos submetidos</div></div>
     <div class="kpi"><div class="kpi-lbl">Participantes</div><div class="kpi-val">${participantesTotal.toLocaleString('pt-BR')}</div><div class="kpi-sub">estudantes + mentores</div></div>
-    <div class="kpi"><div class="kpi-lbl">Estudantes únicos</div><div class="kpi-val">${studentSet.size.toLocaleString('pt-BR')}</div><div class="kpi-sub">sem mentores</div></div>
-    <div class="kpi"><div class="kpi-lbl">Mentores</div><div class="kpi-val">${mentorSet.size.toLocaleString('pt-BR')}</div><div class="kpi-sub">cadastros distintos</div></div>
-    <div class="kpi"><div class="kpi-lbl">Usaram IA</div><div class="kpi-val">${insc.length ? Math.round(usouIA/insc.length*100)+'%' : '—'}</div><div class="kpi-sub">${usouIA.toLocaleString('pt-BR')} equipes</div></div>
+    <div class="kpi"><div class="kpi-lbl">% de mulheres</div><div class="kpi-val">${mulheresPct == null ? '—' : `${mulheresPct}%`}</div><div class="kpi-sub">${mulheresTotal.toLocaleString('pt-BR')} participantes</div></div>
+    <div class="kpi"><div class="kpi-lbl">${topCursoNome}</div><div class="kpi-val">${topCursoTotal ? topCursoTotal.toLocaleString('pt-BR') : '—'}</div><div class="kpi-sub">${topCursoEntry ? `${topCursoPct}% das inscrições` : 'curso não identificado'}</div></div>
+    <div class="kpi"><div class="kpi-lbl">Usaram IA</div><div class="kpi-val">${iaPct == null ? '—' : `${iaPct}%`}</div><div class="kpi-sub">${usouIA.toLocaleString('pt-BR')} equipes</div></div>
   `;
 
   const B1='#1A73E8',B2='#4285F4',B3='#669DF6',B4='#AECBFA';
-  const CFG = { responsive:true, maintainAspectRatio:false };
   Chart.defaults.font.size = 11;
   Chart.defaults.color = '#9AA0A6';
   Chart.defaults.borderColor = '#F1F3F4';
@@ -6308,7 +6886,7 @@ function renderDashboard() {
   let inscricoesSemDataValida = 0;
   insc.forEach(i => {
     const raw = i._raw || {};
-    const dateVal = rawVal(raw, ['Data de criação', 'Data de criacao', 'data_criacao', 'Data', 'data']);
+    const dateVal = rawVal(raw, ['Data de criação', 'Data de criacao', 'data_criacao', 'Criado em', 'Created at', 'Data', 'data']);
     if (!dateVal) {
       inscricoesSemDataValida++;
       return;
@@ -6358,64 +6936,45 @@ function renderDashboard() {
 
   if (currentDashPage === 'overview') {
     restoreDashSlot('slotEvolucao', 'cEvolucao', '210px');
-    restoreDashSlot('slotModalidade', 'cModalidade', '210px');
-    restoreDashSlot('slotIA', 'cIA', '210px');
+    restoreDashListSlot('slotModalidade');
+    restoreDashListSlot('slotIA');
 
     if (daySeries.length) {
-      const barrasBg = daySeries.map(e => e.semData ? 'rgba(154,160,166,.26)' : 'rgba(26,115,232,.26)');
-      const barrasBorder = daySeries.map(e => e.semData ? 'rgba(154,160,166,.72)' : 'rgba(26,115,232,.68)');
       const pontosLinha = daySeries.map(e => e.semData ? '#5F6368' : '#137333');
       dashCharts.ev = safeChart('cEvolucao', {
-        type:'bar',
+        type:'line',
         data:{
           labels:daySeries.map(e => e.label),
           datasets:[
             {
-              type:'bar',
-              label:'Inscrições no dia',
-              data:daySeries.map(e => e.value),
-              backgroundColor:barrasBg,
-              borderColor:barrasBorder,
-              borderWidth:1,
-              borderRadius:4,
-              borderSkipped:false,
-              yAxisID:'y'
-            },
-            {
-              type:'line',
               label:'Acumulado',
               data:daySeries.map(e => e.acumulado),
               borderColor:'#137333',
               backgroundColor:'rgba(19,115,51,.12)',
               pointBackgroundColor:pontosLinha,
-              pointRadius:2.5,
+              pointBorderColor:'#137333',
+              pointRadius:3,
+              pointHoverRadius:4,
               tension:.32,
-              borderWidth:2,
+              borderWidth:3,
               fill:false,
-              yAxisID:'y1'
+              yAxisID:'y'
             }
           ]
         },
         options:{
-          ...CFG,
+          ...DASH_CHART_CFG,
           plugins:{
             legend:{
-              display:true,
-              position:'top',
-              labels:{ boxWidth:10, padding:14 }
-            }
+              display:false
+            },
+            dashboardValueLabels:{ enabled:true }
           },
           scales:{
             y:{
               beginAtZero:true,
               grid:{ color:'#F1F3F4' },
               border:{ dash:[4,4] },
-              title:{ display:true, text:'Inscrições / dia' }
-            },
-            y1:{
-              beginAtZero:true,
-              position:'right',
-              grid:{ drawOnChartArea:false },
               title:{ display:true, text:'Acumulado' }
             },
             x:{
@@ -6426,107 +6985,111 @@ function renderDashboard() {
         }
       });
     } else {
-      safeFallback('cEvolucao', 'Data de criação não disponível na base');
+      safeFallback('cEvolucao', 'A base real não traz uma coluna de data de inscrição. Este gráfico depende dessa informação temporal.');
     }
 
-    dashCharts.mod = safeChart('cModalidade', {
-      type:'doughnut',
-      data:{ labels:Object.keys(mods), datasets:[{ data:Object.values(mods), backgroundColor:[B1,B2,B4], borderWidth:0, hoverOffset:4 }] },
-      options:{ ...CFG, cutout:'62%', plugins:{ legend:{ position:'right', labels:{ boxWidth:10, padding:14 } } } }
+    renderDashboardBarListSlot('slotModalidade', Object.entries(mods), {
+      colors:[B1,B2,B4],
+      fallbackMessage:'Modalidade não encontrada'
     });
 
     const iaEntries = Object.entries(iaMap).filter(([,v]) => v > 0);
-    dashCharts.ia = safeChart('cIA', {
-      type:'doughnut',
-      data:{ labels:iaEntries.map(e=>e[0]), datasets:[{ data:iaEntries.map(e=>e[1]), backgroundColor:['#34A853','#DADCE0','#AECBFA'], borderWidth:0, hoverOffset:4 }] },
-      options:{ ...CFG, cutout:'62%', plugins:{ legend:{ position:'right', labels:{ boxWidth:10, padding:14 } } } }
+    renderDashboardBarListSlot('slotIA', iaEntries, {
+      colors:['#34A853','#DADCE0','#AECBFA'],
+      fallbackMessage:'Uso de IA não encontrado'
     });
   }
 
   if (currentDashPage === 'perfil') {
-    restoreDashSlot('slotGenero', 'cGenero', '240px');
-    restoreDashSlot('slotRaca', 'cRaca', '240px');
-    restoreDashSlot('slotIdade', 'cIdade', '170px');
-    restoreDashSlot('slotDefic', 'cDefic', '170px');
-    restoreDashSlot('slotArea', 'cArea', '170px');
-    restoreDashSlot('slotCanais', 'cCanais', '210px');
+    restoreDashListSlot('slotGenero');
+    restoreDashListSlot('slotRaca');
+    restoreDashListSlot('slotIdade');
+    restoreDashListSlot('slotDefic');
+    restoreDashListSlot('slotArea');
+    restoreDashListSlot('slotCanais');
 
     const genEntries = topN(generoMap, 6);
     if (genEntries.length) {
-      dashCharts.gen = safeChart('cGenero', {
-        type:'bar',
-        data:{ labels:genEntries.map(e=>e[0]), datasets:[{ data:genEntries.map(e=>e[1]), backgroundColor:[B1,B2,B3,B4,B1,B2], borderRadius:3, borderSkipped:false }] },
-        options:{ ...CFG, indexAxis:'y', plugins:{legend:{display:false}}, scales:{ x:{grid:{color:'#F1F3F4'},border:{dash:[4,4]}}, y:{grid:{display:false}} } }
+      renderDashboardBarListSlot('slotGenero', genEntries, {
+        colors:[B1,B2,B3,B4,B1,B2],
+        limit:6
       });
     } else {
-      safeFallback('cGenero', 'Coluna de gênero não encontrada');
+      renderDashboardBarListSlot('slotGenero', [], { fallbackMessage:'Coluna de gênero não encontrada' });
     }
 
     const racaEntries = topN(racaMap, 6);
     if (racaEntries.length) {
-      dashCharts.raca = safeChart('cRaca', {
-        type:'bar',
-        data:{ labels:racaEntries.map(e=>e[0]), datasets:[{ data:racaEntries.map(e=>e[1]), backgroundColor:[B1,B1,B1,B1,'#9AA0A6',B2], borderRadius:3, borderSkipped:false }] },
-        options:{ ...CFG, indexAxis:'y', plugins:{legend:{display:false}}, scales:{ x:{grid:{color:'#F1F3F4'},border:{dash:[4,4]}}, y:{grid:{display:false}} } }
+      renderDashboardBarListSlot('slotRaca', racaEntries, {
+        colors:[B1,B1,B1,B1,'#9AA0A6',B2],
+        limit:6
       });
     } else {
-      safeFallback('cRaca', 'Coluna de cor/raça não encontrada');
+      renderDashboardBarListSlot('slotRaca', [], { fallbackMessage:'Coluna de cor/raça não encontrada' });
     }
 
     const idadeEntries = topN(idadeMap, 6);
     if (idadeEntries.length) {
-      dashCharts.idade = safeChart('cIdade', {
-        type:'bar',
-        data:{ labels:idadeEntries.map(e=>e[0]), datasets:[{ data:idadeEntries.map(e=>e[1]), backgroundColor:B2, borderRadius:3, borderSkipped:false }] },
-        options:{ ...CFG, plugins:{legend:{display:false}}, scales:{ y:{grid:{color:'#F1F3F4'},border:{dash:[4,4]}}, x:{grid:{display:false}} } }
+      renderDashboardBarListSlot('slotIdade', idadeEntries, {
+        colors:[B2,B2,B2,B2,B2,B2],
+        limit:6
       });
     } else {
-      safeFallback('cIdade', 'Faixa etária não encontrada');
+      renderDashboardBarListSlot('slotIdade', [], { fallbackMessage:'Faixa etária não encontrada' });
     }
 
     const deficEntries = Object.entries(deficMap);
     if (deficEntries.length) {
-      dashCharts.defic = safeChart('cDefic', {
-        type:'doughnut',
-        data:{ labels:deficEntries.map(e=>e[0]), datasets:[{ data:deficEntries.map(e=>e[1]), backgroundColor:['#DADCE0',B1,B4], borderWidth:0 }] },
-        options:{ ...CFG, cutout:'64%', plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, padding:12 } } } }
+      renderDashboardBarListSlot('slotDefic', deficEntries, {
+        colors:['#DADCE0',B1,B4],
+        limit:6
       });
     } else {
-      safeFallback('cDefic', 'Deficiência não informada na base');
+      renderDashboardBarListSlot('slotDefic', [], { fallbackMessage:'Deficiência não informada na base' });
     }
 
     const areaEntries = Object.entries(areaMap);
     if (areaEntries.length) {
-      dashCharts.area = safeChart('cArea', {
-        type:'doughnut',
-        data:{ labels:areaEntries.map(e=>e[0]), datasets:[{ data:areaEntries.map(e=>e[1]), backgroundColor:[B1,B4,B2], borderWidth:0 }] },
-        options:{ ...CFG, cutout:'64%', plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, padding:12 } } } }
+      renderDashboardBarListSlot('slotArea', areaEntries, {
+        colors:[B1,B4,B2],
+        limit:6
       });
     } else {
-      safeFallback('cArea', 'Área do domicílio não encontrada');
+      renderDashboardBarListSlot('slotArea', [], { fallbackMessage:'Área do domicílio não encontrada' });
     }
 
     const canaisEntries = topN(canaisMap, 8);
     if (canaisEntries.length) {
-      dashCharts.canais = safeChart('cCanais', {
-        type:'bar',
-        data:{ labels:canaisEntries.map(e=>e[0]), datasets:[{ data:canaisEntries.map(e=>e[1]), backgroundColor:B1, borderRadius:3, borderSkipped:false }] },
-        options:{ ...CFG, indexAxis:'y', plugins:{legend:{display:false}}, scales:{ x:{grid:{color:'#F1F3F4'},border:{dash:[4,4]}}, y:{grid:{display:false}} } }
+      renderDashboardBarListSlot('slotCanais', canaisEntries, {
+        colors:[B1,B1,B1,B1,B1,B1,B1,B1],
+        limit:8
       });
     } else {
-      safeFallback('cCanais', 'Canal de origem não encontrado');
+      renderDashboardBarListSlot('slotCanais', [], { fallbackMessage:'Canal de origem não encontrado' });
     }
   }
 
   if (currentDashPage === 'geo') {
-    restoreDashSlot('slotUF', 'cUF', '280px');
-    dashCharts.uf = safeChart('cUF', {
-      type:'bar',
-      data:{ labels:topUFs.map(e=>e[0]), datasets:[{ data:topUFs.map(e=>e[1]), backgroundColor:topUFs.map((_,i)=>i<4?B1:i<9?B2:B4), borderRadius:3, borderSkipped:false }] },
-      options:{ ...CFG, plugins:{legend:{display:false}}, scales:{ y:{grid:{color:'#F1F3F4'},border:{dash:[4,4]}}, x:{grid:{display:false},ticks:{font:{weight:'600'}}} } }
+    restoreDashListSlot('slotUF');
+    restoreDashListSlot('slotRegiao');
+    restoreDashListSlot('slotInst');
+    restoreDashListSlot('slotCursos');
+    renderDashboardBarListSlot('slotUF', topUFsComOutros.map(e => [e[0] === 'Outros' ? 'Outros' : compactUfLabel(e[0]), e[1]]), {
+      colors:topUFsComOutros.map((entry, i) => entry[0] === 'Outros' ? '#DADCE0' : (i < 4 ? B1 : i < 8 ? B2 : B4)),
+      limit:11
     });
-    makeBarList('dashCursos', topN(cursoMap,10));
-    makeBarList('dashInst', topInst);
+    renderDashboardBarListSlot('slotRegiao', regionEntries, {
+      colors:['#1A73E8','#4285F4','#669DF6','#7BAAF7','#AECBFA'],
+      limit:5
+    });
+    renderDashboardBarListSlot('slotInst', topInst, {
+      colors:topInst.map((_,i)=>i<4?B1:i<7?B2:B4),
+      limit:10
+    });
+    renderDashboardBarListSlot('slotCursos', topN(cursoMap,10), {
+      colors:topN(cursoMap,10).map((_,i)=>i<4?B1:i<7?B2:B4),
+      limit:10
+    });
   }
 
   if (currentDashPage === 'lista') {
@@ -6669,6 +7232,10 @@ function showStartupRoute() {
 }
 
 hydrateSupabaseSettings();
+if (persistenceMode === 'supabase') {
+  carregandoEstadoRemoto = true;
+  resetRuntimeStateForEnvironment();
+}
 if (persistenceMode !== 'supabase') {
   hydrateAppState();
 }
