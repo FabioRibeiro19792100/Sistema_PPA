@@ -702,7 +702,34 @@ textarea{width:100%;font-family:inherit;font-size:12.5px;color:#202124;backgroun
 textarea:focus{border-color:#1A73E8;background:#fff}
 textarea::placeholder{color:#BDC1C6}
 .parecer-box{background:#fff;border:1px solid #E0E0E0;border-radius:8px;padding:16px 18px;margin-top:6px}
-.parecer-box textarea{min-height:100px}
+.parecer-box textarea{
+  min-height:118px;
+  height:118px;
+  max-height:118px;
+  resize:none;
+  overflow-y:auto;
+  background:#fff;
+  border:1px solid #DFE1E5;
+  border-radius:24px;
+  padding:18px 22px;
+  box-shadow:0 1px 3px rgba(32,33,36,.10);
+  transition:border-color .16s ease, box-shadow .16s ease, background .16s ease;
+}
+.parecer-box textarea:hover{
+  border-color:#DFE1E5;
+  box-shadow:0 2px 8px rgba(32,33,36,.16);
+}
+.parecer-box textarea:focus{
+  border-color:#DFE1E5;
+  background:#fff;
+  box-shadow:
+    0 2px 8px rgba(32,33,36,.18),
+    0 0 0 1px rgba(26,115,232,.22);
+}
+.parecer-box textarea::-webkit-scrollbar{width:10px}
+.parecer-box textarea::-webkit-scrollbar-track{background:transparent}
+.parecer-box textarea::-webkit-scrollbar-thumb{background:#DADCE0;border-radius:999px;border:2px solid #fff}
+.parecer-box textarea::-webkit-scrollbar-thumb:hover{background:#BDC1C6}
 
 /* ── FOOTER ── */
 .footer-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #E0E0E0;padding:11px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;z-index:90}
@@ -1505,15 +1532,15 @@ textarea::placeholder{color:#BDC1C6}
       <div class="aval-form-head-card">
         <div class="aval-form-head-copy">
           <div class="section-label">Critérios de avaliação</div>
-          <div class="aval-form-head-note">Avalie os 8 critérios com atenção. As justificativas de cada critério são opcionais.</div>
+          <div class="aval-form-head-note">Avalie os 8 critérios com atenção.</div>
         </div>
       </div>
     </div>
     <div id="critGridSeq"></div>
     <div class="parecer-box">
-      <div class="section-label" style="margin-bottom:8px">Parecer geral</div>
-      <p style="font-size:12px;color:#5F6368;margin-bottom:10px;line-height:1.55">Síntese da avaliação — pontos fortes, limitações e recomendação final.</p>
-      <textarea id="parecerGeralSeq" placeholder="Escreva aqui o parecer geral sobre a proposta desta equipe…"></textarea>
+      <div class="section-label" style="margin-bottom:8px">Parecer geral (opcional)</div>
+      <p style="font-size:12px;color:#5F6368;margin-bottom:10px;line-height:1.55">Campo opcional para registrar a síntese da avaliação, com pontos fortes, limitações e recomendação final.</p>
+      <textarea id="parecerGeralSeq" placeholder="Escreva o parecer geral sobre a proposta desta equipe…"></textarea>
     </div>
   </div>
 
@@ -1538,13 +1565,12 @@ textarea::placeholder{color:#BDC1C6}
               <div class="aval-form-head-copy">
                 <div class="section-label">Critérios de avaliação</div>
               </div>
-              <div class="aval-panel-head-note">Justificativas dos critérios são opcionais.</div>
             </div>
             <div id="critGridSplit"></div>
             <div class="parecer-box">
-              <div class="section-label" style="margin-bottom:8px">Parecer geral</div>
-              <p style="font-size:12px;color:#5F6368;margin-bottom:10px;line-height:1.55">Síntese da avaliação — pontos fortes, limitações e recomendação final.</p>
-              <textarea id="parecerGeralSplit" placeholder="Escreva aqui o parecer geral sobre a proposta desta equipe…"></textarea>
+              <div class="section-label" style="margin-bottom:8px">Parecer geral (opcional)</div>
+              <p style="font-size:12px;color:#5F6368;margin-bottom:10px;line-height:1.55">Campo opcional para registrar a síntese da avaliação, com pontos fortes, limitações e recomendação final.</p>
+              <textarea id="parecerGeralSplit" placeholder="Escreva o parecer geral sobre a proposta desta equipe…"></textarea>
             </div>
           </div>
         </div>
@@ -3374,12 +3400,6 @@ function avaliacaoTemDecisaoTomada() {
   const algumaNota = CRITERIOS.some((_, i) => !!document.querySelector(`input[name="${prefix}crit_${i}"]:checked`));
   if (algumaNota) return true;
 
-  const algumaJustificativa = CRITERIOS.some((_, i) => {
-    const el = document.getElementById(`${prefix}just_${i}`);
-    return !!el?.value?.trim();
-  });
-  if (algumaJustificativa) return true;
-
   const parecerEl = document.getElementById(currentLayout === 'split' ? 'parecerGeralSplit' : 'parecerGeralSeq');
   return !!parecerEl?.value?.trim();
 }
@@ -3902,7 +3922,6 @@ function critGridHTML(av, prefix) {
   const ESCALA = ['Insuficiente','Regular','Bom','Ótimo'];
   return CRITERIOS.map((c,i) => {
     const nota = av?.notas[i] || null;
-    const just = av?.justificativas[i] || '';
     return `<div class="criterio" id="${prefix}crit-card-${i}">
       <div class="crit-num">Critério ${String(i+1).padStart(2,'0')}</div>
       <div class="crit-nome">${c.nome}</div>
@@ -3912,8 +3931,6 @@ function critGridHTML(av, prefix) {
           <input type="radio" name="${prefix}crit_${i}" id="${prefix}cr_${i}_${v}" value="${v}" ${nota===v?'checked':''} onchange="updateFooter()">
           <label for="${prefix}cr_${i}_${v}">${v}</label>`).join('')}
       </div>
-      <span class="just-label">Justificativa (opcional)</span>
-      <textarea id="${prefix}just_${i}" placeholder="Se quiser, registre aqui uma observação breve sobre este critério…">${just}</textarea>
     </div>`;
   }).join('');
 }
@@ -3947,8 +3964,9 @@ function setCamposAvaliacaoHabilitados(habilitado) {
 function ativarEdicaoAvaliacao() {
   avaliacaoEmEdicao = true;
   setCamposAvaliacaoHabilitados(true);
-  const prefix = currentLayout === 'split' ? 'spl_' : 'seq_';
-  const firstInput = document.getElementById(`${prefix}just_0`) || document.querySelector(`#critGrid${currentLayout === 'split' ? 'Split' : 'Seq'} textarea`);
+  const firstInput =
+    document.querySelector(`#critGrid${currentLayout === 'split' ? 'Split' : 'Seq'} input[type="radio"]`)
+    || document.getElementById(currentLayout === 'split' ? 'parecerGeralSplit' : 'parecerGeralSeq');
   if (firstInput) firstInput.focus();
   notify('Modo de edição ativo para esta avaliação.');
 }
