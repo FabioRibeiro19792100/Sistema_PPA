@@ -329,23 +329,24 @@ body {
 .topnav-right span{color:var(--text-primary);font-weight:var(--font-weight-bold)}
 .topnav-ficha-controls{display:none;align-items:center;gap:12px;margin-right:8px}
 .topnav-ficha-controls .btn.btn-secondary.btn-sm{
-  padding:0;
-  border:none;
-  background:transparent;
-  border-radius:0;
-  box-shadow:none;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:9px 14px;
+  border:1px solid #111827;
+  background:#111827;
+  border-radius:12px;
+  box-shadow:0 8px 18px rgba(17,24,39,.18);
   min-height:auto;
-  color:#5F6368;
-  font-weight:600;
+  color:#fff;
+  font-weight:700;
   text-decoration:none;
-  border-bottom:1px solid currentColor;
-  padding-bottom:1px;
 }
 .topnav-ficha-controls .btn.btn-secondary.btn-sm:hover{
-  border:none;
-  background:transparent;
-  box-shadow:none;
-  color:#202124;
+  border-color:#000;
+  background:#000;
+  box-shadow:0 10px 22px rgba(0,0,0,.22);
+  color:#fff;
 }
 .topnav-ficha-controls .btn.btn-secondary.btn-sm i{
   text-decoration:none;
@@ -534,6 +535,23 @@ tr:hover td.sticky{background:#FAFAFA}
 #view-resultados .results-table tbody tr > td:last-child{
   border-right:1px solid #D3D8E0;
 }
+#view-resultados .results-table th.id-col{
+  background:#E6F0FF;
+  color:#1F3A68;
+}
+#view-resultados .results-table td.id-col{
+  background:#F5F9FF;
+}
+#view-resultados .results-table td.id-col .res-id{
+  color:#1F3A68 !important;
+  font-weight:700;
+}
+#view-resultados .results-table td.id-col .res-uf{
+  color:#49658F;
+}
+#view-resultados .results-table tbody tr:hover > td.id-col{
+  background:#EDF4FF;
+}
 
 /* ── BADGES ── */
 .badge{display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:12px}
@@ -590,23 +608,47 @@ tr:hover td.sticky{background:#FAFAFA}
   scrollbar-gutter:stable;
 }
 
-.ficha-item{background:#fff;border:1px solid #E0E0E0;border-radius:8px;padding:16px 18px;margin-bottom:10px;display:grid;grid-template-columns:185px minmax(0,1fr) auto auto;align-items:start;column-gap:18px;cursor:pointer;transition:border-color .12s}
+.ficha-item{background:#fff;border:1px solid #E0E0E0;border-radius:8px;padding:15px 24px;margin-bottom:10px;display:grid;grid-template-columns:108px minmax(0,1.45fr) auto;align-items:start;column-gap:12px;cursor:pointer;transition:border-color .12s}
 .ficha-item:hover{border-color:#1A73E8}
 .ficha-item.done{border-left:3px solid #34A853}
 .ficha-item.pending{border-left:3px solid #DADCE0}
-.fi-id{font-family:monospace;font-size:11px;color:#1A73E8;min-width:0;padding-top:4px}
-.fi-main{min-width:0;padding-top:2px}
-.fi-head{display:flex;align-items:flex-start;gap:8px;min-width:0}
-.fi-nome{font-size:12.5px;font-weight:600;color:#202124;line-height:1.3;min-width:0}
-.fi-team{display:inline-flex;align-items:center;gap:1px;color:#9AA0A6;flex-shrink:0;margin-top:1px}
-.fi-meta{font-size:11px;color:#9AA0A6;margin-top:4px;line-height:1.35}
-.fi-inst{font-size:11px;color:#7A828E;margin-top:3px;line-height:1.45;text-align:left}
-.fi-status{white-space:nowrap;display:flex;align-items:flex-start;justify-content:flex-end;gap:8px;padding-top:2px}
-.fi-end{display:flex;align-items:flex-start;gap:10px;justify-content:flex-end;padding-top:2px}
-.fi-score{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid #E8EAED;border-radius:999px;background:#F8F9FA}
+.ficha-item.is-last-reviewed{border-color:#D93025;border-left:3px solid #D93025;box-shadow:0 0 0 1px rgba(217,48,37,.08)}
+.ficha-item.is-last-reviewed:hover{border-color:#B3261E}
+.fi-id{font-family:monospace;font-size:11px;color:#1A73E8;min-width:0;padding-top:3px}
+.fi-main{min-width:0;padding-top:1px;padding-right:6px;overflow:hidden}
+.fi-head{display:flex;align-items:center;gap:8px;min-width:0;overflow:hidden}
+.fi-nome{font-size:12.5px;font-weight:600;color:#202124;line-height:1.28;min-width:0;flex:1 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fi-meta-row{display:flex;align-items:center;gap:8px;min-width:0;margin-top:5px}
+.fi-team{display:inline-flex;align-items:center;gap:1px;color:#9AA0A6;flex-shrink:0}
+.fi-meta{font-size:11px;color:#9AA0A6;line-height:1.3}
+.fi-inst{font-size:11px;color:#7A828E;margin-top:5px;line-height:1.35;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fi-side{display:flex;align-items:flex-start;justify-content:flex-end;gap:8px;padding-top:1px;min-width:190px}
+.fi-side-main{display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-start;gap:6px;min-width:0;flex-wrap:nowrap}
+.fi-side-topline{display:flex;align-items:flex-end;justify-content:flex-end;gap:8px;min-width:0;min-height:32px;flex-wrap:nowrap;flex-direction:column}
+.fi-side-status{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0;flex-wrap:nowrap}
+.fi-side-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0;flex-wrap:nowrap}
+.fi-side-subline{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-height:20px}
+.fi-chevron{display:flex;align-items:center;justify-content:center;color:#DADCE0;font-size:16px;padding-top:6px}
+.fi-score{display:flex;align-items:center;gap:8px;padding:0;border:none;background:transparent}
 .fi-score-val{font-size:12px;font-weight:700;color:#202124;min-width:28px;text-align:right}
-.fi-score-bar{width:72px;height:6px;background:#E8EAED;border-radius:999px;overflow:hidden}
-.fi-score-fill{height:100%;background:linear-gradient(90deg,#AECBFA 0%,#4285F4 55%,#1A73E8 100%);border-radius:999px}
+.fi-score-bar{width:72px;height:6px;background:#E8EAED;border-radius:0;overflow:hidden}
+.fi-score-fill{height:100%;background:linear-gradient(90deg,#AECBFA 0%,#4285F4 55%,#1A73E8 100%);border-radius:0}
+.fi-side .icon-btn{width:30px;height:30px;padding:0;border:1px solid #AECBFA;background:#E8F0FE;border-radius:999px;color:#1A73E8;display:inline-flex;align-items:center;justify-content:center}
+.fi-side .icon-btn:hover{background:#DCE8FF;border-color:#7BAAF7;color:#185ABC}
+.fi-last-tag{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:5px 10px;
+  border-radius:999px;
+  background:#FCE8E6;
+  color:#B3261E;
+  border:1px solid #F5C6C2;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
 
 /* ── MODAL ── */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:200;align-items:center;justify-content:center;padding:28px 16px}
@@ -677,6 +719,30 @@ tr:hover td.sticky{background:#FAFAFA}
   color:#3367D6;
   font-weight:600;
   line-height:1.55;
+}
+.ia-note-head{
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.ia-note-k{
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#5F6368;
+}
+.ia-note-v{
+  font-size:13px;
+  font-weight:700;
+  color:#1A73E8;
+}
+.ia-note-sub{
+  margin-top:6px;
+  font-size:11.5px;
+  font-weight:500;
+  color:#5F6368;
 }
 .mf{padding:12px 20px;border-top:1px solid #F1F3F4;display:flex;justify-content:flex-end;position:sticky;bottom:0;background:#fff}
 .btn-fechar{padding:7px 20px;border-radius:6px;border:1px solid #DADCE0;background:#fff;font-size:12.5px;font-weight:500;color:#5F6368;cursor:pointer}
@@ -1429,7 +1495,7 @@ textarea::placeholder{color:#BDC1C6}
         <thead>
           <tr>
             <th class="sticky s0" rowspan="2">Ranking</th>
-            <th class="sticky s3" rowspan="2" style="text-align:center">ID</th>
+            <th class="sticky s3 id-col" rowspan="2" style="text-align:center">Identificacao</th>
             <th class="sticky s5" rowspan="2">Time (leader-first)</th>
             <th class="sticky s7" rowspan="2" style="text-align:center;min-width:90px">Nota geral</th>
             <th class="crit crit-group" colspan="2" style="text-align:center;border-left:1px solid #E0E0E0">Proposta</th>
@@ -1779,14 +1845,14 @@ textarea::placeholder{color:#BDC1C6}
   <div class="modal" style="max-width:460px">
     <div class="mh">
       <div>
-        <div class="mh-ey">Avaliação não finalizada</div>
-        <div class="mh-title">Sair e resetar esta avaliação?</div>
-        <div class="mh-sub">Se você sair agora, tudo o que foi preenchido nesta ficha será descartado.</div>
+        <div class="mh-ey">PARECER NÃO FINALIZADO</div>
+        <div class="mh-title">Se você sair agora, tudo o que foi preenchido será descartado.</div>
+        <div class="mh-sub">A avaliação só é registrada no sistema depois de salva.</div>
       </div>
     </div>
     <div class="mb" style="padding:16px 20px 20px">
       <div style="font-size:13px;color:#5F6368;line-height:1.5">
-        A avaliação só permanece no sistema depois do salvamento. Se quiser manter o que já fez, continue na ficha e conclua o envio.
+        Para preservar seu parecer, permaneça na ficha de avaliação.
       </div>
     </div>
     <div class="mf" style="gap:10px">
@@ -1801,14 +1867,14 @@ textarea::placeholder{color:#BDC1C6}
   <div class="modal" style="max-width:420px">
     <div class="mh">
       <div>
-        <div class="mh-ey">Confirmação de envio</div>
-        <div class="mh-title">Concluir esta avaliação agora?</div>
-        <div class="mh-sub" id="earlySaveSub">Esta avaliação foi concluída em cerca de 2 minutos.</div>
+        <div class="mh-ey">CONFIRMAÇÃO DE ENVIO</div>
+        <div class="mh-title">Concluir seu parecer agora?</div>
+        <div class="mh-sub" id="earlySaveSub">Esta avaliação foi realizada em cerca de 2 minutos.</div>
       </div>
     </div>
     <div class="mb" style="padding:16px 20px 20px">
       <div id="earlySaveBody" style="font-size:13px;color:#5F6368;line-height:1.5">
-        Análises completas desta ficha, com os 3 anexos, costumam levar em torno de 5 minutos. Se quiser revisar os critérios ou o parecer, a ficha continua aberta.
+        Análises completas, incluindo os 3 entregáveis anexados, levam em torno de 5 minutos. Se você quiser revisar algum critério, a ficha de avaliação continuará aberta. Caso tenha certeza do seu parecer, basta concluir e enviar.
       </div>
       <div style="margin-top:12px">
         <label class="fl" style="margin-bottom:5px">Observação adicional <span style="color:#9AA0A6;font-weight:400">(opcional)</span></label>
@@ -1827,18 +1893,30 @@ textarea::placeholder{color:#BDC1C6}
   <div class="modal" style="max-width:420px">
     <div class="mh">
       <div>
-        <div class="mh-ey">Parecer geral obrigatório</div>
-        <div class="mh-title">Falta justificar a avaliação</div>
-        <div class="mh-sub" id="requiredParecerSub">Preencha o parecer geral para concluir esta avaliação.</div>
-      </div>
-    </div>
-    <div class="mb" style="padding:16px 20px 20px">
-      <div style="font-size:13px;color:#5F6368;line-height:1.5">
-        Quando a avaliação tiver 3 ou mais critérios marcados como Insuficiente, o campo de parecer geral precisa ser preenchido antes do salvamento.
+        <div class="mh-ey">PARECER GERAL</div>
+        <div class="mh-title">Por favor, justifique sua avaliação para concluir e salvar a avaliação do material submetido.</div>
+        <div class="mh-sub" id="requiredParecerSub">Como você marcou 3 ou mais critérios como "Insuficiente", o preenchimento do campo PARECER GERAL deixa de ser opcional.</div>
       </div>
     </div>
     <div class="mf">
       <button class="btn btn-primary btn-sm" onclick="closeRequiredParecerModal()">Entendi</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PRÓXIMA AVALIAÇÃO -->
+<div class="overlay" id="overlayNextEvaluation" style="z-index:300">
+  <div class="modal" style="max-width:420px">
+    <div class="mh">
+      <div>
+        <div class="mh-ey">PARECER CONCLUÍDO</div>
+        <div class="mh-title">Você pode seguir adiante de forma automática para a próxima ficha ou voltar para a listagem principal.</div>
+        <div class="mh-sub" id="nextEvaluationSub">Deseja iniciar uma nova avaliação agora?</div>
+      </div>
+    </div>
+    <div class="mf" style="gap:10px">
+      <button class="btn btn-secondary btn-sm" onclick="cancelNextEvaluation()">Agora não</button>
+      <button class="btn btn-primary btn-sm" onclick="confirmNextEvaluation()">Sim</button>
     </div>
   </div>
 </div>
@@ -1848,20 +1926,17 @@ textarea::placeholder{color:#BDC1C6}
   <div class="modal" style="max-width:460px">
     <div class="mh">
       <div>
-        <div class="mh-ey">Análise dos materiais obrigatórios</div>
-        <div class="mh-title">Falta analisar os anexos obrigatórios</div>
-        <div class="mh-sub">Esta avaliação não pode ser encerrada porque ainda há materiais sem abertura registrada.</div>
+        <div class="mh-ey">ANÁLISE OBRIGATÓRIA</div>
+        <div class="mh-title">Esta avaliação não pôde ser concluída porque ainda há materiais sem abertura registrada.</div>
+        <div class="mh-sub">Vídeo + Roteiro 30s + Campanha multiplataforma</div>
       </div>
     </div>
     <div class="mb" style="padding:16px 20px 20px">
       <div style="font-size:13px;color:#5F6368;line-height:1.5;margin-bottom:12px">
-        Para concluir o parecer, é necessário analisar todos os anexos obrigatórios da inscrição.
+        Para finalizar seu parecer, é necessário abrir e analisar os 3 entregáveis anexados.
       </div>
-      <div class="fl" style="margin-bottom:6px">Pendências</div>
+      <div class="fl" style="margin-bottom:6px">Pendências:</div>
       <div id="missingAttachmentsList" style="display:flex;flex-direction:column;gap:8px"></div>
-      <div style="font-size:12px;color:#5F6368;line-height:1.5;margin-top:12px">
-        Enquanto houver anexos sem abertura registrada, a avaliação não poderá ser concluída.
-      </div>
     </div>
     <div class="mf">
       <button class="btn btn-primary btn-sm" onclick="closeMissingAttachmentsModal()">Entendi</button>
@@ -1989,6 +2064,7 @@ let avaliacoes = {};
 let currentParId = null;
 let currentInscId = null;
 let loadingNudgeTimer = null;
+let pendingNextEvaluation = null;
 let avaliacaoEmEdicao = false;
 let avaliacaoOriginalConcluida = false;
 let accessRole = 'guest';
@@ -2679,6 +2755,32 @@ function fullInscId(id) {
 function shortInscId(id) {
   return String(id || '').split('-').pop();
 }
+function parseIACriacao(raw) {
+  const txt = String(raw || '').trim();
+  if (!txt) return { usou:false, rotulo:'Não', detalhe:'' };
+  const lower = txt.toLowerCase();
+  if (
+    lower === 'não' ||
+    lower === 'nao' ||
+    lower.includes('não utilizou ia') ||
+    lower.includes('nao utilizou ia') ||
+    lower.includes('não usou ia') ||
+    lower.includes('nao usou ia')
+  ) {
+    return { usou:false, rotulo:'Não', detalhe:'' };
+  }
+  if (lower === 'sim') return { usou:true, rotulo:'Sim', detalhe:'' };
+  return { usou:true, rotulo:'Sim', detalhe:txt };
+}
+function iaNoteHTML(raw) {
+  const ia = parseIACriacao(raw);
+  return `
+    <div class="ia-note-head">
+      <span class="ia-note-k">IA utilizada</span>
+      <span class="ia-note-v">${ia.rotulo}</span>
+    </div>
+    ${ia.usou ? `<div class="ia-note-sub">Ferramenta(s): ${ia.detalhe || 'Não informado'}</div>` : ''}`;
+}
 function compactInstitutionLabel(value) {
   const text = String(value || '').trim();
   if (!text) return 'N/D';
@@ -3043,7 +3145,7 @@ function renderResultados() {
       const notaGeralParecerista = av?.done ? notaGeralAvaliacao(av) : null;
       return `<tr class="sub-row sub-res-${i}">
         <td class="sticky s0"></td>
-        <td class="sticky s3"></td>
+        <td class="sticky s3 id-col"></td>
         <td class="sticky s5" style="padding-left:22px">
           <div style="font-size:11px;font-weight:500;color:#5F6368">${p.nome}</div>
           <div class="res-faint" style="font-size:10px">Parecerista</div>
@@ -3055,7 +3157,7 @@ function renderResultados() {
 
     return `<tr>
       <td class="sticky s0"><div style="font-size:13px;font-weight:600;color:#202124">${ranking.rank}</div><div style="margin-top:6px"><div class="sw-sm"></div></div>${ranking.tied ? `<div class="res-faint" style="font-size:10px;margin-top:6px">(empate)</div>` : ''}</td>
-      <td class="sticky s3" style="text-align:center">
+      <td class="sticky s3 id-col" style="text-align:center">
         <div class="res-id-hub">
           <div class="res-id-meta">
             <div class="res-muted res-id" style="font-family:monospace;font-size:11px">${shortInscId(e.id)}</div>
@@ -3310,31 +3412,49 @@ function renderPortal() {
     if (!e) return '';
     const av = avaliacoes[parId]?.[inscId];
     const isDone = !!av?.done;
+    const isLastReviewed = lastReviewedPortalInscId === inscId;
     const nota = isDone ? notaGeralAvaliacao(av) : null;
     const notaPct = nota !== null ? Math.max(0, Math.min(100, (nota / 4) * 100)) : 0;
     const notaColor = nota !== null ? corConceitoNota(nota) : '#AECBFA';
-    return `<div class="ficha-item ${isDone?'done':'pending'}" onclick="abrirFicha('${parId}','${inscId}')">
+    return `<div class="ficha-item ${isDone?'done':'pending'} ${isLastReviewed?'is-last-reviewed':''}" onclick="abrirFicha('${parId}','${inscId}')">
       <div class="fi-id">PPA2026-${e.id}</div>
       <div class="fi-main">
         <div class="fi-head">
           <div class="fi-nome">${displayPersonName(e.lider)}</div>
+        </div>
+        <div class="fi-meta-row">
+          <div class="fi-meta">${e.mod}</div>
           <div class="fi-team">${teamMarker(e.mod)}</div>
         </div>
-        <div class="fi-meta">${e.mod}</div>
         <div class="fi-inst">${portalInstitutionLabel(e.inst)}</div>
       </div>
-      <div class="fi-status">
-        <span class="badge ${isDone?'b-ok':'b-pend'}">${isDone?'Concluída':'Pendente'}</span>
-        ${isDone ? `<button class="icon-btn" onclick="event.stopPropagation();abrirFicha('${parId}','${inscId}', true)" title="Editar avaliação" aria-label="Editar avaliação">
-          <i class="ti ti-pencil"></i>
-        </button>` : ''}
-      </div>
-      <div class="fi-end">
-        ${isDone ? `<div class="fi-score" title="Nota ${fmtNotaGeral(nota)} de 4,0">
-          <div class="fi-score-val">${fmtNotaGeral(nota)}</div>
-          <div class="fi-score-bar"><div class="fi-score-fill" style="width:${notaPct}%;background:${notaColor}"></div></div>
-        </div>` : ''}
-        <i class="ti ti-chevron-right" style="color:#DADCE0;font-size:16px"></i>
+      <div class="fi-side">
+        <div class="fi-side-main">
+          ${isDone ? `
+            <div class="fi-side-topline">
+              <div class="fi-score" title="Nota ${fmtNotaGeral(nota)} de 4,0">
+                <div class="fi-score-val">${fmtNotaGeral(nota)}</div>
+                <div class="fi-score-bar"><div class="fi-score-fill" style="width:${notaPct}%;background:${notaColor}"></div></div>
+              </div>
+              <div class="fi-side-actions">
+                <button class="icon-btn" onclick="event.stopPropagation();abrirFicha('${parId}','${inscId}', true)" title="Editar avaliação" aria-label="Editar avaliação">
+                  <i class="ti ti-pencil"></i>
+                </button>
+              </div>
+            </div>
+            <div class="fi-side-subline">
+              ${isLastReviewed ? `<span class="fi-last-tag">Última avaliada</span>` : ''}
+            </div>` : `
+            <div class="fi-side-topline">
+              <div class="fi-side-status">
+                <span class="badge b-pend">Pendente</span>
+              </div>
+            </div>
+            <div class="fi-side-subline">
+              ${isLastReviewed ? `<span class="fi-last-tag">Última avaliada</span>` : ''}
+            </div>`}
+        </div>
+        <i class="ti ti-chevron-right fi-chevron"></i>
       </div>
     </div>`;
   }).join('');
@@ -3373,6 +3493,7 @@ let fichaTimer = null;
 let fichaTempoOk = false;
 let pendingEarlySave = false;
 let pendingEarlySaveReason = '';
+let lastReviewedPortalInscId = null;
 
 function iniciarTimer() {
   fichaStartTime = new Date();
@@ -3446,8 +3567,8 @@ function openEarlySaveModal() {
   pendingEarlySaveReason = '';
   const elapsedMs = fichaStartTime ? (Date.now() - fichaStartTime.getTime()) : TEMPO_MINIMO;
   const elapsedMin = Math.max(1, Math.round(elapsedMs / 60000));
-  document.getElementById('earlySaveSub').textContent = `Esta avaliação foi concluída em cerca de ${elapsedMin} minuto${elapsedMin > 1 ? 's' : ''}.`;
-  document.getElementById('earlySaveBody').textContent = 'Análises completas desta ficha, com os 3 anexos, costumam levar em torno de 5 minutos. Se quiser revisar os critérios ou o parecer, a ficha continua aberta.';
+    document.getElementById('earlySaveSub').textContent = `Esta avaliação foi realizada em cerca de ${elapsedMin} minuto${elapsedMin > 1 ? 's' : ''}.`;
+    document.getElementById('earlySaveBody').textContent = 'Análises completas, incluindo os 3 entregáveis anexados, levam em torno de 5 minutos. Se você quiser revisar algum critério, a ficha de avaliação continuará aberta. Caso tenha certeza do seu parecer, basta concluir e enviar.';
   document.getElementById('earlySaveComentario').value = '';
   document.getElementById('overlayEarlySave').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -3481,6 +3602,43 @@ function closeRequiredParecerModal() {
     parecerEl.style.borderColor = '#D93025';
     setTimeout(() => parecerEl.style.borderColor = '', 2000);
   }
+}
+
+function openNextEvaluationModal(parId, inscId) {
+  pendingNextEvaluation = { parId, inscId };
+  const overlay = document.getElementById('overlayNextEvaluation');
+  if (!overlay) return;
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeNextEvaluationModal() {
+  const overlay = document.getElementById('overlayNextEvaluation');
+  if (overlay) overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function cancelNextEvaluation() {
+  const data = pendingNextEvaluation;
+  pendingNextEvaluation = null;
+  closeNextEvaluationModal();
+  if (!data) return;
+  currentParId = data.parId;
+  currentInscId = null;
+  showView('portal');
+}
+
+function confirmNextEvaluation() {
+  const data = pendingNextEvaluation;
+  pendingNextEvaluation = null;
+  closeNextEvaluationModal();
+  if (!data) return;
+  showLoadingNudge('Preparando a próxima avaliação...');
+  scrollAppTop();
+  setTimeout(() => {
+    abrirFicha(data.parId, data.inscId);
+    hideLoadingNudge(450);
+  }, 1200);
 }
 
 function anexosObrigatoriosDaInscricao(inscId) {
@@ -4007,12 +4165,12 @@ function abrirFicha(parId, inscId, abrirEmEdicao = false) {
   atualizarBotoesEdicao(av);
 
   document.getElementById('avalGridSeq').innerHTML = avalGridHTML(e, 'seq');
-  document.getElementById('avalIASeq').textContent = 'IA utilizada na criação: ' + e.ia;
+  document.getElementById('avalIASeq').innerHTML = iaNoteHTML(e.ia);
   document.getElementById('critGridSeq').innerHTML = critGridHTML(av, 'seq_');
   document.getElementById('parecerGeralSeq').value = av?.parecer || '';
 
   document.getElementById('avalGridSplit').innerHTML = avalGridHTML(e, 'split');
-  document.getElementById('avalIASplit').textContent = 'IA utilizada na criação: ' + e.ia;
+  document.getElementById('avalIASplit').innerHTML = iaNoteHTML(e.ia);
   document.getElementById('critGridSplit').innerHTML = critGridHTML(av, 'spl_');
   document.getElementById('parecerGeralSplit').value = av?.parecer || '';
 
@@ -4102,7 +4260,7 @@ async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
   // trava 1: ≥N Insuficientes obriga parecer geral
   const numInsuf = notas.filter(n => n === 'Insuficiente').length;
   if (numInsuf >= INSUF_OBRIGA_PARECER && !parecer) {
-    document.getElementById('requiredParecerSub').textContent = `Esta avaliação tem ${numInsuf} critérios marcados como Insuficiente. Preencha o parecer geral para concluir o salvamento.`;
+      document.getElementById('requiredParecerSub').textContent = 'Como você marcou 3 ou mais critérios como "Insuficiente", o preenchimento do campo PARECER GERAL deixa de ser opcional.';
     openRequiredParecerModal();
     return;
   }
@@ -4123,6 +4281,7 @@ async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
 
   if (!avaliacoes[parId]) avaliacoes[parId] = {};
   avaliacoes[parId][inscId] = { notas, justificativas, parecer, done, motivoCurtaDuracao };
+  lastReviewedPortalInscId = inscId;
 
   if (editingConcluded) {
     queueSystemEvent('avaliacao_editada', {
@@ -4171,12 +4330,8 @@ async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
   }
 
   if (proximaInscId) {
-    showLoadingNudge('Preparando a próxima avaliação...');
-    scrollAppTop();
-    setTimeout(() => {
-      abrirFicha(parId, proximaInscId);
-      hideLoadingNudge(450);
-    }, 1200);
+    hideLoadingNudge(150);
+    openNextEvaluationModal(parId, proximaInscId);
     return;
   }
 
