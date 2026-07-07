@@ -614,14 +614,14 @@ tr:hover td.sticky{background:#FAFAFA}
 .ficha-item.pending{border-left:3px solid #DADCE0}
 .ficha-item.is-last-reviewed{border-color:#D93025;border-left:3px solid #D93025;box-shadow:0 0 0 1px rgba(217,48,37,.08)}
 .ficha-item.is-last-reviewed:hover{border-color:#B3261E}
-.fi-id{font-family:monospace;font-size:11px;color:#1A73E8;min-width:0;padding-top:3px}
+.fi-id{font-family:monospace;font-size:12px;color:#1A73E8;min-width:0;padding-top:3px}
 .fi-main{min-width:0;padding-top:1px;padding-right:6px;overflow:hidden}
 .fi-head{display:flex;align-items:center;gap:8px;min-width:0;overflow:hidden}
-.fi-nome{font-size:12.5px;font-weight:600;color:#202124;line-height:1.28;min-width:0;flex:1 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fi-nome{font-size:13.75px;font-weight:600;color:#202124;line-height:1.28;min-width:0;flex:1 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase}
 .fi-meta-row{display:flex;align-items:center;gap:8px;min-width:0;margin-top:5px}
 .fi-team{display:inline-flex;align-items:center;gap:1px;color:#9AA0A6;flex-shrink:0}
-.fi-meta{font-size:11px;color:#9AA0A6;line-height:1.3}
-.fi-inst{font-size:11px;color:#7A828E;margin-top:5px;line-height:1.35;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fi-meta{font-size:12px;color:#9AA0A6;line-height:1.3}
+.fi-inst{font-size:12px;color:#7A828E;margin-top:5px;line-height:1.35;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fi-side{display:flex;align-items:flex-start;justify-content:flex-end;gap:8px;padding-top:1px;min-width:190px}
 .fi-side-main{display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-start;gap:6px;min-width:0;flex-wrap:nowrap}
 .fi-side-topline{display:flex;align-items:flex-end;justify-content:flex-end;gap:8px;min-width:0;min-height:32px;flex-wrap:nowrap;flex-direction:column}
@@ -630,7 +630,7 @@ tr:hover td.sticky{background:#FAFAFA}
 .fi-side-subline{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-height:20px}
 .fi-chevron{display:flex;align-items:center;justify-content:center;color:#DADCE0;font-size:16px;padding-top:6px}
 .fi-score{display:flex;align-items:center;gap:8px;padding:0;border:none;background:transparent}
-.fi-score-val{font-size:12px;font-weight:700;color:#202124;min-width:28px;text-align:right}
+.fi-score-val{font-size:13.2px;font-weight:700;color:#202124;min-width:28px;text-align:right}
 .fi-score-bar{width:72px;height:6px;background:#E8EAED;border-radius:0;overflow:hidden}
 .fi-score-fill{height:100%;background:linear-gradient(90deg,#AECBFA 0%,#4285F4 55%,#1A73E8 100%);border-radius:0}
 .fi-side .icon-btn{width:30px;height:30px;padding:0;border:1px solid #AECBFA;background:#E8F0FE;border-radius:999px;color:#1A73E8;display:inline-flex;align-items:center;justify-content:center}
@@ -644,11 +644,12 @@ tr:hover td.sticky{background:#FAFAFA}
   background:#FCE8E6;
   color:#B3261E;
   border:1px solid #F5C6C2;
-  font-size:10px;
+  font-size:11px;
   font-weight:700;
   letter-spacing:.04em;
   text-transform:uppercase;
 }
+.fi-side .badge{font-size:12px}
 
 /* ── MODAL ── */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:200;align-items:center;justify-content:center;padding:28px 16px}
@@ -722,9 +723,10 @@ tr:hover td.sticky{background:#FAFAFA}
 }
 .ia-note-head{
   display:flex;
-  align-items:baseline;
-  gap:8px;
+  align-items:center;
+  gap:6px;
   flex-wrap:wrap;
+  line-height:1.2;
 }
 .ia-note-k{
   font-size:10px;
@@ -734,15 +736,20 @@ tr:hover td.sticky{background:#FAFAFA}
   color:#5F6368;
 }
 .ia-note-v{
-  font-size:13px;
+  font-size:12px;
   font-weight:700;
-  color:#1A73E8;
+  color:#202124;
+  letter-spacing:.04em;
+  text-transform:uppercase;
 }
 .ia-note-sub{
-  margin-top:6px;
-  font-size:11.5px;
+  margin-top:5px;
+  padding-left:10px;
+  border-left:2px solid #DADCE0;
+  font-size:10.5px;
   font-weight:500;
   color:#5F6368;
+  line-height:1.4;
 }
 .mf{padding:12px 20px;border-top:1px solid #F1F3F4;display:flex;justify-content:flex-end;position:sticky;bottom:0;background:#fff}
 .btn-fechar{padding:7px 20px;border-radius:6px;border:1px solid #DADCE0;background:#fff;font-size:12.5px;font-weight:500;color:#5F6368;cursor:pointer}
@@ -878,26 +885,38 @@ textarea::placeholder{color:#BDC1C6}
 .split-kicker-meta{
   color:#9AA0A6;
 }
+.split-kicker .team-marker-stack{
+  color:#202124;
+  opacity:1;
+}
 .split-leader{
   font-size:14px;
   font-weight:600;
   color:#202124;
   line-height:1.25;
+  margin-top:8px;
+  text-transform:uppercase;
 }
 .split-inst{
-  font-size:11px;
-  color:#9AA0A6;
-  margin-top:4px;
-}
-.split-hero-meta{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin-top:2px;
+  font-size:12px;
+  font-weight:600;
+  color:#202124;
+  margin-top:6px;
+  line-height:1.35;
 }
 .split-hero-course{
-  font-size:11px;
-  color:#9AA0A6;
+  font-size:12px;
+  font-weight:600;
+  color:#202124;
+  margin-top:4px;
+  line-height:1.35;
+}
+.split-hero-location{
+  font-size:12px;
+  font-weight:500;
+  color:#5F6368;
+  margin-top:4px;
+  line-height:1.35;
 }
 .split-meta-rows{
   padding:10px 16px;
@@ -930,13 +949,31 @@ textarea::placeholder{color:#BDC1C6}
   line-height:1.45;
 }
 .split-materials-wrap{
-  padding:10px 16px;
+  padding:12px 16px;
   border-bottom:1px solid #F1F3F4;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
 }
 .split-materials-list{
   display:flex;
-  flex-wrap:wrap;
+  flex-wrap:nowrap;
   gap:8px;
+  width:100%;
+  min-height:60px;
+  align-items:center;
+  box-sizing:border-box;
+}
+.split-materials-list .mat-btn{
+  flex:1 1 0;
+  min-width:0;
+  min-height:60px;
+  justify-content:center;
+  align-items:center;
+  padding-left:10px;
+  padding-right:10px;
+  box-sizing:border-box;
+  text-align:center;
 }
 .split-copy-section{
   padding:14px 16px 0;
@@ -960,15 +997,20 @@ textarea::placeholder{color:#BDC1C6}
   color:#5F6368;
 }
 .split-ia-note{
-  margin-top:12px;
-  border:1px solid #D2E3FC;
-  border-radius:10px;
-  background:#F6F9FF;
-  padding:10px 12px;
+  margin-top:0;
+  min-height:60px;
+  padding:12px 14px;
+  border:1px solid #D0D7DE;
+  border-radius:8px;
+  background:#FAFBFC;
   color:#3367D6;
   font-size:11px;
   font-weight:600;
   line-height:1.55;
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
 }
 
 /* ── LAYOUT TOGGLE ── */
@@ -1103,6 +1145,12 @@ textarea::placeholder{color:#BDC1C6}
 }
 .aval-form-head-copy{min-width:0}
 .aval-form-head-copy .section-label{margin-bottom:4px}
+.aval-criteria-title{
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:.05em;
+  color:#202124;
+}
 .aval-form-head-note{font-size:12px;color:var(--text-secondary);line-height:1.5}
 
 @media (max-width: 1100px) {
@@ -1595,9 +1643,9 @@ textarea::placeholder{color:#BDC1C6}
       <div class="ia-note" id="avalIASeq"></div>
     </div>
     <div class="aval-form-head">
-      <div class="aval-form-head-card">
-        <div class="aval-form-head-copy">
-          <div class="section-label">Critérios de avaliação</div>
+        <div class="aval-form-head-card">
+          <div class="aval-form-head-copy">
+          <div class="section-label aval-criteria-title">Ficha de avaliação</div>
           <div class="aval-form-head-note">Avalie os 8 critérios com atenção.</div>
         </div>
       </div>
@@ -1626,10 +1674,10 @@ textarea::placeholder{color:#BDC1C6}
       <!-- painel direito: formulário -->
       <div class="aval-main-panel">
         <div class="aval-main-card">
-          <div class="aval-main-scroll" data-panel="main">
+            <div class="aval-main-scroll" data-panel="main">
             <div class="aval-panel-head">
               <div class="aval-form-head-copy">
-                <div class="section-label">Critérios de avaliação</div>
+                <div class="section-label aval-criteria-title">Ficha de avaliação</div>
               </div>
             </div>
             <div id="critGridSplit"></div>
@@ -2776,10 +2824,11 @@ function iaNoteHTML(raw) {
   const ia = parseIACriacao(raw);
   return `
     <div class="ia-note-head">
-      <span class="ia-note-k">IA utilizada</span>
+      <span class="ia-note-k">Uso de IA?</span>
       <span class="ia-note-v">${ia.rotulo}</span>
     </div>
-    ${ia.usou ? `<div class="ia-note-sub">Ferramenta(s): ${ia.detalhe || 'Não informado'}</div>` : ''}`;
+    ${ia.usou ? `<div class="ia-note-sub">${ia.detalhe || 'Não informado'}</div>` : ''}
+    `;
 }
 function compactInstitutionLabel(value) {
   const text = String(value || '').trim();
@@ -2788,6 +2837,19 @@ function compactInstitutionLabel(value) {
   const preferred = parens.find(p => /[A-Za-zÀ-ÿ]/.test(p) && p.length <= 24 && !/,\s*[A-Z]{2}$/i.test(p));
   if (preferred) return preferred;
   return text.replace(/\s*\([^()]+\)\s*$/,'').trim();
+}
+function compactInstitutionLocation(value, fallbackUf = '') {
+  const text = String(value || '').trim();
+  if (!text) return compactUfLabel(fallbackUf) || 'N/D';
+  const matches = [...text.matchAll(/\(([^()]+)\)/g)].map(m => String(m[1] || '').trim());
+  const location = [...matches].reverse().find(part => /,\s*[A-Z]{2}$/i.test(part));
+  if (location) {
+    return location
+      .replace(/\s*,\s*/g, ', ')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+  }
+  return compactUfLabel(fallbackUf) || 'N/D';
 }
 function portalInstitutionLabel(value) {
   const text = String(value || '').trim();
@@ -3982,14 +4044,14 @@ function avalGridHTML(e, mode) {
 
   if (isSplit) {
     const curso = e._raw?.['Curso no qual você tem matrícula ativa?'] || e._raw?.['Curso'] || 'Publicidade e Propaganda';
+    const instituicaoResumo = compactInstitutionLabel(e.inst);
+    const cursoResumo = compactCourseLabel(curso);
+    const localResumo = compactInstitutionLocation(e.inst, e.uf);
     const marker = teamMarker(e.mod);
     const kicker = `
       <span class="split-kicker-id">PPA2026-${e.id}</span>
       <span class="split-kicker-dot">·</span>
-      <span class="split-kicker-meta">${String(e.mod || '').toUpperCase()}</span>
-      <span class="team-marker-stack">${marker}</span>
-      <span class="split-kicker-dot">·</span>
-      <span class="split-kicker-meta">${e.uf || '—'}</span>`;
+      <span class="team-marker-stack">${marker}</span>`;
     const p2 = e.p2 ? `
       <div class="split-meta-row">
         <div class="split-meta-label">P2</div>
@@ -4010,10 +4072,9 @@ function avalGridHTML(e, mode) {
       <div class="split-hero">
         <div class="split-kicker">${kicker}</div>
         <div class="split-leader">${e.lider}</div>
-        <div class="split-inst">${e.inst}</div>
-        <div class="split-hero-meta">
-          <div class="split-hero-course">${curso}</div>
-        </div>
+        <div class="split-inst">${instituicaoResumo}</div>
+        <div class="split-hero-course">${cursoResumo}</div>
+        <div class="split-hero-location">${localResumo}</div>
       </div>
 
       <div class="split-meta-rows">

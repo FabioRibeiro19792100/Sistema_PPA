@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avaliação PPA 2026 — Parecerista</title>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root {
+  --col1-width: 1fr;   /* largura da coluna nome+desc nos critérios — ajuste aqui */
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --bg: #F8F9FA;
+  --surface: #ffffff;
+  --surface2: #F8F9FA;
+  --border: #E0E0E0;
+  --border-light: #F1F3F4;
+  --radius: 8px;
+  --radius-sm: 6px;
+  --text-primary: #202124;
+  --text-secondary: #5F6368;
+  --text-tertiary: #9AA0A6;
+  --text-muted: #BDC1C6;
+  --accent: #1A73E8;
+  --accent-bg: #E8F0FE;
+  --accent-border: #AECBFA;
+  --accent-text: #1A73E8;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 13px;
+  background: var(--bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── TOPNAV ── */
+.topnav {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.topnav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.topnav-sep {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+  margin: 0 4px;
+}
+.topnav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+.role-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 10px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+/* ── MAIN ── */
+main { flex: 1; padding: 24px 28px 100px; max-width: 1000px; margin: 0 auto; width: 100%; }
+
+/* ── PORTAL HEADER ── */
+.portal-header {
+  background: var(--accent);
+  color: #fff;
+  padding: 22px 26px 20px;
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+}
+.portal-eyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  opacity: .75;
+  margin-bottom: 4px;
+}
+.portal-title { font-size: 18px; font-weight: 600; line-height: 1.2; }
+.portal-sub { font-size: 12px; opacity: .8; margin-top: 3px; }
+.portal-progress { margin-top: 14px; display: flex; align-items: center; gap: 12px; }
+.prog-bar { flex: 1; height: 5px; background: rgba(255,255,255,.3); border-radius: 3px; overflow: hidden; }
+.prog-fill { height: 100%; background: #fff; border-radius: 3px; transition: width .3s; }
+.prog-label { font-size: 12px; opacity: .85; white-space: nowrap; }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: 10px;
+}
+
+/* ── FICHA ITEM (lista do portal) ── */
+.ficha-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: border-color .12s;
+}
+.ficha-item:hover { border-color: var(--accent); }
+.ficha-item.done { border-left: 3px solid #34A853; }
+.ficha-item.pending { border-left: 3px solid var(--border); }
+.fi-id { font-family: monospace; font-size: 11px; color: var(--accent); min-width: 110px; }
+.fi-nome { font-size: 12.5px; font-weight: 600; color: var(--text-primary); }
+.fi-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+.fi-status { margin-left: auto; white-space: nowrap; }
+
+/* ── BADGE ── */
+.badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 12px; }
+.b-pend { background: #F1F3F4; color: var(--text-tertiary); }
+.b-par  { background: #FEF3C7; color: #92400E; }
+.b-ok   { background: #D1FAE5; color: #065F46; }
+
+/* ── LAYOUT TOGGLE ── */
+.layout-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #F1F3F4;
+  border-radius: 7px;
+  padding: 3px;
+}
+.layout-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  border: none;
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-size: 15px;
+  transition: all .12s;
+}
+.layout-btn:hover { color: var(--text-primary); }
+.layout-btn.active { background: #fff; color: var(--accent); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  margin-bottom: 16px;
+}
+
+/* ── FIELDS GRID ── */
+.fields-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.field { padding: 11px 14px; border-right: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); }
+.field.s2 { grid-column: span 2; }
+.field.s3 { grid-column: span 3; border-right: none; }
+.field:nth-child(3n):not(.s2):not(.s3) { border-right: none; }
+.field.last { border-bottom: none; }
+.fl { font-size: 10px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 4px; }
+.fv { font-size: 12.5px; font-weight: 600; color: var(--text-primary); }
+.fv.mono { font-family: monospace; font-size: 11.5px; color: var(--accent); font-weight: 400; }
+.fv-sub { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+.fv-light { font-size: 12.5px; color: var(--text-secondary); line-height: 1.65; margin-top: 2px; }
+.ia-note { font-size: 11px; color: var(--text-muted); padding-top: 10px; border-top: 1px solid var(--border-light); margin-top: 6px; }
+
+/* ── SFIELD (coluna única no split) ── */
+.sfield { padding: 10px 14px; border-bottom: 1px solid var(--border-light); }
+.sfield.last { border-bottom: none; }
+.sfield.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* ── MATERIAIS ── */
+.materiais { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.mat-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 500; color: var(--accent);
+  background: var(--accent-bg); border: 1px solid var(--accent-border);
+  border-radius: var(--radius-sm); padding: 6px 13px; text-decoration: none; cursor: pointer;
+}
+.mat-btn:hover { filter: brightness(.95); }
+
+/* ── CRITÉRIOS SEQUENCIAL ── */
+.criterio {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  transition: border-color .15s;
+}
+.criterio:focus-within { border-color: var(--accent); }
+.crit-num { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 2px; }
+.crit-nome { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+.crit-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+.escala { display: flex; gap: 7px; margin-top: 12px; flex-wrap: wrap; }
+.escala input[type=radio] { display: none; }
+.escala label {
+  cursor: pointer; padding: 5px 14px; border-radius: 6px;
+  border: 1.5px solid var(--border); font-size: 12px; font-weight: 500;
+  color: var(--text-secondary); transition: all .12s; user-select: none;
+}
+.escala label:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+.escala input[value="Insuficiente"]:checked+label { background:#FEE2E2;border-color:#DC2626;color:#991B1B }
+.escala input[value="Regular"]:checked+label     { background:#FEF3C7;border-color:#D97706;color:#92400E }
+.escala input[value="Bom"]:checked+label          { background:#DBEAFE;border-color:#2563EB;color:#1E40AF }
+.escala input[value="Ótimo"]:checked+label        { background:#D1FAE5;border-color:#059669;color:#065F46 }
+.just-label { display: block; font-size: 10px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--text-tertiary); margin: 10px 0 4px; }
+textarea {
+  width: 100%; font-family: var(--font-body); font-size: 12.5px; color: var(--text-primary);
+  background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 8px 10px; resize: vertical; min-height: 64px; outline: none; line-height: 1.55;
+}
+textarea:focus { border-color: var(--accent); background: var(--surface); }
+textarea::placeholder { color: var(--text-muted); }
+
+/* ── CRITÉRIOS COMPACTOS (split) ── */
+.crit-compact { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 14px; }
+.crit-compact-row { display: grid; grid-template-columns: 277px 346px 1fr; border-bottom: 1px solid var(--border); min-height: 50px; }
+.crit-compact-row:last-child { border-bottom: none; }
+.crit-compact-row:nth-child(even) { background: #F6F7F9; }
+.crit-compact-row:nth-child(even) .cc-label,
+.crit-compact-row:nth-child(even) .cc-escala,
+.crit-compact-row:nth-child(even) .cc-obs { background: #F6F7F9; }
+.cc-label { padding: 12px 16px; background: var(--surface); display: flex; flex-direction: column; gap: 4px; }
+.cc-nome { font-size: 12px; font-weight: 600; color: var(--text-primary); line-height: 1.3; }
+.cc-desc { font-size: 10px; color: var(--text-tertiary); line-height: 1.4; display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden; }
+.cc-escala { padding: 10px 12px; display: flex; flex-direction: column; justify-content: center; gap: 4px; background: var(--surface); }
+.cc-radio-row { display: flex; align-items: center; cursor: pointer; }
+.cc-radio-row input[type=radio] { display: none; }
+.cc-pill { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 10px; border: 1.5px solid var(--border); color: var(--text-secondary); cursor: pointer; transition: all .1s; user-select: none; white-space: nowrap; flex-shrink:0; }
+.cc-radio-row:hover .cc-pill { border-color: var(--accent); color: var(--accent-text); }
+.cc-radio-row input[value="Insuficiente"]:checked~.cc-pill { background:#FEE2E2;border-color:#DC2626;color:#991B1B }
+.cc-radio-row input[value="Regular"]:checked~.cc-pill      { background:#FEF3C7;border-color:#D97706;color:#92400E }
+.cc-radio-row input[value="Bom"]:checked~.cc-pill          { background:#DBEAFE;border-color:#2563EB;color:#1E40AF }
+.cc-radio-row input[value="Ótimo"]:checked~.cc-pill        { background:#D1FAE5;border-color:#059669;color:#065F46 }
+.cc-obs { padding: 8px 10px; display: flex; background: var(--surface); }
+.cc-obs textarea { width: 100%; font-family: var(--font-body); font-size: 11.5px; padding: 7px 9px; border: 1px solid var(--border); border-radius: 4px; background: var(--surface); color: var(--text-primary); resize: none; outline: none; line-height: 1.55; min-height: 68px; }
+.cc-obs textarea:focus { border-color: var(--accent); }
+.cc-obs textarea::placeholder { color: var(--text-muted); }
+
+/* ── PARECER BOX ── */
+.parecer-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; margin-top: 6px; }
+.parecer-box textarea { min-height: 100px; }
+
+/* ── RESIZE HANDLES ── */
+.resize-handle {
+  width: 6px;
+  cursor: col-resize;
+  background: transparent;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+  transition: background .15s;
+}
+.resize-handle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 32px;
+  border-radius: 2px;
+  background: var(--border);
+  transition: background .15s, height .15s;
+}
+.resize-handle:hover::after,
+.resize-handle.dragging::after {
+  background: var(--accent);
+  height: 48px;
+}
+
+/* ── FOOTER BAR ── */
+.footer-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 11px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  z-index: 90;
+}
+.prog-label-sm { font-size: 11px; color: var(--text-tertiary); }
+.prog-bar-sm { width: 140px; height: 4px; background: var(--border-light); border-radius: 2px; overflow: hidden; margin-top: 4px; }
+.prog-fill-sm { height: 100%; background: var(--accent); border-radius: 2px; transition: width .3s; }
+
+/* ── BUTTONS ── */
+.btn { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-body); font-size: 13px; font-weight: 500; padding: 8px 16px; border-radius: var(--radius-sm); border: none; cursor: pointer; transition: all .12s; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { filter: brightness(.9); }
+.btn-secondary { background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--surface2); }
+.btn-sm { font-size: 11.5px; padding: 5px 12px; }
+
+/* ── MODAL EXIT ── */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.38); z-index: 200; align-items: center; justify-content: center; padding: 28px 16px; }
+.overlay.open { display: flex; }
+.modal { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; width: 100%; max-width: 460px; overflow: hidden; }
+.mh { padding: 16px 20px 14px; border-bottom: 1px solid var(--border-light); display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.mh-ey { font-size: 10px; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 3px; }
+.mh-title { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+.mh-sub { font-size: 12px; color: var(--text-tertiary); margin-top: 3px; }
+.close-btn { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; border: none; background: transparent; color: var(--text-tertiary); cursor: pointer; }
+.close-btn:hover { background: var(--surface2); color: var(--text-primary); }
+.mb { padding: 16px 20px; }
+.mf { padding: 12px 20px; border-top: 1px solid var(--border-light); display: flex; justify-content: flex-end; gap: 8px; }
+.exit-opcao { display: none; }
+.exit-opcao+label { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 7px; border: 1.5px solid var(--border); font-size: 12.5px; color: var(--text-secondary); cursor: pointer; transition: all .12s; margin-bottom: 7px; }
+.exit-opcao+label:hover { border-color: var(--accent); color: var(--text-primary); background: var(--accent-bg); }
+.exit-opcao:checked+label { border-color: var(--accent); background: var(--accent-bg); color: var(--accent); font-weight: 500; }
+.exit-error { font-size: 11px; color: #D93025; margin-top: 4px; display: none; }
+.finput { width: 100%; font-family: var(--font-body); font-size: 12.5px; padding: 7px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--text-primary); outline: none; }
+.finput:focus { border-color: var(--accent); }
+
+/* ── NOTIFY ── */
+.notify { position: fixed; bottom: 70px; right: 24px; background: #202124; color: #fff; font-size: 12px; font-weight: 500; padding: 10px 16px; border-radius: 8px; z-index: 999; opacity: 0; transition: opacity .2s; pointer-events: none; }
+.notify.show { opacity: 1; }
+
+/* ── LOGO ── */
+img.mt-logo { height: 14px; width: auto; filter: brightness(0); }
+
+/* ── FOOTER ── */
+.site-footer { background: var(--surface); border-top: 1px solid var(--border); padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.footer-text { font-size: 11px; color: var(--text-tertiary); }
+.footer-right { font-size: 10.5px; color: var(--text-muted); text-align: right; }
+</style>
+</head>
+<body>
+
+<!-- TOPNAV -->
+<div class="topnav">
+  <div class="topnav-brand">
+    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyMjAgMzYnIHdpZHRoPScyMjAnIGhlaWdodD0nMzYnPgogIDxzdHlsZT5AaW1wb3J0IHVybCgnaHR0cHM6Ly9mb250cy5nb29nbGVhcGlzLmNvbS9jc3MyP2ZhbWlseT1TcGFjZStHcm90ZXNrOndnaHRANzAwJik7PC9zdHlsZT4KICA8dGV4dCB4PScwJyB5PScyNycgZm9udC1mYW1pbHk9J1NwYWNlIEdyb3Rlc2ssIEFyaWFsLCBzYW5zLXNlcmlmJyBmb250LXNpemU9JzI0JyBmb250LXdlaWdodD0nNzAwJyBsZXR0ZXItc3BhY2luZz0nMC4wNmVtJyBmaWxsPScjMEEwQTBBJz5NQVNURVJURUNIPC90ZXh0Pgo8L3N2Zz4=" alt="Mastertech" class="mt-logo">
+    <div class="topnav-sep"></div>
+    <span>Avaliação PPA 2026</span>
+  </div>
+  <div class="topnav-right">
+    <!-- controles da ficha — só aparecem quando na ficha -->
+    <div id="navFichaControls" style="display:none;align-items:center;gap:8px">
+      <button class="btn btn-secondary btn-sm" onclick="voltarPortal()" style="font-size:11.5px;padding:5px 11px">← Voltar</button>
+      <div class="layout-toggle">
+        <button class="layout-btn active" id="btnSeq" onclick="setLayout('seq')" title="Sequencial">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        </button>
+        <button class="layout-btn" id="btnSplit" onclick="setLayout('split')" title="Painel dividido">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+        </button>
+      </div>
+      <div style="width:1px;height:16px;background:var(--border)"></div>
+    </div>
+    <span id="parNomeNav" style="color:var(--text-primary);font-weight:500"></span>
+    <span class="role-badge">Parecerista</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main>
+  <!-- VIEW: PORTAL -->
+  <div id="viewPortal">
+    <div class="portal-header">
+      <div class="portal-eyebrow">LED Globo · PPA 2026</div>
+      <div class="portal-title" id="portalNome">Minhas avaliações</div>
+      <div class="portal-sub" id="portalSub"></div>
+      <div class="portal-progress">
+        <div class="prog-bar"><div class="prog-fill" id="portalProgBar" style="width:0%"></div></div>
+        <div class="prog-label" id="portalProgLabel">0 de 0 concluídas</div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div class="section-label" style="margin-bottom:0">Suas inscrições</div>
+      <select class="finput" style="width:auto" onchange="filterPortal(this.value)">
+        <option value="">Todas</option>
+        <option value="pending">Pendentes</option>
+        <option value="done">Concluídas</option>
+      </select>
+    </div>
+    <div id="portalList"></div>
+  </div>
+
+  <!-- VIEW: FICHA -->
+  <div id="viewFicha" style="display:none">
+    <!-- ids mantidos para JS -->
+    <div id="fichaTitle" style="display:none"></div>
+    <div id="fichaSub" style="display:none"></div>
+    <div id="fichaBadge" style="display:none"></div>
+
+    <!-- MODO SEQUENCIAL -->
+    <div id="layoutSeq">
+      <div class="card" style="margin-bottom:14px">
+        <div class="section-label" style="margin-bottom:12px">Dados da inscrição</div>
+        <div class="fields-grid" id="gridSeq"></div>
+        <div class="ia-note" id="iaSeq"></div>
+      </div>
+      <div class="section-label" style="margin-bottom:10px">Critérios de avaliação</div>
+      <div id="critSeq"></div>
+      <div class="parecer-box">
+        <div class="section-label" style="margin-bottom:8px">Parecer geral</div>
+        <p style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;line-height:1.55">Síntese da avaliação — pontos fortes, limitações e recomendação final.</p>
+        <textarea id="parecerSeq" placeholder="Escreva aqui o parecer geral sobre esta proposta…"></textarea>
+      </div>
+    </div>
+
+    <!-- MODO SPLIT -->
+    <div id="layoutSplit" style="display:none">
+      <div id="splitShell" style="display:flex;gap:0;height:calc(100vh - 96px)">
+
+        <!-- ESQUERDA fixo -->
+        <div id="splitLeft" style="width:401px;min-width:401px;max-width:401px;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;flex-shrink:0">
+
+          <!-- cabeçalho: inscrição + inst + mod/uf -->
+          <div style="padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface2);flex-shrink:0">
+            <div style="font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px" id="splitHdrId"></div>
+            <div style="font-size:14px;font-weight:600;color:var(--text-primary);line-height:1.25" id="splitHdrNome"></div>
+            <div style="font-size:11px;color:var(--text-tertiary);margin-top:3px" id="splitHdrSub"></div>
+          </div>
+
+          <!-- equipe: P2, P3, Mentor (líder já está no cabeçalho) -->
+          <div style="padding:10px 16px;border-bottom:1px solid var(--border-light);flex-shrink:0">
+            <div id="splitMembros" style="display:grid;grid-template-columns:48px 1fr;gap:3px 10px;align-items:baseline"></div>
+          </div>
+
+          <!-- materiais: três botões em linha -->
+          <div style="padding:10px 16px;border-bottom:1px solid var(--border-light);flex-shrink:0">
+            <div id="splitMateriais" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+          </div>
+
+          <!-- textos longos: scroll interno -->
+          <div style="flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:14px" id="splitTextos"></div>
+
+          <!-- rodapé IA -->
+          <div style="padding:7px 16px;border-top:1px solid var(--border-light);font-size:10px;color:var(--text-muted);flex-shrink:0" id="iaSplit"></div>
+        </div>
+
+        <!-- HANDLE: painel esquerdo / direito -->
+        <div class="resize-handle" id="handlePanels"></div>
+
+        <!-- DIREITA: critérios + parecer com scroll -->
+        <div id="splitRight" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:0 4px 0 10px">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;padding:0 2px 4px">
+            <div>
+              <div style="font-size:18px;font-weight:700;color:var(--text-primary);letter-spacing:-.02em;line-height:1.2">Avaliação</div>
+              <div style="font-size:11px;color:var(--text-tertiary);margin-top:2px">Atribua um conceito a cada critério. A observação é opcional.</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;margin-left:16px">
+              <div style="font-size:11px;font-weight:600;color:var(--text-tertiary)" id="footerLabel">0 de 8 critérios avaliados</div>
+              <div style="width:120px;height:3px;background:var(--border-light);border-radius:2px;margin-top:4px;overflow:hidden;margin-left:auto">
+                <div id="footerFill" style="height:100%;background:var(--accent);border-radius:2px;width:0%;transition:width .3s"></div>
+              </div>
+            </div>
+          </div>
+          <div id="critSplit"></div>
+          <div style="padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)">
+            <div style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:6px">Parecer geral</div>
+            <textarea id="parecerSplit" style="min-height:90px" placeholder="Síntese da avaliação — pontos fortes, limitações e recomendação final…"></textarea>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- FOOTER BAR (ficha) -->
+<div class="footer-bar" id="footerBar" style="display:none;justify-content:flex-end">
+  <button class="btn btn-primary btn-sm" id="btnSalvar" onclick="salvar()" style="display:none">Salvar avaliação</button>
+  <span style="font-size:12px;color:var(--text-tertiary)" id="btnPendente">Pendente — preencha todos os critérios</span>
+</div>
+
+<!-- MODAL SAÍDA ANTECIPADA -->
+<div class="overlay" id="overlayExit" onclick="if(event.target===this)cancelExit()">
+  <div class="modal">
+    <div class="mh">
+      <div>
+        <div class="mh-ey">Avaliação em andamento</div>
+        <div class="mh-title">Por que está saindo agora?</div>
+        <div class="mh-sub">O rascunho será salvo automaticamente.</div>
+      </div>
+      <button class="close-btn" onclick="cancelExit()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="mb">
+      <div id="exitOpcoes"></div>
+      <p class="exit-error" id="exitError">Selecione um motivo para continuar.</p>
+      <div style="margin-top:10px">
+        <label style="font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-tertiary);display:block;margin-bottom:5px">Observação adicional <span style="font-weight:400">(opcional)</span></label>
+        <textarea id="exitComentario" style="min-height:60px" placeholder="Se quiser, complemente o motivo…"></textarea>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-secondary btn-sm" onclick="cancelExit()">Continuar avaliando</button>
+      <button class="btn btn-sm" style="background:#FEE2E2;color:#D93025;border:1px solid #F5C6C2" onclick="confirmExit()">Registrar saída</button>
+    </div>
+  </div>
+</div>
+
+<div class="notify" id="notify"></div>
+
+<!-- SITE FOOTER -->
+<footer class="site-footer">
+  <div style="display:flex;align-items:center;gap:10px">
+    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyMjAgMzYnIHdpZHRoPScyMjAnIGhlaWdodD0nMzYnPgogIDxzdHlsZT5AaW1wb3J0IHVybCgnaHR0cHM6Ly9mb250cy5nb29nbGVhcGlzLmNvbS9jc3MyP2ZhbWlseT1TcGFjZStHcm90ZXNrOndnaHRANzAwJyk7PC9zdHlsZT4KICA8dGV4dCB4PScwJyB5PScyNycgZm9udC1mYW1pbHk9J1NwYWNlIEdyb3Rlc2ssIEFyaWFsLCBzYW5zLXNlcmlmJyBmb250LXNpemU9JzI0JyBmb250LXdlaWdodD0nNzAwJyBsZXR0ZXItc3BhY2luZz0nMC4wNmVtJyBmaWxsPScjMEEwQTBBJz5NQVNURVJURUNIPC90ZXh0Pgo8L3N2Zz4=" alt="Mastertech" class="mt-logo">
+    <div style="width:1px;height:14px;background:var(--border)"></div>
+    <span class="footer-text">Sistema de avaliação desenvolvido pela <strong>Mastertech</strong></span>
+  </div>
+  <div class="footer-right">LED Globo · Profissionais do Ano 2026</div>
+</footer>
+
+<script>
+// ═══ DADOS DE DEMONSTRAÇÃO ══════════════════
+const PARECERISTAS_DEMO = {
+  'p1': { nome: 'Ana Paula Ribeiro',    email: 'ana@parecerista.com',     inst: 'Estácio' },
+  'p2': { nome: 'Carlos Eduardo Lima',  email: 'carlos@parecerista.com',  inst: 'Uninove' },
+  'p3': { nome: 'Fernanda Souza Dias',  email: 'fernanda@parecerista.com',inst: 'FMU'     },
+};
+
+const INSCRICOES_DEMO = [
+  { id:'0001', lider:'Clara Rocha Santos', le:'clara@email.com', p2:'Paula Oliveira Campos', p2e:'paula@email.com', p3:null, mentor:'Profa. Gabriela Correia Costa', me:'g.correia@univ.edu.br', inst:'ECA-USP', mod:'Em dupla', uf:'SP',
+    obj:'Provocar reflexão sobre ausências educacionais no Brasil, especialmente em comunidades periféricas e rurais onde o acesso à educação de qualidade ainda é profundamente desigual e pouco visibilizado. Queremos que o espectador reconheça o problema como estrutural, não individual.\n\nGerar identificação em jovens de 16 a 25 anos que vivenciaram ou testemunharam as consequências dessa desigualdade, tornando o tema urgente e pessoal — não uma abstração estatística, mas uma experiência reconhecível.\n\nAmpliar o alcance da discussão para além do público já engajado com o tema, atingindo audiências que consomem entretenimento no ecossistema Globo e que talvez nunca tenham parado para pensar na educação como um direito ainda não cumprido.',
+    dist:'Distribuição em três camadas integradas: conteúdo âncora no Globoplay como minissérie documental de três episódios curtos; peça de 30 segundos com inserções no Fantástico e no Jornal Nacional; ação multiplataforma ativada simultaneamente no Instagram, TikTok e YouTube com conteúdos derivados e adaptados.\n\nCada plataforma recebe um formato pensado para sua linguagem e comportamento de consumo: no TikTok, depoimentos curtos e diretos de jovens; no Instagram, carrosséis com dados humanizados e histórias reais; no YouTube, o documentário completo com legendas e audiodescrição para ampliar acessibilidade.\n\nA campanha prevê ainda uma fase de escuta ativa com caixas de comentários monitoradas e respostas em vídeo da equipe criativa nos primeiros 15 dias, criando um ciclo de engajamento contínuo e orgânico.',
+    defesa:'"A campanha parte do silêncio — o que não é ensinado também transforma. Trabalhamos com ausências educacionais como protagonistas de uma narrativa visual sobre desigualdade. A ideia é mostrar que o vazio deixado pela falta de acesso à educação não é neutro: ele tem cor, endereço e consequências concretas na vida de milhões de brasileiros.\n\nNossa referência central foi o documentário como forma de denúncia poética. Cada peça da campanha carrega a mesma pergunta de fundo: o que você não aprendeu porque simplesmente não pôde aprender? Essa pergunta, ao ser feita em diferentes formatos e plataformas, ganha camadas distintas sem perder a coerência conceitual.\n\nA escolha pelo silêncio como linguagem é também uma escolha política e estética. Acreditamos que a educação transformadora começa no momento em que alguém percebe com clareza o que lhe foi negado — e que esse reconhecimento, quando compartilhado em escala, pode mover conversas e comportamentos."',
+    ia:'ChatGPT e Midjourney' },
+  { id:'0002', lider:'Natália Monteiro Oliveira', le:'natalia@email.com',  p2:null,                    p3:null,               mentor:'Profa. Bianca Silva Duarte', me:'bianca@ufmg.br',        inst:'UFMG',          mod:'Individual', uf:'MG', defesa:'"Educação como ato de presença: o instante em que um professor muda uma trajetória."', ia:'Não utilizou IA', obj:'Retratar o impacto de professores em comunidades periféricas.', dist:'Formato documental para GloboNews e plataformas digitais.' },
+  { id:'0003', lider:'Julia Campos Moreira',      le:'julia@email.com',    p2:'André Vieira Lima',     p2e:'andre@email.com', p3:'Tatiane Souza',  mentor:'Profa. Cecília Ribeiro Rocha', me:'c.rocha@pucrio.br', inst:'PUC-Rio',       mod:'Em trio',  uf:'RJ', defesa:'"Três gerações numa conversa sobre o que a escola deu e o que ela tirou."', ia:'Runway ML', obj:'Conectar audiências de diferentes faixas etárias pelo tema educação.', dist:'Série para Globoplay com posts derivados para Instagram e TikTok.' },
+  { id:'0004', lider:'Beatriz Campos Dias',       le:'beatriz@email.com',  p2:'Rafael Melo Lima',      p2e:'rafael@email.com',p3:null,             mentor:'Profa. Eduarda Pereira Lima', me:'e.lima@casper.edu.br',inst:'Cásper Líbero', mod:'Em dupla', uf:'SP', defesa:'"Educação como infraestrutura invisível — presente em tudo, raramente reconhecida."', ia:'Não utilizou IA', obj:'Tornar visível o papel silencioso da educação no cotidiano.', dist:'Campanha integrada com inserção no JN e ativações em redes sociais.' },
+];
+
+const ATRIBUICOES_DEMO = {
+  'p1': ['0001','0002','0003'],
+  'p2': ['0002','0003','0004'],
+  'p3': ['0001','0003','0004'],
+};
+
+const CRITERIOS = [
+  { nome:'Originalidade da proposta',   desc:'A ideia apresenta um olhar novo ou combinação criativa? Evita formatos já conhecidos?' },
+  { nome:'Clareza conceitual',           desc:'A mensagem central é compreendida? Responde de forma consistente ao desafio?' },
+  { nome:'Engajamento emocional',        desc:'Desperta emoção, curiosidade ou surpresa? Tem potencial para gerar lembrança?' },
+  { nome:'Link com a temática',          desc:'O tema educação/transformação social é estruturante, não apenas referência superficial?' },
+  { nome:'Qualidade narrativa',          desc:'Existe construção clara de raciocínio? Mantém interesse do início ao fim?' },
+  { nome:'Coerência na entrega',         desc:'Vídeo, roteiro 30s e campanha compartilham o mesmo conceito e linguagem?' },
+  { nome:'Exploração dos formatos',      desc:'Usa características específicas de cada plataforma para ampliar o impacto?' },
+  { nome:'Estratégia de distribuição',   desc:'Demonstra potencial de circulação no ecossistema Globo? Aproveita diferentes canais?' },
+];
+
+const EXIT_OPCOES = [
+  { id:'urgencia',   icon:'⏱', label:'Compromisso urgente — retornarei para concluir' },
+  { id:'duvida',     icon:'📄', label:'Preciso revisar os materiais antes de avaliar' },
+  { id:'tecnico',    icon:'💻', label:'Problema técnico — tentarei novamente em seguida' },
+  { id:'incompleto', icon:'⚠️', label:'Material da inscrição parece incompleto' },
+  { id:'outro',      icon:'•',  label:'Outro motivo' },
+];
+
+// ═══ ESTADO ══════════════════════════════
+let parId = null;
+let par = null;
+let atribuidas = [];
+let avaliacoes = {};
+let currentInscId = null;
+let currentLayout = 'seq';
+let fichaStart = null;
+let fichaOk = false;
+let fichaTimer = null;
+const TEMPO_MIN = 2 * 60 * 1000;
+let pendingExit = null;
+let portalFilter = '';
+
+// ═══ INIT ══════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  parId = params.get('par') || 'p1'; // default p1 para demo
+  par = PARECERISTAS_DEMO[parId];
+  if (!par) { document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#D93025">Link inválido. Verifique o endereço recebido por e-mail.</div>'; return; }
+  atribuidas = ATRIBUICOES_DEMO[parId] || [];
+  document.getElementById('parNomeNav').textContent = par.nome;
+  renderPortal();
+});
+
+// ═══ PORTAL ══════════════════════════
+function filterPortal(v) { portalFilter = v; renderPortal(); }
+
+function renderPortal() {
+  document.getElementById('portalNome').textContent = par.nome;
+  document.getElementById('portalSub').textContent = par.email + ' · ' + atribuidas.length + ' inscrições atribuídas';
+  const done = atribuidas.filter(id => avaliacoes[id]?.done).length;
+  const pct = atribuidas.length ? Math.round(done/atribuidas.length*100) : 0;
+  document.getElementById('portalProgBar').style.width = pct + '%';
+  document.getElementById('portalProgLabel').textContent = done + ' de ' + atribuidas.length + ' concluídas';
+
+  let lista = atribuidas;
+  if (portalFilter === 'done') lista = atribuidas.filter(id => avaliacoes[id]?.done);
+  if (portalFilter === 'pending') lista = atribuidas.filter(id => !avaliacoes[id]?.done);
+
+  if (!lista.length) {
+    document.getElementById('portalList').innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted);font-size:12px">Nenhuma inscrição neste filtro.</div>';
+    return;
+  }
+
+  document.getElementById('portalList').innerHTML = lista.map(id => {
+    const e = INSCRICOES_DEMO.find(x => x.id === id);
+    if (!e) return '';
+    const isDone = !!avaliacoes[id]?.done;
+    return `<div class="ficha-item ${isDone?'done':'pending'}" onclick="abrirFicha('${id}')">
+      <div class="fi-id">PPA2026-${e.id}</div>
+      <div>
+        <div class="fi-nome">${e.lider}</div>
+        <div class="fi-sub">${e.mod} · ${e.uf} · ${e.inst}</div>
+      </div>
+      <div class="fi-status"><span class="badge ${isDone?'b-ok':'b-pend'}">${isDone?'Concluída':'Pendente'}</span></div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.75"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>`;
+  }).join('');
+}
+
+// ═══ GRID HTML ═══════════════════════
+function gridSeqHTML(e) {
+  const p2 = e.p2 ? `<div class="field"><div class="fl">Participante 2</div><div class="fv">${e.p2}</div><div class="fv-sub">${e.p2e||''}</div></div>` : '<div class="field"></div>';
+  const p3 = e.p3 ? `<div class="field"><div class="fl">Participante 3</div><div class="fv">${e.p3}</div><div class="fv-sub"></div></div>` : '<div class="field"></div>';
+  const base = `https://ppa-storage.fake/PPA2026-${e.id}`;
+  return `
+    <div class="field"><div class="fl">ID</div><div class="fv mono">PPA2026-${e.id}</div></div>
+    <div class="field"><div class="fl">Modalidade</div><div class="fv">${e.mod}</div></div>
+    <div class="field"><div class="fl">UF</div><div class="fv">${e.uf}</div></div>
+    <div class="field s2"><div class="fl">Instituição</div><div class="fv">${e.inst}</div></div>
+    <div class="field"><div class="fl">Curso</div><div class="fv">Publicidade e Propaganda</div></div>
+    <div class="field"><div class="fl">Líder</div><div class="fv">${e.lider}</div><div class="fv-sub">${e.le}</div></div>
+    ${p2}${p3}
+    <div class="field s3"><div class="fl">Mentor</div><div class="fv">${e.mentor}</div><div class="fv-sub">${e.me}</div></div>
+    <div class="field s3"><div class="fl">Materiais</div><div class="materiais">
+      <a class="mat-btn" href="${base}/video.mp4" target="_blank">▶ Vídeo criativo</a>
+      <a class="mat-btn" href="${base}/roteiro.pdf" target="_blank">📄 Roteiro 30s</a>
+      <a class="mat-btn" href="${base}/campanha.pdf" target="_blank">📄 Campanha</a>
+    </div></div>
+    ${e.obj ? `<div class="field s3"><div class="fl">Objetivos da campanha</div><div class="fv-light">${e.obj}</div></div>` : ''}
+    ${e.dist ? `<div class="field s3"><div class="fl">Estratégia de distribuição</div><div class="fv-light">${e.dist}</div></div>` : ''}
+    <div class="field s3 last"><div class="fl">Defesa conceitual</div><div class="fv-light">${e.defesa}</div></div>`;
+}
+
+function gridSplitHTML(e) {
+  const base = `https://ppa-storage.fake/PPA2026-${e.id}`;
+
+  // cabeçalho
+  document.getElementById('splitHdrId').textContent  = 'PPA2026-' + e.id + ' · ' + e.mod + ' · ' + e.uf;
+  document.getElementById('splitHdrNome').textContent = e.lider;
+  document.getElementById('splitHdrSub').textContent  = e.inst;
+
+  // equipe: P2, P3, Mentor — grid 2 colunas (role | nome) alinhado
+  const membros = [
+    e.p2     ? { role:'P2',     nome:e.p2 }     : null,
+    e.p3     ? { role:'P3',     nome:e.p3 }     : null,
+    e.mentor ? { role:'Mentor', nome:e.mentor }  : null,
+  ].filter(Boolean);
+  document.getElementById('splitMembros').innerHTML = membros.map(m =>
+    `<span style="font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);line-height:1.8">${m.role}</span>
+     <span style="font-size:12px;font-weight:500;color:var(--text-primary);line-height:1.8">${m.nome}</span>`
+  ).join('');
+
+  // materiais: uma linha
+  document.getElementById('splitMateriais').innerHTML = [
+    { label:'▶ Vídeo', href:base+'/video.mp4' },
+    { label:'📄 Roteiro 30s', href:base+'/roteiro.pdf' },
+    { label:'📄 Campanha', href:base+'/campanha.pdf' },
+  ].map(m => `<a href="${m.href}" target="_blank" class="mat-btn" style="font-size:11px;padding:4px 10px">${m.label}</a>`).join('');
+
+  // textos longos
+  const textos = [
+    { label:'Defesa conceitual', val:e.defesa },
+    e.obj  ? { label:'Objetivos da campanha',      val:e.obj  } : null,
+    e.dist ? { label:'Estratégia de distribuição', val:e.dist } : null,
+  ].filter(Boolean);
+  document.getElementById('splitTextos').innerHTML = textos.map(t =>
+    `<div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:6px;padding-bottom:4px;border-bottom:1.5px solid var(--border)">${t.label}</div>
+      ${t.val.split('\\n\\n').map(p => `<p style="font-size:12px;color:var(--text-secondary);line-height:1.65;margin-bottom:6px">${p}</p>`).join('')}
+    </div>`
+  ).join('');
+
+  document.getElementById('iaSplit').textContent = 'IA na criação: ' + e.ia;
+}
+
+// ═══ CRIT HTML ══════════════════════
+function critSeqHTML(av) {
+  const ESCALA = ['Insuficiente','Regular','Bom','Ótimo'];
+  return CRITERIOS.map((c,i) => {
+    const nota = av?.notas[i]||null;
+    const just = av?.justificativas[i]||'';
+    return `<div class="criterio">
+      <div class="crit-num">Critério ${String(i+1).padStart(2,'0')}</div>
+      <div class="crit-nome">${c.nome}</div>
+      <div class="crit-desc">${c.desc}</div>
+      <div class="escala">
+        ${ESCALA.map(v=>`<input type="radio" name="seq_${i}" id="seq_${i}_${v}" value="${v}" ${nota===v?'checked':''} onchange="updateFooter()"><label for="seq_${i}_${v}">${v}</label>`).join('')}
+      </div>
+      <span class="just-label">Justificativa</span>
+      <textarea id="seq_just_${i}" placeholder="Descreva brevemente o que fundamenta esta avaliação…" oninput="updateFooter()">${just}</textarea>
+    </div>`;
+  }).join('');
+}
+
+function critSplitHTML(av) {
+  const LINHA1 = ['Insuficiente','Regular'];
+  const LINHA2 = ['Bom','Ótimo'];
+  const ESCALA = [...LINHA1,...LINHA2];
+  return `<div class="crit-compact">` +
+    CRITERIOS.map((c,i) => {
+      const nota = av?.notas[i]||null;
+      const just = av?.justificativas[i]||'';
+      const pills = (opts) => opts.map(v =>
+        `<label class="cc-radio-row"><input type="radio" name="spl_${i}" value="${v}" ${nota===v?'checked':''} onchange="updateFooter()"><span class="cc-pill">${v}</span></label>`
+      ).join('');
+      return `<div class="crit-compact-row" style="display:grid;grid-template-columns:277px 346px 1fr">
+        <div class="cc-label">
+          <span class="cc-nome"><span style="color:var(--text-muted);font-weight:400;margin-right:4px">${String(i+1).padStart(2,'0')}</span>${c.nome}</span>
+          <span class="cc-desc">${c.desc}</span>
+        </div>
+        <div class="cc-escala" style="flex-direction:row;flex-wrap:nowrap;gap:4px;align-items:center;border-left:1px solid var(--border-light)">
+          ${pills([...LINHA1,...LINHA2])}
+        </div>
+        <div class="cc-obs" style="border-left:1px solid var(--border-light)">
+          <textarea id="spl_just_${i}" placeholder="Observação…" oninput="updateFooter()">${just}</textarea>
+        </div>
+      </div>`;
+    }).join('') + `</div>`;
+}
+
+// ═══ ABRIR FICHA ════════════════════
+function abrirFicha(id) {
+  currentInscId = id;
+  const e = INSCRICOES_DEMO.find(x => x.id === id);
+  const av = avaliacoes[id];
+
+  document.getElementById('fichaTitle').textContent = 'PPA2026-' + e.id + ' · ' + e.lider;
+  document.getElementById('fichaSub').textContent = e.mod + ' · ' + e.uf + ' · ' + e.inst;
+  document.getElementById('fichaBadge').textContent = av?.done ? 'Concluída' : 'Pendente';
+  document.getElementById('fichaBadge').className = 'badge ' + (av?.done?'b-ok':'b-pend');
+
+  document.getElementById('gridSeq').innerHTML = gridSeqHTML(e);
+  document.getElementById('iaSeq').textContent = 'IA utilizada na criação: ' + e.ia;
+  document.getElementById('critSeq').innerHTML = critSeqHTML(av);
+  document.getElementById('parecerSeq').value = av?.parecer||'';
+
+  gridSplitHTML(e); // preenche os elementos do split diretamente
+  document.getElementById('critSplit').innerHTML = critSplitHTML(av);
+  document.getElementById('parecerSplit').value = av?.parecer||'';
+
+  if (!av?.done) {
+    fichaStart = Date.now();
+    fichaOk = false;
+    clearTimeout(fichaTimer);
+    fichaTimer = setTimeout(() => { fichaOk = true; }, TEMPO_MIN);
+  } else {
+    fichaOk = true;
+  }
+
+  // mostra controles da ficha na nav
+  document.getElementById('navFichaControls').style.display = 'flex';
+
+  document.getElementById('viewPortal').style.display = 'none';
+  document.getElementById('viewFicha').style.display = 'block';
+  document.getElementById('footerBar').style.display = 'flex';
+  updateFooter();
+  window.scrollTo(0,0);
+}
+
+function voltarPortal() {
+  const av = avaliacoes[currentInscId];
+  if (!av?.done && !fichaOk) {
+    pendingExit = 'portal';
+    document.getElementById('exitOpcoes').innerHTML = EXIT_OPCOES.map(o=>
+      `<input class="exit-opcao" type="radio" name="exitOp" id="op_${o.id}" value="${o.id}">
+       <label for="op_${o.id}">${o.icon} ${o.label}</label>`).join('');
+    document.getElementById('exitComentario').value='';
+    document.getElementById('exitError').style.display='none';
+    document.getElementById('overlayExit').classList.add('open');
+    return;
+  }
+  irPortal();
+}
+
+function irPortal() {
+  clearTimeout(fichaTimer);
+  fichaOk = false; fichaStart = null;
+  document.getElementById('navFichaControls').style.display = 'none';
+  document.getElementById('viewFicha').style.display='none';
+  document.getElementById('viewPortal').style.display='block';
+  document.getElementById('footerBar').style.display='none';
+  renderPortal();
+  window.scrollTo(0,0);
+}
+
+// ═══ LAYOUT ═════════════════════════
+function setLayout(mode) {
+  currentLayout = mode;
+  document.getElementById('layoutSeq').style.display = mode==='seq'?'block':'none';
+  document.getElementById('layoutSplit').style.display = mode==='split'?'block':'none';
+  document.getElementById('btnSeq').classList.toggle('active', mode==='seq');
+  document.getElementById('btnSplit').classList.toggle('active', mode==='split');
+  const m = document.querySelector('main');
+  if (mode === 'split') {
+    m.style.maxWidth = '100%';
+    m.style.padding = '10px 24px 0';
+    m.style.overflow = 'hidden';
+    setTimeout(initResize, 50);
+  } else {
+    m.style.maxWidth = '1000px';
+    m.style.padding = '24px 28px 100px';
+    m.style.overflow = '';
+  }
+}
+
+// ═══ FOOTER / PROGRESS ══════════════
+function updateFooter() {
+  const prefix = currentLayout==='split'?'spl_':'seq_';
+  const n = CRITERIOS.filter((_,i) => document.querySelector(`input[name="${prefix}${i}"]:checked`)).length;
+  document.getElementById('footerLabel').textContent = n + ' de 8 critérios avaliados';
+  document.getElementById('footerFill').style.width = Math.round(n/8*100)+'%';
+  const completo = n === 8;
+  document.getElementById('btnSalvar').style.display   = completo ? 'inline-flex' : 'none';
+  document.getElementById('btnPendente').style.display = completo ? 'none' : 'inline-block';
+}
+
+// ═══ SALVAR ═════════════════════════
+function salvar() {
+  if (!fichaOk) {
+    const rest = Math.ceil((TEMPO_MIN-(Date.now()-fichaStart))/1000);
+    notify('Aguarde mais ' + rest + 's para concluir.');
+    return;
+  }
+  const prefix = currentLayout==='split'?'spl_':'seq_';
+  const notas = CRITERIOS.map((_,i) => document.querySelector(`input[name="${prefix}${i}"]:checked`)?.value||null);
+  const justificativas = CRITERIOS.map((_,i) => document.getElementById(`${prefix}just_${i}`)?.value?.trim()||'');
+  const parecer = document.getElementById(currentLayout==='split'?'parecerSplit':'parecerSeq').value.trim();
+
+  const numInsuf = notas.filter(n=>n==='Insuficiente').length;
+  if (numInsuf >= 3 && !parecer) {
+    notify('Com 3 ou mais Insuficientes, o parecer geral é obrigatório.');
+    const el = document.getElementById(currentLayout==='split'?'parecerSplit':'parecerSeq');
+    el.focus(); el.style.borderColor='#D93025';
+    setTimeout(()=>el.style.borderColor='',2000);
+    return;
+  }
+
+  const done = notas.every(Boolean);
+  avaliacoes[currentInscId] = { notas, justificativas, parecer, done };
+  document.getElementById('fichaBadge').textContent = done?'Concluída':'Pendente';
+  document.getElementById('fichaBadge').className = 'badge '+(done?'b-ok':'b-pend');
+  notify(done ? 'Avaliação concluída.' : 'Rascunho salvo.');
+  if (done) { clearTimeout(fichaTimer); fichaOk = false; }
+}
+
+// ═══ EXIT MODAL ═════════════════════
+function cancelExit() { document.getElementById('overlayExit').classList.remove('open'); pendingExit=null; }
+function confirmExit() {
+  const sel = document.querySelector('input[name="exitOp"]:checked');
+  if (!sel) { document.getElementById('exitError').style.display='block'; return; }
+  const label = EXIT_OPCOES.find(o=>o.id===sel.value)?.label||sel.value;
+  const comentario = document.getElementById('exitComentario').value.trim();
+  const motivo = comentario ? label+' — '+comentario : label;
+  const prefix = currentLayout==='split'?'spl_':'seq_';
+  const notas = CRITERIOS.map((_,i)=>document.querySelector(`input[name="${prefix}${i}"]:checked`)?.value||null);
+  const justificativas = CRITERIOS.map((_,i)=>document.getElementById(`${prefix}just_${i}`)?.value?.trim()||'');
+  const parecer = document.getElementById(currentLayout==='split'?'parecerSplit':'parecerSeq').value.trim();
+  avaliacoes[currentInscId] = { notas, justificativas, parecer, done:false, motivoSaida:motivo };
+  document.getElementById('overlayExit').classList.remove('open');
+  notify('Saída registrada. Rascunho salvo.');
+  irPortal();
+}
+
+// ═══ RESIZE HANDLES ══════════════════════════════
+function initResize() {
+  const handleP = document.getElementById('handlePanels');
+  const leftEl  = document.getElementById('splitLeft');
+  const shell   = document.getElementById('splitShell');
+  if (handleP && leftEl && shell) {
+    let drag = false, startX = 0, startW = 0;
+    handleP.addEventListener('mousedown', e => {
+      drag = true; startX = e.clientX; startW = leftEl.offsetWidth;
+      handleP.classList.add('dragging');
+      document.body.style.cssText += ';cursor:col-resize;user-select:none';
+    });
+    document.addEventListener('mousemove', e => {
+      if (!drag) return;
+      const w = Math.max(200, Math.min(shell.offsetWidth * 0.65, startW + e.clientX - startX));
+      leftEl.style.width = w + 'px';
+    });
+    document.addEventListener('mouseup', () => {
+      if (!drag) return;
+      drag = false; handleP.classList.remove('dragging');
+      document.body.style.cursor = ''; document.body.style.userSelect = '';
+    });
+  }
+
+  function colHandle(id, dir) {
+    const h = document.getElementById(id);
+    if (!h) return;
+    let drag = false, startX = 0;
+    h.addEventListener('mousedown', e => {
+      drag = true; startX = e.clientX; h.classList.add('dragging');
+      document.body.style.cssText += ';cursor:col-resize;user-select:none';
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', e => {
+      if (!drag) return;
+      const dx = e.clientX - startX; startX = e.clientX;
+      const row = document.querySelector('.crit-compact-row');
+      if (!row) return;
+      const cols = getComputedStyle(row).gridTemplateColumns.split(' ').map(parseFloat);
+      let [w1,w2,w3] = cols;
+      if (dir==='12') { w1=Math.max(80,w1+dx); w2=Math.max(100,w2-dx); }
+      if (dir==='23') { w2=Math.max(100,w2+dx); w3=Math.max(80,w3-dx); }
+      const r = document.documentElement;
+      r.style.setProperty('--col1-w', w1+'px');
+      r.style.setProperty('--col2-w', w2+'px');
+      r.style.setProperty('--col3-w', w3+'px');
+    });
+    document.addEventListener('mouseup', () => {
+      if (!drag) return;
+      drag = false; h.classList.remove('dragging');
+      document.body.style.cursor = ''; document.body.style.userSelect = '';
+    });
+  }
+  colHandle('handleCol12','12');
+  colHandle('handleCol23','23');
+}
+
+// ═══ NOTIFY ═════════════════════════
+function notify(msg) {
+  const el = document.getElementById('notify');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>
