@@ -4778,20 +4778,20 @@ async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
     return;
   }
 
-  // trava 1: ≥N Insuficientes obriga parecer geral
-  const numInsuf = notas.filter(n => n === 'Insuficiente').length;
-  if (numInsuf >= INSUF_OBRIGA_PARECER && !parecer) {
-      document.getElementById('requiredParecerSub').textContent = 'Como você marcou 3 ou mais critérios como "Insuficiente", o preenchimento do campo PARECER GERAL deixa de ser opcional.';
-    openRequiredParecerModal();
-    return;
-  }
-
   if (!editingConcluded) {
     const anexosPendentes = anexosPendentesDaAvaliacao(parId, inscId);
     if (anexosPendentes.length) {
       openMissingAttachmentsModal(anexosPendentes);
       return;
     }
+  }
+
+  // trava 1: ≥N Insuficientes obriga parecer geral
+  const numInsuf = notas.filter(n => n === 'Insuficiente').length;
+  if (numInsuf >= INSUF_OBRIGA_PARECER && !parecer) {
+      document.getElementById('requiredParecerSub').textContent = 'Como você marcou 3 ou mais critérios como "Insuficiente", o preenchimento do campo PARECER GERAL deixa de ser opcional.';
+    openRequiredParecerModal();
+    return;
   }
 
   // trava 2: tempo mínimo invisível
@@ -4874,6 +4874,11 @@ function salvarAvaliacao() {
 function voltarPortal() {
   if (!currentParId) {
     showView('dashboard');
+    return;
+  }
+  const emAvaliacao = document.getElementById('view-avaliacao')?.classList.contains('active');
+  if (emAvaliacao && currentInscId) {
+    tentarSair('portal');
     return;
   }
   currentInscId = null;
