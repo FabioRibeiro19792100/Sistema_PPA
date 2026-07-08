@@ -13,6 +13,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="base_fallbacks.js"></script>
 <style>
 /* ══════════════════════════════════════════════
    TEMAS — CSS CUSTOM PROPERTIES
@@ -623,6 +624,26 @@ tr:hover td.sticky{background:#FAFAFA}
 }
 #view-resultados .results-top-shell{
   background:var(--bg);
+}
+#view-resultados .results-reset-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:0 2px;
+  border:none;
+  background:transparent;
+  color:#7A828E;
+  font-size:12px;
+  font-weight:600;
+  line-height:1;
+  cursor:pointer;
+  transition:color .12s ease, opacity .12s ease;
+}
+#view-resultados .results-reset-btn:hover{
+  color:#1A73E8;
+}
+#view-resultados .results-reset-btn i{
+  font-size:14px;
 }
 #view-resultados .tbl-card{overflow:hidden}
 #view-resultados .tbl-scroll{
@@ -1839,6 +1860,7 @@ textarea::placeholder{color:#BDC1C6}
           <option>Ranking calibrado</option>
           <option>Sem melhor nota</option>
         </select>
+        <button class="results-reset-btn" type="button" onclick="zerarFiltrosResultados()"><i class="ti ti-x"></i>Zerar filtros</button>
         <button class="btn btn-secondary btn-sm" style="margin-left:auto"><i class="ti ti-download"></i>Exportar Excel</button>
       </div>
       <div id="resSummaryBar" style="display:none;margin-top:10px;font-size:12px;color:#7A828E"></div>
@@ -2368,7 +2390,6 @@ textarea::placeholder{color:#BDC1C6}
     <div class="mb">
       <div class="mfl" style="padding:0 0 8px">Dados da equipe</div>
       <div class="fields-grid" id="mGrid"></div>
-      <div class="ia-note" id="mIA"></div>
     </div>
     <div class="mf"><button class="btn-fechar" onclick="closeModal()">Fechar</button></div>
   </div>
@@ -3232,6 +3253,12 @@ function displayPersonName(value) {
     })
     .join(' ');
 }
+function formatResultadoLeaderName(value) {
+  const text = String(value || '').trim();
+  if (!text) return 'N/D';
+  const upper = text.toUpperCase();
+  return upper.length > 25 ? `${upper.slice(0, 25).trimEnd()}...` : upper;
+}
 function compactCourseLabel(value) {
   const text = String(value || '').trim();
   if (!text) return 'N/D';
@@ -3489,6 +3516,36 @@ function buildRankingMeta(rows, rankingMode) {
 function generoInscricao(e) {
   return e?._raw?.['Gênero'] || e?._raw?.['genero'] || '';
 }
+function generoCategoria(valor) {
+  const txt = String(valor || '')
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+  if (!txt) return '';
+  if (txt.includes('mulher') || txt.includes('femin')) return 'Feminino';
+  if (txt.includes('homem') || txt.includes('masc')) return 'Masculino';
+  return '';
+}
+function generosTimeInscricao(e) {
+  const generos = new Set();
+  const targetId = shortInscId(e?.id);
+  const participantRows = Array.isArray(rawParticipantes) ? rawParticipantes : [];
+
+  participantRows.forEach(row => {
+    const rowId = shortInscId(row?.['ID inscrição'] || row?.['ID Inscrição'] || row?.['ID'] || '');
+    if (rowId !== targetId) return;
+    const genero = generoCategoria(row?.['Gênero'] || row?.['genero']);
+    if (genero) generos.add(genero);
+  });
+
+  if (!generos.size) {
+    const fallbackGenero = generoCategoria(generoInscricao(e));
+    if (fallbackGenero) generos.add(fallbackGenero);
+  }
+
+  return generos;
+}
 function idadeMediaEstimativa(valor) {
   const txt = String(valor || '').trim();
   if (!txt) return null;
@@ -3510,9 +3567,24 @@ function filtrarResultados() {
     if (status !== 'Todas as avaliações' && statusAtual !== status) return false;
     if (time !== 'Todos os times' && e.mod !== time) return false;
     if (uf !== 'Todos os estados' && compactUfLabel(e.uf) !== uf) return false;
-    if (genero !== 'Todos os gêneros' && generoInscricao(e) !== genero) return false;
+    if (genero !== 'Todos os gêneros' && !generosTimeInscricao(e).has(genero)) return false;
     return true;
   });
+}
+
+function zerarFiltrosResultados() {
+  const defaults = {
+    resFiltroStatus: 'Todas as avaliações',
+    resFiltroTime: 'Todos os times',
+    resFiltroUf: 'Todos os estados',
+    resFiltroGenero: 'Todos os gêneros',
+    resFiltroRanking: 'Ranking normal'
+  };
+  Object.entries(defaults).forEach(([id, value]) => {
+    const field = document.getElementById(id);
+    if (field) field.value = value;
+  });
+  renderResultados();
 }
 
 function syncResultadosStickyLayout() {
@@ -3590,12 +3662,12 @@ function renderResultados() {
       </td>
       <td class="sticky s5">
         <div class="leader-cell">
-          <div style="font-size:12.5px;font-weight:600;color:#202124">${e.lider}</div>
+          <div style="font-size:12.5px;font-weight:600;color:#202124">${formatResultadoLeaderName(e.lider)}</div>
           ${e.p2 ? `<div class="team-members">
-          <div class="team-member-line">${e.p2}</div>
-          ${e.p3 ? `<div class="team-member-line">${e.p3}</div>` : ''}
+          <div class="team-member-line">${displayPersonName(e.p2)}</div>
+          ${e.p3 ? `<div class="team-member-line">${displayPersonName(e.p3)}</div>` : ''}
         </div>` : ''}
-          <div class="res-muted" style="font-size:11px;margin-top:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-school" style="font-size:11px"></i>${e.mentor}</div>
+          <div class="res-muted" style="font-size:11px;margin-top:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-school" style="font-size:11px"></i>${displayPersonName(e.mentor)}</div>
         </div>
       </td>
       <td class="sticky s7" style="text-align:center;vertical-align:top">
@@ -3629,7 +3701,6 @@ function openModal(idx) {
   document.getElementById('mSub').textContent = e.mod + ' · ' + e.uf + ' · ' + e.inst;
   document.getElementById('mBadge').textContent = done === 0 ? 'Avaliação pendente' : done === total ? 'Avaliação concluída' : 'Em andamento';
   document.getElementById('mBadge').className = 'badge ' + (done===0?'b-pend':done===total?'b-ok':'b-par');
-  document.getElementById('mIA').textContent = 'IA utilizada na criação: ' + e.ia;
   let participantesExtra = '<div class="field"></div><div class="field"></div>';
   if (e.p2 && e.p3) {
     participantesExtra = `
@@ -3663,6 +3734,7 @@ function openModal(idx) {
         ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer" data-anexo="campanha_multiplataforma" data-origem="modal_inscricao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Campanha</a>` : ''}
       </div>
     </div>
+    <div class="field s3"><div class="mfl">Uso de IA</div><div class="ia-note" style="margin-top:8px">IA utilizada na criação: ${e.ia}</div></div>
     <div class="field s3"><div class="mfl">Defesa conceitual</div><div class="mfv-light">${e.defesa}</div></div>
     <div class="field s3"><div class="mfl">Objetivos da campanha</div><div class="mfv-light">${objetivos}</div></div>
     <div class="field s3 last"><div class="mfl">Estratégia de distribuição</div><div class="mfv-light">${estrategia}</div></div>`;
@@ -4978,6 +5050,30 @@ function isLegacyFakeBaseName(value) {
 
 function activeBaseFile() {
   return environmentBaseFiles[activeEnvironment] || defaultBaseFileForEnvironment(activeEnvironment);
+}
+
+function baseFileCandidatesForEnvironment(env = activeEnvironment) {
+  const primary = normalizeEnvironmentBaseFile(env, activeBaseFile());
+  const candidates = [primary];
+  if (env === 'homolog') {
+    [ARQUIVO_PADRAO_HOMOLOG, 'Homologar.xlsx', 'base_ficticia_ppa_inscricoes_participantes.xlsx'].forEach(name => {
+      if (!candidates.includes(name)) candidates.push(name);
+    });
+  } else {
+    [ARQUIVO_PADRAO].forEach(name => {
+      if (!candidates.includes(name)) candidates.push(name);
+    });
+  }
+  return candidates;
+}
+
+function baseFallbackForFile(fileName) {
+  const registry = window.__PPA_BASE_FALLBACKS || {};
+  const normalizedTarget = String(fileName || '').trim().toLowerCase();
+  const direct = registry[fileName];
+  if (direct) return direct;
+  const matchedKey = Object.keys(registry).find(key => String(key || '').trim().toLowerCase() === normalizedTarget);
+  return matchedKey ? registry[matchedKey] : null;
 }
 
 function isValidSupabaseUrl(url) {
@@ -6704,49 +6800,72 @@ async function tentarCarregarArquivoPadrao(opts = {}) {
     falhaCargaBasePadrao = false;
     return true;
   }
-  if (!window.location.protocol.startsWith('http')) {
-    carregandoBasePadrao = false;
-    falhaCargaBasePadrao = true;
-    renderDashboard();
-    return false;
-  }
 
   carregandoBasePadrao = true;
   falhaCargaBasePadrao = false;
   renderDashboard();
 
-  if (typeof XLSX === 'undefined') {
-    if (tentativasCargaBase < 20) {
-      tentativasCargaBase++;
-      if (baseLoadRetryTimer) clearTimeout(baseLoadRetryTimer);
-      baseLoadRetryTimer = setTimeout(() => {
-        tentarCarregarArquivoPadrao({ ...opts, _token: attemptToken });
-      }, 250);
-      renderDashboard();
-      return false;
-    }
-    carregandoBasePadrao = false;
-    falhaCargaBasePadrao = true;
-    renderDashboard();
-    return false;
-  }
-
   try {
-    const arquivoAtivo = activeBaseFile();
+    const candidatos = baseFileCandidatesForEnvironment(activeEnvironment);
+    let arquivoAtivo = candidatos[0];
+    let payload = null;
+    let ultimoErro = null;
+    let fallbackData = null;
+    const xlsxReady = typeof XLSX !== 'undefined';
+    for (const candidato of candidatos) {
+      const localFallback = baseFallbackForFile(candidato);
+      if (!xlsxReady && localFallback) {
+        fallbackData = localFallback;
+        arquivoAtivo = candidato;
+        break;
+      }
+      const isCsvCandidate = /\.csv($|\?)/i.test(candidato);
+      try {
+        payload = await new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          const requestUrl = window.location.protocol.startsWith('file')
+            ? encodeURI(candidato)
+            : encodeURI(candidato) + '?t=' + Date.now();
+          xhr.open('GET', requestUrl, true);
+          xhr.responseType = isCsvCandidate ? 'text' : 'arraybuffer';
+          xhr.onload = () => {
+            const okHttp = xhr.status >= 200 && xhr.status < 300;
+            const okFile = xhr.status === 0 && xhr.response;
+            if (okHttp || okFile) resolve(xhr.response);
+            else reject(new Error(`HTTP ${xhr.status}`));
+          };
+          xhr.onerror = () => reject(new Error(`Falha de rede ao carregar ${isCsvCandidate ? 'CSV' : 'XLSX'} padrão`));
+          xhr.send();
+        });
+        arquivoAtivo = candidato;
+        break;
+      } catch (err) {
+        if (localFallback) {
+          fallbackData = localFallback;
+          arquivoAtivo = candidato;
+          break;
+        }
+        ultimoErro = err;
+      }
+    }
+    if (!payload && !fallbackData) {
+      if (!xlsxReady && tentativasCargaBase < 20) {
+        tentativasCargaBase++;
+        if (baseLoadRetryTimer) clearTimeout(baseLoadRetryTimer);
+        baseLoadRetryTimer = setTimeout(() => {
+          tentarCarregarArquivoPadrao({ ...opts, _token: attemptToken });
+        }, 250);
+        renderDashboard();
+        return false;
+      }
+      throw (ultimoErro || new Error('Nenhum arquivo padrão disponível.'));
+    }
     const isCsv = /\.csv($|\?)/i.test(arquivoAtivo);
-    const payload = await new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', arquivoAtivo + '?t=' + Date.now(), true);
-      xhr.responseType = isCsv ? 'text' : 'arraybuffer';
-      xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) resolve(xhr.response);
-        else reject(new Error(`HTTP ${xhr.status}`));
-      };
-      xhr.onerror = () => reject(new Error(`Falha de rede ao carregar ${isCsv ? 'CSV' : 'XLSX'} padrão`));
-      xhr.send();
-    });
     if (attemptToken !== baseLoadAttemptToken) return false;
-    if (isCsv) {
+    if (fallbackData) {
+      rawRows = Array.isArray(fallbackData.rawRows) ? fallbackData.rawRows : [];
+      rawParticipantes = Array.isArray(fallbackData.rawParticipantes) ? fallbackData.rawParticipantes : [];
+    } else if (isCsv) {
       carregarCsvTexto(String(payload || ''));
     } else {
       const wb = XLSX.read(payload, { type: 'array', cellDates: true });
