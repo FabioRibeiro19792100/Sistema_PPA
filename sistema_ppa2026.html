@@ -489,7 +489,7 @@ body {
   text-transform:none;
 }
 #btnReportarVideo::after{
-  content:'Reportar video';
+  content:'Problema com o Video';
   position:absolute;
   left:calc(100% + 12px);
   top:50%;
@@ -1088,6 +1088,70 @@ tr:hover td.sticky{background:#FAFAFA}
 .materiais{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .mat-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#1A73E8;background:#E8F0FE;border:1px solid #AECBFA;border-radius:6px;padding:6px 13px;text-decoration:none;cursor:pointer;white-space:nowrap}
 .mat-btn:hover{background:#D2E3FC}
+.attachment-viewer-modal{
+  width:min(1240px,calc(100vw - 48px));
+  max-width:min(1240px,calc(100vw - 48px));
+  max-height:88vh;
+  overflow:hidden;
+  border-radius:14px;
+  border:1px solid #E2E6EE;
+  box-shadow:0 24px 64px rgba(15,23,42,.16);
+}
+.attachment-viewer-head{padding-right:18px}
+.attachment-viewer-actions{display:flex;align-items:center;gap:10px}
+.attachment-viewer-external-help{
+  font-size:11px;
+  font-weight:600;
+  color:#6B7280;
+  letter-spacing:.01em;
+  white-space:nowrap;
+}
+.attachment-viewer-external{
+  background:#111827;
+  color:#fff;
+  border:1px solid #111827;
+  box-shadow:0 8px 18px rgba(17,24,39,.14);
+}
+.attachment-viewer-external:hover{
+  background:#000;
+  color:#fff;
+  border-color:#000;
+}
+.attachment-viewer-body{padding:0;flex:1;min-height:0}
+.attachment-viewer-stage{
+  background:#F6F8FB;
+  min-height:560px;
+  height:calc(88vh - 92px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.attachment-viewer-frame,
+.attachment-viewer-video,
+.attachment-viewer-pdf{
+  width:100%;
+  height:100%;
+  border:none;
+  background:#fff;
+}
+.attachment-viewer-video{background:#000}
+.attachment-viewer-pdf{display:block}
+.attachment-viewer-empty{
+  width:min(520px,calc(100% - 48px));
+  padding:20px 22px;
+  border:1px solid #E0E6EF;
+  background:#fff;
+  font-size:13px;
+  color:#5F6368;
+  line-height:1.6;
+  text-align:center;
+}
+.attachment-viewer-empty strong{
+  display:block;
+  margin-bottom:6px;
+  color:#202124;
+}
 .ia-note{
   margin-top:12px;
   padding:12px 14px;
@@ -2351,7 +2415,7 @@ textarea::placeholder{color:#BDC1C6}
             <span>A</span>
           </button>
         </div>
-        <button class="btn btn-secondary btn-sm" id="btnReportarVideo" onclick="openVideoIssueModal()" aria-label="Reportar problema no vídeo" title="Reportar problema no vídeo"><i class="ti ti-alert-triangle"></i></button>
+        <button class="btn btn-secondary btn-sm" id="btnReportarVideo" onclick="openVideoIssueModal()" aria-label="Problema com o Vídeo" title="Problema com o Vídeo"><i class="ti ti-alert-triangle"></i></button>
         <button class="btn btn-secondary btn-sm" id="btnEditarAvaliacao" onclick="ativarEdicaoAvaliacao()" style="display:none" aria-label="Editar" title="Editar"><i class="ti ti-pencil"></i></button>
       </div>
     </div>
@@ -2666,13 +2730,33 @@ textarea::placeholder{color:#BDC1C6}
     <div class="mh">
       <div>
         <div class="mh-ey">PARECER CONCLUÍDO</div>
-        <div class="mh-title">Você pode seguir adiante de forma automática para a próxima ficha ou voltar para a listagem principal.</div>
         <div class="mh-sub" id="nextEvaluationSub">Deseja iniciar uma nova avaliação agora?</div>
       </div>
     </div>
     <div class="mf" style="gap:10px">
       <button class="btn btn-secondary btn-sm" onclick="cancelNextEvaluation()">Agora não</button>
       <button class="btn btn-primary btn-sm" onclick="confirmNextEvaluation()">Sim</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL VISUALIZAÇÃO DE ANEXO -->
+<div class="overlay" id="overlayAttachmentViewer" style="z-index:305" onclick="if(event.target===this)closeAttachmentViewer()">
+  <div class="modal attachment-viewer-modal">
+    <div class="mh attachment-viewer-head">
+      <div>
+        <div class="mh-ey">ANEXO</div>
+        <div class="mh-title" id="attachmentViewerTitle">Visualização do material</div>
+        <div class="mh-sub" id="attachmentViewerSub">Se o conteúdo não carregar aqui, abra em uma nova aba.</div>
+      </div>
+      <div class="attachment-viewer-actions">
+        <span class="attachment-viewer-external-help">Problemas para abrir?</span>
+        <a class="btn btn-sm attachment-viewer-external" id="attachmentViewerExternal" href="#" target="_blank" rel="noopener noreferrer">Tente em outra aba</a>
+        <button class="close-btn" type="button" onclick="closeAttachmentViewer()" aria-label="Fechar"><i class="ti ti-x"></i></button>
+      </div>
+    </div>
+    <div class="mb attachment-viewer-body">
+      <div class="attachment-viewer-stage" id="attachmentViewerStage"></div>
     </div>
   </div>
 </div>
@@ -2706,7 +2790,7 @@ textarea::placeholder{color:#BDC1C6}
     <div class="mh">
       <div>
         <div class="mh-ey">SUPORTE DE VÍDEO</div>
-        <div class="mh-title">Reportar problema no vídeo</div>
+        <div class="mh-title">Problema com o Vídeo</div>
         <div class="mh-sub">Se o vídeo não puder ser acessado agora, esta avaliação será pausada sem registrar nota.</div>
       </div>
     </div>
@@ -2875,6 +2959,7 @@ let videoIssueReports = [];
 let currentParId = null;
 let currentInscId = null;
 let currentVideoIssueContext = null;
+let currentAttachmentViewer = null;
 let pendingVideoIssueNavigation = null;
 let loadingNudgeTimer = null;
 let pendingNextEvaluation = null;
@@ -3866,6 +3951,26 @@ function materialLinks(e) {
     '';
   return { video, roteiro30, campanha };
 }
+function escapeHtmlAttr(value) {
+  return String(value || '')
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+function materialButtonHTML({ url, label, icon, tipo, inscricaoId, origem = 'ficha_avaliacao', openInModal = false } = {}) {
+  if (!url) return '';
+  const safeUrl = escapeHtmlAttr(url);
+  const safeLabel = escapeHtmlAttr(label);
+  const safeTipo = escapeHtmlAttr(tipo);
+  const safeOrigem = escapeHtmlAttr(origem);
+  const safeInsc = escapeHtmlAttr(inscricaoId);
+  const clickHandler = openInModal
+    ? 'return openAttachmentViewerFromLink(this, event)'
+    : 'return registrarCliqueAnexoFromLink(this, event)';
+  const targetAttrs = openInModal ? '' : ' target="_blank" rel="noopener noreferrer"';
+  return `<a class="mat-btn" href="${safeUrl}"${targetAttrs} data-anexo="${safeTipo}" data-origem="${safeOrigem}" data-inscricao="${safeInsc}" data-label="${safeLabel}" data-url="${safeUrl}" onclick="${clickHandler}"><i class="ti ${icon}" style="font-size:13px"></i>${safeLabel}</a>`;
+}
 function registrarCliqueAnexoFromLink(el, event) {
   if (!el) return true;
   const interactionType = event?.type || 'click';
@@ -3950,6 +4055,177 @@ document.addEventListener('keydown', (event) => {
   if (!link) return;
   registrarInteracaoAnexoDelegada(link, event);
 }, true);
+
+function extractYouTubeId(url = '') {
+  const text = String(url || '').trim();
+  if (!text) return '';
+  try {
+    const parsed = new URL(text);
+    if (parsed.hostname.includes('youtu.be')) return parsed.pathname.replace(/^\/+/, '').split('/')[0] || '';
+    if (parsed.hostname.includes('youtube.com')) {
+      if (parsed.pathname === '/watch') return parsed.searchParams.get('v') || '';
+      const parts = parsed.pathname.split('/').filter(Boolean);
+      const marker = parts.findIndex(part => ['embed', 'shorts', 'live'].includes(part));
+      if (marker >= 0 && parts[marker + 1]) return parts[marker + 1];
+    }
+  } catch {}
+  return '';
+}
+function extractVimeoId(url = '') {
+  const text = String(url || '').trim();
+  if (!text) return '';
+  try {
+    const parsed = new URL(text);
+    if (!parsed.hostname.includes('vimeo.com')) return '';
+    const parts = parsed.pathname.split('/').filter(Boolean);
+    return parts.reverse().find(part => /^\d+$/.test(part)) || '';
+  } catch {}
+  return '';
+}
+function buildAttachmentViewerConfig(url = '', tipo = '') {
+  const normalizedUrl = String(url || '').trim();
+  const lowerUrl = normalizedUrl.toLowerCase();
+  const lowerTipo = String(tipo || '').toLowerCase();
+  const proxiedUrl = buildAttachmentProxyUrl(normalizedUrl);
+  const ytId = extractYouTubeId(normalizedUrl);
+  if (ytId) {
+    return {
+      kind: 'iframe',
+      src: `https://www.youtube.com/embed/${ytId}`,
+      note: 'Vídeo carregado pela visualização incorporada do YouTube.'
+    };
+  }
+  const vimeoId = extractVimeoId(normalizedUrl);
+  if (vimeoId) {
+    return {
+      kind: 'iframe',
+      src: `https://player.vimeo.com/video/${vimeoId}`,
+      note: 'Vídeo carregado pela visualização incorporada do Vimeo.'
+    };
+  }
+  if (/\.(pdf)(\?|#|$)/.test(lowerUrl)) {
+    const pdfSrc = proxiedUrl.includes('#')
+      ? proxiedUrl
+      : `${proxiedUrl}#view=FitH&toolbar=1&navpanes=0&scrollbar=1`;
+    return {
+      kind: 'pdf',
+      src: pdfSrc,
+      note: ''
+    };
+  }
+  if (/\.(mp4|webm|mov|m4v)(\?|#|$)/.test(lowerUrl)) {
+    return {
+      kind: 'video',
+      src: shouldUseAttachmentProxy(normalizedUrl) ? proxiedUrl : normalizedUrl,
+      note: ''
+    };
+  }
+  if (lowerTipo === 'video_criativo') {
+    if (shouldUseAttachmentProxy(normalizedUrl)) {
+      return {
+        kind: 'video',
+        src: proxiedUrl,
+        note: ''
+      };
+    }
+    return {
+      kind: 'iframe',
+      src: normalizedUrl,
+      note: 'Este vídeo usa o visualizador da própria plataforma de origem.'
+    };
+  }
+  return {
+    kind: 'iframe',
+    src: shouldUseAttachmentProxy(normalizedUrl) ? proxiedUrl : normalizedUrl,
+    note: ''
+  };
+}
+function renderAttachmentViewerContent() {
+  const stage = document.getElementById('attachmentViewerStage');
+  if (!stage) return;
+  stage.innerHTML = '';
+  const context = currentAttachmentViewer;
+  if (!context?.url) {
+    stage.innerHTML = `<div class="attachment-viewer-empty"><strong>Não foi possível abrir este anexo.</strong>Problemas para abrir? Tente em outra aba.</div>`;
+    return;
+  }
+  const viewer = buildAttachmentViewerConfig(context.url, context.tipo);
+  const helper = document.getElementById('attachmentViewerSub');
+  if (helper) {
+    helper.textContent = viewer.note || (context.tipo === 'video_criativo'
+      ? 'Assista ao vídeo aqui. Se houver bloqueio da plataforma, abra em uma nova aba.'
+      : 'Confira o material aqui. Se o conteúdo não carregar, abra em uma nova aba.');
+  }
+  if (viewer.kind === 'video') {
+    const video = document.createElement('video');
+    video.className = 'attachment-viewer-video';
+    video.controls = true;
+    video.playsInline = true;
+    video.preload = 'metadata';
+    video.src = viewer.src;
+    stage.appendChild(video);
+    return;
+  }
+  if (viewer.kind === 'pdf') {
+    const frame = document.createElement('iframe');
+    frame.className = 'attachment-viewer-pdf';
+    frame.src = viewer.src;
+    frame.loading = 'eager';
+    frame.referrerPolicy = 'strict-origin-when-cross-origin';
+    frame.setAttribute('aria-label', context.label || 'PDF');
+    stage.appendChild(frame);
+    return;
+  }
+  const frame = document.createElement('iframe');
+  frame.className = 'attachment-viewer-frame';
+  frame.src = viewer.src;
+  frame.loading = 'eager';
+  frame.referrerPolicy = 'strict-origin-when-cross-origin';
+  frame.allow = 'autoplay; fullscreen; clipboard-read; clipboard-write';
+  stage.appendChild(frame);
+}
+function openAttachmentViewer(payload = {}) {
+  const overlay = document.getElementById('overlayAttachmentViewer');
+  const title = document.getElementById('attachmentViewerTitle');
+  const sub = document.getElementById('attachmentViewerSub');
+  const external = document.getElementById('attachmentViewerExternal');
+  if (!overlay || !title || !sub || !external) return false;
+  currentAttachmentViewer = {
+    url: payload.url || '',
+    tipo: payload.tipo || '',
+    label: payload.label || 'Visualização do material',
+    inscricaoId: payload.inscricaoId || currentInscId || '',
+  };
+  title.textContent = payload.label || 'Visualização do material';
+  sub.textContent = payload.tipo === 'video_criativo'
+    ? 'Assista ao vídeo aqui. Se houver bloqueio da plataforma, abra em uma nova aba.'
+    : 'Confira o material aqui. Se o conteúdo não carregar, abra em uma nova aba.';
+  external.href = payload.url || '#';
+  external.style.pointerEvents = payload.url ? '' : 'none';
+  external.style.opacity = payload.url ? '' : '.5';
+  renderAttachmentViewerContent();
+  overlay.classList.add('open');
+  return false;
+}
+function closeAttachmentViewer() {
+  const overlay = document.getElementById('overlayAttachmentViewer');
+  const stage = document.getElementById('attachmentViewerStage');
+  if (overlay) overlay.classList.remove('open');
+  if (stage) stage.innerHTML = '';
+  currentAttachmentViewer = null;
+}
+function openAttachmentViewerFromLink(el, event) {
+  if (!el) return false;
+  const modifiedClick = !!(event && (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button === 1));
+  if (modifiedClick) return true;
+  event?.preventDefault?.();
+  return openAttachmentViewer({
+    url: el.href || el.dataset?.url || '',
+    tipo: el.dataset?.anexo || '',
+    label: el.dataset?.label || el.textContent?.trim() || 'Visualização do material',
+    inscricaoId: el.dataset?.inscricao || currentInscId || '',
+  });
+}
 
 function clientRuntimeInfo() {
   const ua = navigator.userAgent || '';
@@ -5323,9 +5599,9 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
 
       <div class="split-materials-wrap">
         <div class="split-materials-list">
-          ${links.video ? `<a class="mat-btn" href="${links.video}" target="_blank" rel="noopener noreferrer" data-anexo="video_criativo" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-player-play" style="font-size:13px"></i>Vídeo</a>` : ''}
-          ${links.roteiro30 ? `<a class="mat-btn" href="${links.roteiro30}" target="_blank" rel="noopener noreferrer" data-anexo="roteiro_30s" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Roteiro 30s</a>` : ''}
-          ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer" data-anexo="campanha_multiplataforma" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Campanha</a>` : ''}
+          ${materialButtonHTML({ url: links.video, label: 'Vídeo', icon: 'ti-player-play', tipo: 'video_criativo', inscricaoId: e.id, openInModal: showVideoSupport })}
+          ${materialButtonHTML({ url: links.roteiro30, label: 'Roteiro 30s', icon: 'ti-file', tipo: 'roteiro_30s', inscricaoId: e.id, openInModal: showVideoSupport })}
+          ${materialButtonHTML({ url: links.campanha, label: 'Campanha', icon: 'ti-file', tipo: 'campanha_multiplataforma', inscricaoId: e.id, openInModal: showVideoSupport })}
         </div>
         ${showVideoSupport ? `
           ${activeVideoIssue ? `
@@ -5373,9 +5649,9 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
     <div class="field s3">
       <div class="mfl">Materiais</div>
       <div class="materiais">
-        ${links.video ? `<a class="mat-btn" href="${links.video}" target="_blank" rel="noopener noreferrer" data-anexo="video_criativo" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-player-play" style="font-size:13px"></i>Vídeo criativo</a>` : ''}
-        ${links.roteiro30 ? `<a class="mat-btn" href="${links.roteiro30}" target="_blank" rel="noopener noreferrer" data-anexo="roteiro_30s" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Roteiro 30s</a>` : ''}
-        ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer" data-anexo="campanha_multiplataforma" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Campanha</a>` : ''}
+        ${materialButtonHTML({ url: links.video, label: 'Vídeo criativo', icon: 'ti-player-play', tipo: 'video_criativo', inscricaoId: e.id, openInModal: showVideoSupport })}
+        ${materialButtonHTML({ url: links.roteiro30, label: 'Roteiro 30s', icon: 'ti-file', tipo: 'roteiro_30s', inscricaoId: e.id, openInModal: showVideoSupport })}
+        ${materialButtonHTML({ url: links.campanha, label: 'Campanha', icon: 'ti-file', tipo: 'campanha_multiplataforma', inscricaoId: e.id, openInModal: showVideoSupport })}
       </div>
     </div>
     <div class="field s3"><div class="mfl">Defesa conceitual</div><div class="mfv-light">${e.defesa}</div></div>
@@ -6127,6 +6403,28 @@ function getSupabaseClient(env = activeEnvironment) {
     );
   }
   return supabaseClient;
+}
+
+function getSupabaseFunctionsBaseUrl() {
+  if (!hasSupabaseCredentials()) return '';
+  return `${String(supabaseSettings.url || '').trim()}/functions/v1`;
+}
+
+function shouldUseAttachmentProxy(url = '') {
+  if (!hasSupabaseCredentials()) return false;
+  try {
+    const parsed = new URL(String(url || '').trim());
+    return parsed.protocol === 'https:' && parsed.hostname === 'inscricoes.led.globo';
+  } catch {
+    return false;
+  }
+}
+
+function buildAttachmentProxyUrl(url = '') {
+  if (!shouldUseAttachmentProxy(url)) return String(url || '').trim();
+  const base = getSupabaseFunctionsBaseUrl();
+  if (!base) return String(url || '').trim();
+  return `${base}/file-proxy?url=${encodeURIComponent(String(url || '').trim())}`;
 }
 
 function updateSupabaseStatus(msg, tone) {
