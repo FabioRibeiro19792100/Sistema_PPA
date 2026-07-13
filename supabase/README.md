@@ -38,6 +38,8 @@ Depois do deploy, o frontend passa a usar automaticamente:
 
 Esse proxy remove o bloqueio de `frame-ancestors` / `x-frame-options` do arquivo original, permitindo a abertura no modal sem exigir nenhuma ação extra do parecerista.
 
+Além disso, ele encaminha requisições parciais (`Range`) para melhorar o carregamento de vídeos dentro do modal.
+
 ## Observação importante sobre RLS
 
 O schema atual foi deixado com políticas amplas de protótipo para permitir que o frontend comece a sincronizar imediatamente via `anon key`.

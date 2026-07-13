@@ -2,7 +2,7 @@
   "persistenceMode": "supabase",
   "activeEnvironment": "homolog",
   "environmentBaseFiles": {
-    "homolog": "Inscrições PPA - 06.07.xlsx",
+    "homolog": "inscricoes-ppa-{submissão final}.xlsx",
     "producao": "base_producao.xlsx"
   },
   "url": "https://lmyrjbzqkixxhaqhramj.supabase.co",

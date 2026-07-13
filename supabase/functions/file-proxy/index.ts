@@ -1,7 +1,8 @@
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, range, if-range',
+  'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
+  'Access-Control-Expose-Headers': 'accept-ranges, content-length, content-range, content-type, content-disposition, etag, last-modified',
 };
 
 const ALLOWED_HOSTS = new Set([
@@ -24,7 +25,7 @@ Deno.serve(async (req) => {
     return new Response('ok', { headers: CORS_HEADERS });
   }
 
-  if (req.method !== 'GET') {
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
     return json({ error: 'method_not_allowed' }, 405);
   }
 
@@ -50,16 +51,23 @@ Deno.serve(async (req) => {
     return json({ error: 'host_not_allowed', host: parsedTarget.hostname }, 403);
   }
 
+  const range = req.headers.get('range');
+  const ifRange = req.headers.get('if-range');
+
+  const upstreamHeaders = new Headers({
+    'User-Agent': 'PPA2026-FileProxy/1.0',
+    'Accept': 'application/pdf,video/mp4,application/octet-stream,*/*',
+  });
+  if (range) upstreamHeaders.set('Range', range);
+  if (ifRange) upstreamHeaders.set('If-Range', ifRange);
+
   const upstream = await fetch(parsedTarget.toString(), {
-    method: 'GET',
+    method: req.method,
     redirect: 'follow',
-    headers: {
-      'User-Agent': 'PPA2026-FileProxy/1.0',
-      'Accept': 'application/pdf,video/mp4,application/octet-stream,*/*',
-    },
+    headers: upstreamHeaders,
   });
 
-  if (!upstream.ok || !upstream.body) {
+  if (!upstream.ok) {
     return json({ error: 'upstream_failed', status: upstream.status }, upstream.status || 502);
   }
 
@@ -67,6 +75,8 @@ Deno.serve(async (req) => {
   const contentLength = upstream.headers.get('content-length');
   const lastModified = upstream.headers.get('last-modified');
   const etag = upstream.headers.get('etag');
+  const contentRange = upstream.headers.get('content-range');
+  const acceptRanges = upstream.headers.get('accept-ranges');
 
   const headers = new Headers(CORS_HEADERS);
   headers.set('Content-Type', contentType);
@@ -75,9 +85,15 @@ Deno.serve(async (req) => {
   if (contentLength) headers.set('Content-Length', contentLength);
   if (lastModified) headers.set('Last-Modified', lastModified);
   if (etag) headers.set('ETag', etag);
+  if (contentRange) headers.set('Content-Range', contentRange);
+  if (acceptRanges) {
+    headers.set('Accept-Ranges', acceptRanges);
+  } else if (contentRange || contentType.startsWith('video/')) {
+    headers.set('Accept-Ranges', 'bytes');
+  }
 
   return new Response(upstream.body, {
-    status: 200,
+    status: upstream.status,
     headers,
   });
 });

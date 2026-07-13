@@ -890,11 +890,12 @@ tr:hover td.sticky{background:#FAFAFA}
   gap:0;
 }
 .portal-quick-title{
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:.09em;
+  font-size:13.75px;
+  font-weight:600;
+  letter-spacing:0;
   text-transform:uppercase;
-  color:#9AA0A6;
+  color:#202124;
+  line-height:1.28;
 }
 .portal-quick-count{
   min-width:auto;
@@ -905,7 +906,7 @@ tr:hover td.sticky{background:#FAFAFA}
   border-radius:0;
   background:transparent;
   color:#202124;
-  font-size:22px;
+  font-size:20px;
   font-weight:700;
   flex-shrink:0;
   line-height:1;
@@ -1024,6 +1025,11 @@ tr:hover td.sticky{background:#FAFAFA}
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:200;align-items:center;justify-content:center;padding:28px 16px}
 .overlay.open{display:flex}
 .modal{background:#fff;border:1px solid #E0E0E0;border-radius:10px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column}
+.overlay .modal{
+  border:1px solid #E2E8F0;
+  border-radius:14px;
+  box-shadow:0 24px 64px rgba(15,23,42,.16);
+}
 #overlay .modal{max-width:784px}
 #overlayAuth{z-index:420;background:rgba(15,23,42,.46);backdrop-filter:blur(3px)}
 #overlayAuth .modal{max-width:430px;border-radius:18px;overflow:hidden;border:1px solid #E6E8EE;box-shadow:0 18px 48px rgba(15,23,42,.18)}
@@ -1051,6 +1057,30 @@ tr:hover td.sticky{background:#FAFAFA}
 .mh-ey{font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#9AA0A6;margin-bottom:3px}
 .mh-title{font-size:17px;font-weight:600;color:#202124;line-height:1.25}
 .mh-sub{font-size:12px;color:#9AA0A6;margin-top:3px}
+.mh-sub:empty{display:none}
+.overlay .mh{
+  padding:18px 22px 16px;
+  border-bottom:1px solid #ECEFF3;
+}
+.overlay .mh-ey{
+  font-size:10.5px;
+  font-weight:700;
+  letter-spacing:.1em;
+  color:#6B7280;
+  margin-bottom:5px;
+}
+.overlay .mh-title{
+  font-size:20px;
+  font-weight:600;
+  color:#111827;
+  line-height:1.25;
+}
+.overlay .mh-sub{
+  font-size:13.5px;
+  color:#4B5563;
+  line-height:1.55;
+  margin-top:6px;
+}
 .mh-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
 .close-btn{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;border:none;background:transparent;color:#9AA0A6;cursor:pointer;font-size:16px}
 .close-btn:hover{background:#F1F3F4;color:#202124}
@@ -1060,6 +1090,25 @@ tr:hover td.sticky{background:#FAFAFA}
 #overlay .close-btn{width:36px;height:36px;border-radius:999px;background:#111827;color:#fff;box-shadow:0 8px 18px rgba(17,24,39,.18)}
 #overlay .close-btn:hover{background:#000;color:#fff}
 .mb{padding:18px 20px;display:flex;flex-direction:column}
+.overlay .mb{
+  padding:20px 22px 22px;
+}
+.modal-copy{
+  font-size:13.5px;
+  color:#374151;
+  line-height:1.6;
+}
+.modal-copy-subtle{
+  font-size:12.5px;
+  color:#6B7280;
+  line-height:1.55;
+}
+.modal-copy-emphasis{
+  font-size:13.5px;
+  color:#1F2937;
+  line-height:1.6;
+  font-weight:500;
+}
 .mfl{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#9AA0A6;margin-bottom:4px}
 .mfv{font-size:12.5px;font-weight:600;color:#202124}
 .mfv.mono{font-family:monospace;font-size:11.5px;color:#1A73E8;font-weight:400}
@@ -1126,6 +1175,7 @@ tr:hover td.sticky{background:#FAFAFA}
   align-items:center;
   justify-content:center;
   overflow:hidden;
+  position:relative;
 }
 .attachment-viewer-frame,
 .attachment-viewer-video,
@@ -1136,6 +1186,36 @@ tr:hover td.sticky{background:#FAFAFA}
   background:#fff;
 }
 .attachment-viewer-video{background:#000}
+.attachment-viewer-loading{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(15,23,42,.18);
+  z-index:2;
+  pointer-events:none;
+}
+.attachment-viewer-loading-card{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 16px;
+  border-radius:999px;
+  background:rgba(17,24,39,.88);
+  color:#fff;
+  font-size:13px;
+  font-weight:600;
+  box-shadow:0 14px 32px rgba(15,23,42,.22);
+}
+.attachment-viewer-spinner{
+  width:15px;
+  height:15px;
+  border:2px solid rgba(255,255,255,.28);
+  border-top-color:#fff;
+  border-radius:999px;
+  animation:spin .8s linear infinite;
+}
 .attachment-viewer-pdf{display:block}
 .attachment-viewer-empty{
   width:min(520px,calc(100% - 48px));
@@ -1194,7 +1274,35 @@ tr:hover td.sticky{background:#FAFAFA}
   line-height:1.4;
 }
 .mf{padding:12px 20px;border-top:1px solid #F1F3F4;display:flex;justify-content:flex-end;position:sticky;bottom:0;background:#fff}
+.overlay .mf{
+  padding:14px 22px;
+  border-top:1px solid #ECEFF3;
+  gap:12px;
+}
+.overlay .mf .btn,
+.overlay .mb .btn{
+  min-height:42px;
+  padding:10px 16px;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:600;
+}
+.overlay .mf .btn.btn-sm,
+.overlay .mb .btn.btn-sm{
+  min-height:42px;
+  padding:10px 16px;
+  font-size:13px;
+}
 .btn-fechar{padding:7px 20px;border-radius:6px;border:1px solid #DADCE0;background:#fff;font-size:12.5px;font-weight:500;color:#5F6368;cursor:pointer}
+.overlay .btn-fechar{
+  min-height:42px;
+  padding:10px 18px;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:600;
+  color:#374151;
+  border-color:#D6DAE1;
+}
 .btn-fechar:hover{background:#F1F3F4}
 
 /* ── AVALIAÇÃO MODAL ── */
@@ -1296,22 +1404,22 @@ tr:hover td.sticky{background:#FAFAFA}
 }
 .escala input[value="Insuficiente"]:checked + label{
   background:#FFF6F5;
-  box-shadow:inset 0 0 0 2px #D93025;
+  box-shadow:inset 0 0 0 1px #D93025;
   z-index:1;
 }
 .escala input[value="Regular"]:checked + label{
   background:#FFF8E8;
-  box-shadow:inset 0 0 0 2px #D97706;
+  box-shadow:inset 0 0 0 1px #D97706;
   z-index:1;
 }
 .escala input[value="Bom"]:checked + label{
   background:#FFF7E8;
-  box-shadow:inset 0 0 0 2px #F5A623;
+  box-shadow:inset 0 0 0 1px #F5A623;
   z-index:1;
 }
 .escala input[value="Ótimo"]:checked + label{
   background:#EEF9F1;
-  box-shadow:inset 0 0 0 2px #1E8E3E;
+  box-shadow:inset 0 0 0 1px #1E8E3E;
   z-index:1;
 }
 .escala input[value="Insuficiente"]:checked + label .escala-title,
@@ -1468,8 +1576,44 @@ textarea::placeholder{color:#BDC1C6}
 .split-reference-grid{display:flex;flex-direction:column;min-height:100%}
 .split-hero{
   padding:14px 16px 12px;
-  border-bottom:1px solid #E8EAED;
-  background:#E3E7EA;
+  border-bottom:1px solid rgba(255,255,255,.18);
+  background:#1A73E8;
+  position:sticky;
+  top:0;
+  z-index:3;
+  box-shadow:0 1px 0 rgba(255,255,255,.12), 0 8px 18px rgba(15,23,42,.14);
+}
+.split-hero-top{
+  display:block;
+}
+.split-hero-bottom{
+  display:flex;
+  justify-content:flex-end;
+  margin-top:0;
+}
+.split-view-switch{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:0;
+  border:none;
+  border-radius:0;
+  background:transparent;
+  flex-shrink:0;
+}
+.split-view-switch .layout-btn{
+  width:30px;
+  height:30px;
+  color:rgba(255,255,255,.78);
+}
+.split-view-switch .layout-btn:hover{
+  color:#fff;
+  background:rgba(255,255,255,.12);
+}
+.split-view-switch .layout-btn.active{
+  background:#fff;
+  color:#1A73E8;
+  box-shadow:0 1px 3px rgba(0,0,0,.12);
 }
 .split-kicker{
   display:flex;
@@ -1480,60 +1624,74 @@ textarea::placeholder{color:#BDC1C6}
   font-weight:600;
   letter-spacing:.08em;
   text-transform:uppercase;
-  margin-bottom:4px;
+  margin-bottom:0;
 }
 .split-kicker-id{
   font-family:monospace;
   font-size:11px;
   letter-spacing:0;
   text-transform:none;
-  color:#1A73E8;
+  color:#fff;
 }
 .split-kicker-dot{
-  color:#BDC1C6;
+  color:rgba(255,255,255,.62);
 }
 .split-kicker-meta{
-  color:#9AA0A6;
+  color:rgba(255,255,255,.72);
 }
 .split-kicker .team-marker-stack{
-  color:#000;
+  color:#fff;
   opacity:1;
-  font-weight:400;
+  font-weight:300;
+}
+.split-kicker .team-marker-stack i{
+  color:#fff;
+  font-weight:300;
+  opacity:.92;
 }
 .split-leader{
   font-size:14px;
   font-weight:600;
-  color:#202124;
+  color:#fff;
   line-height:1.25;
   margin-top:8px;
   text-transform:uppercase;
 }
+.split-leader-line{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:8px;
+}
+.split-leader-line .split-leader{
+  margin-top:0;
+}
 .split-inst{
   font-size:14px;
   font-weight:400;
-  color:#000;
+  color:#fff;
   margin-top:6px;
   line-height:1.35;
   text-transform:uppercase;
-  opacity:1;
+  opacity:.92;
 }
 .split-hero-course{
   font-size:14px;
   font-weight:400;
-  color:#000;
+  color:#fff;
   margin-top:4px;
   line-height:1.35;
   text-transform:uppercase;
-  opacity:1;
+  opacity:.92;
 }
 .split-hero-location{
   font-size:14px;
   font-weight:400;
-  color:#000;
+  color:#fff;
   margin-top:4px;
   line-height:1.35;
   text-transform:uppercase;
-  opacity:1;
+  opacity:.92;
 }
 .split-meta-rows{
   padding:10px 16px;
@@ -1542,6 +1700,28 @@ textarea::placeholder{color:#BDC1C6}
 .split-meta-row{
   display:block;
   padding:5px 0;
+}
+.split-person-line{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+}
+.split-person-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:24px;
+  height:24px;
+  border-radius:999px;
+  border:1px solid #DADCE0;
+  background:#F8F9FA;
+  color:#5F6368;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.02em;
+  flex-shrink:0;
+  box-sizing:border-box;
 }
 .split-meta-label{
   font-size:10px;
@@ -1564,7 +1744,7 @@ textarea::placeholder{color:#BDC1C6}
   align-items:center;
   justify-content:flex-start;
   gap:6px;
-  flex-wrap:nowrap;
+  flex-wrap:wrap;
   min-width:0;
 }
 .split-meta-subline{
@@ -1716,6 +1896,287 @@ textarea::placeholder{color:#BDC1C6}
   scrollbar-gutter:stable;
   padding:8px 0 44px;
 }
+#layoutSeq .card,
+#layoutSeq .aval-form-head-card{
+  border-radius:0;
+}
+#layoutSeq .criterio{
+  display:block;
+  background:#fff;
+  border:1px solid #E0E0E0;
+  border-radius:24px;
+  padding:16px 18px;
+  margin-bottom:10px;
+  box-shadow:0 1px 3px rgba(32,33,36,.10);
+  transition:border-color .15s, box-shadow .16s ease;
+  height:auto;
+  min-height:0;
+  max-height:none;
+}
+#layoutSeq .criterio:focus-within{
+  border-color:#1A73E8;
+  box-shadow:0 2px 8px rgba(32,33,36,.16),0 0 0 1px rgba(26,115,232,.12);
+}
+#layoutSeq .criterio.is-missing{
+  border-color:#D93025;
+  box-shadow:0 2px 8px rgba(32,33,36,.16),0 0 0 2px rgba(217,48,37,.10);
+}
+#layoutSeq .criterio-main{
+  display:block;
+  padding:0;
+  background:transparent;
+}
+#layoutSeq .criterio-copy{
+  overflow:visible;
+}
+#layoutSeq .crit-num{
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#9AA0A6;
+  margin-bottom:2px;
+  padding-top:0;
+}
+#layoutSeq .crit-nome{
+  font-size:13px;
+  font-weight:600;
+  color:#202124;
+  margin-bottom:2px;
+  line-height:1.35;
+  overflow:visible;
+  display:block;
+}
+#layoutSeq .crit-desc{
+  font-size:12px;
+  color:#5F6368;
+  line-height:1.55;
+  overflow:visible;
+  display:block;
+}
+#layoutSeq .escala{
+  display:flex;
+  gap:7px;
+  margin-top:12px;
+  flex-wrap:wrap;
+  height:auto;
+  min-height:0;
+  max-height:none;
+}
+#layoutSeq .escala label{
+  cursor:pointer;
+  padding:5px 14px;
+  border-radius:6px;
+  border:1.5px solid #DADCE0;
+  font-size:12px;
+  font-weight:500;
+  color:#5F6368;
+  transition:all .12s;
+  user-select:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  height:auto;
+  min-height:0;
+  max-height:none;
+  background:#fff;
+}
+#layoutSeq .escala label:hover{
+  border-color:#1A73E8;
+  color:#1A73E8;
+  background:#F0F4FF;
+}
+#layoutSeq .escala label:last-child{
+  padding-right:14px;
+}
+#layoutSeq .escala-title{
+  min-height:0;
+  font-size:12px;
+  font-weight:500;
+  color:inherit;
+}
+#layoutSeq .escala-desc{
+  display:none;
+}
+#layoutSeq .escala input[value="Insuficiente"]:checked+label{background:#FEE2E2;border-color:#DC2626;color:#991B1B}
+#layoutSeq .escala input[value="Regular"]:checked+label{background:#FEF3C7;border-color:#D97706;color:#92400E}
+#layoutSeq .escala input[value="Bom"]:checked+label{background:#DBEAFE;border-color:#2563EB;color:#1E40AF}
+#layoutSeq .escala input[value="Ótimo"]:checked+label{background:#D1FAE5;border-color:#059669;color:#065F46}
+#layoutSeq .parecer-box{
+  background:#fff;
+  border:1px solid #E0E0E0;
+  border-radius:24px;
+  padding:16px 18px;
+  margin-top:6px;
+  box-shadow:0 1px 3px rgba(32,33,36,.10);
+}
+#layoutSeq .parecer-box textarea{
+  min-height:118px;
+  height:118px;
+  max-height:118px;
+  resize:none;
+  overflow-y:auto;
+  background:#fff;
+  border:1px solid #DFE1E5;
+  border-radius:24px;
+  padding:18px 22px;
+  box-shadow:0 1px 3px rgba(32,33,36,.10);
+}
+#layoutSeq .parecer-box textarea:hover{
+  border-color:#DFE1E5;
+  box-shadow:0 2px 8px rgba(32,33,36,.16);
+}
+#layoutSeq .parecer-box textarea:focus{
+  border-color:#DFE1E5;
+  background:#fff;
+  box-shadow:0 2px 8px rgba(32,33,36,.18),0 0 0 1px rgba(26,115,232,.22);
+}
+#layoutSplit.legacy-view .aval-side-card,
+#layoutSplit.legacy-view .aval-main-card{
+  border:1px solid #E0E0E0;
+  border-radius:0;
+  box-shadow:0 1px 3px rgba(32,33,36,.10);
+}
+#layoutSplit.legacy-view .aval-panel-head{
+  position:sticky;
+  top:0;
+  background:var(--surface);
+  padding:16px 18px 12px;
+  border-bottom:1px solid #F1F3F4;
+}
+#layoutSplit.legacy-view .criterio{
+  display:block;
+  background:var(--surface);
+  border:1px solid #E0E0E0;
+  border-radius:24px;
+  padding:16px 18px;
+  margin-bottom:10px;
+  box-shadow:0 1px 3px rgba(32,33,36,.10);
+  transition:border-color .15s, box-shadow .16s ease;
+  height:auto;
+  min-height:0;
+  max-height:none;
+}
+#layoutSplit.legacy-view .criterio:focus-within{
+  border-color:#1A73E8;
+  box-shadow:0 2px 8px rgba(32,33,36,.16),0 0 0 1px rgba(26,115,232,.12);
+}
+#layoutSplit.legacy-view .criterio.is-missing{
+  border-color:#D93025;
+  box-shadow:0 2px 8px rgba(32,33,36,.16),0 0 0 2px rgba(217,48,37,.10);
+}
+#layoutSplit.legacy-view .criterio-main{
+  display:block;
+  padding:0;
+  background:transparent;
+}
+#layoutSplit.legacy-view .criterio-copy{
+  overflow:visible;
+}
+#layoutSplit.legacy-view .crit-num{
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#9AA0A6;
+  margin-bottom:2px;
+  padding-top:0;
+}
+#layoutSplit.legacy-view .crit-nome{
+  font-size:13px;
+  font-weight:600;
+  color:#202124;
+  margin-bottom:2px;
+  line-height:1.35;
+  overflow:visible;
+  display:block;
+}
+#layoutSplit.legacy-view .crit-desc{
+  font-size:12px;
+  color:#5F6368;
+  line-height:1.55;
+  overflow:visible;
+  display:block;
+}
+#layoutSplit.legacy-view .escala{
+  display:flex;
+  gap:7px;
+  margin-top:12px;
+  flex-wrap:wrap;
+  height:auto;
+  min-height:0;
+  max-height:none;
+}
+#layoutSplit.legacy-view .escala label{
+  cursor:pointer;
+  padding:5px 14px;
+  border-radius:6px;
+  border:1.5px solid #DADCE0;
+  font-size:12px;
+  font-weight:500;
+  color:#5F6368;
+  transition:all .12s;
+  user-select:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  height:auto;
+  min-height:0;
+  max-height:none;
+  background:var(--surface);
+}
+#layoutSplit.legacy-view .escala label:hover{
+  border-color:#1A73E8;
+  color:#1A73E8;
+  background:var(--surface2);
+}
+#layoutSplit.legacy-view .escala label:last-child{
+  padding-right:14px;
+}
+#layoutSplit.legacy-view .escala-title{
+  min-height:0;
+  font-size:12px;
+  font-weight:500;
+  color:inherit;
+}
+#layoutSplit.legacy-view .escala-desc{
+  display:none;
+}
+#layoutSplit.legacy-view .escala input[value="Insuficiente"]:checked+label{background:#FEE2E2;border-color:#DC2626;color:#991B1B}
+#layoutSplit.legacy-view .escala input[value="Regular"]:checked+label{background:#FEF3C7;border-color:#D97706;color:#92400E}
+#layoutSplit.legacy-view .escala input[value="Bom"]:checked+label{background:#DBEAFE;border-color:#2563EB;color:#1E40AF}
+#layoutSplit.legacy-view .escala input[value="Ótimo"]:checked+label{background:#D1FAE5;border-color:#059669;color:#065F46}
+#layoutSplit.legacy-view .parecer-box{
+  background:var(--surface);
+  border:1px solid #E0E0E0;
+  border-radius:24px;
+  padding:16px 18px;
+  margin-top:6px;
+  box-shadow:0 1px 3px rgba(32,33,36,.10);
+}
+#layoutSplit.legacy-view .parecer-box textarea{
+  min-height:118px;
+  height:118px;
+  max-height:118px;
+  resize:none;
+  overflow-y:auto;
+  background:var(--surface);
+  border:1px solid #DFE1E5;
+  border-radius:24px;
+  padding:18px 22px;
+  box-shadow:0 1px 3px rgba(32,33,36,.10);
+}
+#layoutSplit.legacy-view .parecer-box textarea:hover{
+  border-color:#DFE1E5;
+  box-shadow:0 2px 8px rgba(32,33,36,.16);
+}
+#layoutSplit.legacy-view .parecer-box textarea:focus{
+  border-color:#DFE1E5;
+  background:var(--surface);
+  box-shadow:0 2px 8px rgba(32,33,36,.18),0 0 0 1px rgba(26,115,232,.22);
+}
 #layoutSplit{
   flex:1 1 auto;
   min-height:0;
@@ -1725,7 +2186,7 @@ textarea::placeholder{color:#BDC1C6}
 .aval-header-shell{
   position:fixed;
   left:18px;
-  top:128px;
+  top:84px;
   z-index:30;
   display:block;
   padding:0;
@@ -1734,7 +2195,7 @@ textarea::placeholder{color:#BDC1C6}
   display:flex;
   flex-direction:column;
   align-items:flex-start;
-  gap:10px;
+  gap:14px;
   padding:0;
   border:none;
   border-radius:0;
@@ -1744,8 +2205,32 @@ textarea::placeholder{color:#BDC1C6}
 }
 .aval-header-main{display:flex;align-items:flex-start;gap:14px;min-width:0}
 .aval-header-copy{min-width:0;display:flex;flex-direction:column;gap:2px}
-.aval-header-actions{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:10px;flex-wrap:nowrap}
-.aval-layout-switch{display:flex;align-items:center;gap:4px;background:#F1F3F4;border-radius:10px;padding:4px}
+.aval-header-actions{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:0;flex-wrap:nowrap}
+.aval-action-group{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:10px;
+  width:38px;
+}
+.aval-action-group + .aval-action-group{
+  margin-top:8px;
+}
+.aval-action-group-tools + .aval-action-group-layout{
+  margin-top:18px;
+}
+.aval-layout-switch{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  width:38px;
+}
+.aval-layout-switch .layout-btn{width:38px;height:38px;border-radius:999px}
+.aval-scale-control{
+  width:38px;
+  box-sizing:border-box;
+}
 .aval-split-grid{display:grid;grid-template-columns:450px minmax(0,1fr);gap:26px;align-items:stretch;padding-top:8px;padding-bottom:44px;flex:1 1 auto;min-height:0;height:100%;overflow:hidden}
 .aval-side-panel,.aval-main-panel{position:relative;top:auto;height:100%;min-height:0}
 .aval-side-card,.aval-main-card{
@@ -1753,17 +2238,14 @@ textarea::placeholder{color:#BDC1C6}
   margin:8px 0 12px;
   padding:0;
   border-radius:0;
-  border:none;
+  border:1px solid rgba(15,23,42,.08);
   background:var(--surface);
-  box-shadow:
-    0 10px 28px rgba(15,23,42,.08),
-    0 2px 8px rgba(15,23,42,.05),
-    0 0 0 1px rgba(15,23,42,.04);
+  box-shadow:none;
   display:flex;
   flex-direction:column;
   min-height:0;
   overflow:hidden;
-  transition:box-shadow .16s ease, transform .16s ease;
+  transition:border-color .16s ease;
 }
 .aval-main-card{position:relative}
 .aval-main-card::after{
@@ -1777,10 +2259,7 @@ textarea::placeholder{color:#BDC1C6}
   background:none;
 }
 .aval-side-card.is-active,.aval-main-card.is-active{
-  box-shadow:
-    0 14px 34px rgba(15,23,42,.12),
-    0 4px 12px rgba(15,23,42,.08),
-    0 0 0 1px rgba(26,115,232,.08);
+  border-color:rgba(26,115,232,.18);
 }
 .aval-panel-head{
   position:sticky;
@@ -1822,6 +2301,35 @@ textarea::placeholder{color:#BDC1C6}
 .aval-side-scroll{padding-bottom:28px}
 .aval-side-scroll::-webkit-scrollbar,.aval-main-scroll::-webkit-scrollbar{width:6px}
 .aval-side-scroll::-webkit-scrollbar-thumb,.aval-main-scroll::-webkit-scrollbar-thumb{background:#DADCE0;border-radius:999px}
+.split-hero-bottom .aval-scale-control{
+  flex-direction:row;
+  align-items:center;
+  gap:1px;
+  padding:1px 2px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.28);
+  background:rgba(255,255,255,.08);
+}
+.split-hero-bottom .aval-scale-btn{
+  width:18px;
+  height:18px;
+  color:rgba(255,255,255,.82);
+  font-size:10px;
+}
+.split-hero-bottom .aval-scale-btn:hover{
+  color:#fff;
+  background:rgba(255,255,255,.12);
+  border-color:rgba(255,255,255,.18);
+}
+.split-hero-bottom .aval-scale-btn.active{
+  background:#fff;
+  color:#1A73E8;
+  border-color:rgba(255,255,255,.22);
+  box-shadow:none;
+}
+.split-hero-bottom .aval-scale-btn[data-scale="1"]{font-size:8px}
+.split-hero-bottom .aval-scale-btn[data-scale="1.1"]{font-size:10px}
+.split-hero-bottom .aval-scale-btn[data-scale="1.2"]{font-size:12px}
 .aval-main-panel{min-width:0}
 .aval-header,
 .aval-criteria-title,
@@ -1921,13 +2429,25 @@ textarea::placeholder{color:#BDC1C6}
     gap:12px;
   }
   .aval-header-actions {
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .aval-action-group{
     flex-direction:row;
-    justify-content:flex-start;
     flex-wrap:wrap;
+    align-items:center;
   }
   .aval-scale-control{
     flex-direction:row;
     border-radius:999px;
+  }
+  .aval-layout-switch{
+    flex-direction:row;
+    flex-wrap:wrap;
+  }
+  .split-hero-top{
+    flex-direction:column;
+    align-items:flex-start;
   }
   .aval-split-grid { grid-template-columns:1fr; }
   .aval-side-panel,.aval-main-panel { position:static;height:auto; }
@@ -2177,9 +2697,6 @@ textarea::placeholder{color:#BDC1C6}
       <div><label class="fl">Instituição (conflito)</label>
         <select class="finput" id="pInst">
           <option value="">Selecione</option>
-          <option>ECA-USP</option><option>UFMG</option><option>PUC-Rio</option>
-          <option>Cásper Líbero</option><option>UFPE</option><option>UFC</option>
-          <option>UFPB</option><option>FMU</option><option>Estácio</option><option>Uninove</option>
         </select>
       </div>
     </div>
@@ -2400,23 +2917,39 @@ textarea::placeholder{color:#BDC1C6}
   <!-- topo fixo -->
   <div class="aval-header-shell">
     <div class="aval-header">
-      <div class="aval-header-main">
+      <div class="aval-action-group aval-action-group-back">
+        <div class="aval-header-main">
         <button class="btn btn-secondary btn-sm aval-back-btn" onclick="voltarPortal()" aria-label="Voltar" title="Voltar"><i class="ti ti-arrow-left"></i></button>
+        </div>
       </div>
       <div class="aval-header-actions">
-        <div class="aval-scale-control" role="group" aria-label="Escala da ficha de avaliação">
-          <button class="aval-scale-btn active" type="button" data-scale="1" aria-label="Escala padrão" title="Escala padrão" onclick="setAvaliacaoScale(1)">
-            <span>A</span>
-          </button>
-          <button class="aval-scale-btn" type="button" data-scale="1.1" aria-label="Escala ampliada" title="Escala ampliada" onclick="setAvaliacaoScale(1.1)">
-            <span>A</span>
-          </button>
-          <button class="aval-scale-btn" type="button" data-scale="1.2" aria-label="Escala ampliada máxima" title="Escala ampliada máxima" onclick="setAvaliacaoScale(1.2)">
-            <span>A</span>
-          </button>
+        <div class="aval-action-group aval-action-group-tools">
+          <button class="btn btn-secondary btn-sm" id="btnEditarAvaliacao" onclick="ativarEdicaoAvaliacao()" style="display:none" aria-label="Editar" title="Editar"><i class="ti ti-pencil"></i></button>
+          <button class="btn btn-secondary btn-sm" id="btnReportarVideo" onclick="openVideoIssueModal()" aria-label="Problema com o Vídeo" title="Problema com o Vídeo"><i class="ti ti-alert-triangle"></i></button>
         </div>
-        <button class="btn btn-secondary btn-sm" id="btnReportarVideo" onclick="openVideoIssueModal()" aria-label="Problema com o Vídeo" title="Problema com o Vídeo"><i class="ti ti-alert-triangle"></i></button>
-        <button class="btn btn-secondary btn-sm" id="btnEditarAvaliacao" onclick="ativarEdicaoAvaliacao()" style="display:none" aria-label="Editar" title="Editar"><i class="ti ti-pencil"></i></button>
+        <div class="aval-action-group aval-action-group-layout">
+          <div class="aval-layout-switch" role="group" aria-label="Modo de visualização da ficha">
+            <button class="layout-btn active" id="btnLayoutSplit" data-layout="split" type="button" aria-label="Visualização atual" title="Visualização atual" onclick="setLayout('split')">
+              <i class="ti ti-layout-columns"></i>
+            </button>
+            <button class="layout-btn" id="btnLayoutSeq" data-layout="seq" type="button" aria-label="Visão 07/07" title="Visão 07/07" onclick="setLayout('seq')">
+              <i class="ti ti-layout-list"></i>
+            </button>
+          </div>
+        </div>
+        <div class="aval-action-group aval-action-group-scale">
+          <div class="aval-scale-control" role="group" aria-label="Escala da ficha de avaliação">
+            <button class="aval-scale-btn active" type="button" data-scale="1" aria-label="Escala padrão" title="Escala padrão" onclick="setAvaliacaoScale(1)">
+              <span>A</span>
+            </button>
+            <button class="aval-scale-btn" type="button" data-scale="1.1" aria-label="Escala ampliada" title="Escala ampliada" onclick="setAvaliacaoScale(1.1)">
+              <span>A</span>
+            </button>
+            <button class="aval-scale-btn" type="button" data-scale="1.2" aria-label="Escala ampliada máxima" title="Escala ampliada máxima" onclick="setAvaliacaoScale(1.2)">
+              <span>A</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -2670,8 +3203,8 @@ textarea::placeholder{color:#BDC1C6}
         <div class="mh-sub">A avaliação só é registrada no sistema depois de salva.</div>
       </div>
     </div>
-    <div class="mb" style="padding:16px 20px 20px">
-      <div style="font-size:13px;color:#5F6368;line-height:1.5">
+    <div class="mb">
+      <div class="modal-copy">
         Para preservar seu parecer, permaneça na ficha de avaliação.
       </div>
     </div>
@@ -2692,8 +3225,8 @@ textarea::placeholder{color:#BDC1C6}
         <div class="mh-sub" id="earlySaveSub">Esta avaliação foi realizada em cerca de 2 minutos.</div>
       </div>
     </div>
-    <div class="mb" style="padding:16px 20px 20px">
-      <div id="earlySaveBody" style="font-size:13px;color:#5F6368;line-height:1.5">
+    <div class="mb">
+      <div id="earlySaveBody" class="modal-copy">
         Análises completas, incluindo os 3 entregáveis anexados, levam em torno de 5 minutos. Se você quiser revisar algum critério, a ficha de avaliação continuará aberta. Caso tenha certeza do seu parecer, basta concluir e enviar.
       </div>
       <div style="margin-top:12px">
@@ -2771,8 +3304,8 @@ textarea::placeholder{color:#BDC1C6}
         <div class="mh-sub">Vídeo + Roteiro 30s + Campanha multiplataforma</div>
       </div>
     </div>
-    <div class="mb" style="padding:16px 20px 20px">
-      <div style="font-size:13px;color:#5F6368;line-height:1.5;margin-bottom:12px">
+    <div class="mb">
+      <div class="modal-copy" style="margin-bottom:12px">
         Para finalizar seu parecer, é necessário abrir e analisar os 3 entregáveis anexados.
       </div>
       <div class="fl" style="margin-bottom:6px">Pendências:</div>
@@ -2794,7 +3327,7 @@ textarea::placeholder{color:#BDC1C6}
         <div class="mh-sub">Se o vídeo não puder ser acessado agora, esta avaliação será pausada sem registrar nota.</div>
       </div>
     </div>
-    <div class="mb" style="padding:16px 20px 20px;gap:14px">
+    <div class="mb" style="gap:14px">
       <div class="form-row">
         <div>
           <label class="fl">Tipo do problema</label>
@@ -2822,7 +3355,7 @@ textarea::placeholder{color:#BDC1C6}
           <textarea id="videoIssueComment" placeholder="Se quiser, descreva o que aconteceu..."></textarea>
         </div>
       </div>
-      <div id="videoIssueHelper" style="font-size:11.5px;color:#6B7280;line-height:1.5"></div>
+      <div id="videoIssueHelper" class="modal-copy-subtle"></div>
     </div>
     <div class="mf" style="gap:10px">
       <button class="btn btn-secondary btn-sm" type="button" onclick="closeVideoIssueModal()">Cancelar</button>
@@ -2840,8 +3373,8 @@ textarea::placeholder{color:#BDC1C6}
         <div class="mh-sub" style="color:#7A3B36">Antes de seguir, confirme que você entendeu como essa avaliação será tratada.</div>
       </div>
     </div>
-    <div class="mb" style="padding:16px 20px 20px;gap:12px">
-      <div id="videoIssueConfirmBody" style="font-size:13px;line-height:1.65;color:#5F2B27"></div>
+    <div class="mb" style="gap:12px">
+      <div id="videoIssueConfirmBody" class="modal-copy-emphasis" style="color:#5F2B27"></div>
     </div>
     <div class="mf" style="gap:10px">
       <button class="btn btn-secondary btn-sm" type="button" onclick="closeVideoIssueConfirmModal()">Revisar</button>
@@ -3321,7 +3854,115 @@ document.querySelectorAll('.snav[data-view]').forEach(el => {
 });
 
 // ═══ PARECERISTAS ═════════════════════════════════════════
-function addParecerista() {
+async function syncPareceristasRosterToSupabase() {
+  const client = getSupabaseClient();
+  if (!client) return { ok:false, reason:'unconfigured' };
+
+  const parsRows = pareceristasPayload();
+  assertNoDuplicateConflictRows(
+    parsRows,
+    ['environment', 'id_externo'],
+    'pareceristas',
+    row => `${row.nome || 'Sem nome'} (${row.id_externo || 'sem id'})`
+  );
+
+  const { data: remotePareceristas, error: remotePareceristasError } = await client
+    .from('pareceristas')
+    .select('id_externo')
+    .eq('environment', activeEnvironment)
+    .eq('ativo', true);
+  if (remotePareceristasError) throw remotePareceristasError;
+
+  const currentPareceristaIds = new Set(parsRows.map(row => row.id_externo));
+  const removidos = (remotePareceristas || [])
+    .map(row => row.id_externo)
+    .filter(id => !currentPareceristaIds.has(id));
+
+  if (removidos.length) {
+    const { error: deactivateError } = await client
+      .from('pareceristas')
+      .update({ ativo:false, updated_at: new Date().toISOString() })
+      .eq('environment', activeEnvironment)
+      .in('id_externo', removidos);
+    if (deactivateError) throw deactivateError;
+    await deleteRemoteEvaluationsByReviewer(client, removidos);
+  }
+
+  await runSupabaseQuery(
+    client.from('pareceristas').upsert(parsRows, { onConflict:'environment,id_externo' })
+  );
+
+  const pendingRosterEvents = (window.__pendingSystemEvents || []).filter(entry =>
+    ['parecerista_criado', 'parecerista_removido'].includes(String(entry?.event_type || ''))
+  );
+  if (pendingRosterEvents.length) {
+    assertNoDuplicateConflictRows(
+      pendingRosterEvents,
+      ['environment', 'event_type', 'correlation_id'],
+      'eventos de auditoria',
+      row => `${row.event_type || 'evento'} · ${row.correlation_id || 'sem correlação'}`
+    );
+    await runSupabaseQuery(
+      client.from('eventos_auditoria').upsert(
+        pendingRosterEvents.map(row => ({
+          ...row,
+          payload_json: { ...(row.payload_json || {}), sync_reason: 'reviewer_update' },
+        })),
+        { onConflict:'environment,event_type,correlation_id' }
+      )
+    );
+    window.__pendingSystemEvents = (window.__pendingSystemEvents || []).filter(entry =>
+      !pendingRosterEvents.includes(entry)
+    );
+  }
+
+  const refreshed = await fetchAllSupabaseRows(() => client
+    .from('pareceristas')
+    .select('*')
+    .eq('environment', activeEnvironment)
+    .eq('ativo', true)
+    .order('nome'));
+
+  pareceristas = (refreshed || []).map(p => ({
+    id: p.id_externo,
+    nome: p.nome,
+    email: p.email,
+    inst: p.instituicao,
+    cota: null,
+    cotaManual: false,
+  }));
+
+  environmentRemoteReady[activeEnvironment] = true;
+  lastRemoteRefreshAt = Date.now();
+  lastLocalAdminMutationAt = 0;
+  persistSupabaseSettings();
+  saveAppState({ skipRemoteSync:true });
+  return { ok:true, mode:'supabase' };
+}
+
+async function persistPareceristasRosterChange() {
+  lastLocalAdminMutationAt = Date.now();
+  saveAppState({ skipRemoteSync:true });
+
+  if (!isSupabaseConfigured()) {
+    return { ok:true, mode:'local' };
+  }
+
+  try {
+    const result = await syncPareceristasRosterToSupabase();
+    if (!result?.ok) return result;
+  } catch (error) {
+    return { ok:false, error };
+  }
+
+  renderPareceristas();
+  renderDashboard();
+  renderResultados();
+  updateSimSelect();
+  return { ok:true, mode:'supabase' };
+}
+
+async function addParecerista() {
   const nome = document.getElementById('pNome').value.trim();
   const email = document.getElementById('pEmail').value.trim();
   const inst = document.getElementById('pInst').value;
@@ -3330,14 +3971,21 @@ function addParecerista() {
   pareceristas.push({ id, nome, email, inst, cota:null, cotaManual:false });
   document.getElementById('pNome').value = '';
   document.getElementById('pEmail').value = '';
+  document.getElementById('pInst').value = '';
   queueSystemEvent('parecerista_criado', { parecerista_id:id, nome, email, instituicao:inst });
-  saveAppState();
   renderPareceristas();
   updateSimSelect();
+
+  const result = await persistPareceristasRosterChange();
+  if (!result?.ok) {
+    notify(`Parecerista adicionado localmente, mas falhou ao persistir no ambiente: ${result?.error?.message || result?.reason || 'erro desconhecido'}`);
+    return;
+  }
+
   notify('Parecerista adicionado.');
 }
 
-function removeParecerista(id) {
+async function removeParecerista(id) {
   const atribuicoesAtivas = getAtrib(id).length;
   const avaliacoesConcluidas = getDone(id);
   const avaliacoesIniciadas = Object.keys(avaliacoes[id] || {}).length;
@@ -3354,9 +4002,16 @@ function removeParecerista(id) {
   queueSystemEvent('parecerista_removido', { parecerista_id:id });
   pareceristas = pareceristas.filter(p => p.id !== id);
   syncPersistedStateWithBase();
-  saveAppState();
   renderPareceristas();
   updateSimSelect();
+
+  const result = await persistPareceristasRosterChange();
+  if (!result?.ok) {
+    notify(`Parecerista removido localmente, mas falhou ao persistir no ambiente: ${result?.error?.message || result?.reason || 'erro desconhecido'}`);
+    return;
+  }
+
+  notify('Parecerista removido.');
 }
 
 function getAppBaseUrl() {
@@ -3513,6 +4168,8 @@ function getDone(parId) {
 }
 
 function renderPareceristas() {
+  syncPareceristaInstitutionOptions();
+  ensureRawIESCatalogLoaded();
   const totalInsc = INSCRICOES.length;
   const totalDone = Object.entries(avaliacoes).reduce((acc, [parId, byInsc]) => (
     acc + Object.keys(byInsc || {}).filter(inscId => isEvaluationConcluded(parId, inscId)).length
@@ -3735,7 +4392,7 @@ function userGlyph() {
 }
 function mi(m) {
   const qtd = m === 'Em trio' ? 3 : m === 'Em dupla' ? 2 : 1;
-  return `<div title="${m}" aria-label="${m}" style="display:inline-flex;align-items:center;gap:1px;color:#9AA0A6">
+  return `<div title="${m}" aria-label="${m}" style="display:inline-flex;align-items:center;gap:1px">
     ${Array.from({ length: qtd }, () => userGlyph()).join('')}
   </div>`;
 }
@@ -4092,7 +4749,7 @@ function buildAttachmentViewerConfig(url = '', tipo = '') {
     return {
       kind: 'iframe',
       src: `https://www.youtube.com/embed/${ytId}`,
-      note: 'Vídeo carregado pela visualização incorporada do YouTube.'
+      note: ''
     };
   }
   const vimeoId = extractVimeoId(normalizedUrl);
@@ -4100,7 +4757,7 @@ function buildAttachmentViewerConfig(url = '', tipo = '') {
     return {
       kind: 'iframe',
       src: `https://player.vimeo.com/video/${vimeoId}`,
-      note: 'Vídeo carregado pela visualização incorporada do Vimeo.'
+      note: ''
     };
   }
   if (/\.(pdf)(\?|#|$)/.test(lowerUrl)) {
@@ -4131,7 +4788,7 @@ function buildAttachmentViewerConfig(url = '', tipo = '') {
     return {
       kind: 'iframe',
       src: normalizedUrl,
-      note: 'Este vídeo usa o visualizador da própria plataforma de origem.'
+      note: ''
     };
   }
   return {
@@ -4152,18 +4809,29 @@ function renderAttachmentViewerContent() {
   const viewer = buildAttachmentViewerConfig(context.url, context.tipo);
   const helper = document.getElementById('attachmentViewerSub');
   if (helper) {
-    helper.textContent = viewer.note || (context.tipo === 'video_criativo'
-      ? 'Assista ao vídeo aqui. Se houver bloqueio da plataforma, abra em uma nova aba.'
-      : 'Confira o material aqui. Se o conteúdo não carregar, abra em uma nova aba.');
+    helper.textContent = viewer.note || '';
   }
   if (viewer.kind === 'video') {
+    const loading = document.createElement('div');
+    loading.className = 'attachment-viewer-loading';
+    loading.innerHTML = `<div class="attachment-viewer-loading-card"><span class="attachment-viewer-spinner"></span><span>Carregando vídeo...</span></div>`;
+    stage.appendChild(loading);
     const video = document.createElement('video');
     video.className = 'attachment-viewer-video';
     video.controls = true;
     video.playsInline = true;
-    video.preload = 'metadata';
+    video.preload = 'auto';
+    video.autoplay = true;
+    video.muted = true;
+    video.setAttribute('playsinline', '');
+    video.setAttribute('webkit-playsinline', '');
     video.src = viewer.src;
+    const clearLoading = () => loading.remove();
+    video.addEventListener('loadeddata', clearLoading, { once:true });
+    video.addEventListener('canplay', clearLoading, { once:true });
+    video.addEventListener('error', clearLoading, { once:true });
     stage.appendChild(video);
+    try { video.load(); } catch {}
     return;
   }
   if (viewer.kind === 'pdf') {
@@ -4197,9 +4865,7 @@ function openAttachmentViewer(payload = {}) {
     inscricaoId: payload.inscricaoId || currentInscId || '',
   };
   title.textContent = payload.label || 'Visualização do material';
-  sub.textContent = payload.tipo === 'video_criativo'
-    ? 'Assista ao vídeo aqui. Se houver bloqueio da plataforma, abra em uma nova aba.'
-    : 'Confira o material aqui. Se o conteúdo não carregar, abra em uma nova aba.';
+  sub.textContent = '';
   external.href = payload.url || '#';
   external.style.pointerEvents = payload.url ? '' : 'none';
   external.style.opacity = payload.url ? '' : '.5';
@@ -4848,9 +5514,6 @@ function renderPortal() {
     const isLastReviewed = lastReviewedPortalInscId === inscId;
     const videoIssue = getActiveVideoIssue(parId, inscId);
     const resolvedVideoIssue = !videoIssue && requiresReevaluation(parId, inscId) ? getResolvedVideoIssue(parId, inscId) : null;
-    const nota = isDone ? notaGeralAvaliacao(av) : null;
-    const notaPct = nota !== null ? Math.max(0, Math.min(100, (nota / 4) * 100)) : 0;
-    const notaColor = nota !== null ? corConceitoNota(nota) : '#AECBFA';
     return `<div class="ficha-item ${isDone?'done':'pending'} ${isLastReviewed?'is-last-reviewed':''}" onclick="abrirFicha('${parId}','${inscId}')">
       <div class="fi-id-col">
         <div class="fi-id">PPA2026-${e.id}</div>
@@ -4885,9 +5548,8 @@ function renderPortal() {
             </div>
             <div class="fi-side-subline"><div class="fi-side-note">Pendência de vídeo resolvida</div></div>` : isDone ? `
             <div class="fi-side-topline">
-              <div class="fi-score" title="Nota ${fmtNotaGeral(nota)} de 4,0">
-                <div class="fi-score-val">${fmtNotaGeral(nota)}</div>
-                <div class="fi-score-bar"><div class="fi-score-fill" style="width:${notaPct}%;background:${notaColor}"></div></div>
+              <div class="fi-side-status">
+                <span class="badge b-ok">Avaliado</span>
               </div>
             </div>
             <div class="fi-side-subline"></div>` : `
@@ -5533,16 +6195,25 @@ function exportAuditoria() {
 // ═══ FICHA DE AVALIAÇÃO ═══════════════════════════════════
 
 function setLayout(mode) {
-  currentLayout = 'split';
+  currentAvaliacaoView = mode === 'seq' ? 'seq' : 'split';
   const seq = document.getElementById('layoutSeq');
   const split = document.getElementById('layoutSplit');
   if (seq) seq.style.display = 'none';
-  if (split) split.style.display = 'block';
+  if (split) {
+    split.style.display = 'flex';
+    split.classList.toggle('legacy-view', currentAvaliacaoView === 'seq');
+  }
+  document.querySelectorAll('.layout-btn[data-layout]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.layout === currentAvaliacaoView);
+  });
   bindPainelAvaliacao();
   syncPainelAtivo('main');
+  updateFooter();
 }
 
 let currentLayout = 'split';
+let currentAvaliacaoView = 'split';
+
 function avalGridHTML(e, mode, context = 'avaliacao') {
   // mode: 'seq' = 3 colunas | 'split' = 1 coluna (painel lateral)
   const isSplit = mode === 'split';
@@ -5566,26 +6237,40 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
       <span class="team-marker-stack">${marker}</span>`;
     const p2 = e.p2 ? `
       <div class="split-meta-row">
-        <div class="split-meta-value">${e.p2}</div>
+        <div class="split-person-line">
+          <span class="split-person-badge">P2</span>
+          <div class="split-meta-value">${e.p2}</div>
+        </div>
         ${e.p2e ? `<div class="split-meta-subline">${e.p2e}</div>` : ''}
       </div>` : '';
     const p3 = e.p3 ? `
       <div class="split-meta-row">
-        <div class="split-meta-value">${e.p3}</div>
+        <div class="split-person-line">
+          <span class="split-person-badge">P3</span>
+          <div class="split-meta-value">${e.p3}</div>
+        </div>
         ${e.p3e ? `<div class="split-meta-subline">${e.p3e}</div>` : ''}
       </div>` : '';
     const mentor = (e.mentor || e.me) ? `
       <div class="split-meta-row">
         <div class="split-meta-value-line">
-          <div class="split-meta-value">${e.mentor || ''}</div>
+          <div class="split-person-line">
+            <span class="split-person-badge">M</span>
+            <div class="split-meta-value">${e.mentor || ''}</div>
+          </div>
           <span class="split-mentor-badge">Mentor(a)</span>
         </div>
         ${e.me ? `<div class="split-meta-subline">${e.me}</div>` : ''}
       </div>` : '';
     return `
       <div class="split-hero">
-        <div class="split-kicker">${kicker}</div>
-        <div class="split-leader">${e.lider}</div>
+        <div class="split-hero-top">
+          <div class="split-kicker">${kicker}</div>
+        </div>
+        <div class="split-leader-line">
+          <span class="split-person-badge">P1</span>
+          <div class="split-leader">${e.lider}</div>
+        </div>
         <div class="split-inst">${instituicaoResumo}</div>
         <div class="split-hero-course">${cursoResumo}</div>
         <div class="split-hero-location">${localResumo}</div>
@@ -5613,9 +6298,11 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
               <strong>Pendência resolvida.</strong> O vídeo foi verificado pela equipe e esta ficha voltou para a sua fila para <strong>avaliar novamente</strong>.
             </div>
           ` : ''}
-          <div class="split-video-tools">
-            <div class="split-video-tools-note">${activeVideoIssue ? 'O reporte registra uma pausa técnica, mantém esta ficha na sua lista e reposiciona a avaliação para o final da fila.' : resolvedVideoIssue ? 'Agora a avaliação pode seguir normalmente, com o vídeo já liberado para análise.' : 'Se houver falha de acesso ao vídeo, use o reporte técnico para pausar a ficha sem perder o fluxo de trabalho.'}</div>
-          </div>
+          ${(activeVideoIssue || resolvedVideoIssue) ? `
+            <div class="split-video-tools">
+              <div class="split-video-tools-note">${activeVideoIssue ? 'O reporte registra uma pausa técnica, mantém esta ficha na sua lista e reposiciona a avaliação para o final da fila.' : 'Agora a avaliação pode seguir normalmente, com o vídeo já liberado para análise.'}</div>
+            </div>
+          ` : ''}
         ` : ''}
         <div class="ia-note split-ia-note" id="avalIASplit"></div>
       </div>
@@ -5810,11 +6497,9 @@ function abrirFicha(parId, inscId, abrirEmEdicao = false) {
   setEditLockedState(false);
   setCamposAvaliacaoHabilitados(avaliacaoEmEdicao);
 
-  updateFooter();
   showView('avaliacao');
-  bindPainelAvaliacao();
+  setLayout(currentAvaliacaoView);
   alinharAberturaAvaliacao();
-  syncPainelAtivo('main');
   requestAnimationFrame(() => acionarNudgeEditar());
 }
 
@@ -6074,10 +6759,13 @@ function notify(msg) {
 // ═══ UPLOAD ═══════════════════════════════════════════════
 let rawRows = [];       // linhas brutas do XLSX
 let rawParticipantes = [];
+let rawIES = [];
+let rawIESAutoloadPromise = null;
+let rawIESAutoloadSource = '';
 let baseConfirmada = false;
 let dashCharts = {};
 const ARQUIVO_PADRAO = 'base_ficticia_ppa_inscricoes_participantes.xlsx';
-const ARQUIVO_PADRAO_HOMOLOG = 'Inscrições PPA - 06.07.xlsx';
+const ARQUIVO_PADRAO_HOMOLOG = 'inscricoes-ppa-{submissão final}.xlsx';
 const STORAGE_KEY = 'ppa2026_app_state_v1';
 const SUPABASE_SETTINGS_KEY = 'ppa2026_supabase_settings_v1';
 let reviewerBootMode = false;
@@ -6474,6 +7162,7 @@ async function handleSelectedBaseFile(event) {
 
     const previousRawRows = rawRows;
     const previousRawParticipantes = rawParticipantes;
+    const previousRawIES = rawIES;
     const previousBaseConfirmada = baseConfirmada;
 
     if (isCsv) {
@@ -6495,6 +7184,7 @@ async function handleSelectedBaseFile(event) {
     if (!confirmed) {
       rawRows = previousRawRows;
       rawParticipantes = previousRawParticipantes;
+      rawIES = previousRawIES;
       baseConfirmada = previousBaseConfirmada;
       throw new Error('Não foi possível confirmar a base selecionada.');
     }
@@ -6607,6 +7297,9 @@ function resetRuntimeStateForEnvironment() {
   logAuditoriaEventos = [];
   rawRows = [];
   rawParticipantes = [];
+  rawIES = [];
+  rawIESAutoloadPromise = null;
+  rawIESAutoloadSource = '';
   videoIssueReports = [];
   baseConfirmada = false;
   carregandoBasePadrao = false;
@@ -8047,6 +8740,7 @@ function saveAppState(opts = {}) {
       pareceristas,
       atribuicoes,
       avaliacoes,
+      rawIES,
       videoIssueReports,
       logAuditoria,
       logAuditoriaEventos,
@@ -8083,6 +8777,9 @@ function hydrateAppState() {
     }
     if (data.avaliacoes && typeof data.avaliacoes === 'object') {
       avaliacoes = data.avaliacoes;
+    }
+    if (Array.isArray(data.rawIES)) {
+      rawIES = data.rawIES.map(row => ({ ...(row || {}) }));
     }
     if (Array.isArray(data.videoIssueReports)) {
       videoIssueReports = data.videoIssueReports.map(normalizeVideoIssueReport).filter(Boolean);
@@ -8246,9 +8943,11 @@ function carregarWorkbook(workbook) {
     workbook.SheetNames.find(name => /inscri/i.test(name)) ||
     workbook.SheetNames[0];
   const participantesSheet = workbook.SheetNames.includes('Participantes') ? 'Participantes' : null;
+  const iesSheet = workbook.SheetNames.includes('IES') ? 'IES' : null;
   const wsInscricao = workbook.Sheets[inscricaoSheet];
   rawRows = XLSX.utils.sheet_to_json(wsInscricao, { defval: '' });
   rawParticipantes = participantesSheet ? XLSX.utils.sheet_to_json(workbook.Sheets[participantesSheet], { defval: '' }) : [];
+  rawIES = iesSheet ? XLSX.utils.sheet_to_json(workbook.Sheets[iesSheet], { defval: '' }) : [];
 }
 
 function carregarCsvTexto(csvText) {
@@ -8330,6 +9029,7 @@ async function tentarCarregarArquivoPadrao(opts = {}) {
     if (fallbackData) {
       rawRows = Array.isArray(fallbackData.rawRows) ? fallbackData.rawRows : [];
       rawParticipantes = Array.isArray(fallbackData.rawParticipantes) ? fallbackData.rawParticipantes : [];
+      rawIES = Array.isArray(fallbackData.rawIES) ? fallbackData.rawIES : [];
     } else if (isCsv) {
       carregarCsvTexto(String(payload || ''));
     } else {
@@ -8809,6 +9509,135 @@ function fillDashboardSelect(selectId, values, placeholder) {
     .sort((a,b) => a.localeCompare(b, 'pt-BR', { sensitivity:'base', numeric:true }));
   el.innerHTML = `<option value="">${placeholder}</option>` + opts.map(v => `<option value="${v}">${v}</option>`).join('');
   if (opts.includes(prev)) el.value = prev;
+}
+
+let pareceristaInstitutionOptionsCache = { key:'', values:[] };
+function getCachedRawIESForEnvironment(env = activeEnvironment) {
+  try {
+    const raw = localStorage.getItem(`${STORAGE_KEY}_${env}`);
+    if (!raw) return [];
+    const data = JSON.parse(raw);
+    return Array.isArray(data?.rawIES) ? data.rawIES : [];
+  } catch (err) {
+    console.warn('Falha ao restaurar catálogo local de IES:', err);
+    return [];
+  }
+}
+
+async function ensureRawIESCatalogLoaded() {
+  const sourceName = String(activeBaseFile() || '').trim();
+  if (Array.isArray(rawIES) && rawIES.length) return true;
+  if (!sourceName || !/\.xlsx($|\?)/i.test(sourceName)) return false;
+  if (typeof XLSX === 'undefined') return false;
+  if (rawIESAutoloadPromise && rawIESAutoloadSource === sourceName) return rawIESAutoloadPromise;
+
+  rawIESAutoloadSource = sourceName;
+  rawIESAutoloadPromise = (async () => {
+    try {
+      const response = await fetch(encodeURI(sourceName), { cache:'no-store' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const buffer = await response.arrayBuffer();
+      const workbook = XLSX.read(buffer, { type:'array', cellDates:true });
+      const iesSheetName = workbook.SheetNames.includes('IES') ? 'IES' : null;
+      if (!iesSheetName) return false;
+      const loaded = XLSX.utils.sheet_to_json(workbook.Sheets[iesSheetName], { defval:'' });
+      if (!Array.isArray(loaded) || !loaded.length) return false;
+      rawIES = loaded;
+      pareceristaInstitutionOptionsCache = { key:'', values:[] };
+      saveAppState({ skipRemoteSync:true });
+      syncPareceristaInstitutionOptions();
+      return true;
+    } catch (err) {
+      console.warn('Falha ao recarregar catálogo de IES da planilha ativa:', err);
+      return false;
+    } finally {
+      rawIESAutoloadPromise = null;
+    }
+  })();
+
+  return rawIESAutoloadPromise;
+}
+
+function collectPareceristaInstitutionOptions() {
+  const cachedRawIES = Array.isArray(rawIES) && rawIES.length
+    ? []
+    : getCachedRawIESForEnvironment(activeEnvironment);
+  const inscricoesInstSignature = INSCRICOES
+    .map(e => `${e.id || ''}:${String(e.inst || '').trim()}`)
+    .join('|');
+  const cacheKey = JSON.stringify({
+    environment: activeEnvironment,
+    baseFile: activeBaseFile(),
+    inscricoesCount: Array.isArray(INSCRICOES) ? INSCRICOES.length : 0,
+    inscricoesInstSignature,
+    rawRowsCount: Array.isArray(rawRows) ? rawRows.length : 0,
+    rawParticipantesCount: Array.isArray(rawParticipantes) ? rawParticipantes.length : 0,
+    rawIESCount: Array.isArray(rawIES) ? rawIES.length : 0,
+    cachedRawIESCount: Array.isArray(cachedRawIES) ? cachedRawIES.length : 0,
+    importHash: currentImportHash || '',
+  });
+  if (pareceristaInstitutionOptionsCache.key === cacheKey) {
+    return [...pareceristaInstitutionOptionsCache.values];
+  }
+
+  const normalizeInstitutionName = value => String(value || '').replace(/\s+/g, ' ').trim();
+  const exactKeys = [
+    'Nome da instituição de ensino em que você possui vínculo estudantil ativo',
+    'Nome da Instituição de Ensino em que você possui vínculo estudantil ativo',
+    'Participante 1 instituição de ensino',
+    'Participante 2 instituição de ensino',
+    'Participante 3 instituição de ensino',
+    'Participante 1 instituicao de ensino',
+    'Participante 2 instituicao de ensino',
+    'Participante 3 instituicao de ensino',
+  ];
+  const institutionSet = new Set();
+
+  const addInstitution = value => {
+    const normalized = normalizeInstitutionName(value);
+    if (normalized) institutionSet.add(normalized);
+  };
+
+  const scanRow = row => {
+    exactKeys.forEach(key => addInstitution(row?.[key]));
+  };
+
+  const scanIesRow = row => {
+    const values = Object.values(row || {}).map(value => normalizeInstitutionName(value)).filter(Boolean);
+    if (!values.length) return;
+    if (normalizeInstitutionName(values[0]).toLowerCase() === 'nome da instituição de ensino em que você possui vínculo estudantil ativo') return;
+    addInstitution(values[0]);
+  };
+
+  const iesList = Array.isArray(rawIES) && rawIES.length
+    ? rawIES
+    : cachedRawIES;
+  if (iesList.length) {
+    iesList.forEach(scanIesRow);
+  }
+
+  if (!institutionSet.size) {
+    INSCRICOES.forEach(e => addInstitution(e.inst));
+    [rawRows, rawParticipantes].forEach(list => {
+      (Array.isArray(list) ? list : []).forEach(scanRow);
+    });
+  }
+
+  const values = Array.from(institutionSet)
+    .sort((a, b) => a.localeCompare(b, 'pt-BR', { sensitivity:'base', numeric:true }));
+  pareceristaInstitutionOptionsCache = { key:cacheKey, values };
+  return [...values];
+}
+
+function syncPareceristaInstitutionOptions() {
+  const el = document.getElementById('pInst');
+  if (!el) return;
+  const prev = el.value || '';
+  const fullNames = collectPareceristaInstitutionOptions();
+  el.innerHTML = `<option value="">Selecione</option>` + fullNames.map(fullName => (
+    `<option value="${escapeHtmlAttr(fullName)}">${escapeHtmlAttr(fullName)}</option>`
+  )).join('');
+  if (fullNames.includes(prev)) el.value = prev;
 }
 
 function syncDashboardListFilters() {
