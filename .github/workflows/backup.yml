@@ -10,26 +10,57 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
-    steps:
-      - name: Instalar cliente PostgreSQL
-        run: sudo apt-get install -y postgresql-client
+    env:
+      SUPABASE_URL: https://lmyrjbzqkixxhaqhramj.supabase.co
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      R2_ENDPOINT: https://ae16e49b7837faeee19e2ccb4bb717f8.r2.cloudflarestorage.com
+      R2_BUCKET: bucket-mastertech
+      R2_PREFIX: backup-ppa
 
-      - name: Gerar dump do banco Supabase
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - name: Exportar tabelas via Supabase REST API
         run: |
           DATE_TAG=$(date +%Y-%m-%d_%H-%M-%S)
-          FILENAME="ppa_backup_${DATE_TAG}.sql.gz"
-          echo "FILENAME=${FILENAME}" >> $GITHUB_ENV
+          BACKUP_DIR="/tmp/ppa_backup_${DATE_TAG}"
+          mkdir -p "${BACKUP_DIR}"
+          echo "DATE_TAG=${DATE_TAG}" >> $GITHUB_ENV
 
-          pg_dump "${DATABASE_URL}" \
-            --no-owner \
-            --no-acl \
-            --format=plain \
-            | gzip -9 > "/tmp/${FILENAME}"
+          TABLES=(
+            inscricoes
+            participantes
+            pareceristas
+            atribuicoes
+            avaliacoes
+            avaliacao_criterios
+            eventos_auditoria
+            configuracoes_sistema
+            imports
+            import_rows_raw
+          )
 
+          for TABLE in "${TABLES[@]}"; do
+            echo "📥 Exportando: ${TABLE}"
+            STATUS=$(curl -sf -o "${BACKUP_DIR}/${TABLE}.json" \
+              -w "%{http_code}" \
+              "${SUPABASE_URL}/rest/v1/${TABLE}?select=*" \
+              -H "apikey: ${SUPABASE_ANON_KEY}" \
+              -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
+              -H "Accept: application/json" \
+              -H "Prefer: count=none")
+
+            if [[ "$STATUS" == "200" ]]; then
+              ROWS=$(python3 -c "import json,sys; print(len(json.load(open('${BACKUP_DIR}/${TABLE}.json'))))")
+              echo "  ✅ ${TABLE}: ${ROWS} registros"
+            else
+              echo "  ⚠️  ${TABLE}: status HTTP ${STATUS}"
+            fi
+          done
+
+          FILENAME="ppa_backup_${DATE_TAG}.tar.gz"
+          tar -czf "/tmp/${FILENAME}" -C /tmp "ppa_backup_${DATE_TAG}"
           SIZE=$(du -sh "/tmp/${FILENAME}" | cut -f1)
-          echo "✅ Dump gerado: ${FILENAME} (${SIZE})"
+          echo "FILENAME=${FILENAME}" >> $GITHUB_ENV
+          echo "✅ Arquivo gerado: ${FILENAME} (${SIZE})"
 
       - name: Instalar AWS CLI
         run: pip install awscli --quiet
@@ -40,11 +71,11 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         run: |
           aws s3 cp "/tmp/${FILENAME}" \
-            "s3://bucket-mastertech/backup-ppa/${FILENAME}" \
-            --endpoint-url "https://ae16e49b7837faeee19e2ccb4bb717f8.r2.cloudflarestorage.com" \
+            "s3://${R2_BUCKET}/${R2_PREFIX}/${FILENAME}" \
+            --endpoint-url "${R2_ENDPOINT}" \
             --region auto
 
-          echo "✅ Backup enviado: backup-ppa/${FILENAME}"
+          echo "✅ Backup enviado: ${R2_PREFIX}/${FILENAME}"
 
       - name: Remover backups com mais de 30 dias
         env:
@@ -53,16 +84,16 @@ jobs:
         run: |
           CUTOFF=$(date -d "-30 days" +%Y-%m-%d)
 
-          aws s3 ls "s3://bucket-mastertech/backup-ppa/" \
-            --endpoint-url "https://ae16e49b7837faeee19e2ccb4bb717f8.r2.cloudflarestorage.com" \
+          aws s3 ls "s3://${R2_BUCKET}/${R2_PREFIX}/" \
+            --endpoint-url "${R2_ENDPOINT}" \
             --region auto \
             | awk '{print $4}' \
             | while read -r key; do
                 FILE_DATE=$(echo "$key" | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}' | head -1)
                 if [[ -n "$FILE_DATE" && "$FILE_DATE" < "$CUTOFF" ]]; then
                   echo "🗑  Removendo: ${key}"
-                  aws s3 rm "s3://bucket-mastertech/backup-ppa/${key}" \
-                    --endpoint-url "https://ae16e49b7837faeee19e2ccb4bb717f8.r2.cloudflarestorage.com" \
+                  aws s3 rm "s3://${R2_BUCKET}/${R2_PREFIX}/${key}" \
+                    --endpoint-url "${R2_ENDPOINT}" \
                     --region auto
                 fi
               done
