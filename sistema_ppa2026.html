@@ -2374,6 +2374,8 @@ textarea::placeholder{color:#BDC1C6}
     </table>
   </div>
 
+  <div id="audPaginacao" style="display:none;align-items:center;justify-content:center;gap:16px;margin-top:16px;flex-wrap:wrap"></div>
+
 </div>
 </div>
 
@@ -2520,6 +2522,42 @@ textarea::placeholder{color:#BDC1C6}
       <div class="fields-grid" id="mGrid"></div>
     </div>
     <div class="mf"><button class="btn-fechar" onclick="closeModal()">Fechar</button></div>
+  </div>
+</div>
+
+<!-- MODAL VÍDEO -->
+<div class="overlay" id="overlayVideo" onclick="if(event.target===this)closeVideoModal()" style="z-index:2000">
+  <div class="modal" role="dialog" aria-modal="true" style="max-width:860px;padding:0;background:#000;border-radius:12px;overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#111;gap:12px">
+      <div style="font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="videoModalTitle"></div>
+      <button class="close-btn" onclick="closeVideoModal()" style="color:#fff;flex-shrink:0"><i class="ti ti-x"></i></button>
+    </div>
+    <div style="position:relative;background:#000;line-height:0">
+      <video id="videoModalPlayer" controls playsinline style="width:100%;max-height:70vh;display:block;outline:none">
+        <p style="color:#fff;padding:24px;font-size:13px">Seu navegador não suporta reprodução de vídeo.</p>
+      </video>
+    </div>
+    <div style="padding:10px 16px;background:#111;display:flex;justify-content:flex-end;gap:8px">
+      <a id="videoModalExtLink" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="color:#fff;background:#333;border:1px solid #555"><i class="ti ti-external-link"></i>Abrir em nova aba</a>
+      <button class="btn btn-sm" onclick="closeVideoModal()" style="color:#fff;background:#333;border:1px solid #555">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PDF -->
+<div class="overlay" id="overlayPdf" onclick="if(event.target===this)closePdfModal()" style="z-index:2000">
+  <div class="modal" role="dialog" aria-modal="true" style="max-width:860px;padding:0;background:#fff;border-radius:12px;overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#1e293b;gap:12px">
+      <div style="font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="pdfModalTitle"></div>
+      <button class="close-btn" onclick="closePdfModal()" style="color:#fff;flex-shrink:0"><i class="ti ti-x"></i></button>
+    </div>
+    <div style="line-height:0">
+      <iframe id="pdfModalFrame" src="" style="width:100%;height:70vh;border:none;display:block"></iframe>
+    </div>
+    <div style="padding:10px 16px;background:#1e293b;display:flex;justify-content:flex-end;gap:8px">
+      <a id="pdfModalExtLink" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="color:#fff;background:#334155;border:1px solid #475569"><i class="ti ti-external-link"></i>Abrir em nova aba</a>
+      <button class="btn btn-sm" onclick="closePdfModal()" style="color:#fff;background:#334155;border:1px solid #475569">Fechar</button>
+    </div>
   </div>
 </div>
 
@@ -2972,9 +3010,7 @@ function showView(v, opts = {}) {
   }
   if (v === 'config') {} // static view
 
-  if (!reviewerBootMode && !adminImportInFlight && ['dashboard','resultados','pareceristas','auditoria'].includes(v)) {
-    refreshStateFromSupabaseInBackground();
-  }
+  // refresh só no foco da janela e no timer — não a cada troca de aba
 }
 
 document.querySelectorAll('.snav[data-view]').forEach(el => {
@@ -3518,11 +3554,10 @@ function registrarCliqueAnexoFromLink(el, event) {
   saveAppState();
 
   if (reviewerBootMode && currentParId && inscricaoId && isSupabaseConfigured()) {
-    persistReviewerEvaluationToSupabase(currentParId, inscricaoId, { deleteWhenMissing:false }).then((result) => {
-      if (!result?.ok) {
-        console.warn('Falha ao persistir clique de anexo no Supabase:', result?.error || result?.reason);
-      }
-    });
+    clearTimeout(anexoFlushTimer);
+    anexoFlushTimer = setTimeout(() => {
+      flushPendingReviewerEvents(currentParId, fullInscId(inscricaoId), { syncReason: 'anexo_aberto' });
+    }, 1500);
   }
   return true;
 }
@@ -3857,9 +3892,9 @@ function openModal(idx) {
     <div class="field s3">
       <div class="mfl">Materiais</div>
       <div class="materiais">
-        ${links.video ? `<a class="mat-btn" href="${links.video}" target="_blank" rel="noopener noreferrer" data-anexo="video_criativo" data-origem="modal_inscricao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-player-play" style="font-size:13px"></i>Vídeo criativo</a>` : ''}
-        ${links.roteiro30 ? `<a class="mat-btn" href="${links.roteiro30}" target="_blank" rel="noopener noreferrer" data-anexo="roteiro_30s" data-origem="modal_inscricao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Roteiro 30s</a>` : ''}
-        ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer" data-anexo="campanha_multiplataforma" data-origem="modal_inscricao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Campanha</a>` : ''}
+        ${links.video ? `<a class="mat-btn" href="${links.video}" ${isVideoUrl(links.video) ? '' : 'target="_blank" rel="noopener noreferrer"'} data-anexo="video_criativo" data-origem="modal_inscricao" data-inscricao="${e.id}" onclick="if(isVideoUrl(this.href)){openVideoModal(this.href,'Vídeo criativo · ${e.lider}');registrarCliqueAnexoFromLink(this);return false;}return registrarCliqueAnexoFromLink(this)"><i class="ti ti-player-play" style="font-size:13px"></i>Vídeo criativo</a>` : ''}
+        ${links.roteiro30 ? `<a class="mat-btn" href="${links.roteiro30}" target="_blank" rel="noopener noreferrer" data-anexo="roteiro_30s" data-origem="modal_inscricao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file-type-pdf" style="font-size:13px"></i>Roteiro 30s</a>` : ''}
+        ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer" data-anexo="campanha_multiplataforma" data-origem="modal_inscricao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file-type-pdf" style="font-size:13px"></i>Campanha</a>` : ''}
       </div>
     </div>
     <div class="field s3"><div class="mfl">Uso de IA</div><div class="ia-note" style="margin-top:8px">IA utilizada na criação: ${e.ia}</div></div>
@@ -3870,6 +3905,49 @@ function openModal(idx) {
   document.body.style.overflow = 'hidden';
 }
 function closeModal() { document.getElementById('overlay').classList.remove('open'); document.body.style.overflow = ''; }
+
+function isPdfUrl(url) {
+  if (!url) return false;
+  return /\.pdf(\?|#|$)/i.test(url) || url.includes('inscricoes.led.globo');
+}
+
+function openPdfModal(url, title) {
+  document.getElementById('pdfModalTitle').textContent = title || 'Roteiro 30s';
+  document.getElementById('pdfModalFrame').src = url;
+  document.getElementById('pdfModalExtLink').href = url;
+  document.getElementById('overlayPdf').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePdfModal() {
+  document.getElementById('pdfModalFrame').src = '';
+  document.getElementById('overlayPdf').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function isVideoUrl(url) {
+  if (!url) return false;
+  return /\.(mp4|webm|mov|ogg)(\?|#|$)/i.test(url) || url.includes('inscricoes.led.globo');
+}
+
+function openVideoModal(url, title) {
+  const player = document.getElementById('videoModalPlayer');
+  const extLink = document.getElementById('videoModalExtLink');
+  document.getElementById('videoModalTitle').textContent = title || 'Vídeo criativo';
+  player.src = url;
+  extLink.href = url;
+  document.getElementById('overlayVideo').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  player.play().catch(() => {});
+}
+
+function closeVideoModal() {
+  const player = document.getElementById('videoModalPlayer');
+  player.pause();
+  player.src = '';
+  document.getElementById('overlayVideo').classList.remove('open');
+  document.body.style.overflow = '';
+}
 
 // ═══ MODAL PARECERES ══════════════════════════════════════
 function openModalPar(idx) {
@@ -4333,6 +4411,8 @@ function confirmExit() {
 // ═══ AUDITORIA ════════════════════════════════════════════
 let logAuditoria = [];
 let logAuditoriaEventos = [];
+let auditoriaPaginaAtual = 0;
+const AUDITORIA_PAGE_SIZE = 50;
 
 function labelAnexo(tipo) {
   const map = {
@@ -4460,7 +4540,7 @@ async function ensureAuditDataLoaded(force = false) {
   renderAuditoria();
   try {
     const auditData = await fetchAllSupabaseRows(() =>
-      client.from('eventos_auditoria').select('*').eq('environment', activeEnvironment).order('created_at')
+      client.from('eventos_auditoria').select('*').eq('environment', activeEnvironment).order('created_at', { ascending: false })
     );
     logAuditoria = remoteAuditToLocal((auditData || []).filter(r => String(r.event_type || '').startsWith('auditoria_')));
     logAuditoriaEventos = remoteSystemEventsToLocal((auditData || []).filter(r => String(r.event_type || '') === 'anexo_aberto'));
@@ -4493,6 +4573,10 @@ function renderAuditoria() {
   const filtCampanha = document.getElementById('audFiltCampanha')?.value || '';
   const filtBusca = (document.getElementById('audFiltBusca')?.value || '').toLowerCase();
 
+  // reseta página ao trocar filtros (exceto quando chamado de audSetPagina)
+  if (!renderAuditoria._paginating) auditoriaPaginaAtual = 0;
+  renderAuditoria._paginating = false;
+
   // atualiza select de pareceristas
   const sel = document.getElementById('audFiltPar');
   if (sel) {
@@ -4523,7 +4607,13 @@ function renderAuditoria() {
   );
   rows.sort((a, b) => new Date(b.sortAt || 0) - new Date(a.sortAt || 0));
 
-  document.getElementById('audCount').textContent = `${rows.length} registro${rows.length !== 1 ? 's' : ''}`;
+  const totalRows = rows.length;
+  const totalPages = Math.max(1, Math.ceil(totalRows / AUDITORIA_PAGE_SIZE));
+  auditoriaPaginaAtual = Math.min(auditoriaPaginaAtual, totalPages - 1);
+  const pageStart = auditoriaPaginaAtual * AUDITORIA_PAGE_SIZE;
+  const pageRows = rows.slice(pageStart, pageStart + AUDITORIA_PAGE_SIZE);
+
+  document.getElementById('audCount').textContent = `${totalRows} registro${totalRows !== 1 ? 's' : ''}`;
 
   const fmt = d => d ? d.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit',second:'2-digit'}) : '—';
   const fmtData = d => d ? d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}) : '—';
@@ -4531,9 +4621,9 @@ function renderAuditoria() {
   const statusLabel = { concluida:'Concluída', saida_antecipada:'Saída antecipada', rascunho:'Rascunho' };
   const statusCls   = { concluida:'b-concluida', saida_antecipada:'b-antecipada', rascunho:'b-rascunho' };
 
-  document.getElementById('tblAuditoria').innerHTML = rows.length === 0
+  document.getElementById('tblAuditoria').innerHTML = pageRows.length === 0
     ? `<tr><td colspan="12" style="text-align:center;padding:32px;color:#BDC1C6">Nenhum registro de auditoria ainda. As avaliações salvas aparecerão aqui.</td></tr>`
-    : rows.map(r => `
+    : pageRows.map(r => `
       <tr>
         <td style="font-weight:500;color:#202124">${r.parNome}</td>
         <td>${r.lider}</td>
@@ -4548,6 +4638,26 @@ function renderAuditoria() {
         <td><span class="badge ${statusCls[r.status]}">${statusLabel[r.status]}</span></td>
         <td style="font-size:11px;color:#9AA0A6;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.motivoSaida || '—'}</td>
       </tr>`).join('');
+
+  const paginacao = document.getElementById('audPaginacao');
+  if (paginacao) {
+    if (totalPages <= 1) {
+      paginacao.style.display = 'none';
+    } else {
+      paginacao.style.display = 'flex';
+      paginacao.innerHTML = `
+        <button class="btn btn-secondary btn-sm" onclick="audSetPagina(${auditoriaPaginaAtual - 1})" ${auditoriaPaginaAtual === 0 ? 'disabled' : ''}>← Anterior</button>
+        <span style="font-size:13px;color:var(--text-muted,#5F6368)">Página ${auditoriaPaginaAtual + 1} de ${totalPages} &nbsp;·&nbsp; registros ${pageStart + 1}–${Math.min(pageStart + AUDITORIA_PAGE_SIZE, totalRows)} de ${totalRows}</span>
+        <button class="btn btn-secondary btn-sm" onclick="audSetPagina(${auditoriaPaginaAtual + 1})" ${auditoriaPaginaAtual >= totalPages - 1 ? 'disabled' : ''}>Próxima →</button>
+      `;
+    }
+  }
+}
+
+function audSetPagina(pagina) {
+  auditoriaPaginaAtual = pagina;
+  renderAuditoria._paginating = true;
+  renderAuditoria();
 }
 
 function exportAuditoria() {
@@ -4638,9 +4748,9 @@ function avalGridHTML(e, mode) {
 
       <div class="split-materials-wrap">
         <div class="split-materials-list">
-          ${links.video ? `<a class="mat-btn" href="${links.video}" target="_blank" rel="noopener noreferrer" data-anexo="video_criativo" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-player-play" style="font-size:13px"></i>Vídeo</a>` : ''}
-          ${links.roteiro30 ? `<a class="mat-btn" href="${links.roteiro30}" target="_blank" rel="noopener noreferrer" data-anexo="roteiro_30s" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Roteiro 30s</a>` : ''}
-          ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer" data-anexo="campanha_multiplataforma" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Campanha</a>` : ''}
+          ${links.video ? `<a class="mat-btn" href="${links.video}" ${isVideoUrl(links.video) ? '' : 'target="_blank" rel="noopener noreferrer"'} data-anexo="video_criativo" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="if(isVideoUrl(this.href)){openVideoModal(this.href,'Vídeo · ${e.lider}');registrarCliqueAnexoFromLink(this);return false;}return registrarCliqueAnexoFromLink(this)"><i class="ti ti-player-play" style="font-size:13px"></i>Vídeo</a>` : ''}
+          ${links.roteiro30 ? `<a class="mat-btn" href="${links.roteiro30}" target="_blank" rel="noopener noreferrer" data-anexo="roteiro_30s" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file-type-pdf" style="font-size:13px"></i>Roteiro 30s</a>` : ''}
+          ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer" data-anexo="campanha_multiplataforma" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file-type-pdf" style="font-size:13px"></i>Campanha</a>` : ''}
         </div>
         <div class="ia-note split-ia-note" id="avalIASplit"></div>
       </div>
@@ -4674,9 +4784,9 @@ function avalGridHTML(e, mode) {
     <div class="field s3">
       <div class="mfl">Materiais</div>
       <div class="materiais">
-        ${links.video ? `<a class="mat-btn" href="${links.video}" target="_blank" rel="noopener noreferrer" data-anexo="video_criativo" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-player-play" style="font-size:13px"></i>Vídeo criativo</a>` : ''}
-        ${links.roteiro30 ? `<a class="mat-btn" href="${links.roteiro30}" target="_blank" rel="noopener noreferrer" data-anexo="roteiro_30s" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Roteiro 30s</a>` : ''}
-        ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer" data-anexo="campanha_multiplataforma" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file" style="font-size:13px"></i>Campanha</a>` : ''}
+        ${links.video ? `<a class="mat-btn" href="${links.video}" ${isVideoUrl(links.video) ? '' : 'target="_blank" rel="noopener noreferrer"'} data-anexo="video_criativo" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="if(isVideoUrl(this.href)){openVideoModal(this.href,'Vídeo criativo · ${e.lider}');registrarCliqueAnexoFromLink(this);return false;}return registrarCliqueAnexoFromLink(this)"><i class="ti ti-player-play" style="font-size:13px"></i>Vídeo criativo</a>` : ''}
+        ${links.roteiro30 ? `<a class="mat-btn" href="${links.roteiro30}" target="_blank" rel="noopener noreferrer" data-anexo="roteiro_30s" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file-type-pdf" style="font-size:13px"></i>Roteiro 30s</a>` : ''}
+        ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer" data-anexo="campanha_multiplataforma" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file-type-pdf" style="font-size:13px"></i>Campanha</a>` : ''}
       </div>
     </div>
     <div class="field s3"><div class="mfl">Defesa conceitual</div><div class="mfv-light">${e.defesa}</div></div>
@@ -5092,6 +5202,7 @@ let supabaseClient = null;
 let remoteStateLoaded = false;
 let carregandoEstadoRemoto = false;
 let remoteSyncTimer = null;
+let anexoFlushTimer = null;
 let remoteSyncQueued = false;
 let remoteSyncInFlight = false;
 let remoteRefreshInFlight = false;
@@ -6185,8 +6296,9 @@ async function refreshStateFromSupabaseInBackground() {
   lastRemoteRefreshAt = Date.now();
   try {
     const loaded = await loadStateFromSupabase({
-      includeAudit: activeView === 'auditoria',
+      includeAudit: false,
       includeCriteria: false,
+      skipInscricoes: true,
     });
     if (!loaded) return false;
     renderPareceristas();
@@ -6461,6 +6573,8 @@ async function loadStateFromSupabase(options = {}) {
   const includeAudit = options.includeAudit !== false;
   const includeCriteria = options.includeCriteria !== false;
   const skipLegacyMigration = !!options.skipLegacyMigration;
+  // inscrições são congeladas — não rebuscar no refresh em background
+  const skipInscricoes = !!options.skipInscricoes && INSCRICOES.length > 0;
   const client = getSupabaseClient();
   if (!client) return false;
   try {
@@ -6477,8 +6591,8 @@ async function loadStateFromSupabase(options = {}) {
     ] = await Promise.all([
       client.from('configuracoes_sistema').select('*').eq('id', activeEnvironment).maybeSingle(),
       client.from('imports').select('source_name, imported_at').eq('environment', activeEnvironment).order('imported_at', { ascending:false }).limit(1).maybeSingle(),
-      fetchAllSupabaseRows(() => client.from('inscricoes').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('id_curto')),
-      fetchAllSupabaseRows(() => client.from('participantes').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('id')),
+      skipInscricoes ? Promise.resolve(null) : fetchAllSupabaseRows(() => client.from('inscricoes').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('id_curto')),
+      skipInscricoes ? Promise.resolve(null) : fetchAllSupabaseRows(() => client.from('participantes').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('id')),
       fetchAllSupabaseRows(() => client.from('pareceristas').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('nome')),
       fetchAllSupabaseRows(() => client.from('atribuicoes').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('ordem')),
       fetchAllSupabaseRows(() => client.from('avaliacoes').select('*').eq('environment', activeEnvironment).order('id')),
@@ -6486,7 +6600,7 @@ async function loadStateFromSupabase(options = {}) {
         ? fetchAllSupabaseRows(() => client.from('avaliacao_criterios').select('*').eq('environment', activeEnvironment).order('id'))
         : Promise.resolve([]),
       includeAudit
-        ? fetchAllSupabaseRows(() => client.from('eventos_auditoria').select('*').eq('environment', activeEnvironment).order('created_at'))
+        ? fetchAllSupabaseRows(() => client.from('eventos_auditoria').select('*').eq('environment', activeEnvironment).order('created_at', { ascending: false }).limit(500))
         : Promise.resolve([]),
     ]);
     if (cfgRes.error) throw cfgRes.error;
@@ -6518,7 +6632,7 @@ async function loadStateFromSupabase(options = {}) {
       return loadStateFromSupabase({ ...options, skipLegacyMigration:true });
     }
 
-    if (!inscData.length) {
+    if (!skipInscricoes && !inscData.length) {
       resetRuntimeStateForEnvironment();
       clearLocalAppStateForEnvironment(activeEnvironment);
       remoteStateLoaded = false;
@@ -6527,8 +6641,11 @@ async function loadStateFromSupabase(options = {}) {
       return false;
     }
 
-    inscricoesFromRemote(inscData, partData || []);
+    if (!skipInscricoes && inscData) {
+      inscricoesFromRemote(inscData, partData || []);
+    }
     const remoteContainsNonSentRows =
+      !skipInscricoes &&
       activeEnvironment === 'homolog' &&
       /\.xlsx($|\?)/i.test(activeSource) &&
       (inscData || []).some(row => {
@@ -6536,6 +6653,7 @@ async function loadStateFromSupabase(options = {}) {
         return status && !isStatusEnviado(status);
       });
     const remoteLooksIncomplete =
+      !skipInscricoes &&
       activeEnvironment === 'homolog' &&
       /\.xlsx($|\?)/i.test(activeSource) &&
       INSCRICOES.length > 0 &&
@@ -6590,8 +6708,6 @@ async function loadStateFromSupabase(options = {}) {
       logAuditoria = remoteAuditToLocal((auditData || []).filter(r => String(r.event_type || '').startsWith('auditoria_')));
       logAuditoriaEventos = remoteSystemEventsToLocal((auditData || []).filter(r => String(r.event_type || '') === 'anexo_aberto'));
       environmentAuditReady[activeEnvironment] = true;
-    } else {
-      environmentAuditReady[activeEnvironment] = false;
     }
 
     if (cfgRes.data) {
@@ -6636,7 +6752,7 @@ async function loadReviewerPortalStateFromSupabase(parId) {
       fetchAllSupabaseRows(() => client.from('atribuicoes').select('*').eq('environment', activeEnvironment).eq('parecerista_id_externo', parId).eq('ativo', true).order('ordem')),
       fetchAllSupabaseRows(() => client.from('avaliacoes').select('*').eq('environment', activeEnvironment).eq('parecerista_id_externo', parId).order('id')),
       fetchAllSupabaseRows(() => client.from('avaliacao_criterios').select('*').eq('environment', activeEnvironment).eq('parecerista_id_externo', parId).order('id')),
-      fetchAllSupabaseRows(() => client.from('eventos_auditoria').select('*').eq('environment', activeEnvironment).eq('parecerista_id', parId).order('created_at')),
+      fetchAllSupabaseRows(() => client.from('eventos_auditoria').select('*').eq('environment', activeEnvironment).eq('parecerista_id', parId).order('created_at', { ascending: false }).limit(200)),
     ]);
 
     if (cfgRes.error) throw cfgRes.error;
