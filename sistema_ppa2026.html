@@ -467,62 +467,6 @@ body {
 #btnEditarAvaliacao.is-nudging{
   animation:editarNudge 1.6s ease-in-out 2;
 }
-#btnReportarVideo{
-  position:relative;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:0;
-  width:38px;
-  min-width:38px;
-  height:38px;
-  min-height:38px;
-  padding:0;
-  border:1px solid #F2B8B5;
-  border-radius:999px;
-  background:#FFF5F4;
-  color:#B3261E;
-  box-shadow:none;
-  font-size:0;
-  font-weight:600;
-  letter-spacing:0;
-  text-transform:none;
-}
-#btnReportarVideo::after{
-  content:'Problema com o Video';
-  position:absolute;
-  left:calc(100% + 12px);
-  top:50%;
-  transform:translateY(-50%);
-  padding:0 14px;
-  min-height:38px;
-  display:flex;
-  align-items:center;
-  border:1px solid #F2B8B5;
-  border-radius:14px;
-  background:#FFF5F4;
-  color:#B3261E;
-  box-shadow:0 10px 24px rgba(32,33,36,.14);
-  font-size:11px;
-  font-weight:600;
-  letter-spacing:.04em;
-  white-space:nowrap;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .14s ease, transform .14s ease;
-}
-#btnReportarVideo:hover{
-  background:#FDECEC;
-  border-color:#E69B96;
-  color:#8F231D;
-}
-#btnReportarVideo:hover::after{
-  opacity:1;
-  transform:translateY(-50%) translateX(4px);
-}
-#btnReportarVideo i{
-  font-size:14px;
-}
 @keyframes editarNudge{
   0%, 100%{
     transform:scale(1);
@@ -838,85 +782,6 @@ tr:hover td.sticky{background:#FAFAFA}
   padding:24px 28px 40px;
   scrollbar-gutter:stable;
 }
-.portal-shell{
-  max-width:1060px;
-  margin:0 auto;
-}
-.portal-grid{
-  display:grid;
-  grid-template-columns:220px minmax(0,1fr);
-  gap:22px;
-  align-items:start;
-}
-.portal-rail{
-  position:sticky;
-  top:24px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-.portal-quick-list{
-  display:flex;
-  flex-direction:column;
-  gap:0;
-}
-.portal-quick-btn{
-  width:100%;
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-  gap:12px;
-  padding:10px 0 12px;
-  border:none;
-  border-bottom:1px solid #E0E0E0;
-  border-radius:0;
-  background:transparent;
-  color:#202124;
-  cursor:pointer;
-  text-align:left;
-  transition:border-color .12s, color .12s;
-}
-.portal-quick-btn:hover{
-  border-bottom-color:#AECBFA;
-}
-.portal-quick-btn.active{
-  border-bottom-width:2px;
-  border-bottom-color:#1A73E8;
-}
-.portal-quick-copy{
-  min-width:0;
-  display:flex;
-  flex-direction:column;
-  gap:0;
-}
-.portal-quick-title{
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:.09em;
-  text-transform:uppercase;
-  color:#9AA0A6;
-}
-.portal-quick-count{
-  min-width:auto;
-  height:auto;
-  display:inline-flex;
-  align-items:flex-end;
-  justify-content:flex-end;
-  border-radius:0;
-  background:transparent;
-  color:#202124;
-  font-size:22px;
-  font-weight:700;
-  flex-shrink:0;
-  line-height:1;
-}
-.portal-quick-btn.active .portal-quick-title,
-.portal-quick-btn.active .portal-quick-count{
-  color:#1A73E8;
-}
-.portal-main{
-  min-width:0;
-}
 
 .ficha-item{background:#fff;border:1px solid #E0E0E0;border-radius:8px;padding:15px 24px;margin-bottom:10px;display:grid;grid-template-columns:108px minmax(0,1.45fr) auto;align-items:start;column-gap:12px;cursor:pointer;transition:border-color .12s}
 .ficha-item:hover{border-color:#1A73E8}
@@ -930,20 +795,6 @@ tr:hover td.sticky{background:#FAFAFA}
 .fi-id-col .icon-btn:hover{background:#DCE8FF;border-color:#7BAAF7;color:#185ABC}
 .fi-main{min-width:0;padding-top:1px;padding-right:6px;overflow:hidden}
 .fi-head{display:flex;align-items:center;gap:8px;min-width:0;overflow:hidden}
-.fi-issue-icon{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:20px;
-  height:20px;
-  min-width:20px;
-  border:1px solid #F2B8B5;
-  border-radius:999px;
-  background:#FFF5F4;
-  color:#B3261E;
-  flex:0 0 auto;
-}
-.fi-issue-icon i{font-size:11px}
 .fi-nome{font-size:13.75px;font-weight:600;color:#202124;line-height:1.28;min-width:0;flex:1 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase}
 .fi-meta-row{display:flex;align-items:center;gap:8px;min-width:0;margin-top:5px}
 .fi-team{display:inline-flex;align-items:center;gap:1px;color:#9AA0A6;flex-shrink:0}
@@ -956,14 +807,6 @@ tr:hover td.sticky{background:#FAFAFA}
 .fi-side-status{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0;flex-wrap:nowrap}
 .fi-side-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0;flex-wrap:nowrap}
 .fi-side-subline{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-height:20px}
-.fi-side-note{
-  font-size:10.5px;
-  font-weight:500;
-  color:#7A828E;
-  line-height:1.35;
-  text-align:right;
-  white-space:nowrap;
-}
 .fi-chevron{display:flex;align-items:center;justify-content:center;color:#DADCE0;font-size:16px;padding-top:6px}
 .fi-score{display:flex;align-items:center;gap:8px;padding:0;border:none;background:transparent}
 .fi-score-val{font-size:13.2px;font-weight:700;color:#202124;min-width:28px;text-align:right}
@@ -999,32 +842,11 @@ tr:hover td.sticky{background:#FAFAFA}
 }
 .fi-side .badge{font-size:12px}
 
-@media (max-width: 980px){
-  .portal-grid{
-    grid-template-columns:minmax(0,1fr);
-  }
-  .portal-rail{
-    position:static;
-  }
-  .portal-quick-list{
-    display:grid;
-    grid-template-columns:repeat(3,minmax(0,1fr));
-  }
-}
-@media (max-width: 720px){
-  .portal-scroll-shell{
-    padding:18px 16px 32px;
-  }
-  .portal-quick-list{
-    grid-template-columns:minmax(0,1fr);
-  }
-}
-
 /* ── MODAL ── */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:200;align-items:center;justify-content:center;padding:28px 16px}
 .overlay.open{display:flex}
 .modal{background:#fff;border:1px solid #E0E0E0;border-radius:10px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column}
-#overlay .modal{max-width:784px}
+#overlay .modal{max-width:1120px}
 #overlayAuth{z-index:420;background:rgba(15,23,42,.46);backdrop-filter:blur(3px)}
 #overlayAuth .modal{max-width:430px;border-radius:18px;overflow:hidden;border:1px solid #E6E8EE;box-shadow:0 18px 48px rgba(15,23,42,.18)}
 .auth-modal-head{padding:30px 28px 12px}
@@ -1054,11 +876,6 @@ tr:hover td.sticky{background:#FAFAFA}
 .mh-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
 .close-btn{display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;border:none;background:transparent;color:#9AA0A6;cursor:pointer;font-size:16px}
 .close-btn:hover{background:#F1F3F4;color:#202124}
-#overlay .modal{position:relative}
-#overlay .mh{position:absolute;top:14px;right:14px;left:auto;border-bottom:none;padding:0;background:transparent;z-index:3}
-#overlay .mh-right{display:block}
-#overlay .close-btn{width:36px;height:36px;border-radius:999px;background:#111827;color:#fff;box-shadow:0 8px 18px rgba(17,24,39,.18)}
-#overlay .close-btn:hover{background:#000;color:#fff}
 .mb{padding:18px 20px;display:flex;flex-direction:column}
 .mfl{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#9AA0A6;margin-bottom:4px}
 .mfv{font-size:12.5px;font-weight:600;color:#202124}
@@ -1081,77 +898,9 @@ tr:hover td.sticky{background:#FAFAFA}
 }
 .field:nth-child(3n):not(.s2):not(.s3){border-right:none}
 .field.last{border-bottom:none}
-.field-compact-stack{display:flex;flex-direction:column;gap:3px}
-.field-compact-main{font-size:13px;font-weight:700;color:#202124;line-height:1.35}
-.field-compact-sub{font-size:11.5px;color:#5F6368;line-height:1.45}
-.field-compact-meta{font-size:11px;color:#9AA0A6;line-height:1.4}
 .materiais{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .mat-btn{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#1A73E8;background:#E8F0FE;border:1px solid #AECBFA;border-radius:6px;padding:6px 13px;text-decoration:none;cursor:pointer;white-space:nowrap}
 .mat-btn:hover{background:#D2E3FC}
-.attachment-viewer-modal{
-  width:min(1240px,calc(100vw - 48px));
-  max-width:min(1240px,calc(100vw - 48px));
-  max-height:88vh;
-  overflow:hidden;
-  border-radius:14px;
-  border:1px solid #E2E6EE;
-  box-shadow:0 24px 64px rgba(15,23,42,.16);
-}
-.attachment-viewer-head{padding-right:18px}
-.attachment-viewer-actions{display:flex;align-items:center;gap:10px}
-.attachment-viewer-external-help{
-  font-size:11px;
-  font-weight:600;
-  color:#6B7280;
-  letter-spacing:.01em;
-  white-space:nowrap;
-}
-.attachment-viewer-external{
-  background:#111827;
-  color:#fff;
-  border:1px solid #111827;
-  box-shadow:0 8px 18px rgba(17,24,39,.14);
-}
-.attachment-viewer-external:hover{
-  background:#000;
-  color:#fff;
-  border-color:#000;
-}
-.attachment-viewer-body{padding:0;flex:1;min-height:0}
-.attachment-viewer-stage{
-  background:#F6F8FB;
-  min-height:560px;
-  height:calc(88vh - 92px);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-}
-.attachment-viewer-frame,
-.attachment-viewer-video,
-.attachment-viewer-pdf{
-  width:100%;
-  height:100%;
-  border:none;
-  background:#fff;
-}
-.attachment-viewer-video{background:#000}
-.attachment-viewer-pdf{display:block}
-.attachment-viewer-empty{
-  width:min(520px,calc(100% - 48px));
-  padding:20px 22px;
-  border:1px solid #E0E6EF;
-  background:#fff;
-  font-size:13px;
-  color:#5F6368;
-  line-height:1.6;
-  text-align:center;
-}
-.attachment-viewer-empty strong{
-  display:block;
-  margin-bottom:6px;
-  color:#202124;
-}
 .ia-note{
   margin-top:12px;
   padding:12px 14px;
@@ -1358,43 +1107,7 @@ textarea::placeholder{color:#BDC1C6}
 
 /* ── FOOTER ── */
 .footer-bar{position:fixed;bottom:0;left:0;right:0;background:transparent;border-top:none;padding:0 28px 10px 88px;display:flex;align-items:flex-end;justify-content:center;gap:16px;z-index:90;pointer-events:none}
-.footer-actions{display:flex;align-items:center;gap:18px;width:100%;max-width:1240px;margin:0 auto;justify-content:space-between;pointer-events:auto}
-.footer-note{
-  display:flex;
-  align-items:center;
-  justify-content:flex-start;
-  flex:1 1 auto;
-  min-width:0;
-  min-height:36px;
-  max-width:none;
-  padding:0;
-  font-size:12.5px;
-  font-weight:700;
-  color:#202124;
-  line-height:1.45;
-  text-align:left;
-}
-.footer-note-line{
-  display:flex;
-  align-items:center;
-  justify-content:flex-start;
-  flex-wrap:wrap;
-  gap:8px 10px;
-}
-.footer-note-chunk{
-  display:inline-flex;
-  align-items:center;
-  gap:4px;
-  white-space:nowrap;
-}
-.footer-note-sep{
-  color:#9AA0A6;
-  font-weight:600;
-}
-.footer-note strong{
-  color:#202124;
-  font-weight:700;
-}
+.footer-actions{display:flex;gap:10px;width:100%;max-width:1240px;margin:0 auto;justify-content:flex-end;pointer-events:auto}
 .prog-wrap{display:flex;flex-direction:column;gap:4px}
 .prog-label-sm{font-size:11px;color:#9AA0A6}
 .prog-bar-sm{width:140px;height:4px;background:#F1F3F4;border-radius:2px;overflow:hidden}
@@ -1621,20 +1334,6 @@ textarea::placeholder{color:#BDC1C6}
   box-sizing:border-box;
   text-align:center;
 }
-.split-video-tools{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  flex-wrap:wrap;
-}
-.split-video-tools .btn{
-  min-height:34px;
-}
-.split-video-tools-note{
-  font-size:11px;
-  color:#6B7280;
-  line-height:1.45;
-}
 .split-copy-section{
   padding:14px 16px 0;
 }
@@ -1671,11 +1370,6 @@ textarea::placeholder{color:#BDC1C6}
   display:flex;
   flex-direction:column;
   justify-content:center;
-}
-#overlay #mGrid.split-reference-grid{
-  border:1px solid #E0E0E0;
-  border-radius:8px;
-  overflow:hidden;
 }
 
 /* ── LAYOUT TOGGLE ── */
@@ -1848,7 +1542,6 @@ textarea::placeholder{color:#BDC1C6}
 .parecer-box textarea,
 #footerLabel,
 #btnSalvarAvaliacao,
-#btnReportarVideo,
 #btnEditarAvaliacao,
 #btnEditarAvaliacaoFooter{
   --_scale: var(--aval-scale);
@@ -1946,14 +1639,32 @@ textarea::placeholder{color:#BDC1C6}
 }
 
 /* ── PARECERES MODAL ── */
-.par-bloco { border: 1px solid #E0E0E0; border-radius: 8px; background: #fff; padding: 14px 16px; margin-bottom: 14px; }
-.par-bloco-nome { font-size: 15px; font-weight: 600; color: #202124; line-height: 1.35; }
-.par-head-meta { display:flex; flex-direction:column; gap:10px; }
+.par-bloco { border: 1px solid #E0E0E0; border-radius: 8px; overflow: hidden; margin-bottom: 14px; }
+.par-bloco-nome { font-size: 12px; font-weight: 600; color: #202124; }
+.par-bloco-role { font-size: 10px; color: #9AA0A6; margin-top: 1px; }
+.par-linha-head td { background:#F8F9FA; }
+.par-head-meta { display:flex; flex-direction:column; gap:1px; }
+.par-bloco-status .badge,
+.par-tabela .badge { min-width: 88px; text-align: center; }
+.par-tabela { width:100%; border-collapse:collapse; table-layout:fixed; }
+.par-tabela col:nth-child(1) { width: 220px; }
+.par-tabela col:nth-child(2) { width: 110px; }
+.par-tabela td { padding:10px 14px; border-bottom:1px solid #F1F3F4; vertical-align:top; }
+.par-tabela tr:last-child td { border-bottom:none; }
+.par-tabela td:nth-child(2) { text-align:center; }
+.par-tabela td:nth-child(3) { text-align:left; }
+.par-crit-nome { font-size: 11.5px; font-weight: 500; color: #5F6368; padding-top: 1px; }
+.par-just { font-size: 11.5px; color: #5F6368; line-height: 1.55; font-style: italic; }
 .par-notas-list { display:flex; flex-direction:column; gap:10px; }
-.par-nota-item { padding:10px 12px; border:1px solid #F1F3F4; border-radius:8px; background:#F8F9FA; }
+.par-nota-item { padding:10px 12px; border:1px solid #F1F3F4; border-radius:8px; background:#fff; }
 .par-nota-label { font-size:10px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:#9AA0A6; margin-bottom:4px; }
-.par-nota-text { font-size:12px; color:#5F6368; line-height:1.6; }
+.par-nota-text { font-size:12px; color:#5F6368; line-height:1.55; }
+.par-nota-vazia { font-size:11.5px; color:#9AA0A6; }
+.par-parecer { background: #F8F9FA; border-left: 2px solid #DADCE0; padding: 10px 14px; margin: 0 14px 14px; font-size: 12px; color: #5F6368; line-height: 1.6; font-style: italic; border-radius: 0 4px 4px 0; }
+.par-parecer-label { font-size: 10px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: #9AA0A6; margin: 12px 14px 6px; }
 .par-vazio { padding: 20px 14px; font-size: 12px; color: #BDC1C6; text-align: center; }
+.par-tabela.pending-table .par-crit-nome { color:#9AA0A6; }
+.par-tabela.pending-table .par-just { color:#9AA0A6; font-style:normal; }
 
 /* ── BAR LIST ── */
 .bar-list{display:flex;flex-direction:column;gap:12px}
@@ -2270,7 +1981,7 @@ textarea::placeholder{color:#BDC1C6}
           <option>Em dupla</option>
           <option>Em trio</option>
         </select>
-        <select class="finput" id="resFiltroUf" onchange="renderResultados()" style="width:auto;min-width:160px"><option value="">Todos os estados</option></select>
+        <select class="finput" id="resFiltroUf" onchange="renderResultados()" style="width:auto;min-width:160px"><option>Todos os estados</option><option>SP</option><option>MG</option><option>RJ</option></select>
         <select class="finput" id="resFiltroGenero" onchange="renderResultados()" style="width:auto;min-width:160px"><option>Todos os gêneros</option><option>Feminino</option><option>Masculino</option></select>
         <select class="finput" id="resFiltroRanking" onchange="renderResultados()" style="width:auto;min-width:220px">
           <option>Ranking normal</option>
@@ -2336,7 +2047,7 @@ textarea::placeholder{color:#BDC1C6}
 ════════════════════════════════════════════════ -->
 <div class="view" id="view-portal">
 <div class="portal-scroll-shell">
-<div class="portal-shell">
+<div style="max-width:760px;margin:0 auto">
 
   <div class="portal-header">
     <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;opacity:.7">LED Globo · PPA 2026</div>
@@ -2348,42 +2059,24 @@ textarea::placeholder{color:#BDC1C6}
     </div>
   </div>
 
-  <div class="portal-grid">
-    <aside class="portal-rail">
-      <div class="portal-quick-list">
-        <button class="portal-quick-btn active" id="portalQuickAll" type="button" onclick="filterPortal('')">
-          <span class="portal-quick-copy">
-            <span class="portal-quick-title">Total</span>
-          </span>
-          <span class="portal-quick-count" id="portalQuickAllCount">0</span>
-        </button>
-        <button class="portal-quick-btn" id="portalQuickDone" type="button" onclick="filterPortal('done')">
-          <span class="portal-quick-copy">
-            <span class="portal-quick-title">Concluídas</span>
-          </span>
-          <span class="portal-quick-count" id="portalQuickDoneCount">0</span>
-        </button>
-        <button class="portal-quick-btn" id="portalQuickPending" type="button" onclick="filterPortal('pending')">
-          <span class="portal-quick-copy">
-            <span class="portal-quick-title">Pendentes</span>
-          </span>
-          <span class="portal-quick-count" id="portalQuickPendingCount">0</span>
-        </button>
-      </div>
-    </aside>
+  <div style="margin-bottom:14px;display:flex;align-items:center;justify-content:space-between">
+    <div class="section-label" style="margin-bottom:0">Suas inscrições</div>
+    <select class="finput" style="width:auto" onchange="filterPortal(this.value)">
+      <option value="">Todas</option>
+      <option value="pending">Pendentes</option>
+      <option value="done">Concluídas</option>
+    </select>
+  </div>
 
-    <div class="portal-main">
-      <div id="portalList"></div>
+  <div id="portalList"></div>
 
-      <!-- simulador de parecerista -->
-      <div class="card" id="portalSimulatorCard" style="margin-top:24px">
-        <div class="section-label" style="margin-bottom:10px">Simular portal de outro parecerista</div>
-        <div style="display:flex;gap:10px">
-          <select class="finput" id="simParecerista" onchange="renderPortal()">
-            <option value="">Selecione um parecerista</option>
-          </select>
-        </div>
-      </div>
+  <!-- simulador de parecerista -->
+  <div class="card" id="portalSimulatorCard" style="margin-top:24px">
+    <div class="section-label" style="margin-bottom:10px">Simular portal de outro parecerista</div>
+    <div style="display:flex;gap:10px">
+      <select class="finput" id="simParecerista" onchange="renderPortal()">
+        <option value="">Selecione um parecerista</option>
+      </select>
     </div>
   </div>
 
@@ -2415,7 +2108,6 @@ textarea::placeholder{color:#BDC1C6}
             <span>A</span>
           </button>
         </div>
-        <button class="btn btn-secondary btn-sm" id="btnReportarVideo" onclick="openVideoIssueModal()" aria-label="Problema com o Vídeo" title="Problema com o Vídeo"><i class="ti ti-alert-triangle"></i></button>
         <button class="btn btn-secondary btn-sm" id="btnEditarAvaliacao" onclick="ativarEdicaoAvaliacao()" style="display:none" aria-label="Editar" title="Editar"><i class="ti ti-pencil"></i></button>
       </div>
     </div>
@@ -2546,14 +2238,11 @@ textarea::placeholder{color:#BDC1C6}
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
       <button class="btn btn-primary" onclick="saveSupabaseSettings()"><i class="ti ti-device-floppy"></i>Salvar configuração</button>
       <button class="btn btn-secondary" onclick="testSupabaseConnection()"><i class="ti ti-plug-connected"></i>Testar conexão</button>
-      <button class="btn btn-secondary" onclick="triggerBaseFilePicker()"><i class="ti ti-file-upload"></i>Selecionar arquivo da base</button>
       <button class="btn btn-secondary" onclick="importActiveBaseToSupabase()"><i class="ti ti-database-import"></i>Importar base local para o ambiente</button>
       <button class="btn btn-secondary" onclick="syncNowToSupabase()"><i class="ti ti-cloud-upload"></i>Sincronizar agora</button>
-      <button class="btn btn-secondary" onclick="requestRemoteEnvironmentReset()"><i class="ti ti-eraser"></i>Zerar ambiente remoto</button>
-      <input type="file" id="sbBaseFileInput" accept=".xlsx,.xls,.csv" onchange="handleSelectedBaseFile(event)" style="display:none">
+      <button class="btn btn-secondary" onclick="resetRemoteEnvironment()"><i class="ti ti-eraser"></i>Zerar ambiente remoto</button>
       <span id="sbStatus" style="font-size:11px;color:var(--text-tertiary)">Persistência local ativa.</span>
     </div>
-    <div id="sbSelectedBaseMeta" style="margin-top:10px;font-size:11px;color:var(--text-tertiary)">Nenhum arquivo local selecionado nesta sessão.</div>
   </div>
 
   <!-- TEMA -->
@@ -2624,18 +2313,43 @@ textarea::placeholder{color:#BDC1C6}
       <div class="page-title">Auditoria de avaliações</div>
       <div class="page-sub">Registro de todas as sessões de avaliação — parecerista, candidato, tempo e resultado.</div>
     </div>
-    <div style="display:flex;align-items:center;gap:14px">
-      <div style="font-size:11px;color:#9AA0A6" id="audCount"></div>
-      <button class="btn btn-secondary btn-sm" onclick="exportAuditoria()"><i class="ti ti-download"></i>Exportar CSV</button>
-    </div>
+    <button class="btn btn-secondary btn-sm" onclick="exportAuditoria()"><i class="ti ti-download"></i>Exportar CSV</button>
   </div>
 
-  <div id="audTechAlert" style="display:none;margin-bottom:16px"></div>
-
+  <!-- filtros -->
   <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
-    <select class="finput" id="audFiltPar" style="width:auto;min-width:220px" onchange="renderAuditoria()">
+    <select class="finput" id="audFiltPar" style="width:auto;min-width:180px" onchange="renderAuditoria()">
       <option value="">Todos os pareceristas</option>
     </select>
+    <select class="finput" id="audFiltStatus" style="width:auto" onchange="renderAuditoria()">
+      <option value="">Todos os status</option>
+      <option value="concluida">Concluída</option>
+      <option value="saida_antecipada">Saída antecipada</option>
+      <option value="rascunho">Rascunho</option>
+    </select>
+    <select class="finput" id="audFiltNota" style="width:auto" onchange="renderAuditoria()">
+      <option value="">Todas as notas</option>
+      <option value="alta">Alta (75–100)</option>
+      <option value="media">Média (50–74)</option>
+      <option value="baixa">Baixa (0–49)</option>
+    </select>
+    <select class="finput" id="audFiltVideo" style="width:auto" onchange="renderAuditoria()">
+      <option value="">Vídeo: todos</option>
+      <option value="sim">Vídeo aberto</option>
+      <option value="nao">Vídeo não aberto</option>
+    </select>
+    <select class="finput" id="audFiltRoteiro" style="width:auto" onchange="renderAuditoria()">
+      <option value="">Roteiro: todos</option>
+      <option value="sim">Roteiro aberto</option>
+      <option value="nao">Roteiro não aberto</option>
+    </select>
+    <select class="finput" id="audFiltCampanha" style="width:auto" onchange="renderAuditoria()">
+      <option value="">Campanha: todos</option>
+      <option value="sim">Campanha aberta</option>
+      <option value="nao">Campanha não aberta</option>
+    </select>
+    <input type="text" id="audFiltBusca" class="finput" style="width:200px" placeholder="Buscar candidato ou ID…" oninput="renderAuditoria()">
+    <div style="margin-left:auto;font-size:11px;color:#9AA0A6" id="audCount"></div>
   </div>
 
   <div class="tbl-card">
@@ -2649,6 +2363,9 @@ textarea::placeholder{color:#BDC1C6}
           <th style="width:80px">Fim</th>
           <th style="width:70px">Duração</th>
           <th style="width:80px">Nota</th>
+          <th style="width:74px;text-align:center">Vídeo</th>
+          <th style="width:74px;text-align:center">Roteiro</th>
+          <th style="width:86px;text-align:center">Campanha</th>
           <th style="width:100px">Status</th>
           <th>Obs. saída</th>
         </tr>
@@ -2656,6 +2373,8 @@ textarea::placeholder{color:#BDC1C6}
       <tbody id="tblAuditoria"></tbody>
     </table>
   </div>
+
+  <div id="audPaginacao" style="display:none;align-items:center;justify-content:center;gap:16px;margin-top:16px;flex-wrap:wrap"></div>
 
 </div>
 </div>
@@ -2730,33 +2449,13 @@ textarea::placeholder{color:#BDC1C6}
     <div class="mh">
       <div>
         <div class="mh-ey">PARECER CONCLUÍDO</div>
+        <div class="mh-title">Você pode seguir adiante de forma automática para a próxima ficha ou voltar para a listagem principal.</div>
         <div class="mh-sub" id="nextEvaluationSub">Deseja iniciar uma nova avaliação agora?</div>
       </div>
     </div>
     <div class="mf" style="gap:10px">
       <button class="btn btn-secondary btn-sm" onclick="cancelNextEvaluation()">Agora não</button>
       <button class="btn btn-primary btn-sm" onclick="confirmNextEvaluation()">Sim</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL VISUALIZAÇÃO DE ANEXO -->
-<div class="overlay" id="overlayAttachmentViewer" style="z-index:305" onclick="if(event.target===this)closeAttachmentViewer()">
-  <div class="modal attachment-viewer-modal">
-    <div class="mh attachment-viewer-head">
-      <div>
-        <div class="mh-ey">ANEXO</div>
-        <div class="mh-title" id="attachmentViewerTitle">Visualização do material</div>
-        <div class="mh-sub" id="attachmentViewerSub">Se o conteúdo não carregar aqui, abra em uma nova aba.</div>
-      </div>
-      <div class="attachment-viewer-actions">
-        <span class="attachment-viewer-external-help">Problemas para abrir?</span>
-        <a class="btn btn-sm attachment-viewer-external" id="attachmentViewerExternal" href="#" target="_blank" rel="noopener noreferrer">Tente em outra aba</a>
-        <button class="close-btn" type="button" onclick="closeAttachmentViewer()" aria-label="Fechar"><i class="ti ti-x"></i></button>
-      </div>
-    </div>
-    <div class="mb attachment-viewer-body">
-      <div class="attachment-viewer-stage" id="attachmentViewerStage"></div>
     </div>
   </div>
 </div>
@@ -2780,72 +2479,6 @@ textarea::placeholder{color:#BDC1C6}
     </div>
     <div class="mf">
       <button class="btn btn-primary btn-sm" onclick="closeMissingAttachmentsModal()">Entendi</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL PROBLEMA NO VÍDEO -->
-<div class="overlay" id="overlayVideoIssue" style="z-index:300" onclick="if(event.target===this)closeVideoIssueModal()">
-  <div class="modal" style="max-width:520px">
-    <div class="mh">
-      <div>
-        <div class="mh-ey">SUPORTE DE VÍDEO</div>
-        <div class="mh-title">Problema com o Vídeo</div>
-        <div class="mh-sub">Se o vídeo não puder ser acessado agora, esta avaliação será pausada sem registrar nota.</div>
-      </div>
-    </div>
-    <div class="mb" style="padding:16px 20px 20px;gap:14px">
-      <div class="form-row">
-        <div>
-          <label class="fl">Tipo do problema</label>
-          <select class="finput" id="videoIssueType">
-            <option>Vídeo não carregou</option>
-            <option>Link quebrado</option>
-            <option>Vídeo ficou carregando</option>
-            <option>Plataforma exigiu login</option>
-            <option>Outro</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div>
-          <label class="fl">Quantidade de tentativas</label>
-          <select class="finput" id="videoIssueAttempts">
-            <option>Tentei uma vez</option>
-            <option>Tentei mais de uma vez</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div>
-          <label class="fl">Comentário <span style="color:#9AA0A6;font-weight:400">(opcional)</span></label>
-          <textarea id="videoIssueComment" placeholder="Se quiser, descreva o que aconteceu..."></textarea>
-        </div>
-      </div>
-      <div id="videoIssueHelper" style="font-size:11.5px;color:#6B7280;line-height:1.5"></div>
-    </div>
-    <div class="mf" style="gap:10px">
-      <button class="btn btn-secondary btn-sm" type="button" onclick="closeVideoIssueModal()">Cancelar</button>
-      <button class="btn btn-primary btn-sm" type="button" onclick="confirmVideoIssueReport()">Confirmar reporte</button>
-    </div>
-  </div>
-</div>
-
-<div class="overlay" id="overlayVideoIssueConfirm" style="z-index:310" onclick="if(event.target===this)closeVideoIssueConfirmModal()">
-  <div class="modal" style="max-width:560px;border:1px solid #F2B8B5;background:#FFF5F4">
-    <div class="mh" style="border-bottom-color:#F2D4D1;background:transparent">
-      <div>
-        <div class="mh-ey" style="color:#B3261E">ATENÇÃO</div>
-        <div class="mh-title">Problema no vídeo registrado</div>
-        <div class="mh-sub" style="color:#7A3B36">Antes de seguir, confirme que você entendeu como essa avaliação será tratada.</div>
-      </div>
-    </div>
-    <div class="mb" style="padding:16px 20px 20px;gap:12px">
-      <div id="videoIssueConfirmBody" style="font-size:13px;line-height:1.65;color:#5F2B27"></div>
-    </div>
-    <div class="mf" style="gap:10px">
-      <button class="btn btn-secondary btn-sm" type="button" onclick="closeVideoIssueConfirmModal()">Revisar</button>
-      <button class="btn btn-primary btn-sm" type="button" id="videoIssueConfirmProceedBtn" onclick="proceedAfterVideoIssueReport()">Entendi, seguir</button>
     </div>
   </div>
 </div>
@@ -2874,15 +2507,57 @@ textarea::placeholder{color:#BDC1C6}
 <div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal" role="dialog" aria-modal="true">
     <div class="mh">
+      <div>
+        <div class="mh-ey">LED Globo · Profissionais do Ano 2026</div>
+        <div class="mh-title" id="mTitle"></div>
+        <div class="mh-sub" id="mSub"></div>
+      </div>
       <div class="mh-right">
+        <span id="mBadge" class="badge b-pend">Avaliação pendente</span>
         <button class="close-btn" onclick="closeModal()"><i class="ti ti-x"></i></button>
       </div>
     </div>
     <div class="mb">
       <div class="mfl" style="padding:0 0 8px">Dados da equipe</div>
-      <div id="mGrid"></div>
+      <div class="fields-grid" id="mGrid"></div>
     </div>
     <div class="mf"><button class="btn-fechar" onclick="closeModal()">Fechar</button></div>
+  </div>
+</div>
+
+<!-- MODAL VÍDEO -->
+<div class="overlay" id="overlayVideo" onclick="if(event.target===this)closeVideoModal()" style="z-index:2000">
+  <div class="modal" role="dialog" aria-modal="true" style="max-width:860px;padding:0;background:#000;border-radius:12px;overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#111;gap:12px">
+      <div style="font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="videoModalTitle"></div>
+      <button class="close-btn" onclick="closeVideoModal()" style="color:#fff;flex-shrink:0"><i class="ti ti-x"></i></button>
+    </div>
+    <div style="position:relative;background:#000;line-height:0">
+      <video id="videoModalPlayer" controls playsinline style="width:100%;max-height:70vh;display:block;outline:none">
+        <p style="color:#fff;padding:24px;font-size:13px">Seu navegador não suporta reprodução de vídeo.</p>
+      </video>
+    </div>
+    <div style="padding:10px 16px;background:#111;display:flex;justify-content:flex-end;gap:8px">
+      <a id="videoModalExtLink" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="color:#fff;background:#333;border:1px solid #555"><i class="ti ti-external-link"></i>Abrir em nova aba</a>
+      <button class="btn btn-sm" onclick="closeVideoModal()" style="color:#fff;background:#333;border:1px solid #555">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PDF -->
+<div class="overlay" id="overlayPdf" onclick="if(event.target===this)closePdfModal()" style="z-index:2000">
+  <div class="modal" role="dialog" aria-modal="true" style="max-width:860px;padding:0;background:#fff;border-radius:12px;overflow:hidden">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#1e293b;gap:12px">
+      <div style="font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" id="pdfModalTitle"></div>
+      <button class="close-btn" onclick="closePdfModal()" style="color:#fff;flex-shrink:0"><i class="ti ti-x"></i></button>
+    </div>
+    <div style="line-height:0">
+      <iframe id="pdfModalFrame" src="" style="width:100%;height:70vh;border:none;display:block"></iframe>
+    </div>
+    <div style="padding:10px 16px;background:#1e293b;display:flex;justify-content:flex-end;gap:8px">
+      <a id="pdfModalExtLink" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="color:#fff;background:#334155;border:1px solid #475569"><i class="ti ti-external-link"></i>Abrir em nova aba</a>
+      <button class="btn btn-sm" onclick="closePdfModal()" style="color:#fff;background:#334155;border:1px solid #475569">Fechar</button>
+    </div>
   </div>
 </div>
 
@@ -2896,6 +2571,7 @@ textarea::placeholder{color:#BDC1C6}
         <div class="mh-sub" id="parSub"></div>
       </div>
       <div class="mh-right">
+        <span id="parBadge" class="badge b-pend"></span>
         <button class="close-btn" onclick="closeModalPar()"><i class="ti ti-x"></i></button>
       </div>
     </div>
@@ -2907,9 +2583,8 @@ textarea::placeholder{color:#BDC1C6}
 <!-- FOOTER BAR (avaliação) -->
 <div class="footer-bar" id="footerBar" style="display:none">
   <div class="footer-actions">
-    <div class="footer-note" id="footerAvaliacaoNote"></div>
-    <button class="btn btn-primary btn-sm" id="btnSalvarAvaliacao" onclick="salvarAvaliacao()"><i class="ti ti-device-floppy"></i>Salvar avaliação</button>
-  </div>
+        <button class="btn btn-primary btn-sm" id="btnSalvarAvaliacao" onclick="salvarAvaliacao()"><i class="ti ti-device-floppy"></i>Salvar avaliação</button>
+      </div>
 </div>
 
 <div class="notify" id="notify"></div>
@@ -2940,6 +2615,7 @@ const PARECERISTAS_DEFAULT = [
   { id:'p2', nome:'Carlos Eduardo Lima', email:'carlos@parecerista.com', inst:'Uninove', cota:null, cotaManual:false },
   { id:'p3', nome:'Fernanda Souza Dias', email:'fernanda@parecerista.com', inst:'FMU', cota:null, cotaManual:false },
 ];
+const VIEWER_PASSWORD = 'teste';
 const ADMIN_PASSWORD = 'fabio';
 const ACCESS_ROLE_KEY = 'ppa2026_access_role_v1';
 const AVALIACAO_SCALE_KEY = 'ppa2026_avaliacao_scale_v1';
@@ -2954,18 +2630,14 @@ let atribuicoes = {};
 
 // avaliacoes[parId][inscId] = { notas:[...], justificativas:[...], parecer:'', done:bool }
 let avaliacoes = {};
-let videoIssueReports = [];
 
 let currentParId = null;
 let currentInscId = null;
-let currentVideoIssueContext = null;
-let currentAttachmentViewer = null;
-let pendingVideoIssueNavigation = null;
 let loadingNudgeTimer = null;
 let pendingNextEvaluation = null;
 let avaliacaoEmEdicao = false;
 let avaliacaoOriginalConcluida = false;
-let accessRole = 'viewer';
+let accessRole = 'guest';
 let authPromptMode = 'viewer';
 let authPromptMandatory = false;
 let authPromptAfterSuccess = null;
@@ -3032,10 +2704,10 @@ function parseBrDateTime(value) {
 
 function hydrateAccessRole() {
   try {
-    const saved = sessionStorage.getItem(ACCESS_ROLE_KEY) || 'viewer';
-    accessRole = saved === 'admin' ? 'admin' : 'viewer';
+    const saved = sessionStorage.getItem(ACCESS_ROLE_KEY) || 'guest';
+    accessRole = ['guest', 'viewer', 'admin'].includes(saved) ? saved : 'guest';
   } catch(e) {
-    accessRole = 'viewer';
+    accessRole = 'guest';
   }
 }
 
@@ -3067,7 +2739,8 @@ function setAvaliacaoScale(scale = 1) {
 
 function persistAccessRole() {
   try {
-    sessionStorage.setItem(ACCESS_ROLE_KEY, accessRole === 'admin' ? 'admin' : 'viewer');
+    if (accessRole === 'guest') sessionStorage.removeItem(ACCESS_ROLE_KEY);
+    else sessionStorage.setItem(ACCESS_ROLE_KEY, accessRole);
   } catch(e) {}
 }
 
@@ -3135,13 +2808,15 @@ function activateView(v) {
 
 function showLoginView(options = {}) {
   viewerLoginAfterSuccess = typeof options.afterSuccess === 'function' ? options.afterSuccess : null;
-  if (accessRole !== 'admin') accessRole = 'viewer';
-  persistAccessRole();
+  activateView('login');
   applyAccessUi();
-  const afterSuccess = viewerLoginAfterSuccess;
-  viewerLoginAfterSuccess = null;
-  if (typeof afterSuccess === 'function') afterSuccess();
-  else showView(requestedParId ? 'portal' : 'dashboard');
+  const input = document.getElementById('loginPassword');
+  const error = document.getElementById('loginError');
+  if (error) error.textContent = '';
+  if (input) {
+    input.value = '';
+    setTimeout(() => input.focus(), 20);
+  }
 }
 
 function openAuthPrompt(mode = 'viewer', options = {}) {
@@ -3166,10 +2841,10 @@ function openAuthPrompt(mode = 'viewer', options = {}) {
     helper.textContent = 'Ao liberar o admin, as abas administrativas aparecem nesta sessão.';
     submit.textContent = 'Liberar admin';
   } else {
-    title.textContent = 'Acesso liberado';
-    sub.textContent = 'O acesso de visualização não exige mais senha.';
-    helper.textContent = 'Somente as áreas administrativas continuam protegidas.';
-    submit.textContent = 'Continuar';
+    title.textContent = 'Informe a senha de acesso';
+    sub.textContent = 'O acesso inicial libera Dashboard e Resultados.';
+    helper.textContent = 'As áreas administrativas pedem uma segunda senha.';
+    submit.textContent = 'Entrar';
   }
 
   cancel.style.display = authPromptMandatory ? 'none' : '';
@@ -3193,14 +2868,19 @@ function closeAuthPrompt(force = false) {
 }
 
 function ensureViewerAccess(options = {}) {
-  if (accessRole !== 'admin') accessRole = 'viewer';
-  persistAccessRole();
-  applyAccessUi();
-  if (typeof options.afterSuccess === 'function') options.afterSuccess();
+  if (hasViewerAccess()) return true;
+  showLoginView({ afterSuccess: options.afterSuccess || null });
   return false;
 }
 
 function requestAdminAccess(targetView = null) {
+  if (!hasViewerAccess()) {
+    openAuthPrompt('viewer', {
+      mandatory:true,
+      afterSuccess: () => requestAdminAccess(targetView)
+    });
+    return false;
+  }
   if (hasAdminAccess()) {
     if (targetView) showView(targetView);
     return true;
@@ -3225,9 +2905,7 @@ function submitAuthPrompt() {
   if (!input || !error) return;
   const secret = normalizeSecret(input.value);
 
-  if (authPromptMode !== 'admin') {
-    if (accessRole !== 'admin') accessRole = 'viewer';
-  } else {
+  if (authPromptMode === 'admin') {
     if (secret !== ADMIN_PASSWORD) {
       error.textContent = 'Senha admin inválida.';
       input.focus();
@@ -3235,6 +2913,14 @@ function submitAuthPrompt() {
       return;
     }
     accessRole = 'admin';
+  } else {
+    if (secret !== normalizeSecret(VIEWER_PASSWORD)) {
+      error.textContent = 'Senha de acesso inválida.';
+      input.focus();
+      input.select();
+      return;
+    }
+    if (accessRole !== 'admin') accessRole = 'viewer';
   }
 
   persistAccessRole();
@@ -3246,11 +2932,23 @@ function submitAuthPrompt() {
 }
 
 function submitViewerLogin() {
+  const input = document.getElementById('loginPassword');
+  const error = document.getElementById('loginError');
+  if (!input || !error) return;
+  const secret = normalizeSecret(input.value);
+  if (secret !== normalizeSecret(VIEWER_PASSWORD)) {
+    error.textContent = 'Senha de acesso inválida.';
+    input.focus();
+    input.select();
+    return;
+  }
   if (accessRole !== 'admin') accessRole = 'viewer';
   persistAccessRole();
   applyAccessUi();
   const afterSuccess = viewerLoginAfterSuccess;
   viewerLoginAfterSuccess = null;
+  error.textContent = '';
+  input.value = '';
   if (typeof afterSuccess === 'function') afterSuccess();
   else showView(requestedParId ? 'portal' : 'dashboard');
 }
@@ -3259,7 +2957,7 @@ function submitViewerLogin() {
 function showView(v, opts = {}) {
   const skipExitGuard = !!opts.skipExitGuard;
   if (v === 'login') {
-    showView(requestedParId ? 'portal' : 'dashboard');
+    showLoginView();
     return;
   }
   if (VIEWER_VIEWS.includes(v) && !hasViewerAccess()) {
@@ -3286,9 +2984,9 @@ function showView(v, opts = {}) {
   if (v === 'avaliacao') {
     if (!currentParId || !currentInscId) {
       const selParId = currentParId || document.getElementById('simParecerista')?.value || '';
-      const atribuida = selParId ? getAtribAtivas(selParId) : [];
+      const atribuida = selParId ? getAtrib(selParId) : [];
       if (selParId && atribuida.length) {
-        const proxima = atribuida.find(id => !isEvaluationConcluded(selParId, id)) || atribuida[0];
+        const proxima = atribuida.find(id => !avaliacoes[selParId]?.[id]?.done) || atribuida[0];
         abrirFicha(selParId, proxima);
         return;
       }
@@ -3307,13 +3005,12 @@ function showView(v, opts = {}) {
     renderPortal();
   }
   if (v === 'auditoria') {
+    renderAuditoria();
     ensureAuditDataLoaded();
   }
   if (v === 'config') {} // static view
 
-  if (!reviewerBootMode && !adminImportInFlight && ['dashboard','resultados','pareceristas'].includes(v)) {
-    refreshStateFromSupabaseInBackground();
-  }
+  // refresh só no foco da janela e no timer — não a cada troca de aba
 }
 
 document.querySelectorAll('.snav[data-view]').forEach(el => {
@@ -3401,110 +3098,9 @@ function getAtrib(parId) {
   return ids.sort((a, b) => String(a).localeCompare(String(b), 'pt-BR', { numeric:true }));
 }
 
-function normalizeVideoIssueReport(report) {
-  if (!report) return null;
-  const normalized = { ...report };
-  if (!normalized.status) {
-    normalized.status = normalized.ativo ? 'aguardando_verificacao_video' : 'video_verificado';
-  }
-  normalized.ativo = normalized.status === 'aguardando_verificacao_video';
-  return normalized;
-}
-
-function getLatestVideoIssueForPair(parId, inscId) {
-  const matches = (videoIssueReports || [])
-    .map(normalizeVideoIssueReport)
-    .filter(report =>
-      report &&
-      report.parId === parId &&
-      report.inscId === inscId
-    );
-  if (!matches.length) return null;
-  matches.sort((a, b) => {
-    const aTime = new Date(a.resolvedAt || a.reportedAt || 0).getTime();
-    const bTime = new Date(b.resolvedAt || b.reportedAt || 0).getTime();
-    return bTime - aTime;
-  });
-  return matches[0];
-}
-
-function hasActiveVideoIssue(parId, inscId) {
-  const latest = getLatestVideoIssueForPair(parId, inscId);
-  return !!(latest?.ativo && latest?.status === 'aguardando_verificacao_video');
-}
-
-function getActiveVideoIssue(parId, inscId) {
-  const latest = getLatestVideoIssueForPair(parId, inscId);
-  return latest?.ativo && latest?.status === 'aguardando_verificacao_video' ? latest : null;
-}
-
-function getResolvedVideoIssue(parId, inscId) {
-  const latest = getLatestVideoIssueForPair(parId, inscId);
-  return latest && !latest.ativo && latest.status === 'video_verificado' ? latest : null;
-}
-
-function evaluationUpdatedAtMs(parId, inscId) {
-  const updatedAt = avaliacoes[parId]?.[inscId]?.updatedAt || null;
-  if (!updatedAt) return NaN;
-  const ms = new Date(updatedAt).getTime();
-  return Number.isFinite(ms) ? ms : NaN;
-}
-
-function requiresReevaluation(parId, inscId) {
-  const resolved = getResolvedVideoIssue(parId, inscId);
-  if (!resolved) return false;
-  const av = avaliacoes[parId]?.[inscId];
-  if (!av?.done) return true;
-  const resolvedAtMs = new Date(resolved.resolvedAt || resolved.reportedAt || 0).getTime();
-  const updatedAtMs = evaluationUpdatedAtMs(parId, inscId);
-  if (!Number.isFinite(resolvedAtMs)) return false;
-  if (!Number.isFinite(updatedAtMs)) return true;
-  return updatedAtMs < resolvedAtMs;
-}
-
-function isEvaluationConcluded(parId, inscId) {
-  return !!avaliacoes[parId]?.[inscId]?.done && !requiresReevaluation(parId, inscId);
-}
-
-function getVideoIssueReportsByReviewer(parId) {
-  const latestByPair = new Map();
-  (videoIssueReports || []).forEach(rawReport => {
-    const report = normalizeVideoIssueReport(rawReport);
-    if (!report || report.parId !== parId) return;
-    const key = `${report.parId}::${report.inscId}`;
-    const current = latestByPair.get(key);
-    const currentTime = new Date(current?.resolvedAt || current?.reportedAt || 0).getTime();
-    const reportTime = new Date(report.resolvedAt || report.reportedAt || 0).getTime();
-    if (!current || reportTime > currentTime) latestByPair.set(key, report);
-  });
-  return [...latestByPair.values()].filter(report => report.ativo && report.status === 'aguardando_verificacao_video');
-}
-
-function getActiveVideoIssuesForInscricao(inscId) {
-  const latestByReviewer = new Map();
-  (videoIssueReports || []).forEach(rawReport => {
-    const report = normalizeVideoIssueReport(rawReport);
-    if (!report || report.inscId !== inscId) return;
-    const key = `${report.parId}::${report.inscId}`;
-    const current = latestByReviewer.get(key);
-    const currentTime = new Date(current?.resolvedAt || current?.reportedAt || 0).getTime();
-    const reportTime = new Date(report.resolvedAt || report.reportedAt || 0).getTime();
-    if (!current || reportTime > currentTime) latestByReviewer.set(key, report);
-  });
-  return [...latestByReviewer.values()].filter(report => report.ativo && report.status === 'aguardando_verificacao_video');
-}
-
-function getAtribAtivas(parId) {
-  return getAtrib(parId).filter(inscId => !hasActiveVideoIssue(parId, inscId));
-}
-
-function getAtribVisiveisNoPortal(parId) {
-  return getAtrib(parId);
-}
-
 function getDoneByParecerista(parId) {
   return Object.entries(avaliacoes[parId] || {})
-    .filter(([inscId]) => INSCRICOES.some(i => i.id === inscId) && isEvaluationConcluded(parId, inscId))
+    .filter(([inscId, av]) => INSCRICOES.some(i => i.id === inscId) && av?.done)
     .map(([inscId]) => inscId);
 }
 
@@ -3514,19 +3110,17 @@ function getDone(parId) {
 
 function renderPareceristas() {
   const totalInsc = INSCRICOES.length;
-  const totalDone = Object.entries(avaliacoes).reduce((acc, [parId, byInsc]) => (
-    acc + Object.keys(byInsc || {}).filter(inscId => isEvaluationConcluded(parId, inscId)).length
-  ), 0);
+  const totalAtrib = Object.values(atribuicoes).filter(a => a.length > 0).length;
+  const totalDone = Object.values(avaliacoes).flatMap(p => Object.values(p)).filter(a => a.done).length;
   const capacidadesAuto = capacidadeAutomaticaPorParecerista();
   const totalEsperado = totalInsc * NUM_PARECERES_POR_EQUIPE;
-  const progressoPct = totalEsperado > 0 ? Math.round(totalDone / totalEsperado * 100) : 0;
 
   document.getElementById('kpiAtrib').innerHTML = `
-    <div class="kpi">
-      <div class="kpi-lbl">Avaliações concluídas</div>
-      <div class="kpi-val">${progressoPct}%</div>
-      <div class="kpi-sub">${totalDone} de ${totalEsperado} esperadas</div>
-    </div>
+    <div class="kpi"><div class="kpi-lbl">Inscrições</div><div class="kpi-val">${totalInsc}</div><div class="kpi-sub">base carregada</div></div>
+    <div class="kpi"><div class="kpi-lbl">Pareceristas</div><div class="kpi-val">${pareceristas.length}</div><div class="kpi-sub">cadastrados</div></div>
+    <div class="kpi"><div class="kpi-lbl">Atribuídas</div><div class="kpi-val">${totalAtrib}</div><div class="kpi-sub">de ${totalInsc}</div></div>
+    <div class="kpi"><div class="kpi-lbl">Avaliações feitas</div><div class="kpi-val">${totalDone}</div><div class="kpi-sub">de ${totalEsperado} esperadas</div></div>
+    <div class="kpi"><div class="kpi-lbl">Cobertura</div><div class="kpi-val">${totalInsc > 0 ? Math.round(totalAtrib/totalInsc*100) : 0}%</div><div class="kpi-sub">inscrições com ≥1 atrib.</div></div>
   `;
 
   const pareceristasOrdenados = [...pareceristas].sort((a, b) => String(a.nome || '').localeCompare(String(b.nome || ''), 'pt-BR', { sensitivity:'base' }));
@@ -3695,7 +3289,7 @@ function notaGeralAvaliacao(av) {
 function mediaNotas(inscId) {
   const notasGerais = pareceristas.map(p => {
     const av = avaliacoes[p.id]?.[inscId];
-    return isEvaluationConcluded(p.id, inscId) ? notaGeralAvaliacao(av) : null;
+    return av?.done ? notaGeralAvaliacao(av) : null;
   }).filter(n => n !== null);
   if (!notasGerais.length) return null;
   const soma = notasGerais.reduce((acc, nota) => acc + nota, 0);
@@ -3713,12 +3307,12 @@ function mediaPorCrit(inscId, critIdx) {
 
 function avalCount(inscId) {
   const total = atribuicoes[inscId]?.length || 0;
-  const done = pareceristas.filter(p => atribuicoes[inscId]?.includes(p.id) && isEvaluationConcluded(p.id, inscId)).length;
+  const done = pareceristas.filter(p => atribuicoes[inscId]?.includes(p.id) && avaliacoes[p.id]?.[inscId]?.done).length;
   return { done, total };
 }
 function parecerProgressHTML(inscId, rowIdx) {
   const totalEsperado = Math.max(NUM_PARECERES_POR_EQUIPE, (atribuicoes[inscId]?.length || 0));
-  const done = pareceristas.filter(p => atribuicoes[inscId]?.includes(p.id) && isEvaluationConcluded(p.id, inscId)).length;
+  const done = pareceristas.filter(p => atribuicoes[inscId]?.includes(p.id) && avaliacoes[p.id]?.[inscId]?.done).length;
   const states = Array.from({ length: totalEsperado }, (_, idx) => idx < done ? 'done' : 'pending');
   const title = `${done} de ${totalEsperado} pareceres concluídos`;
   return `<button class="nota-progress-btn" onclick="toggleRes(${rowIdx})" title="${title}" aria-label="${title}">
@@ -3887,39 +3481,6 @@ function compactUfLabel(value) {
   if (match) return match[1] || match[2];
   return text;
 }
-function ufDisplayLabel(value) {
-  const uf = compactUfLabel(value);
-  const nomeMap = {
-    AC:'Acre',
-    AL:'Alagoas',
-    AP:'Amapá',
-    AM:'Amazonas',
-    BA:'Bahia',
-    CE:'Ceará',
-    DF:'Distrito Federal',
-    ES:'Espírito Santo',
-    GO:'Goiás',
-    MA:'Maranhão',
-    MT:'Mato Grosso',
-    MS:'Mato Grosso do Sul',
-    MG:'Minas Gerais',
-    PA:'Pará',
-    PB:'Paraíba',
-    PR:'Paraná',
-    PE:'Pernambuco',
-    PI:'Piauí',
-    RJ:'Rio de Janeiro',
-    RN:'Rio Grande do Norte',
-    RS:'Rio Grande do Sul',
-    RO:'Rondônia',
-    RR:'Roraima',
-    SC:'Santa Catarina',
-    SP:'São Paulo',
-    SE:'Sergipe',
-    TO:'Tocantins'
-  };
-  return nomeMap[uf] || String(value || '').trim() || 'N/D';
-}
 function regionFromUf(value) {
   const uf = compactUfLabel(value);
   const regionMap = {
@@ -3950,26 +3511,6 @@ function materialLinks(e) {
     raw['Faça o upload do roteiro de uma campanha publicitária multiplataforma sobre o tema O PAPEL DA EDUCAÇÃO NA TRANSFORMAÇÃO SOCIAL'] ||
     '';
   return { video, roteiro30, campanha };
-}
-function escapeHtmlAttr(value) {
-  return String(value || '')
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
-function materialButtonHTML({ url, label, icon, tipo, inscricaoId, origem = 'ficha_avaliacao', openInModal = false } = {}) {
-  if (!url) return '';
-  const safeUrl = escapeHtmlAttr(url);
-  const safeLabel = escapeHtmlAttr(label);
-  const safeTipo = escapeHtmlAttr(tipo);
-  const safeOrigem = escapeHtmlAttr(origem);
-  const safeInsc = escapeHtmlAttr(inscricaoId);
-  const clickHandler = openInModal
-    ? 'return openAttachmentViewerFromLink(this, event)'
-    : 'return registrarCliqueAnexoFromLink(this, event)';
-  const targetAttrs = openInModal ? '' : ' target="_blank" rel="noopener noreferrer"';
-  return `<a class="mat-btn" href="${safeUrl}"${targetAttrs} data-anexo="${safeTipo}" data-origem="${safeOrigem}" data-inscricao="${safeInsc}" data-label="${safeLabel}" data-url="${safeUrl}" onclick="${clickHandler}"><i class="ti ${icon}" style="font-size:13px"></i>${safeLabel}</a>`;
 }
 function registrarCliqueAnexoFromLink(el, event) {
   if (!el) return true;
@@ -4013,11 +3554,10 @@ function registrarCliqueAnexoFromLink(el, event) {
   saveAppState();
 
   if (reviewerBootMode && currentParId && inscricaoId && isSupabaseConfigured()) {
-    persistReviewerEvaluationToSupabase(currentParId, inscricaoId, { deleteWhenMissing:false }).then((result) => {
-      if (!result?.ok) {
-        console.warn('Falha ao persistir clique de anexo no Supabase:', result?.error || result?.reason);
-      }
-    });
+    clearTimeout(anexoFlushTimer);
+    anexoFlushTimer = setTimeout(() => {
+      flushPendingReviewerEvents(currentParId, fullInscId(inscricaoId), { syncReason: 'anexo_aberto' });
+    }, 1500);
   }
   return true;
 }
@@ -4055,353 +3595,6 @@ document.addEventListener('keydown', (event) => {
   if (!link) return;
   registrarInteracaoAnexoDelegada(link, event);
 }, true);
-
-function extractYouTubeId(url = '') {
-  const text = String(url || '').trim();
-  if (!text) return '';
-  try {
-    const parsed = new URL(text);
-    if (parsed.hostname.includes('youtu.be')) return parsed.pathname.replace(/^\/+/, '').split('/')[0] || '';
-    if (parsed.hostname.includes('youtube.com')) {
-      if (parsed.pathname === '/watch') return parsed.searchParams.get('v') || '';
-      const parts = parsed.pathname.split('/').filter(Boolean);
-      const marker = parts.findIndex(part => ['embed', 'shorts', 'live'].includes(part));
-      if (marker >= 0 && parts[marker + 1]) return parts[marker + 1];
-    }
-  } catch {}
-  return '';
-}
-function extractVimeoId(url = '') {
-  const text = String(url || '').trim();
-  if (!text) return '';
-  try {
-    const parsed = new URL(text);
-    if (!parsed.hostname.includes('vimeo.com')) return '';
-    const parts = parsed.pathname.split('/').filter(Boolean);
-    return parts.reverse().find(part => /^\d+$/.test(part)) || '';
-  } catch {}
-  return '';
-}
-function buildAttachmentViewerConfig(url = '', tipo = '') {
-  const normalizedUrl = String(url || '').trim();
-  const lowerUrl = normalizedUrl.toLowerCase();
-  const lowerTipo = String(tipo || '').toLowerCase();
-  const proxiedUrl = buildAttachmentProxyUrl(normalizedUrl);
-  const ytId = extractYouTubeId(normalizedUrl);
-  if (ytId) {
-    return {
-      kind: 'iframe',
-      src: `https://www.youtube.com/embed/${ytId}`,
-      note: 'Vídeo carregado pela visualização incorporada do YouTube.'
-    };
-  }
-  const vimeoId = extractVimeoId(normalizedUrl);
-  if (vimeoId) {
-    return {
-      kind: 'iframe',
-      src: `https://player.vimeo.com/video/${vimeoId}`,
-      note: 'Vídeo carregado pela visualização incorporada do Vimeo.'
-    };
-  }
-  if (/\.(pdf)(\?|#|$)/.test(lowerUrl)) {
-    const pdfSrc = proxiedUrl.includes('#')
-      ? proxiedUrl
-      : `${proxiedUrl}#view=FitH&toolbar=1&navpanes=0&scrollbar=1`;
-    return {
-      kind: 'pdf',
-      src: pdfSrc,
-      note: ''
-    };
-  }
-  if (/\.(mp4|webm|mov|m4v)(\?|#|$)/.test(lowerUrl)) {
-    return {
-      kind: 'video',
-      src: shouldUseAttachmentProxy(normalizedUrl) ? proxiedUrl : normalizedUrl,
-      note: ''
-    };
-  }
-  if (lowerTipo === 'video_criativo') {
-    if (shouldUseAttachmentProxy(normalizedUrl)) {
-      return {
-        kind: 'video',
-        src: proxiedUrl,
-        note: ''
-      };
-    }
-    return {
-      kind: 'iframe',
-      src: normalizedUrl,
-      note: 'Este vídeo usa o visualizador da própria plataforma de origem.'
-    };
-  }
-  return {
-    kind: 'iframe',
-    src: shouldUseAttachmentProxy(normalizedUrl) ? proxiedUrl : normalizedUrl,
-    note: ''
-  };
-}
-function renderAttachmentViewerContent() {
-  const stage = document.getElementById('attachmentViewerStage');
-  if (!stage) return;
-  stage.innerHTML = '';
-  const context = currentAttachmentViewer;
-  if (!context?.url) {
-    stage.innerHTML = `<div class="attachment-viewer-empty"><strong>Não foi possível abrir este anexo.</strong>Problemas para abrir? Tente em outra aba.</div>`;
-    return;
-  }
-  const viewer = buildAttachmentViewerConfig(context.url, context.tipo);
-  const helper = document.getElementById('attachmentViewerSub');
-  if (helper) {
-    helper.textContent = viewer.note || (context.tipo === 'video_criativo'
-      ? 'Assista ao vídeo aqui. Se houver bloqueio da plataforma, abra em uma nova aba.'
-      : 'Confira o material aqui. Se o conteúdo não carregar, abra em uma nova aba.');
-  }
-  if (viewer.kind === 'video') {
-    const video = document.createElement('video');
-    video.className = 'attachment-viewer-video';
-    video.controls = true;
-    video.playsInline = true;
-    video.preload = 'metadata';
-    video.src = viewer.src;
-    stage.appendChild(video);
-    return;
-  }
-  if (viewer.kind === 'pdf') {
-    const frame = document.createElement('iframe');
-    frame.className = 'attachment-viewer-pdf';
-    frame.src = viewer.src;
-    frame.loading = 'eager';
-    frame.referrerPolicy = 'strict-origin-when-cross-origin';
-    frame.setAttribute('aria-label', context.label || 'PDF');
-    stage.appendChild(frame);
-    return;
-  }
-  const frame = document.createElement('iframe');
-  frame.className = 'attachment-viewer-frame';
-  frame.src = viewer.src;
-  frame.loading = 'eager';
-  frame.referrerPolicy = 'strict-origin-when-cross-origin';
-  frame.allow = 'autoplay; fullscreen; clipboard-read; clipboard-write';
-  stage.appendChild(frame);
-}
-function openAttachmentViewer(payload = {}) {
-  const overlay = document.getElementById('overlayAttachmentViewer');
-  const title = document.getElementById('attachmentViewerTitle');
-  const sub = document.getElementById('attachmentViewerSub');
-  const external = document.getElementById('attachmentViewerExternal');
-  if (!overlay || !title || !sub || !external) return false;
-  currentAttachmentViewer = {
-    url: payload.url || '',
-    tipo: payload.tipo || '',
-    label: payload.label || 'Visualização do material',
-    inscricaoId: payload.inscricaoId || currentInscId || '',
-  };
-  title.textContent = payload.label || 'Visualização do material';
-  sub.textContent = payload.tipo === 'video_criativo'
-    ? 'Assista ao vídeo aqui. Se houver bloqueio da plataforma, abra em uma nova aba.'
-    : 'Confira o material aqui. Se o conteúdo não carregar, abra em uma nova aba.';
-  external.href = payload.url || '#';
-  external.style.pointerEvents = payload.url ? '' : 'none';
-  external.style.opacity = payload.url ? '' : '.5';
-  renderAttachmentViewerContent();
-  overlay.classList.add('open');
-  return false;
-}
-function closeAttachmentViewer() {
-  const overlay = document.getElementById('overlayAttachmentViewer');
-  const stage = document.getElementById('attachmentViewerStage');
-  if (overlay) overlay.classList.remove('open');
-  if (stage) stage.innerHTML = '';
-  currentAttachmentViewer = null;
-}
-function openAttachmentViewerFromLink(el, event) {
-  if (!el) return false;
-  const modifiedClick = !!(event && (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button === 1));
-  if (modifiedClick) return true;
-  event?.preventDefault?.();
-  return openAttachmentViewer({
-    url: el.href || el.dataset?.url || '',
-    tipo: el.dataset?.anexo || '',
-    label: el.dataset?.label || el.textContent?.trim() || 'Visualização do material',
-    inscricaoId: el.dataset?.inscricao || currentInscId || '',
-  });
-}
-
-function clientRuntimeInfo() {
-  const ua = navigator.userAgent || '';
-  const platform = navigator.platform || '';
-  let browser = 'Desconhecido';
-  if (/Edg\//.test(ua)) browser = 'Microsoft Edge';
-  else if (/Chrome\//.test(ua) && !/Edg\//.test(ua)) browser = 'Google Chrome';
-  else if (/Safari\//.test(ua) && !/Chrome\//.test(ua)) browser = 'Safari';
-  else if (/Firefox\//.test(ua)) browser = 'Firefox';
-
-  let os = 'Desconhecido';
-  if (/Mac|Macintosh|MacIntel/i.test(platform) || /Mac OS X/i.test(ua)) os = 'macOS';
-  else if (/Win/i.test(platform) || /Windows/i.test(ua)) os = 'Windows';
-  else if (/Linux/i.test(platform) || /Linux/i.test(ua)) os = 'Linux';
-  else if (/Android/i.test(ua)) os = 'Android';
-  else if (/iPhone|iPad|iPod/i.test(ua)) os = 'iOS';
-
-  return { browser, os, userAgent: ua };
-}
-
-function clearDraftEvaluationForIssue(parId, inscId) {
-  if (!avaliacoes[parId]?.[inscId]?.done) {
-    delete avaliacoes[parId][inscId];
-    if (!Object.keys(avaliacoes[parId] || {}).length) delete avaliacoes[parId];
-  }
-}
-
-function openVideoIssueModal() {
-  if (!currentParId || !currentInscId) return;
-  const e = INSCRICOES.find(x => x.id === currentInscId);
-  if (!e) return;
-  const links = materialLinks(e);
-  currentVideoIssueContext = {
-    parId: currentParId,
-    inscId: currentInscId,
-    videoUrl: links.video || '',
-  };
-  document.getElementById('videoIssueType').value = 'Vídeo não carregou';
-  document.getElementById('videoIssueAttempts').value = 'Tentei uma vez';
-  document.getElementById('videoIssueComment').value = '';
-  document.getElementById('videoIssueHelper').textContent = links.video
-    ? `URL registrada: ${links.video}`
-    : 'Nenhuma URL de vídeo foi identificada nesta inscrição.';
-  document.getElementById('overlayVideoIssue').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeVideoIssueModal() {
-  currentVideoIssueContext = null;
-  document.getElementById('overlayVideoIssue').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function openVideoIssueConfirmModal() {
-  const context = pendingVideoIssueNavigation;
-  if (!context) return;
-  const body = document.getElementById('videoIssueConfirmBody');
-  const proceedBtn = document.getElementById('videoIssueConfirmProceedBtn');
-  if (body) {
-    body.innerHTML = `
-      <div>O problema foi registrado e já está visível na <strong>Auditoria</strong> como pendência técnica esperando atuação.</div>
-      <div>Esta avaliação <strong>não foi concluída</strong>, <strong>não saiu da sua lista</strong> e foi movida para o <strong>fim da fila</strong> enquanto você segue para outra inscrição.</div>
-      <div>Quando o vídeo for verificado, ela continua disponível para você retomar.</div>
-    `;
-  }
-  if (proceedBtn) {
-    proceedBtn.textContent = context.nextInscId ? 'Entendi, abrir próxima avaliação' : 'Entendi, voltar ao portal';
-  }
-  document.getElementById('overlayVideoIssueConfirm').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeVideoIssueConfirmModal() {
-  document.getElementById('overlayVideoIssueConfirm').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-function proceedAfterVideoIssueReport() {
-  const context = pendingVideoIssueNavigation;
-  closeVideoIssueConfirmModal();
-  pendingVideoIssueNavigation = null;
-  if (!context) return;
-
-  if (context.nextInscId) {
-    showLoadingNudge('Abrindo próxima avaliação...');
-    currentInscId = null;
-    setTimeout(() => {
-      abrirFicha(context.parId, context.nextInscId);
-      hideLoadingNudge(350);
-    }, 500);
-    return;
-  }
-
-  currentParId = context.parId;
-  currentInscId = null;
-  showView('portal');
-}
-
-function confirmVideoIssueReport() {
-  const context = currentVideoIssueContext;
-  if (!context) return;
-  const e = INSCRICOES.find(x => x.id === context.inscId);
-  const par = pareceristas.find(p => p.id === context.parId);
-  const tipoProblema = document.getElementById('videoIssueType')?.value || 'Vídeo não carregou';
-  const tentativas = document.getElementById('videoIssueAttempts')?.value || 'Tentei uma vez';
-  const comentario = document.getElementById('videoIssueComment')?.value?.trim() || '';
-  const runtime = clientRuntimeInfo();
-  const existingReport = getActiveVideoIssue(context.parId, context.inscId);
-  const report = existingReport || {
-    id: `video-issue-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-  };
-  Object.assign(report, {
-    environment: activeEnvironment,
-    status: 'aguardando_verificacao_video',
-    ativo: true,
-    parId: context.parId,
-    parNome: par?.nome || '',
-    inscId: context.inscId,
-    inscricaoId: fullInscId(context.inscId),
-    lider: e?.lider || '',
-    videoUrl: context.videoUrl || '',
-    tipoProblema,
-    tentativas,
-    comentario,
-    browser: runtime.browser,
-    sistemaOperacional: runtime.os,
-    userAgent: runtime.userAgent,
-    mensagemErro: context.videoUrl ? '' : 'URL do vídeo indisponível na ficha.',
-    reportedAt: new Date().toISOString(),
-    retornoPreferencial: 'mesmo_parecerista',
-  });
-  if (!existingReport) videoIssueReports.push(report);
-  clearDraftEvaluationForIssue(context.parId, context.inscId);
-  queueSystemEvent('video_problema_reportado', {
-    correlation_id: report.id,
-    report_id: report.id,
-    parecerista_id: context.parId,
-    par_nome: report.parNome,
-    inscricao_id: fullInscId(context.inscId),
-    lider: report.lider,
-    video_url: report.videoUrl || null,
-    status: report.status,
-    tipo_problema: report.tipoProblema,
-    tentativas: report.tentativas,
-    comentario: report.comentario,
-    browser: report.browser,
-    sistema_operacional: report.sistemaOperacional,
-    user_agent: report.userAgent,
-    mensagem_erro: report.mensagemErro || null,
-    reported_at: report.reportedAt,
-    retorno_preferencial: report.retornoPreferencial,
-  });
-  saveAppState();
-  closeVideoIssueModal();
-
-  clearTimeout(fichaTimer);
-  fichaTempoOk = false;
-  fichaStartTime = null;
-  pendingEarlySaveReason = '';
-  pendingEarlySave = false;
-  avaliacaoEmEdicao = false;
-  avaliacaoOriginalConcluida = false;
-
-  renderPareceristas();
-  renderResultados();
-  renderPortal();
-
-  const proxima = proximaInscricaoDoParecerista(context.parId, context.inscId);
-  pendingVideoIssueNavigation = {
-    parId: context.parId,
-    reportedInscId: context.inscId,
-    nextInscId: proxima || null,
-  };
-  notify('Problema reportado. Confirme a pausa técnica para seguir.');
-  openVideoIssueConfirmModal();
-}
 
 function fmtNotaGeral(valor) {
   return valor === null ? '—' : valor.toFixed(1).replace('.', ',');
@@ -4493,20 +3686,8 @@ function generoCategoria(valor) {
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '');
   if (!txt) return '';
-  if (
-    txt === 'f' ||
-    txt === 'fem' ||
-    txt === 'feminino' ||
-    txt.includes('mulher') ||
-    txt.includes('femin')
-  ) return 'Feminino';
-  if (
-    txt === 'm' ||
-    txt === 'masc' ||
-    txt === 'masculino' ||
-    txt.includes('homem') ||
-    txt.includes('masc')
-  ) return 'Masculino';
+  if (txt.includes('mulher') || txt.includes('femin')) return 'Feminino';
+  if (txt.includes('homem') || txt.includes('masc')) return 'Masculino';
   return '';
 }
 function generosTimeInscricao(e) {
@@ -4541,14 +3722,14 @@ function idadeMediaEstimativa(valor) {
 function filtrarResultados() {
   const status = document.getElementById('resFiltroStatus')?.value || 'Todas as avaliações';
   const time = document.getElementById('resFiltroTime')?.value || 'Todos os times';
-  const uf = document.getElementById('resFiltroUf')?.value || '';
+  const uf = document.getElementById('resFiltroUf')?.value || 'Todos os estados';
   const genero = document.getElementById('resFiltroGenero')?.value || 'Todos os gêneros';
   return INSCRICOES.map((e, idx) => ({ e, idx })).filter(({ e }) => {
     const c = avalCount(e.id);
     const statusAtual = c.done === 0 ? 'Não iniciadas' : c.done === c.total ? 'Finalizadas' : 'Parciais';
     if (status !== 'Todas as avaliações' && statusAtual !== status) return false;
     if (time !== 'Todos os times' && e.mod !== time) return false;
-    if (uf && ufDisplayLabel(e.uf) !== uf) return false;
+    if (uf !== 'Todos os estados' && compactUfLabel(e.uf) !== uf) return false;
     if (genero !== 'Todos os gêneros' && !generosTimeInscricao(e).has(genero)) return false;
     return true;
   });
@@ -4558,7 +3739,7 @@ function zerarFiltrosResultados() {
   const defaults = {
     resFiltroStatus: 'Todas as avaliações',
     resFiltroTime: 'Todos os times',
-    resFiltroUf: '',
+    resFiltroUf: 'Todos os estados',
     resFiltroGenero: 'Todos os gêneros',
     resFiltroRanking: 'Ranking normal'
   };
@@ -4589,7 +3770,6 @@ window.addEventListener('resize', () => {
 });
 
 function renderResultados() {
-  syncResultadosFilters();
   const rankingMode = document.getElementById('resFiltroRanking')?.value || 'Ranking normal';
   const rows = [...filtrarResultados()].sort((a, b) => compareResultadoRows(a.e, b.e, rankingMode));
   const rankingMeta = buildRankingMeta(rows, rankingMode);
@@ -4600,7 +3780,7 @@ function renderResultados() {
   const hasActiveFilters =
     (document.getElementById('resFiltroStatus')?.value || 'Todas as avaliações') !== 'Todas as avaliações' ||
     (document.getElementById('resFiltroTime')?.value || 'Todos os times') !== 'Todos os times' ||
-    !!(document.getElementById('resFiltroUf')?.value || '') ||
+    (document.getElementById('resFiltroUf')?.value || 'Todos os estados') !== 'Todos os estados' ||
     (document.getElementById('resFiltroGenero')?.value || 'Todos os gêneros') !== 'Todos os gêneros';
   const summaryBar = document.getElementById('resSummaryBar');
   if (summaryBar) {
@@ -4615,8 +3795,7 @@ function renderResultados() {
     const ranking = rankingMeta[i];
     const subRows = pareceristas.filter(p => atribuicoes[e.id]?.includes(p.id)).map(p => {
       const av = avaliacoes[p.id]?.[e.id];
-      const parecerConcluido = isEvaluationConcluded(p.id, e.id);
-      const notaGeralParecerista = parecerConcluido ? notaGeralAvaliacao(av) : null;
+      const notaGeralParecerista = av?.done ? notaGeralAvaliacao(av) : null;
       return `<tr class="sub-row sub-res-${i}">
         <td class="sticky s0"></td>
         <td class="sticky s3 id-col"></td>
@@ -4624,8 +3803,8 @@ function renderResultados() {
           <div style="font-size:11px;font-weight:500;color:#5F6368">${p.nome}</div>
           <div class="res-faint" style="font-size:10px">Parecerista</div>
         </td>
-        <td class="sticky s7" style="text-align:center">${parecerConcluido ? `<span style="font-size:13px;font-weight:600;color:#202124">${fmtNotaGeral(notaGeralParecerista)}</span>` : '<span style="color:#E0E0E0">—</span>'}</td>
-        ${Array(8).fill(0).map((_,ci) => `<td class="crit-td">${nc(parecerConcluido ? av.notas[ci] : null)}</td>`).join('')}
+        <td class="sticky s7" style="text-align:center">${av?.done ? `<span style="font-size:13px;font-weight:600;color:#202124">${fmtNotaGeral(notaGeralParecerista)}</span>` : '<span style="color:#E0E0E0">—</span>'}</td>
+        ${Array(8).fill(0).map((_,ci) => `<td class="crit-td">${nc(av?.done ? av.notas[ci] : null)}</td>`).join('')}
       </tr>`;
     }).join('');
 
@@ -4679,60 +3858,171 @@ function toggleRes(i) {
 // ═══ MODAL INSCRIÇÃO ══════════════════════════════════════
 function openModal(idx) {
   const e = INSCRICOES[idx];
-  const grid = document.getElementById('mGrid');
-  grid.className = 'split-reference-grid';
-  grid.innerHTML = avalGridHTML(e, 'split', 'modal').replaceAll('ficha_avaliacao', 'modal_inscricao').replace('id="avalIASplit"', 'id="modalIARef"');
-  document.getElementById('modalIARef').innerHTML = iaNoteHTML(e.ia);
+  const { done, total } = avalCount(e.id);
+  const modalId = fullInscId(e.id);
+  document.getElementById('mTitle').textContent = 'Equipe ' + modalId;
+  document.getElementById('mSub').textContent = e.mod + ' · ' + e.uf + ' · ' + e.inst;
+  document.getElementById('mBadge').textContent = done === 0 ? 'Avaliação pendente' : done === total ? 'Avaliação concluída' : 'Em andamento';
+  document.getElementById('mBadge').className = 'badge ' + (done===0?'b-pend':done===total?'b-ok':'b-par');
+  let participantesExtra = '<div class="field"></div><div class="field"></div>';
+  if (e.p2 && e.p3) {
+    participantesExtra = `
+      <div class="field"><div class="mfl">Participante 2</div><div class="mfv">${e.p2}</div><div class="mfv-sub">${e.p2e}</div></div>
+      <div class="field"><div class="mfl">Participante 3</div><div class="mfv">${e.p3}</div><div class="mfv-sub">${e.p3e}</div></div>`;
+  } else if (e.p2) {
+    participantesExtra = `
+      <div class="field s2"><div class="mfl">Participante 2</div><div class="mfv">${e.p2}</div><div class="mfv-sub">${e.p2e}</div></div>`;
+  } else if (e.p3) {
+    participantesExtra = `
+      <div class="field s2"><div class="mfl">Participante 3</div><div class="mfv">${e.p3}</div><div class="mfv-sub">${e.p3e}</div></div>`;
+  }
+  const links = materialLinks(e);
+  const objetivos = e.objetivos || e._raw?.['Objetivos da campanha'] || e._raw?.['Objetivos'] || e._raw?.['objetivos'] || 'Ampliar a percepção pública sobre o papel da educação na transformação social e mobilizar diferentes públicos.';
+  const estrategia = e.estrategia || e._raw?.['Estratégia de distribuição'] || e._raw?.['Estrategia de distribuicao'] || e._raw?.['estrategia'] || 'Distribuição em vídeo curto, peça de 30 segundos, posts sociais, ativação em instituições de ensino e canais digitais.';
+  const curso = e.curso || e._raw?.['Curso no qual você tem matrícula ativa?'] || e._raw?.['Curso'] || '—';
+  document.getElementById('mGrid').innerHTML = `
+    <div class="field"><div class="mfl">ID da inscrição</div><div class="mfv mono">${modalId}</div></div>
+    <div class="field"><div class="mfl">Modalidade</div><div class="mfv">${e.mod}</div></div>
+    <div class="field"><div class="mfl">UF</div><div class="mfv">${compactUfLabel(e.uf) || '—'}</div></div>
+    <div class="field s2"><div class="mfl">Instituição</div><div class="mfv">${e.inst}</div></div>
+    <div class="field"><div class="mfl">Curso</div><div class="mfv">${curso}</div></div>
+    <div class="field"><div class="mfl">Líder</div><div class="mfv">${e.lider}</div><div class="mfv-sub">${e.le}</div></div>
+    ${participantesExtra}
+    <div class="field s3"><div class="mfl">Mentor</div><div class="mfv">${e.mentor}</div><div class="mfv-sub">${e.me}</div></div>
+    <div class="field s3">
+      <div class="mfl">Materiais</div>
+      <div class="materiais">
+        ${links.video ? `<a class="mat-btn" href="${links.video}" ${isVideoUrl(links.video) ? '' : 'target="_blank" rel="noopener noreferrer"'} data-anexo="video_criativo" data-origem="modal_inscricao" data-inscricao="${e.id}" onclick="if(isVideoUrl(this.href)){openVideoModal(this.href,'Vídeo criativo · ${e.lider}');registrarCliqueAnexoFromLink(this);return false;}return registrarCliqueAnexoFromLink(this)"><i class="ti ti-player-play" style="font-size:13px"></i>Vídeo criativo</a>` : ''}
+        ${links.roteiro30 ? `<a class="mat-btn" href="${links.roteiro30}" target="_blank" rel="noopener noreferrer" data-anexo="roteiro_30s" data-origem="modal_inscricao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file-type-pdf" style="font-size:13px"></i>Roteiro 30s</a>` : ''}
+        ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer" data-anexo="campanha_multiplataforma" data-origem="modal_inscricao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file-type-pdf" style="font-size:13px"></i>Campanha</a>` : ''}
+      </div>
+    </div>
+    <div class="field s3"><div class="mfl">Uso de IA</div><div class="ia-note" style="margin-top:8px">IA utilizada na criação: ${e.ia}</div></div>
+    <div class="field s3"><div class="mfl">Defesa conceitual</div><div class="mfv-light">${e.defesa}</div></div>
+    <div class="field s3"><div class="mfl">Objetivos da campanha</div><div class="mfv-light">${objetivos}</div></div>
+    <div class="field s3 last"><div class="mfl">Estratégia de distribuição</div><div class="mfv-light">${estrategia}</div></div>`;
   document.getElementById('overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 function closeModal() { document.getElementById('overlay').classList.remove('open'); document.body.style.overflow = ''; }
 
+function isPdfUrl(url) {
+  if (!url) return false;
+  return /\.pdf(\?|#|$)/i.test(url) || url.includes('inscricoes.led.globo');
+}
+
+function openPdfModal(url, title) {
+  document.getElementById('pdfModalTitle').textContent = title || 'Roteiro 30s';
+  document.getElementById('pdfModalFrame').src = url;
+  document.getElementById('pdfModalExtLink').href = url;
+  document.getElementById('overlayPdf').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePdfModal() {
+  document.getElementById('pdfModalFrame').src = '';
+  document.getElementById('overlayPdf').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function isVideoUrl(url) {
+  if (!url) return false;
+  return /\.(mp4|webm|mov|ogg)(\?|#|$)/i.test(url) || url.includes('inscricoes.led.globo');
+}
+
+function openVideoModal(url, title) {
+  const player = document.getElementById('videoModalPlayer');
+  const extLink = document.getElementById('videoModalExtLink');
+  document.getElementById('videoModalTitle').textContent = title || 'Vídeo criativo';
+  player.src = url;
+  extLink.href = url;
+  document.getElementById('overlayVideo').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  player.play().catch(() => {});
+}
+
+function closeVideoModal() {
+  const player = document.getElementById('videoModalPlayer');
+  player.pause();
+  player.src = '';
+  document.getElementById('overlayVideo').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
 // ═══ MODAL PARECERES ══════════════════════════════════════
 function openModalPar(idx) {
   const e = INSCRICOES[idx];
+  const { done, total } = avalCount(e.id);
 
   document.getElementById('parTitle').textContent = fullInscId(e.id) + ' · ' + e.lider;
   document.getElementById('parSub').textContent = e.mod + ' · ' + e.uf + ' · ' + e.inst;
+  document.getElementById('parBadge').textContent = done + '/' + (total||3) + ' avaliações';
+  document.getElementById('parBadge').className = 'badge ' + (done===0?'b-pend':done===total?'b-ok':'b-par');
 
   const atribPars = pareceristas.filter(p => atribuicoes[e.id]?.includes(p.id));
 
   if (!atribPars.length) {
     document.getElementById('parBody').innerHTML = '<div class="par-vazio">Nenhum parecerista atribuído a esta inscrição ainda.</div>';
   } else {
-    const blocos = atribPars.map(p => {
+    document.getElementById('parBody').innerHTML = atribPars.map(p => {
       const av = avaliacoes[p.id]?.[e.id];
-      if (!isEvaluationConcluded(p.id, e.id)) return '';
-
+      if (!av?.done) {
+        return `<div class="par-bloco">
+          <table class="par-tabela pending-table">
+            <colgroup><col><col><col></colgroup>
+            <tbody>
+              <tr class="par-linha-head">
+                <td><div class="par-head-meta"><div class="par-bloco-nome">${p.nome}</div><div class="par-bloco-role">Parecerista</div></div></td>
+                <td><span class="badge b-pend">Pendente</span></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td class="par-crit-nome">Avaliação</td>
+                <td><span class="badge b-pend">Pendente</span></td>
+                <td class="par-just">Avaliação ainda não concluída.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>`;
+      }
       const observacoes = CRITERIOS.map((c, ci) => ({
         criterio: c.nome,
         texto: av.justificativas?.[ci] || ''
       })).filter(item => item.texto.trim());
-      const itens = [
-        ...observacoes,
-        ...(av.parecer?.trim() ? [{ criterio: 'Parecer geral', texto: av.parecer.trim() }] : [])
-      ];
-
-      if (!itens.length) return '';
 
       return `<div class="par-bloco">
-        <div class="par-head-meta">
-          <div class="par-bloco-nome">${p.nome}</div>
-          <div class="par-notas-list">
-            ${itens.map(item => `
-              <div class="par-nota-item">
-                <div class="par-nota-label">${item.criterio}</div>
-                <div class="par-nota-text">${item.texto}</div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
+        <table class="par-tabela">
+          <colgroup><col><col><col></colgroup>
+          <tbody>
+            <tr class="par-linha-head">
+              <td><div class="par-head-meta"><div class="par-bloco-nome">${p.nome}</div><div class="par-bloco-role">Parecerista</div></div></td>
+              <td><span class="badge b-ok">Concluída</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="par-crit-nome">Notas observacionais</td>
+              <td><span class="badge b-ok">Concluída</span></td>
+              <td class="par-just">
+                ${observacoes.length ? `
+                  <div class="par-notas-list">
+                    ${observacoes.map(item => `
+                      <div class="par-nota-item">
+                        <div class="par-nota-label">${item.criterio}</div>
+                        <div class="par-nota-text">${item.texto}</div>
+                      </div>
+                    `).join('')}
+                  </div>
+                ` : '<span class="par-nota-vazia">Nenhuma observação textual registrada por critério.</span>'}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        ${av.parecer ? `
+          <div class="par-parecer-label">Parecer geral</div>
+          <div class="par-parecer">${av.parecer}</div>
+        ` : ''}
       </div>`;
-    }).filter(Boolean);
-
-    document.getElementById('parBody').innerHTML = blocos.length
-      ? blocos.join('')
-      : '<div class="par-vazio">Nenhuma observação textual registrada para esta inscrição.</div>';
+    }).join('');
   }
 
   document.getElementById('overlayPar').classList.add('open');
@@ -4765,27 +4055,6 @@ function filterPortal(val) {
 let currentPortalFilter = '';
 let portalStateLoading = false;
 
-function setPortalQuickFiltersState(filter, counts = {}) {
-  const activeFilter = filter || '';
-  const quickButtons = {
-    '': document.getElementById('portalQuickAll'),
-    done: document.getElementById('portalQuickDone'),
-    pending: document.getElementById('portalQuickPending'),
-  };
-  Object.entries(quickButtons).forEach(([key, el]) => {
-    if (el) el.classList.toggle('active', key === activeFilter);
-  });
-  const allCount = counts.total ?? 0;
-  const doneCount = counts.done ?? 0;
-  const pendingCount = counts.pending ?? 0;
-  const allCountEl = document.getElementById('portalQuickAllCount');
-  const doneCountEl = document.getElementById('portalQuickDoneCount');
-  const pendingCountEl = document.getElementById('portalQuickPendingCount');
-  if (allCountEl) allCountEl.textContent = String(allCount);
-  if (doneCountEl) doneCountEl.textContent = String(doneCount);
-  if (pendingCountEl) pendingCountEl.textContent = String(pendingCount);
-}
-
 function renderPortal() {
   const sel = document.getElementById('simParecerista');
   const parId = currentParId || sel.value;
@@ -4795,7 +4064,6 @@ function renderPortal() {
     document.getElementById('portalSub').textContent = 'Buscando inscrições atribuídas...';
     document.getElementById('portalProgBar').style.width = '0%';
     document.getElementById('portalProgLabel').textContent = 'carregando...';
-    setPortalQuickFiltersState(currentPortalFilter, { total:0, done:0, pending:0 });
     document.getElementById('portalList').innerHTML = `<div style="text-align:center;padding:32px;color:#9AA0A6;font-size:12px">Carregando suas inscrições...</div>`;
     return;
   }
@@ -4805,7 +4073,6 @@ function renderPortal() {
     document.getElementById('portalSub').textContent = 'Portal indisponível';
     document.getElementById('portalProgBar').style.width = '0%';
     document.getElementById('portalProgLabel').textContent = '0 de 0 concluídas';
-    setPortalQuickFiltersState(currentPortalFilter, { total:0, done:0, pending:0 });
     document.getElementById('portalList').innerHTML = `<div style="text-align:center;padding:32px;color:#9AA0A6;font-size:12px">Parecerista não encontrado neste ambiente. Verifique se a base já foi importada e se a distribuição foi gerada.</div>`;
     return;
   }
@@ -4814,29 +4081,25 @@ function renderPortal() {
   if (sel && sel.value !== parId) sel.value = parId;
   document.getElementById('portalNome').textContent = par.nome;
 
-  const minhasAtivas = getAtribAtivas(parId);
-  const minhasVisiveis = getAtribVisiveisNoPortal(parId);
-  const pendenciasTecnicas = getVideoIssueReportsByReviewer(parId).length;
-  document.getElementById('portalSub').textContent = `${par.email} · ${minhasAtivas.length} inscrições ativas${pendenciasTecnicas ? ` · ${pendenciasTecnicas} pendência${pendenciasTecnicas === 1 ? '' : 's'} técnica${pendenciasTecnicas === 1 ? '' : 's'}` : ''}`;
+  const minhas = getAtrib(parId);
+  document.getElementById('portalSub').textContent = `${par.email} · ${minhas.length} inscrições atribuídas`;
 
-  const done = minhasVisiveis.filter(id => isEvaluationConcluded(parId, id)).length;
-  const pending = Math.max(0, minhasVisiveis.length - done);
-  const pct = minhasAtivas.length ? Math.round(done/minhasAtivas.length*100) : 0;
+  const done = minhas.filter(id => avaliacoes[parId]?.[id]?.done).length;
+  const pct = minhas.length ? Math.round(done/minhas.length*100) : 0;
   document.getElementById('portalProgBar').style.width = pct + '%';
-  document.getElementById('portalProgLabel').textContent = `${done} de ${minhasAtivas.length} concluídas`;
-  setPortalQuickFiltersState(currentPortalFilter, { total:minhasVisiveis.length, done, pending });
+  document.getElementById('portalProgLabel').textContent = `${done} de ${minhas.length} concluídas`;
 
   if (!INSCRICOES.length) {
     document.getElementById('portalList').innerHTML = `<div style="text-align:center;padding:32px;color:#9AA0A6;font-size:12px">A base deste ambiente ainda não foi persistida para o portal do parecerista. Primeiro o admin precisa carregar a base, sincronizar e gerar a distribuição.</div>`;
     return;
   }
 
-  let lista = minhasVisiveis;
-  if (currentPortalFilter === 'done') lista = minhasVisiveis.filter(id => isEvaluationConcluded(parId, id));
-  if (currentPortalFilter === 'pending') lista = minhasVisiveis.filter(id => !isEvaluationConcluded(parId, id));
+  let lista = minhas;
+  if (currentPortalFilter === 'done') lista = minhas.filter(id => avaliacoes[parId]?.[id]?.done);
+  if (currentPortalFilter === 'pending') lista = minhas.filter(id => !avaliacoes[parId]?.[id]?.done);
 
   if (!lista.length) {
-    document.getElementById('portalList').innerHTML = `<div style="text-align:center;padding:32px;color:#9AA0A6;font-size:12px">${minhasVisiveis.length===0?'Nenhuma inscrição atribuída ainda.':'Nenhuma inscrição neste filtro.'}</div>`;
+    document.getElementById('portalList').innerHTML = `<div style="text-align:center;padding:32px;color:#9AA0A6;font-size:12px">${minhas.length===0?'Nenhuma inscrição atribuída ainda.':'Nenhuma inscrição neste filtro.'}</div>`;
     return;
   }
 
@@ -4844,10 +4107,8 @@ function renderPortal() {
     const e = INSCRICOES.find(x => x.id === inscId);
     if (!e) return '';
     const av = avaliacoes[parId]?.[inscId];
-    const isDone = isEvaluationConcluded(parId, inscId);
+    const isDone = !!av?.done;
     const isLastReviewed = lastReviewedPortalInscId === inscId;
-    const videoIssue = getActiveVideoIssue(parId, inscId);
-    const resolvedVideoIssue = !videoIssue && requiresReevaluation(parId, inscId) ? getResolvedVideoIssue(parId, inscId) : null;
     const nota = isDone ? notaGeralAvaliacao(av) : null;
     const notaPct = nota !== null ? Math.max(0, Math.min(100, (nota / 4) * 100)) : 0;
     const notaColor = nota !== null ? corConceitoNota(nota) : '#AECBFA';
@@ -4858,7 +4119,6 @@ function renderPortal() {
       </div>
       <div class="fi-main">
         <div class="fi-head">
-          ${videoIssue ? `<span class="fi-issue-icon" title="Avaliação em análise técnica" aria-hidden="true"><i class="ti ti-alert-triangle"></i></span>` : resolvedVideoIssue ? `<span class="fi-issue-icon" title="Pendência resolvida" aria-hidden="true" style="border-color:#B7DFC5;background:#F3FCF6;color:#1F7A45"><i class="ti ti-refresh"></i></span>` : ''}
           <div class="fi-nome">${displayPersonName(e.lider)}</div>
         </div>
         <div class="fi-meta-row">
@@ -4866,24 +4126,11 @@ function renderPortal() {
           <div class="fi-team">${teamMarker(e.mod)}</div>
         </div>
         <div class="fi-inst">${portalInstitutionLabel(e.inst)}</div>
-        ${videoIssue ? `<div class="fi-last-row"><span class="fi-last-tag" style="background:#FDECEC;color:#B3261E;border-color:#F2B8B5;animation:none">Vídeo com pendência técnica</span></div>` : ''}
         ${isLastReviewed ? `<div class="fi-last-row"><span class="fi-last-tag">Última avaliada</span></div>` : ''}
       </div>
       <div class="fi-side">
         <div class="fi-side-main">
-          ${videoIssue ? `
-            <div class="fi-side-topline">
-              <div class="fi-side-status">
-                <span class="badge b-antecipada">Aguardando vídeo</span>
-              </div>
-            </div>
-            <div class="fi-side-subline"></div>` : resolvedVideoIssue ? `
-            <div class="fi-side-topline">
-              <div class="fi-side-status">
-                <span class="badge b-ok">Avaliar novamente</span>
-              </div>
-            </div>
-            <div class="fi-side-subline"><div class="fi-side-note">Pendência de vídeo resolvida</div></div>` : isDone ? `
+          ${isDone ? `
             <div class="fi-side-topline">
               <div class="fi-score" title="Nota ${fmtNotaGeral(nota)} de 4,0">
                 <div class="fi-score-val">${fmtNotaGeral(nota)}</div>
@@ -5164,6 +4411,8 @@ function confirmExit() {
 // ═══ AUDITORIA ════════════════════════════════════════════
 let logAuditoria = [];
 let logAuditoriaEventos = [];
+let auditoriaPaginaAtual = 0;
+const AUDITORIA_PAGE_SIZE = 50;
 
 function labelAnexo(tipo) {
   const map = {
@@ -5200,50 +4449,24 @@ function emptyAttachmentAuditState() {
   };
 }
 
-function auditRecordKey(registro) {
-  const inicioMs = registro?.inicio ? new Date(registro.inicio).getTime() : 0;
-  const fimMs = registro?.fim ? new Date(registro.fim).getTime() : 0;
-  return `${registro?.parId || ''}::${registro?.inscId || ''}::${inicioMs}::${fimMs}`;
-}
+function auditoriaAttachmentStateForRegistro(registro) {
+  const map = emptyAttachmentAuditState();
+  const inicioMs = registro?.inicio ? new Date(registro.inicio).getTime() : null;
+  const fimMs = registro?.fim ? new Date(registro.fim).getTime() : null;
 
-function buildAuditAttachmentGroups() {
-  const grouped = new Map();
-  (logAuditoriaEventos || []).forEach(evento => {
-    const pairKey = `${evento.parId || ''}::${evento.inscId || ''}`;
-    if (!grouped.has(pairKey)) grouped.set(pairKey, []);
-    grouped.get(pairKey).push({
-      material: evento.material,
-      createdAtMs: evento.createdAt ? new Date(evento.createdAt).getTime() : NaN,
-    });
-  });
-  return grouped;
-}
+  logAuditoriaEventos.forEach(evento => {
+    if (evento.parId !== registro.parId || evento.inscId !== registro.inscId) return;
+    const createdAtMs = evento.createdAt ? new Date(evento.createdAt).getTime() : null;
+    if (!Number.isFinite(createdAtMs)) return;
+    if (Number.isFinite(inicioMs) && createdAtMs < inicioMs) return;
+    if (Number.isFinite(fimMs) && createdAtMs > fimMs) return;
 
-function buildAuditAttachmentLookup(registros) {
-  const grouped = buildAuditAttachmentGroups();
-  const lookup = new Map();
-
-  (registros || []).forEach(registro => {
-    const map = emptyAttachmentAuditState();
-    const inicioMs = registro?.inicio ? new Date(registro.inicio).getTime() : null;
-    const fimMs = registro?.fim ? new Date(registro.fim).getTime() : null;
-    const pairKey = `${registro?.parId || ''}::${registro?.inscId || ''}`;
-    const eventos = grouped.get(pairKey) || [];
-
-    eventos.forEach(evento => {
-      if (!Number.isFinite(evento.createdAtMs)) return;
-      if (Number.isFinite(inicioMs) && evento.createdAtMs < inicioMs) return;
-      if (Number.isFinite(fimMs) && evento.createdAtMs > fimMs) return;
-
-      if (evento.material === 'Vídeo criativo') map.video_criativo = true;
-      if (evento.material === 'Roteiro 30s') map.roteiro_30s = true;
-      if (evento.material === 'Campanha multiplataforma') map.campanha_multiplataforma = true;
-    });
-
-    lookup.set(auditRecordKey(registro), map);
+    if (evento.material === 'Vídeo criativo') map.video_criativo = true;
+    if (evento.material === 'Roteiro 30s') map.roteiro_30s = true;
+    if (evento.material === 'Campanha multiplataforma') map.campanha_multiplataforma = true;
   });
 
-  return lookup;
+  return map;
 }
 
 function auditCheckCell(isOn) {
@@ -5257,92 +4480,6 @@ function matchAuditAttachmentFilter(value, isOpen) {
   if (value === 'sim') return !!isOpen;
   if (value === 'nao') return !isOpen;
   return true;
-}
-
-function buildPendingVideoIssueAuditRows() {
-  return (videoIssueReports || [])
-    .filter(report => report?.ativo && report?.status === 'aguardando_verificacao_video')
-    .map(report => ({
-      kind: 'video_issue',
-      parId: report.parId,
-      parNome: report.parNome || '—',
-      inscId: report.inscId,
-      lider: report.lider || '—',
-      inicio: report.reportedAt ? new Date(report.reportedAt) : null,
-      fim: null,
-      duracaoMs: null,
-      nota: null,
-      status: 'pendencia_video',
-      motivoSaida: [report.tipoProblema, report.tentativas, report.comentario].filter(Boolean).join(' · '),
-      anexos: emptyAttachmentAuditState(),
-      reportId: report.id,
-      videoUrl: report.videoUrl || '',
-      sortAt: report.reportedAt ? new Date(report.reportedAt) : new Date(0),
-    }));
-}
-
-function applyAuditQuickFilter(status = 'pendencia_video') {
-  const statusField = document.getElementById('audFiltStatus');
-  if (statusField) statusField.value = status;
-  renderAuditoria();
-}
-
-async function resolveVideoIssueReport(reportId) {
-  const report = (videoIssueReports || []).find(item => item.id === reportId);
-  if (!report || !report.ativo) {
-    notify('Essa pendência técnica já foi tratada ou não está mais disponível.');
-    return;
-  }
-
-  const resolvedAt = new Date().toISOString();
-  (videoIssueReports || []).forEach(item => {
-    if (!item || item.parId !== report.parId || item.inscId !== report.inscId || !item.ativo) return;
-    item.ativo = false;
-    item.status = 'video_verificado';
-    item.resolvedAt = resolvedAt;
-  });
-  report.ativo = false;
-  report.status = 'video_verificado';
-  report.resolvedAt = resolvedAt;
-  queueSystemEvent('video_problema_resolvido', {
-    correlation_id: `video-resolved-${report.id}`,
-    report_id: report.id,
-    parecerista_id: report.parId,
-    par_nome: report.parNome,
-    inscricao_id: report.inscricaoId || fullInscId(report.inscId),
-    lider: report.lider,
-    video_url: report.videoUrl || null,
-    status: report.status,
-    resolved_at: resolvedAt,
-    retorno_preferencial: report.retornoPreferencial || 'mesmo_parecerista',
-  });
-
-  saveAppState();
-  if (isSupabaseConfigured()) {
-    try {
-      showLoadingNudge('Persistindo resolução da pendência...');
-      const persisted = await flushPendingReviewerEvents(
-        report.parId,
-        report.inscricaoId || fullInscId(report.inscId),
-        { syncReason:'video_issue_resolve' }
-      );
-      if (!persisted?.ok) {
-        throw (persisted?.error || new Error(persisted?.reason || 'Falha ao persistir resolução da pendência.'));
-      }
-      hideLoadingNudge(250);
-    } catch (err) {
-      hideLoadingNudge();
-      notify(`A pendência foi resolvida localmente, mas não foi persistida no Supabase: ${err?.message || err}`);
-    }
-  }
-  renderAuditoria();
-  renderResultados();
-  renderPareceristas();
-  renderPortal();
-  if (currentActiveViewName() === 'avaliacao' && currentParId === report.parId && currentInscId === report.inscId) {
-    abrirFicha(report.parId, report.inscId, true);
-  }
-  notify('Pendência técnica resolvida. A avaliação volta ao fluxo do parecerista.');
 }
 
 function registrarAuditoria({ saida, motivoSaida, notas, parecer }) {
@@ -5397,28 +4534,18 @@ async function ensureAuditDataLoaded(force = false) {
   const client = getSupabaseClient();
   if (!client) return false;
 
-  const cachedAuditEvents = remoteAuditEventCache[activeEnvironment] || [];
-  const hasCachedAudit = cachedAuditEvents.length > 0;
   remoteAuditLoading = true;
-  if (!hasCachedAudit) {
-    logAuditoria = [];
-    logAuditoriaEventos = [];
-    videoIssueReports = [];
-  }
+  logAuditoria = [];
+  logAuditoriaEventos = [];
   renderAuditoria();
   try {
-    const createdAfter = force && hasCachedAudit
-      ? remoteAuditCursorByEnvironment[activeEnvironment]
-      : '';
-    const auditData = await fetchAllSupabaseRows(
-      buildRelevantAuditEventsQuery(client, { createdAfter })
+    const auditData = await fetchAllSupabaseRows(() =>
+      client.from('eventos_auditoria').select('*').eq('environment', activeEnvironment).order('created_at', { ascending: false })
     );
-    remoteAuditEventCache[activeEnvironment] = createdAfter
-      ? mergeRemoteAuditEvents(cachedAuditEvents, auditData || [])
-      : mergeRemoteAuditEvents([], auditData || []);
-    rebuildAuditStateFromRemoteEvents(remoteAuditEventCache[activeEnvironment]);
+    logAuditoria = remoteAuditToLocal((auditData || []).filter(r => String(r.event_type || '').startsWith('auditoria_')));
+    logAuditoriaEventos = remoteSystemEventsToLocal((auditData || []).filter(r => String(r.event_type || '') === 'anexo_aberto'));
     environmentAuditReady[activeEnvironment] = true;
-    updateSupabaseStatus(`Auditoria ${createdAfter ? 'atualizada' : 'carregada'} de ${activeEnvironment}.`, 'ok');
+    updateSupabaseStatus(`Auditoria carregada de ${activeEnvironment}.`, 'ok');
     renderAuditoria();
     return true;
   } catch (err) {
@@ -5428,22 +4555,29 @@ async function ensureAuditDataLoaded(force = false) {
     return false;
   } finally {
     remoteAuditLoading = false;
-    renderAuditoria();
   }
 }
 
 function renderAuditoria() {
-  const hasAuditData = logAuditoria.length || logAuditoriaEventos.length || videoIssueReports.length;
-  if (remoteAuditLoading && !hasAuditData) {
+  if (remoteAuditLoading) {
     document.getElementById('audCount').textContent = 'carregando...';
-    document.getElementById('tblAuditoria').innerHTML = `<tr><td colspan="9" style="text-align:center;padding:32px;color:#9AA0A6">Carregando auditoria do ambiente...</td></tr>`;
-    const techAlert = document.getElementById('audTechAlert');
-    if (techAlert) techAlert.style.display = 'none';
+    document.getElementById('tblAuditoria').innerHTML = `<tr><td colspan="12" style="text-align:center;padding:32px;color:#9AA0A6">Carregando auditoria do ambiente...</td></tr>`;
     return;
   }
 
   const filtPar = document.getElementById('audFiltPar')?.value || '';
+  const filtStatus = document.getElementById('audFiltStatus')?.value || '';
+  const filtNota = document.getElementById('audFiltNota')?.value || '';
+  const filtVideo = document.getElementById('audFiltVideo')?.value || '';
+  const filtRoteiro = document.getElementById('audFiltRoteiro')?.value || '';
+  const filtCampanha = document.getElementById('audFiltCampanha')?.value || '';
+  const filtBusca = (document.getElementById('audFiltBusca')?.value || '').toLowerCase();
 
+  // reseta página ao trocar filtros (exceto quando chamado de audSetPagina)
+  if (!renderAuditoria._paginating) auditoriaPaginaAtual = 0;
+  renderAuditoria._paginating = false;
+
+  // atualiza select de pareceristas
   const sel = document.getElementById('audFiltPar');
   if (sel) {
     const cur = sel.value;
@@ -5451,70 +4585,85 @@ function renderAuditoria() {
       pareceristas.map(p => `<option value="${p.id}" ${p.id===cur?'selected':''}>${p.nome}</option>`).join('');
   }
 
-  const pendingVideoRows = buildPendingVideoIssueAuditRows();
-  const techAlert = document.getElementById('audTechAlert');
-  if (techAlert) {
-    techAlert.style.display = pendingVideoRows.length ? 'block' : 'none';
-    techAlert.innerHTML = pendingVideoRows.length
-      ? `<div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 16px;border:1px solid #F2B8B5;background:#FFF5F4">
-          <div style="display:flex;flex-direction:column;gap:4px">
-            <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#B3261E">Ação necessária</div>
-            <div style="font-size:14px;font-weight:700;color:#202124">${pendingVideoRows.length} registro${pendingVideoRows.length === 1 ? '' : 's'} aguardando verificação de vídeo</div>
-            <div style="font-size:12px;line-height:1.55;color:#7A3B36">Esses reportes vieram da ficha do parecerista e exigem atuação administrativa para que a avaliação volte ao fluxo normal.</div>
-          </div>
-          <button class="btn btn-secondary btn-sm" type="button" onclick="applyAuditQuickFilter('pendencia_video')">Ver pendências técnicas</button>
-        </div>`
-      : '';
-  }
-
-  let rows = [
-    ...logAuditoria.map(r => {
-      return {
-        ...r,
-        kind: 'avaliacao',
-        sortAt: r.fim || r.inicio || new Date(0),
-      };
-    }),
-    ...pendingVideoRows,
-  ];
+  let rows = logAuditoria.map(r => {
+    const anexos = auditoriaAttachmentStateForRegistro(r);
+    return {
+      ...r,
+      sortAt: r.fim || r.inicio || new Date(0),
+      anexos,
+    };
+  });
   if (filtPar) rows = rows.filter(r => r.parId === filtPar);
+  if (filtStatus) rows = rows.filter(r => r.status === filtStatus);
+  if (filtNota === 'alta')  rows = rows.filter(r => r.nota !== null && r.nota >= 75);
+  if (filtNota === 'media') rows = rows.filter(r => r.nota !== null && r.nota >= 50 && r.nota < 75);
+  if (filtNota === 'baixa') rows = rows.filter(r => r.nota !== null && r.nota < 50);
+  rows = rows.filter(r => matchAuditAttachmentFilter(filtVideo, r.anexos.video_criativo));
+  rows = rows.filter(r => matchAuditAttachmentFilter(filtRoteiro, r.anexos.roteiro_30s));
+  rows = rows.filter(r => matchAuditAttachmentFilter(filtCampanha, r.anexos.campanha_multiplataforma));
+  if (filtBusca) rows = rows.filter(r =>
+    String(r.lider || '').toLowerCase().includes(filtBusca) ||
+    String(r.inscId || '').includes(filtBusca)
+  );
   rows.sort((a, b) => new Date(b.sortAt || 0) - new Date(a.sortAt || 0));
-  const totalRows = rows.length;
-  const visibleRows = rows.slice(0, AUDIT_MAX_RENDER_ROWS);
 
-  document.getElementById('audCount').textContent = remoteAuditLoading
-    ? `${totalRows} registro${totalRows !== 1 ? 's' : ''} · atualizando...`
-    : `${totalRows} registro${totalRows !== 1 ? 's' : ''}`;
+  const totalRows = rows.length;
+  const totalPages = Math.max(1, Math.ceil(totalRows / AUDITORIA_PAGE_SIZE));
+  auditoriaPaginaAtual = Math.min(auditoriaPaginaAtual, totalPages - 1);
+  const pageStart = auditoriaPaginaAtual * AUDITORIA_PAGE_SIZE;
+  const pageRows = rows.slice(pageStart, pageStart + AUDITORIA_PAGE_SIZE);
+
+  document.getElementById('audCount').textContent = `${totalRows} registro${totalRows !== 1 ? 's' : ''}`;
 
   const fmt = d => d ? d.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit',second:'2-digit'}) : '—';
   const fmtData = d => d ? d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}) : '—';
 
-  const statusLabel = { concluida:'Concluída', saida_antecipada:'Saída antecipada', rascunho:'Rascunho', pendencia_video:'Pendência técnica' };
-  const statusCls   = { concluida:'b-concluida', saida_antecipada:'b-antecipada', rascunho:'b-rascunho', pendencia_video:'b-pend' };
+  const statusLabel = { concluida:'Concluída', saida_antecipada:'Saída antecipada', rascunho:'Rascunho' };
+  const statusCls   = { concluida:'b-concluida', saida_antecipada:'b-antecipada', rascunho:'b-rascunho' };
 
-  document.getElementById('tblAuditoria').innerHTML = visibleRows.length === 0
-    ? `<tr><td colspan="9" style="text-align:center;padding:32px;color:#BDC1C6">Nenhum registro de auditoria ainda. As avaliações salvas aparecerão aqui.</td></tr>`
-    : visibleRows.map(r => `
+  document.getElementById('tblAuditoria').innerHTML = pageRows.length === 0
+    ? `<tr><td colspan="12" style="text-align:center;padding:32px;color:#BDC1C6">Nenhum registro de auditoria ainda. As avaliações salvas aparecerão aqui.</td></tr>`
+    : pageRows.map(r => `
       <tr>
         <td style="font-weight:500;color:#202124">${r.parNome}</td>
         <td>${r.lider}</td>
         <td style="font-family:monospace;font-size:11px;color:#1A73E8">PPA2026-${r.inscId}</td>
         <td style="font-size:11px;color:#5F6368">${fmtData(r.inicio)} ${fmt(r.inicio)}</td>
         <td style="font-size:11px;color:#5F6368">${fmtData(r.fim)} ${fmt(r.fim)}</td>
-        <td class="${typeof r.duracaoMs === 'number' ? (r.duracaoMs >= TEMPO_MINIMO ? 'dur-ok' : 'dur-low') : ''}">${typeof r.duracaoMs === 'number' ? formatDuracao(r.duracaoMs) : '—'}</td>
+        <td class="${r.duracaoMs >= TEMPO_MINIMO ? 'dur-ok' : 'dur-low'}">${formatDuracao(r.duracaoMs)}</td>
         <td>${r.nota !== null ? `<span style="font-size:14px;font-weight:600;color:#202124">${r.nota}</span>` : '<span style="color:#DADCE0">—</span>'}</td>
+        <td style="text-align:center">${auditCheckCell(r.anexos.video_criativo)}</td>
+        <td style="text-align:center">${auditCheckCell(r.anexos.roteiro_30s)}</td>
+        <td style="text-align:center">${auditCheckCell(r.anexos.campanha_multiplataforma)}</td>
         <td><span class="badge ${statusCls[r.status]}">${statusLabel[r.status]}</span></td>
-        <td style="font-size:11px;color:#9AA0A6;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-          ${r.kind === 'video_issue'
-            ? `<button class="btn btn-secondary btn-sm" type="button" onclick="resolveVideoIssueReport('${r.reportId}')" style="min-height:28px">Marcar vídeo verificado</button>`
-            : (r.motivoSaida || '—')}
-        </td>
+        <td style="font-size:11px;color:#9AA0A6;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.motivoSaida || '—'}</td>
       </tr>`).join('');
+
+  const paginacao = document.getElementById('audPaginacao');
+  if (paginacao) {
+    if (totalPages <= 1) {
+      paginacao.style.display = 'none';
+    } else {
+      paginacao.style.display = 'flex';
+      paginacao.innerHTML = `
+        <button class="btn btn-secondary btn-sm" onclick="audSetPagina(${auditoriaPaginaAtual - 1})" ${auditoriaPaginaAtual === 0 ? 'disabled' : ''}>← Anterior</button>
+        <span style="font-size:13px;color:var(--text-muted,#5F6368)">Página ${auditoriaPaginaAtual + 1} de ${totalPages} &nbsp;·&nbsp; registros ${pageStart + 1}–${Math.min(pageStart + AUDITORIA_PAGE_SIZE, totalRows)} de ${totalRows}</span>
+        <button class="btn btn-secondary btn-sm" onclick="audSetPagina(${auditoriaPaginaAtual + 1})" ${auditoriaPaginaAtual >= totalPages - 1 ? 'disabled' : ''}>Próxima →</button>
+      `;
+    }
+  }
+}
+
+function audSetPagina(pagina) {
+  auditoriaPaginaAtual = pagina;
+  renderAuditoria._paginating = true;
+  renderAuditoria();
 }
 
 function exportAuditoria() {
-  const h = 'Parecerista,Candidato,ID,Data início,Hora início,Hora fim,Duração (s),Nota,Status,Obs. saída';
+  const h = 'Parecerista,Candidato,ID,Data início,Hora início,Hora fim,Duração (s),Nota,Video aberto,Roteiro aberto,Campanha aberta,Status,Obs. saída';
   const rows = logAuditoria.map(r => {
+    const anexos = auditoriaAttachmentStateForRegistro(r);
     return [
       r.parNome, r.lider, 'PPA2026-'+r.inscId,
       r.inicio?.toLocaleDateString('pt-BR')||'',
@@ -5522,6 +4671,9 @@ function exportAuditoria() {
       r.fim?.toLocaleTimeString('pt-BR')||'',
       Math.floor(r.duracaoMs/1000),
       r.nota ?? '',
+      anexos.video_criativo ? 'sim' : 'nao',
+      anexos.roteiro_30s ? 'sim' : 'nao',
+      anexos.campanha_multiplataforma ? 'sim' : 'nao',
       r.status,
       r.motivoSaida
     ];
@@ -5543,13 +4695,10 @@ function setLayout(mode) {
 }
 
 let currentLayout = 'split';
-function avalGridHTML(e, mode, context = 'avaliacao') {
+function avalGridHTML(e, mode) {
   // mode: 'seq' = 3 colunas | 'split' = 1 coluna (painel lateral)
   const isSplit = mode === 'split';
-  const showVideoSupport = context === 'avaliacao';
   const links = materialLinks(e);
-  const activeVideoIssue = showVideoSupport && currentParId ? getActiveVideoIssue(currentParId, e.id) : null;
-  const resolvedVideoIssue = showVideoSupport && currentParId && !activeVideoIssue && requiresReevaluation(currentParId, e.id) ? getResolvedVideoIssue(currentParId, e.id) : null;
 
   const objetivos = e._raw?.['Objetivos da campanha'] || e._raw?.['Objetivos'] || e._raw?.['objetivos'] || 'Aumentar o reconhecimento do papel da educação como motor de transformação social, atingindo jovens de 16 a 25 anos em plataformas digitais e TV aberta.';
   const estrategia = e._raw?.['Estratégia de distribuição'] || e._raw?.['Estrategia de distribuicao'] || e._raw?.['estrategia'] || 'Distribuição integrada via Globoplay, Instagram, TikTok e inserções no Jornal Nacional, com peça de 30s e campanha multiplataforma ativada em sequência.';
@@ -5599,24 +4748,10 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
 
       <div class="split-materials-wrap">
         <div class="split-materials-list">
-          ${materialButtonHTML({ url: links.video, label: 'Vídeo', icon: 'ti-player-play', tipo: 'video_criativo', inscricaoId: e.id, openInModal: showVideoSupport })}
-          ${materialButtonHTML({ url: links.roteiro30, label: 'Roteiro 30s', icon: 'ti-file', tipo: 'roteiro_30s', inscricaoId: e.id, openInModal: showVideoSupport })}
-          ${materialButtonHTML({ url: links.campanha, label: 'Campanha', icon: 'ti-file', tipo: 'campanha_multiplataforma', inscricaoId: e.id, openInModal: showVideoSupport })}
+          ${links.video ? `<a class="mat-btn" href="${links.video}" ${isVideoUrl(links.video) ? '' : 'target="_blank" rel="noopener noreferrer"'} data-anexo="video_criativo" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="if(isVideoUrl(this.href)){openVideoModal(this.href,'Vídeo · ${e.lider}');registrarCliqueAnexoFromLink(this);return false;}return registrarCliqueAnexoFromLink(this)"><i class="ti ti-player-play" style="font-size:13px"></i>Vídeo</a>` : ''}
+          ${links.roteiro30 ? `<a class="mat-btn" href="${links.roteiro30}" target="_blank" rel="noopener noreferrer" data-anexo="roteiro_30s" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file-type-pdf" style="font-size:13px"></i>Roteiro 30s</a>` : ''}
+          ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer" data-anexo="campanha_multiplataforma" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file-type-pdf" style="font-size:13px"></i>Campanha</a>` : ''}
         </div>
-        ${showVideoSupport ? `
-          ${activeVideoIssue ? `
-            <div style="padding:11px 12px;border:1px solid #F2B8B5;background:#FFF5F4;font-size:11.5px;line-height:1.55;color:#7A3B36">
-              Problema já reportado para este vídeo: <strong>${activeVideoIssue.tipoProblema}</strong>. Esta avaliação continua na sua lista e fica posicionada ao final até a verificação técnica.
-            </div>
-          ` : resolvedVideoIssue ? `
-            <div style="padding:11px 12px;border:1px solid #C7E7D1;background:#F3FCF6;font-size:11.5px;line-height:1.55;color:#1F5F3A">
-              <strong>Pendência resolvida.</strong> O vídeo foi verificado pela equipe e esta ficha voltou para a sua fila para <strong>avaliar novamente</strong>.
-            </div>
-          ` : ''}
-          <div class="split-video-tools">
-            <div class="split-video-tools-note">${activeVideoIssue ? 'O reporte registra uma pausa técnica, mantém esta ficha na sua lista e reposiciona a avaliação para o final da fila.' : resolvedVideoIssue ? 'Agora a avaliação pode seguir normalmente, com o vídeo já liberado para análise.' : 'Se houver falha de acesso ao vídeo, use o reporte técnico para pausar a ficha sem perder o fluxo de trabalho.'}</div>
-          </div>
-        ` : ''}
         <div class="ia-note split-ia-note" id="avalIASplit"></div>
       </div>
 
@@ -5649,9 +4784,9 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
     <div class="field s3">
       <div class="mfl">Materiais</div>
       <div class="materiais">
-        ${materialButtonHTML({ url: links.video, label: 'Vídeo criativo', icon: 'ti-player-play', tipo: 'video_criativo', inscricaoId: e.id, openInModal: showVideoSupport })}
-        ${materialButtonHTML({ url: links.roteiro30, label: 'Roteiro 30s', icon: 'ti-file', tipo: 'roteiro_30s', inscricaoId: e.id, openInModal: showVideoSupport })}
-        ${materialButtonHTML({ url: links.campanha, label: 'Campanha', icon: 'ti-file', tipo: 'campanha_multiplataforma', inscricaoId: e.id, openInModal: showVideoSupport })}
+        ${links.video ? `<a class="mat-btn" href="${links.video}" ${isVideoUrl(links.video) ? '' : 'target="_blank" rel="noopener noreferrer"'} data-anexo="video_criativo" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="if(isVideoUrl(this.href)){openVideoModal(this.href,'Vídeo criativo · ${e.lider}');registrarCliqueAnexoFromLink(this);return false;}return registrarCliqueAnexoFromLink(this)"><i class="ti ti-player-play" style="font-size:13px"></i>Vídeo criativo</a>` : ''}
+        ${links.roteiro30 ? `<a class="mat-btn" href="${links.roteiro30}" target="_blank" rel="noopener noreferrer" data-anexo="roteiro_30s" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file-type-pdf" style="font-size:13px"></i>Roteiro 30s</a>` : ''}
+        ${links.campanha ? `<a class="mat-btn" href="${links.campanha}" target="_blank" rel="noopener noreferrer" data-anexo="campanha_multiplataforma" data-origem="ficha_avaliacao" data-inscricao="${e.id}" onclick="return registrarCliqueAnexoFromLink(this)"><i class="ti ti-file-type-pdf" style="font-size:13px"></i>Campanha</a>` : ''}
       </div>
     </div>
     <div class="field s3"><div class="mfl">Defesa conceitual</div><div class="mfv-light">${e.defesa}</div></div>
@@ -5699,7 +4834,7 @@ function scrollAppTop() {
 }
 
 function atualizarBotoesEdicao(av) {
-  const visible = !!av?.done && !requiresReevaluation(currentParId, currentInscId);
+  const visible = !!av?.done;
   const display = visible ? 'inline-flex' : 'none';
   const topBtn = document.getElementById('btnEditarAvaliacao');
   const footerBtn = document.getElementById('btnEditarAvaliacaoFooter');
@@ -5786,10 +4921,9 @@ function abrirFicha(parId, inscId, abrirEmEdicao = false) {
   const e = INSCRICOES.find(x => x.id === inscId);
   const par = pareceristas.find(p => p.id === parId);
   const av = avaliacoes[parId]?.[inscId];
-  const effectiveDone = isEvaluationConcluded(parId, inscId);
-  avaliacaoOriginalConcluida = effectiveDone;
+  avaliacaoOriginalConcluida = !!av?.done;
 
-  updateAvaliacaoStatus(effectiveDone);
+  updateAvaliacaoStatus(!!av?.done);
   atualizarBotoesEdicao(av);
 
   document.getElementById('avalGridSeq').innerHTML = avalGridHTML(e, 'seq');
@@ -5803,10 +4937,10 @@ function abrirFicha(parId, inscId, abrirEmEdicao = false) {
   document.getElementById('parecerGeralSplit').value = av?.parecer || '';
 
   // se já foi concluída, não reinicia o timer
-  if (!effectiveDone) iniciarTimer();
+  if (!av?.done) iniciarTimer();
   else { fichaTempoOk = true; fichaStartTime = fichaStartTime || new Date(); }
 
-  avaliacaoEmEdicao = !effectiveDone || abrirEmEdicao;
+  avaliacaoEmEdicao = !av?.done || abrirEmEdicao;
   setEditLockedState(false);
   setCamposAvaliacaoHabilitados(avaliacaoEmEdicao);
 
@@ -5837,30 +4971,6 @@ function updateFooter() {
     if (!card) return;
     if (notas[i]) card.classList.remove('is-missing');
   });
-
-  const footerNote = document.getElementById('footerAvaliacaoNote');
-  if (footerNote && currentParId) {
-    const atribuicoesParecerista = getAtribAtivas(currentParId);
-    const pendenciasTecnicas = getVideoIssueReportsByReviewer(currentParId).length;
-    const totalAtribuidas = atribuicoesParecerista.length;
-    const concluidas = atribuicoesParecerista.filter(id => isEvaluationConcluded(currentParId, id)).length;
-    const atualConcluida = isEvaluationConcluded(currentParId, currentInscId);
-    const restante = atribuicoesParecerista.filter(id => !isEvaluationConcluded(currentParId, id)).length;
-    const percentual = totalAtribuidas ? Math.round((concluidas / totalAtribuidas) * 100) : 0;
-    const avaliacaoAtual = totalAtribuidas ? Math.min(totalAtribuidas, Math.max(1, concluidas + (atualConcluida ? 0 : 1))) : 0;
-    footerNote.innerHTML = totalAtribuidas
-      ? `<div class="footer-note-line">
-          <span class="footer-note-chunk">Avaliação <strong>${avaliacaoAtual}/${totalAtribuidas}</strong></span>
-          <span class="footer-note-sep">·</span>
-          <span class="footer-note-chunk"><strong>${percentual}%</strong> concluído</span>
-          <span class="footer-note-sep">·</span>
-          <span class="footer-note-chunk">${atualConcluida ? 'Restam' : 'Faltam'} <strong>${restante}</strong> ${restante === 1 ? 'avaliação' : 'avaliações'}</span>
-          ${pendenciasTecnicas ? `<span class="footer-note-sep">·</span><span class="footer-note-chunk"><strong>${pendenciasTecnicas}</strong> pendência${pendenciasTecnicas === 1 ? '' : 's'} técnica${pendenciasTecnicas === 1 ? '' : 's'}</span>` : ''}
-        </div>`
-      : (pendenciasTecnicas
-          ? `<div class="footer-note-line"><span class="footer-note-chunk"><strong>${pendenciasTecnicas}</strong> pendência${pendenciasTecnicas === 1 ? '' : 's'} técnica${pendenciasTecnicas === 1 ? '' : 's'} aguardando verificação do vídeo</span></div>`
-          : '');
-  }
 }
 
 function destacarCriteriosPendentes(prefix, notas) {
@@ -5878,15 +4988,15 @@ function destacarCriteriosPendentes(prefix, notas) {
 }
 
 function proximaInscricaoDoParecerista(parId, inscIdAtual) {
-  const atribuidaAoParecerista = getAtribAtivas(parId);
+  const atribuidaAoParecerista = getAtrib(parId);
   if (!atribuidaAoParecerista.length) return null;
 
   const idxAtual = atribuidaAoParecerista.indexOf(inscIdAtual);
   const depoisDaAtual = idxAtual >= 0 ? atribuidaAoParecerista.slice(idxAtual + 1) : atribuidaAoParecerista;
-  const pendenteDepois = depoisDaAtual.find(id => !isEvaluationConcluded(parId, id));
+  const pendenteDepois = depoisDaAtual.find(id => !avaliacoes[parId]?.[id]?.done);
   if (pendenteDepois) return pendenteDepois;
 
-  const qualquerPendente = atribuidaAoParecerista.find(id => id !== inscIdAtual && !isEvaluationConcluded(parId, id));
+  const qualquerPendente = atribuidaAoParecerista.find(id => id !== inscIdAtual && !avaliacoes[parId]?.[id]?.done);
   if (qualquerPendente) return qualquerPendente;
 
   return null;
@@ -5894,7 +5004,8 @@ function proximaInscricaoDoParecerista(parId, inscIdAtual) {
 
 function isEditingPreviouslyCompletedEvaluation(parId = currentParId, inscId = currentInscId) {
   if (!avaliacaoEmEdicao) return false;
-  return isEvaluationConcluded(parId, inscId) || avaliacaoOriginalConcluida;
+  const av = avaliacoes[parId]?.[inscId];
+  return !!av?.done || avaliacaoOriginalConcluida;
 }
 
 async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
@@ -5939,14 +5050,7 @@ async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
   }
 
   if (!avaliacoes[parId]) avaliacoes[parId] = {};
-  avaliacoes[parId][inscId] = {
-    notas,
-    justificativas,
-    parecer,
-    done,
-    motivoCurtaDuracao,
-    updatedAt: new Date().toISOString(),
-  };
+  avaliacoes[parId][inscId] = { notas, justificativas, parecer, done, motivoCurtaDuracao };
   lastReviewedPortalInscId = inscId;
 
   if (editingConcluded) {
@@ -6007,7 +5111,7 @@ async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
 }
 
 function salvarAvaliacao() {
-  if (isEvaluationConcluded(currentParId, currentInscId) && !avaliacaoEmEdicao) {
+  if (avaliacoes[currentParId]?.[currentInscId]?.done && !avaliacaoEmEdicao) {
     setEditLockedState(true);
     acionarNudgeEditar();
     mostrarHintEditar();
@@ -6035,7 +5139,7 @@ function voltarPortal() {
 }
 
 document.addEventListener('click', (event) => {
-  const bloqueado = isEvaluationConcluded(currentParId, currentInscId) && !avaliacaoEmEdicao;
+  const bloqueado = avaliacoes[currentParId]?.[currentInscId]?.done && !avaliacaoEmEdicao;
   if (!bloqueado) return;
   const target = event.target;
   if (!(target instanceof Element)) return;
@@ -6089,7 +5193,6 @@ let baseLoadRetryTimer = null;
 let persistenceMode = 'local';
 let activeEnvironment = 'homolog';
 let environmentBaseFiles = { homolog: ARQUIVO_PADRAO_HOMOLOG, producao: ARQUIVO_PADRAO };
-let selectedLocalBaseNames = { homolog:'', producao:'' };
 let environmentThemePrefs = {
   homolog: { theme:'default', dark:false },
   producao: { theme:'default', dark:false },
@@ -6099,6 +5202,7 @@ let supabaseClient = null;
 let remoteStateLoaded = false;
 let carregandoEstadoRemoto = false;
 let remoteSyncTimer = null;
+let anexoFlushTimer = null;
 let remoteSyncQueued = false;
 let remoteSyncInFlight = false;
 let remoteRefreshInFlight = false;
@@ -6118,19 +5222,7 @@ let themeRemoteSyncTimer = null;
 let remoteThemePersistInFlight = false;
 let remoteBootWatchdog = null;
 let remoteAuditLoading = false;
-let remoteAuditEventCache = { homolog:[], producao:[] };
-let remoteAuditCursorByEnvironment = { homolog:'', producao:'' };
 const REMOTE_REFRESH_MIN_INTERVAL_MS = 12000;
-const AUDIT_RECENT_EVENT_LIMIT = 1200;
-const AUDIT_MAX_RENDER_ROWS = 300;
-const AUDIT_RELEVANT_EVENT_TYPES = [
-  'auditoria_concluida',
-  'auditoria_saida_antecipada',
-  'auditoria_rascunho',
-  'anexo_aberto',
-  'video_problema_reportado',
-  'video_problema_resolvido',
-];
 
 function getAppStateStorageKey() {
   return `${STORAGE_KEY}_${activeEnvironment}`;
@@ -6283,56 +5375,8 @@ async function runSupabaseQuery(queryPromise) {
   return result?.data;
 }
 
-function buildConflictKey(row, keyFields = []) {
-  return keyFields.map(field => String(row?.[field] ?? '').trim()).join('::');
-}
-
-function findDuplicateConflictRows(rows, keyFields = []) {
-  const seen = new Map();
-  const duplicates = [];
-  (rows || []).forEach(row => {
-    const key = buildConflictKey(row, keyFields);
-    if (!key) return;
-    const current = seen.get(key);
-    if (current) {
-      current.count += 1;
-      if (!current.duplicateRow) current.duplicateRow = row;
-      return;
-    }
-    seen.set(key, { key, row, count:1, duplicateRow:null });
-  });
-  seen.forEach(entry => {
-    if (entry.count > 1) duplicates.push(entry);
-  });
-  return duplicates;
-}
-
-function assertNoDuplicateConflictRows(rows, keyFields, label, describeRow) {
-  const duplicates = findDuplicateConflictRows(rows, keyFields);
-  if (!duplicates.length) return;
-  const sample = duplicates[0];
-  const sampleText = describeRow
-    ? describeRow(sample.row, sample.key)
-    : sample.key;
-  const extraCount = duplicates.length - 1;
-  const detail = extraCount > 0
-    ? ` Há mais ${extraCount} chave(s) repetida(s) no mesmo lote.`
-    : '';
-  const error = new Error(`Falha ao importar base: há registros duplicados em ${label}. Exemplo: ${sampleText}.${detail}`);
-  error.code = 'LOCAL_DUPLICATE_CONFLICT';
-  error.duplicateLabel = label;
-  error.duplicateKey = sample.key;
-  throw error;
-}
-
 async function syncAtribuicoesSnapshot(client, atribRows, reason) {
   if (!atribRows.length) return;
-  assertNoDuplicateConflictRows(
-    atribRows,
-    ['environment', 'inscricao_id_externo', 'parecerista_id_externo'],
-    'atribuições',
-    row => `inscrição ${row.inscricao_id_externo} com parecerista ${row.parecerista_id_externo}`
-  );
   try {
     await runSupabaseQuery(
       client.from('atribuicoes').upsert(atribRows, {
@@ -6405,28 +5449,6 @@ function getSupabaseClient(env = activeEnvironment) {
   return supabaseClient;
 }
 
-function getSupabaseFunctionsBaseUrl() {
-  if (!hasSupabaseCredentials()) return '';
-  return `${String(supabaseSettings.url || '').trim()}/functions/v1`;
-}
-
-function shouldUseAttachmentProxy(url = '') {
-  if (!hasSupabaseCredentials()) return false;
-  try {
-    const parsed = new URL(String(url || '').trim());
-    return parsed.protocol === 'https:' && parsed.hostname === 'inscricoes.led.globo';
-  } catch {
-    return false;
-  }
-}
-
-function buildAttachmentProxyUrl(url = '') {
-  if (!shouldUseAttachmentProxy(url)) return String(url || '').trim();
-  const base = getSupabaseFunctionsBaseUrl();
-  if (!base) return String(url || '').trim();
-  return `${base}/file-proxy?url=${encodeURIComponent(String(url || '').trim())}`;
-}
-
 function updateSupabaseStatus(msg, tone) {
   const el = document.getElementById('sbStatus');
   if (!el) return;
@@ -6440,74 +5462,10 @@ function populateSupabaseSettingsForm() {
   document.getElementById('sbBaseName').value = activeBaseFile();
   document.getElementById('sbProjectUrl').value = supabaseSettings.url || '';
   document.getElementById('sbAnonKey').value = supabaseSettings.anonKey || '';
-  updateSelectedBaseMeta();
   updateSupabaseStatus(
     isSupabaseConfigured() ? `Supabase ${activeEnvironment} configurado.` : 'Persistência local ativa.',
     isSupabaseConfigured() ? 'ok' : 'muted'
   );
-}
-
-function updateSelectedBaseMeta() {
-  const meta = document.getElementById('sbSelectedBaseMeta');
-  if (!meta) return;
-  const fileName = selectedLocalBaseNames[activeEnvironment] || '';
-  meta.textContent = fileName
-    ? `Arquivo local selecionado nesta sessão: ${fileName}. Se quiser persistir no ambiente, clique em "Importar base local para o ambiente".`
-    : 'Nenhum arquivo local selecionado nesta sessão.';
-}
-
-function triggerBaseFilePicker() {
-  document.getElementById('sbBaseFileInput')?.click();
-}
-
-async function handleSelectedBaseFile(event) {
-  const input = event?.target;
-  const file = input?.files?.[0];
-  if (!file) return;
-
-  try {
-    const lowerName = String(file.name || '').toLowerCase();
-    const isCsv = lowerName.endsWith('.csv');
-    if (!isCsv && typeof XLSX === 'undefined') {
-      throw new Error('O leitor de planilhas ainda não está pronto. Aguarde alguns segundos e tente novamente.');
-    }
-
-    const previousRawRows = rawRows;
-    const previousRawParticipantes = rawParticipantes;
-    const previousBaseConfirmada = baseConfirmada;
-
-    if (isCsv) {
-      const csvText = await file.text();
-      carregarCsvTexto(csvText);
-    } else {
-      const buffer = await file.arrayBuffer();
-      const wb = XLSX.read(buffer, { type:'array', cellDates:true });
-      carregarWorkbook(wb);
-    }
-
-    const confirmed = confirmarBase({
-      notifySuccess:false,
-      syncRemote:false,
-      rerender:true,
-      persistLocal:true,
-    });
-
-    if (!confirmed) {
-      rawRows = previousRawRows;
-      rawParticipantes = previousRawParticipantes;
-      baseConfirmada = previousBaseConfirmada;
-      throw new Error('Não foi possível confirmar a base selecionada.');
-    }
-
-    selectedLocalBaseNames[activeEnvironment] = file.name;
-    updateSelectedBaseMeta();
-    notify(`Base local carregada: ${file.name}. Revise os dados e, se estiver tudo certo, importe para ${activeEnvironment}.`);
-  } catch (err) {
-    console.error('Falha ao carregar arquivo selecionado:', err);
-    notify(`Falha ao carregar o arquivo selecionado: ${err.message || err}`);
-  } finally {
-    if (input) input.value = '';
-  }
 }
 
 function hydrateSupabaseSettings() {
@@ -6607,15 +5565,12 @@ function resetRuntimeStateForEnvironment() {
   logAuditoriaEventos = [];
   rawRows = [];
   rawParticipantes = [];
-  videoIssueReports = [];
   baseConfirmada = false;
   carregandoBasePadrao = false;
   falhaCargaBasePadrao = false;
   currentImportHash = null;
   environmentAuditReady[activeEnvironment] = false;
   remoteAuditLoading = false;
-  remoteAuditEventCache[activeEnvironment] = [];
-  remoteAuditCursorByEnvironment[activeEnvironment] = '';
   pendingDistributionSnapshot = null;
   window.__pendingSystemEvents = [];
   lastLocalAdminMutationAt = 0;
@@ -6876,7 +5831,6 @@ function avaliacoesPayload() {
         motivo_curta_duracao: av.motivoCurtaDuracao || null,
         notas_json: av.notas || [],
         justificativas_json: av.justificativas || [],
-        updated_at: av.updatedAt || new Date().toISOString(),
       });
       (av.notas || []).forEach((nota, idx) => {
         criterios.push({
@@ -7001,7 +5955,7 @@ async function persistReviewerEvaluationToSupabase(parId, inscId, options = {}) 
         motivo_curta_duracao: av.motivoCurtaDuracao || null,
         notas_json: av.notas || [],
         justificativas_json: av.justificativas || [],
-        updated_at: av.updatedAt || new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       };
       const { error: evalUpsertError } = await client
         .from('avaliacoes')
@@ -7206,49 +6160,6 @@ async function syncStateToSupabase(reason) {
     const auditRows = [...auditoriaPayload(), ...((window.__pendingSystemEvents || []))];
     const syncCanReplaceAssignments = ['distribution_update', 'manual_import'].includes(reason);
 
-    assertNoDuplicateConflictRows(
-      inscRows,
-      ['environment', 'id_externo'],
-      'inscrições',
-      row => row.id_externo || 'ID externo ausente'
-    );
-    assertNoDuplicateConflictRows(
-      partRows,
-      ['environment', 'inscricao_id_externo', 'papel', 'ordem'],
-      'participações',
-      row => `${row.inscricao_id_externo} · ${row.papel} · ordem ${row.ordem}`
-    );
-    assertNoDuplicateConflictRows(
-      parsRows,
-      ['environment', 'id_externo'],
-      'pareceristas',
-      row => `${row.nome || 'Sem nome'} (${row.id_externo || 'sem id'})`
-    );
-    assertNoDuplicateConflictRows(
-      atribRows,
-      ['environment', 'inscricao_id_externo', 'parecerista_id_externo'],
-      'atribuições',
-      row => `${row.inscricao_id_externo} · ${row.parecerista_id_externo}`
-    );
-    assertNoDuplicateConflictRows(
-      avRows,
-      ['environment', 'inscricao_id_externo', 'parecerista_id_externo'],
-      'avaliações',
-      row => `${row.inscricao_id_externo} · ${row.parecerista_id_externo}`
-    );
-    assertNoDuplicateConflictRows(
-      criterios,
-      ['environment', 'inscricao_id_externo', 'parecerista_id_externo', 'criterio_ordem'],
-      'critérios de avaliação',
-      row => `${row.inscricao_id_externo} · ${row.parecerista_id_externo} · critério ${row.criterio_ordem}`
-    );
-    assertNoDuplicateConflictRows(
-      auditRows,
-      ['environment', 'event_type', 'correlation_id'],
-      'eventos de auditoria',
-      row => `${row.event_type || 'evento'} · ${row.correlation_id || 'sem correlação'}`
-    );
-
     await runSupabaseQuery(
       client.from('inscricoes').upsert(inscRows, { onConflict:'environment,id_externo' })
     );
@@ -7384,13 +6295,12 @@ async function refreshStateFromSupabaseInBackground() {
   remoteRefreshInFlight = true;
   lastRemoteRefreshAt = Date.now();
   try {
-    const auditViewActive = activeView === 'auditoria';
     const loaded = await loadStateFromSupabase({
       includeAudit: false,
       includeCriteria: false,
+      skipInscricoes: true,
     });
     if (!loaded) return false;
-    if (auditViewActive) await ensureAuditDataLoaded(true);
     renderPareceristas();
     renderResultados();
     renderDashboard();
@@ -7496,13 +6406,7 @@ async function importActiveBaseToSupabase() {
   }
 }
 
-function requestRemoteEnvironmentReset() {
-  openAuthPrompt('admin', {
-    afterSuccess: () => resetRemoteEnvironmentConfirmed(),
-  });
-}
-
-async function resetRemoteEnvironmentConfirmed() {
+async function resetRemoteEnvironment() {
   if (persistenceMode !== 'supabase' || !isSupabaseConfigured()) {
     notify('Configure o Supabase antes de zerar o ambiente remoto.');
     return;
@@ -7562,90 +6466,6 @@ function remoteSystemEventsToLocal(events) {
       url: payload.url || '',
     };
   });
-}
-
-function remoteVideoIssueReportsToLocal(events) {
-  const latestByKey = new Map();
-  (events || []).forEach(row => {
-    const payload = row.payload_json || {};
-    const fullId = row.inscricao_id || payload.inscricao_id || '';
-    const inscId = fullId ? shortInscId(fullId) : '';
-    const parId = row.parecerista_id || payload.parecerista_id || row.actor_id || '';
-    if (!parId || !inscId) return;
-
-    const key = payload.report_id || `${parId}::${inscId}`;
-    const current = latestByKey.get(key);
-    const createdAt = row.created_at || payload.reported_at || new Date().toISOString();
-    if (current && new Date(current.reportedAt || 0).getTime() > new Date(createdAt).getTime()) return;
-
-    const status =
-      String(row.event_type || '') === 'video_problema_resolvido'
-        ? 'video_verificado'
-        : (payload.status || 'aguardando_verificacao_video');
-
-    latestByKey.set(key, {
-      id: payload.report_id || row.correlation_id || `video-issue-${parId}-${inscId}`,
-      environment: row.environment || activeEnvironment,
-      status,
-      ativo: status === 'aguardando_verificacao_video',
-      parId,
-      parNome: payload.par_nome || pareceristas.find(p => p.id === parId)?.nome || '—',
-      inscId,
-      inscricaoId: fullId || fullInscId(inscId),
-      lider: payload.lider || INSCRICOES.find(x => x.id === inscId)?.lider || '—',
-      videoUrl: payload.video_url || '',
-      tipoProblema: payload.tipo_problema || 'Vídeo não carregou',
-      tentativas: payload.tentativas || 'Tentei uma vez',
-      comentario: payload.comentario || '',
-      browser: payload.browser || '',
-      sistemaOperacional: payload.sistema_operacional || '',
-      userAgent: payload.user_agent || '',
-      mensagemErro: payload.mensagem_erro || '',
-      reportedAt: createdAt,
-      resolvedAt: payload.resolved_at || '',
-      retornoPreferencial: payload.retorno_preferencial || 'mesmo_parecerista',
-    });
-  });
-  return [...latestByKey.values()];
-}
-
-function auditRemoteEventKey(row) {
-  return [
-    row?.id || '',
-    row?.event_type || '',
-    row?.correlation_id || '',
-    row?.parecerista_id || '',
-    row?.inscricao_id || '',
-    row?.created_at || '',
-  ].join('::');
-}
-
-function mergeRemoteAuditEvents(existingRows, incomingRows) {
-  const merged = new Map();
-  [...(existingRows || []), ...(incomingRows || [])].forEach(row => {
-    if (!row) return;
-    merged.set(auditRemoteEventKey(row), row);
-  });
-  return [...merged.values()]
-    .sort((a, b) => new Date(a?.created_at || 0) - new Date(b?.created_at || 0))
-    .slice(-AUDIT_RECENT_EVENT_LIMIT);
-}
-
-function latestAuditCreatedAt(rows) {
-  return (rows || []).reduce((latest, row) => {
-    const createdAt = String(row?.created_at || '');
-    if (!createdAt) return latest;
-    if (!latest) return createdAt;
-    return new Date(createdAt).getTime() >= new Date(latest).getTime() ? createdAt : latest;
-  }, '');
-}
-
-function rebuildAuditStateFromRemoteEvents(events) {
-  const allEvents = events || [];
-  logAuditoria = remoteAuditToLocal(allEvents.filter(r => String(r.event_type || '').startsWith('auditoria_')));
-  logAuditoriaEventos = remoteSystemEventsToLocal(allEvents.filter(r => String(r.event_type || '') === 'anexo_aberto'));
-  videoIssueReports = remoteVideoIssueReportsToLocal(allEvents.filter(r => ['video_problema_reportado', 'video_problema_resolvido'].includes(String(r.event_type || ''))));
-  remoteAuditCursorByEnvironment[activeEnvironment] = latestAuditCreatedAt(allEvents);
 }
 
 function inscricoesFromRemote(rows, participants) {
@@ -7709,7 +6529,6 @@ function avaliaçõesFromRemote(rows, criterios) {
       parecer: r.parecer_geral || '',
       done: !!r.concluida,
       motivoCurtaDuracao: r.motivo_curta_duracao || '',
-      updatedAt: r.updated_at || null,
     };
   });
 }
@@ -7726,24 +6545,6 @@ async function fetchAllSupabaseRows(queryFactory, batchSize = 1000) {
     from += batchSize;
   }
   return rows;
-}
-
-function buildRelevantAuditEventsQuery(client, options = {}) {
-  const extraEq = options.extraEq || {};
-  const createdAfter = String(options.createdAfter || '').trim();
-  return () => {
-    let query = client
-      .from('eventos_auditoria')
-      .select('*')
-      .eq('environment', activeEnvironment)
-      .in('event_type', AUDIT_RELEVANT_EVENT_TYPES)
-      .order('created_at');
-    if (createdAfter) query = query.gte('created_at', createdAfter);
-    Object.entries(extraEq).forEach(([key, value]) => {
-      query = query.eq(key, value);
-    });
-    return query;
-  };
 }
 
 async function fetchAllSupabaseRowsByIds(tableName, ids, options = {}) {
@@ -7772,6 +6573,8 @@ async function loadStateFromSupabase(options = {}) {
   const includeAudit = options.includeAudit !== false;
   const includeCriteria = options.includeCriteria !== false;
   const skipLegacyMigration = !!options.skipLegacyMigration;
+  // inscrições são congeladas — não rebuscar no refresh em background
+  const skipInscricoes = !!options.skipInscricoes && INSCRICOES.length > 0;
   const client = getSupabaseClient();
   if (!client) return false;
   try {
@@ -7788,8 +6591,8 @@ async function loadStateFromSupabase(options = {}) {
     ] = await Promise.all([
       client.from('configuracoes_sistema').select('*').eq('id', activeEnvironment).maybeSingle(),
       client.from('imports').select('source_name, imported_at').eq('environment', activeEnvironment).order('imported_at', { ascending:false }).limit(1).maybeSingle(),
-      fetchAllSupabaseRows(() => client.from('inscricoes').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('id_curto')),
-      fetchAllSupabaseRows(() => client.from('participantes').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('id')),
+      skipInscricoes ? Promise.resolve(null) : fetchAllSupabaseRows(() => client.from('inscricoes').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('id_curto')),
+      skipInscricoes ? Promise.resolve(null) : fetchAllSupabaseRows(() => client.from('participantes').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('id')),
       fetchAllSupabaseRows(() => client.from('pareceristas').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('nome')),
       fetchAllSupabaseRows(() => client.from('atribuicoes').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('ordem')),
       fetchAllSupabaseRows(() => client.from('avaliacoes').select('*').eq('environment', activeEnvironment).order('id')),
@@ -7797,7 +6600,7 @@ async function loadStateFromSupabase(options = {}) {
         ? fetchAllSupabaseRows(() => client.from('avaliacao_criterios').select('*').eq('environment', activeEnvironment).order('id'))
         : Promise.resolve([]),
       includeAudit
-        ? fetchAllSupabaseRows(buildRelevantAuditEventsQuery(client))
+        ? fetchAllSupabaseRows(() => client.from('eventos_auditoria').select('*').eq('environment', activeEnvironment).order('created_at', { ascending: false }).limit(500))
         : Promise.resolve([]),
     ]);
     if (cfgRes.error) throw cfgRes.error;
@@ -7829,7 +6632,7 @@ async function loadStateFromSupabase(options = {}) {
       return loadStateFromSupabase({ ...options, skipLegacyMigration:true });
     }
 
-    if (!inscData.length) {
+    if (!skipInscricoes && !inscData.length) {
       resetRuntimeStateForEnvironment();
       clearLocalAppStateForEnvironment(activeEnvironment);
       remoteStateLoaded = false;
@@ -7838,8 +6641,11 @@ async function loadStateFromSupabase(options = {}) {
       return false;
     }
 
-    inscricoesFromRemote(inscData, partData || []);
+    if (!skipInscricoes && inscData) {
+      inscricoesFromRemote(inscData, partData || []);
+    }
     const remoteContainsNonSentRows =
+      !skipInscricoes &&
       activeEnvironment === 'homolog' &&
       /\.xlsx($|\?)/i.test(activeSource) &&
       (inscData || []).some(row => {
@@ -7847,6 +6653,7 @@ async function loadStateFromSupabase(options = {}) {
         return status && !isStatusEnviado(status);
       });
     const remoteLooksIncomplete =
+      !skipInscricoes &&
       activeEnvironment === 'homolog' &&
       /\.xlsx($|\?)/i.test(activeSource) &&
       INSCRICOES.length > 0 &&
@@ -7898,8 +6705,8 @@ async function loadStateFromSupabase(options = {}) {
 
     avaliaçõesFromRemote(avalData || [], critData || []);
     if (includeAudit) {
-      remoteAuditEventCache[activeEnvironment] = mergeRemoteAuditEvents([], auditData || []);
-      rebuildAuditStateFromRemoteEvents(remoteAuditEventCache[activeEnvironment]);
+      logAuditoria = remoteAuditToLocal((auditData || []).filter(r => String(r.event_type || '').startsWith('auditoria_')));
+      logAuditoriaEventos = remoteSystemEventsToLocal((auditData || []).filter(r => String(r.event_type || '') === 'anexo_aberto'));
       environmentAuditReady[activeEnvironment] = true;
     }
 
@@ -7945,7 +6752,7 @@ async function loadReviewerPortalStateFromSupabase(parId) {
       fetchAllSupabaseRows(() => client.from('atribuicoes').select('*').eq('environment', activeEnvironment).eq('parecerista_id_externo', parId).eq('ativo', true).order('ordem')),
       fetchAllSupabaseRows(() => client.from('avaliacoes').select('*').eq('environment', activeEnvironment).eq('parecerista_id_externo', parId).order('id')),
       fetchAllSupabaseRows(() => client.from('avaliacao_criterios').select('*').eq('environment', activeEnvironment).eq('parecerista_id_externo', parId).order('id')),
-      fetchAllSupabaseRows(buildRelevantAuditEventsQuery(client, { extraEq:{ parecerista_id: parId } })),
+      fetchAllSupabaseRows(() => client.from('eventos_auditoria').select('*').eq('environment', activeEnvironment).eq('parecerista_id', parId).order('created_at', { ascending: false }).limit(200)),
     ]);
 
     if (cfgRes.error) throw cfgRes.error;
@@ -7956,7 +6763,6 @@ async function loadReviewerPortalStateFromSupabase(parId) {
     avaliacoes = {};
     logAuditoria = [];
     logAuditoriaEventos = [];
-    videoIssueReports = [];
 
     if (cfgRes.data) {
       TEMPO_MINIMO = Number(cfgRes.data.tempo_minimo_ms) || TEMPO_MINIMO;
@@ -8020,7 +6826,6 @@ async function loadReviewerPortalStateFromSupabase(parId) {
     avaliaçõesFromRemote(avalData || [], reviewerCritData || []);
     logAuditoria = remoteAuditToLocal(reviewerEvents.filter(r => String(r.event_type || '').startsWith('auditoria_')));
     logAuditoriaEventos = remoteSystemEventsToLocal(reviewerEvents.filter(r => String(r.event_type || '') === 'anexo_aberto'));
-    videoIssueReports = remoteVideoIssueReportsToLocal(reviewerEvents.filter(r => ['video_problema_reportado', 'video_problema_resolvido'].includes(String(r.event_type || ''))));
     currentParId = parId;
     baseConfirmada = true;
     remoteStateLoaded = true;
@@ -8047,7 +6852,6 @@ function saveAppState(opts = {}) {
       pareceristas,
       atribuicoes,
       avaliacoes,
-      videoIssueReports,
       logAuditoria,
       logAuditoriaEventos,
       pendingSystemEvents: window.__pendingSystemEvents || [],
@@ -8083,9 +6887,6 @@ function hydrateAppState() {
     }
     if (data.avaliacoes && typeof data.avaliacoes === 'object') {
       avaliacoes = data.avaliacoes;
-    }
-    if (Array.isArray(data.videoIssueReports)) {
-      videoIssueReports = data.videoIssueReports.map(normalizeVideoIssueReport).filter(Boolean);
     }
     if (Array.isArray(data.logAuditoria)) {
       logAuditoria = data.logAuditoria.map(r => ({
@@ -8169,12 +6970,6 @@ function syncPersistedStateWithBase() {
       .map(([parId, porInscricao]) => [parId, Object.fromEntries(
         Object.entries(porInscricao || {}).filter(([inscId]) => inscIds.has(inscId))
       )])
-  );
-
-  videoIssueReports = (videoIssueReports || []).filter(report =>
-    report &&
-    inscIds.has(report.inscId) &&
-    pareceristaIds.has(report.parId)
   );
 
   logAuditoria = logAuditoria.filter(r => inscIds.has(r.inscId) && pareceristaIds.has(r.parId));
@@ -8815,10 +7610,6 @@ function syncDashboardListFilters() {
   fillDashboardSelect('dashFiltroUf', INSCRICOES.map(e => compactUfLabel(e.uf)), 'Todos os estados');
   fillDashboardSelect('dashFiltroModalidade', INSCRICOES.map(e => e.mod), 'Todas as modalidades');
   fillDashboardSelect('dashFiltroInstituicao', INSCRICOES.map(e => compactInstitutionLabel(e.inst)), 'Todas as instituições');
-}
-
-function syncResultadosFilters() {
-  fillDashboardSelect('resFiltroUf', INSCRICOES.map(e => ufDisplayLabel(e.uf)), 'Todos os estados');
 }
 
 function renderDashboardList() {
