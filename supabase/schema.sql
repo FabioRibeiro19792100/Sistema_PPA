@@ -87,6 +87,7 @@ create table if not exists pareceristas (
   nome text not null,
   email text not null,
   instituicao text,
+  is_teste boolean not null default false,
   capacidade_manual integer,
   capacidade_calculada integer not null default 0,
   ativo boolean not null default true,
@@ -116,6 +117,7 @@ create table if not exists avaliacoes (
   environment text not null check (environment in ('homolog', 'producao')),
   inscricao_id_externo text not null,
   parecerista_id_externo text not null,
+  is_teste boolean not null default false,
   status text not null default 'nao_iniciada',
   parecer_geral text,
   concluida boolean not null default false,
@@ -128,6 +130,12 @@ create table if not exists avaliacoes (
 
 create unique index if not exists avaliacoes_environment_unique_idx
   on avaliacoes(environment, inscricao_id_externo, parecerista_id_externo);
+
+alter table if exists pareceristas
+  add column if not exists is_teste boolean not null default false;
+
+alter table if exists avaliacoes
+  add column if not exists is_teste boolean not null default false;
 
 create table if not exists avaliacao_criterios (
   id uuid primary key default gen_random_uuid(),

@@ -2700,6 +2700,12 @@ textarea::placeholder{color:#BDC1C6}
         </select>
       </div>
     </div>
+    <div style="margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <label style="display:inline-flex;align-items:center;gap:8px;font-size:12px;color:#5F6368;cursor:pointer">
+        <input type="checkbox" id="pIsTest" style="margin:0">
+        Parecerista de teste: não entra nas métricas oficiais e pode avaliar todas as inscrições
+      </label>
+    </div>
     <button class="btn btn-secondary btn-sm" onclick="addParecerista()"><i class="ti ti-plus"></i>Adicionar</button>
   </div>
 
@@ -3469,9 +3475,9 @@ const CRITERIOS = [
 const NC = { 'Insuficiente':'b-ins','Regular':'b-reg','Bom':'b-bom','Ótimo':'b-oti' };
 const NV = { 'Insuficiente':1,'Regular':2,'Bom':3,'Ótimo':4 };
 const PARECERISTAS_DEFAULT = [
-  { id:'p1', nome:'Ana Paula Ribeiro', email:'ana@parecerista.com', inst:'Estácio', cota:null, cotaManual:false },
-  { id:'p2', nome:'Carlos Eduardo Lima', email:'carlos@parecerista.com', inst:'Uninove', cota:null, cotaManual:false },
-  { id:'p3', nome:'Fernanda Souza Dias', email:'fernanda@parecerista.com', inst:'FMU', cota:null, cotaManual:false },
+  { id:'p1', nome:'Ana Paula Ribeiro', email:'ana@parecerista.com', inst:'Estácio', cota:null, cotaManual:false, isTest:false },
+  { id:'p2', nome:'Carlos Eduardo Lima', email:'carlos@parecerista.com', inst:'Uninove', cota:null, cotaManual:false, isTest:false },
+  { id:'p3', nome:'Fernanda Souza Dias', email:'fernanda@parecerista.com', inst:'FMU', cota:null, cotaManual:false, isTest:false },
 ];
 const ADMIN_PASSWORD = 'fabio';
 const ACCESS_ROLE_KEY = 'ppa2026_access_role_v1';
@@ -3966,13 +3972,16 @@ async function addParecerista() {
   const nome = document.getElementById('pNome').value.trim();
   const email = document.getElementById('pEmail').value.trim();
   const inst = document.getElementById('pInst').value;
+  const isTest = !!document.getElementById('pIsTest')?.checked;
   if (!nome || !email) { notify('Preencha nome e e-mail.'); return; }
   const id = 'p' + Date.now();
-  pareceristas.push({ id, nome, email, inst, cota:null, cotaManual:false });
+  pareceristas.push({ id, nome, email, inst, cota:null, cotaManual:false, isTest });
   document.getElementById('pNome').value = '';
   document.getElementById('pEmail').value = '';
   document.getElementById('pInst').value = '';
-  queueSystemEvent('parecerista_criado', { parecerista_id:id, nome, email, instituicao:inst });
+  const toggle = document.getElementById('pIsTest');
+  if (toggle) toggle.checked = false;
+  queueSystemEvent('parecerista_criado', { parecerista_id:id, nome, email, instituicao:inst, is_teste:isTest });
   renderPareceristas();
   updateSimSelect();
 
@@ -3982,7 +3991,7 @@ async function addParecerista() {
     return;
   }
 
-  notify('Parecerista adicionado.');
+  notify(isTest ? 'Parecerista de teste adicionado.' : 'Parecerista adicionado.');
 }
 
 async function removeParecerista(id) {
@@ -4021,13 +4030,31 @@ function getAppBaseUrl() {
   return 'http://127.0.0.1:8013/sistema_ppa2026.html';
 }
 
+function getPareceristaById(parId) {
+  return pareceristas.find(p => p.id === parId) || null;
+}
+
+function isTestParecerista(parOrId) {
+  if (!parOrId) return false;
+  if (typeof parOrId === 'object') return !!parOrId.isTest;
+  return !!getPareceristaById(parOrId)?.isTest;
+}
+
+function getOfficialPareceristas() {
+  return pareceristas.filter(p => !isTestParecerista(p));
+}
+
 function capacidadeAutomaticaPorParecerista() {
   const totalSlots = INSCRICOES.length * NUM_PARECERES_POR_EQUIPE;
-  const totalPareceristas = pareceristas.length || 1;
+  const oficiais = getOfficialPareceristas();
+  const totalPareceristas = oficiais.length || 1;
   const base = Math.floor(totalSlots / totalPareceristas);
   const resto = totalSlots % totalPareceristas;
   const mapa = {};
-  pareceristas.forEach((p, idx) => {
+  pareceristas.forEach(p => {
+    mapa[p.id] = 0;
+  });
+  oficiais.forEach((p, idx) => {
     mapa[p.id] = base + (idx < resto ? 1 : 0);
   });
   return mapa;
@@ -4054,6 +4081,13 @@ function getAtrib(parId) {
     .filter(([,pars]) => pars.includes(parId))
     .map(([id]) => id);
   return ids.sort((a, b) => String(a).localeCompare(String(b), 'pt-BR', { numeric:true }));
+}
+
+function getPortalUniverseByParecerista(parId) {
+  if (!isTestParecerista(parId)) return getAtrib(parId);
+  return [...INSCRICOES]
+    .map(i => i.id)
+    .sort((a, b) => String(a).localeCompare(String(b), 'pt-BR', { numeric:true, sensitivity:'base' }));
 }
 
 function normalizeVideoIssueReport(report) {
@@ -4150,11 +4184,11 @@ function getActiveVideoIssuesForInscricao(inscId) {
 }
 
 function getAtribAtivas(parId) {
-  return getAtrib(parId).filter(inscId => !hasActiveVideoIssue(parId, inscId));
+  return getPortalUniverseByParecerista(parId).filter(inscId => !hasActiveVideoIssue(parId, inscId));
 }
 
 function getAtribVisiveisNoPortal(parId) {
-  return getAtrib(parId);
+  return getPortalUniverseByParecerista(parId);
 }
 
 function getDoneByParecerista(parId) {
@@ -4172,7 +4206,7 @@ function renderPareceristas() {
   ensureRawIESCatalogLoaded();
   const totalInsc = INSCRICOES.length;
   const totalDone = Object.entries(avaliacoes).reduce((acc, [parId, byInsc]) => (
-    acc + Object.keys(byInsc || {}).filter(inscId => isEvaluationConcluded(parId, inscId)).length
+    acc + (isTestParecerista(parId) ? 0 : Object.keys(byInsc || {}).filter(inscId => isEvaluationConcluded(parId, inscId)).length)
   ), 0);
   const capacidadesAuto = capacidadeAutomaticaPorParecerista();
   const totalEsperado = totalInsc * NUM_PARECERES_POR_EQUIPE;
@@ -4188,21 +4222,22 @@ function renderPareceristas() {
 
   const pareceristasOrdenados = [...pareceristas].sort((a, b) => String(a.nome || '').localeCompare(String(b.nome || ''), 'pt-BR', { sensitivity:'base' }));
   document.getElementById('tblPareceristas').innerHTML = pareceristasOrdenados.map((p,i) => {
-    const atrib = getAtrib(p.id).length;
+    const isTest = isTestParecerista(p);
+    const atrib = isTest ? INSCRICOES.length : getAtrib(p.id).length;
     const done = getDone(p.id);
     const capacidade = capacidadeParecerista(p.id);
     const auto = capacidadesAuto[p.id] || 0;
     const link = `?par=${p.id}`;
     return `<tr>
       <td style="color:#9AA0A6;font-size:11px">${i+1}</td>
-      <td style="font-weight:600;color:#202124">${p.nome}</td>
+      <td style="font-weight:600;color:#202124">${p.nome}${isTest ? ' <span class="badge b-par" style="margin-left:6px">Teste</span>' : ''}</td>
       <td style="font-family:monospace;font-size:11px">${p.email}</td>
       <td>${p.inst || '<span style="color:#BDC1C6">—</span>'}</td>
       <td>
-        <div style="display:inline-flex;min-width:64px;justify-content:center;align-items:center;font-family:inherit;font-size:12px;font-weight:700;padding:6px 10px;border:1px solid #DADCE0;border-radius:8px;background:#F8F9FA;color:#202124">${capacidade}</div>
-        <div style="font-size:10px;color:#9AA0A6;margin-top:4px">auto ${auto}</div>
+        <div style="display:inline-flex;min-width:64px;justify-content:center;align-items:center;font-family:inherit;font-size:12px;font-weight:700;padding:6px 10px;border:1px solid #DADCE0;border-radius:8px;background:#F8F9FA;color:#202124">${isTest ? 'Livre' : capacidade}</div>
+        <div style="font-size:10px;color:#9AA0A6;margin-top:4px">${isTest ? 'fora da distribuição' : `auto ${auto}`}</div>
       </td>
-      <td><span class="badge ${atrib>0?'b-par':'b-pend'}">${atrib}</span></td>
+      <td>${isTest ? `<span class="badge b-par">${atrib}</span><div style="font-size:10px;color:#9AA0A6;margin-top:4px">portal livre</div>` : `<span class="badge ${atrib>0?'b-par':'b-pend'}">${atrib}</span>`}</td>
       <td><span class="badge ${done===atrib&&atrib>0?'b-ok':done>0?'b-par':'b-pend'}">${done}/${atrib}</span></td>
       <td>
         <div style="display:flex;align-items:center;gap:8px">
@@ -4251,13 +4286,14 @@ function updateDistStatus() {
 // ═══ DISTRIBUIÇÃO AUTOMÁTICA ══════════════════════════════
 function distribuir(opts) {
   opts = opts || {};
-  if (pareceristas.length < 1) { notify('Cadastre ao menos um parecerista primeiro.'); return; }
+  const oficiais = getOfficialPareceristas();
+  if (oficiais.length < 1) { notify('Cadastre ao menos um parecerista oficial primeiro.'); return; }
 
   atribuicoes = {};
   const capacidades = {};
   // carga atual por parecerista
   const carga = {};
-  pareceristas.forEach(p => {
+  oficiais.forEach(p => {
     carga[p.id] = 0;
     capacidades[p.id] = capacidadeParecerista(p.id);
   });
@@ -4268,7 +4304,7 @@ function distribuir(opts) {
   insc.forEach(i => {
     atribuicoes[i.id] = [];
     // candidatos elegíveis: não conflito de instituição, com cota disponível
-    const candidatos = pareceristas
+    const candidatos = oficiais
       .filter(p => (!EVITAR_CONFLITO_INSTITUCIONAL || p.inst !== i.inst) && carga[p.id] < capacidades[p.id])
       .sort((a,b) => carga[a.id] - carga[b.id]); // prioriza menos carregados
 
@@ -4282,7 +4318,7 @@ function distribuir(opts) {
   normalizarAtribuicoesPorCota();
   const inscricoesComAlgumParecerista = Object.values(atribuicoes).filter(pars => (pars || []).length > 0).length;
   const totalSlotsUsados = Object.values(atribuicoes).reduce((acc, pars) => acc + ((pars || []).length), 0);
-  const capacidadeTotal = pareceristas.reduce((acc, p) => acc + capacidadeParecerista(p.id), 0);
+  const capacidadeTotal = oficiais.reduce((acc, p) => acc + capacidadeParecerista(p.id), 0);
 
   queueSystemEvent('distribuicao_gerada', {
     cobertura_inscricoes: inscricoesComAlgumParecerista,
@@ -4350,7 +4386,7 @@ function notaGeralAvaliacao(av) {
 }
 
 function mediaNotas(inscId) {
-  const notasGerais = pareceristas.map(p => {
+  const notasGerais = getOfficialPareceristas().map(p => {
     const av = avaliacoes[p.id]?.[inscId];
     return isEvaluationConcluded(p.id, inscId) ? notaGeralAvaliacao(av) : null;
   }).filter(n => n !== null);
@@ -4360,7 +4396,7 @@ function mediaNotas(inscId) {
 }
 
 function mediaPorCrit(inscId, critIdx) {
-  const notas = pareceristas.map(p => avaliacoes[p.id]?.[inscId]?.notas[critIdx]).filter(Boolean);
+  const notas = getOfficialPareceristas().map(p => avaliacoes[p.id]?.[inscId]?.notas[critIdx]).filter(Boolean);
   if (!notas.length) return null;
   // retorna a nota mais frequente
   const freq = {};
@@ -4369,13 +4405,16 @@ function mediaPorCrit(inscId, critIdx) {
 }
 
 function avalCount(inscId) {
-  const total = atribuicoes[inscId]?.length || 0;
-  const done = pareceristas.filter(p => atribuicoes[inscId]?.includes(p.id) && isEvaluationConcluded(p.id, inscId)).length;
+  const oficiais = getOfficialPareceristas();
+  const total = oficiais.filter(p => atribuicoes[inscId]?.includes(p.id)).length;
+  const done = oficiais.filter(p => atribuicoes[inscId]?.includes(p.id) && isEvaluationConcluded(p.id, inscId)).length;
   return { done, total };
 }
 function parecerProgressHTML(inscId, rowIdx) {
-  const totalEsperado = Math.max(NUM_PARECERES_POR_EQUIPE, (atribuicoes[inscId]?.length || 0));
-  const done = pareceristas.filter(p => atribuicoes[inscId]?.includes(p.id) && isEvaluationConcluded(p.id, inscId)).length;
+  const oficiais = getOfficialPareceristas();
+  const totalAtribuidoOficial = oficiais.filter(p => atribuicoes[inscId]?.includes(p.id)).length;
+  const totalEsperado = Math.max(NUM_PARECERES_POR_EQUIPE, totalAtribuidoOficial);
+  const done = oficiais.filter(p => atribuicoes[inscId]?.includes(p.id) && isEvaluationConcluded(p.id, inscId)).length;
   const states = Array.from({ length: totalEsperado }, (_, idx) => idx < done ? 'done' : 'pending');
   const title = `${done} de ${totalEsperado} pareceres concluídos`;
   return `<button class="nota-progress-btn" onclick="toggleRes(${rowIdx})" title="${title}" aria-label="${title}">
@@ -5279,7 +5318,7 @@ function renderResultados() {
     const avcls = done===0?'b-pend':done===tot?'b-ok':'b-par';
     const pt = mediaNotas(e.id);
     const ranking = rankingMeta[i];
-    const subRows = pareceristas.filter(p => atribuicoes[e.id]?.includes(p.id)).map(p => {
+    const subRows = getOfficialPareceristas().filter(p => atribuicoes[e.id]?.includes(p.id)).map(p => {
       const av = avaliacoes[p.id]?.[e.id];
       const parecerConcluido = isEvaluationConcluded(p.id, e.id);
       const notaGeralParecerista = parecerConcluido ? notaGeralAvaliacao(av) : null;
@@ -5361,7 +5400,7 @@ function openModalPar(idx) {
   document.getElementById('parTitle').textContent = fullInscId(e.id) + ' · ' + e.lider;
   document.getElementById('parSub').textContent = e.mod + ' · ' + e.uf + ' · ' + e.inst;
 
-  const atribPars = pareceristas.filter(p => atribuicoes[e.id]?.includes(p.id));
+  const atribPars = getOfficialPareceristas().filter(p => atribuicoes[e.id]?.includes(p.id));
 
   if (!atribPars.length) {
     document.getElementById('parBody').innerHTML = '<div class="par-vazio">Nenhum parecerista atribuído a esta inscrição ainda.</div>';
@@ -5483,7 +5522,7 @@ function renderPortal() {
   const minhasAtivas = getAtribAtivas(parId);
   const minhasVisiveis = getAtribVisiveisNoPortal(parId);
   const pendenciasTecnicas = getVideoIssueReportsByReviewer(parId).length;
-  document.getElementById('portalSub').textContent = `${par.email} · ${minhasAtivas.length} inscrições ativas${pendenciasTecnicas ? ` · ${pendenciasTecnicas} pendência${pendenciasTecnicas === 1 ? '' : 's'} técnica${pendenciasTecnicas === 1 ? '' : 's'}` : ''}`;
+  document.getElementById('portalSub').textContent = `${par.email} · ${isTestParecerista(parId) ? 'perfil de teste · ' : ''}${minhasAtivas.length} inscrições ativas${pendenciasTecnicas ? ` · ${pendenciasTecnicas} pendência${pendenciasTecnicas === 1 ? '' : 's'} técnica${pendenciasTecnicas === 1 ? '' : 's'}` : ''}`;
 
   const done = minhasVisiveis.filter(id => isEvaluationConcluded(parId, id)).length;
   const pending = Math.max(0, minhasVisiveis.length - done);
@@ -5928,6 +5967,7 @@ function buildPendingVideoIssueAuditRows() {
       kind: 'video_issue',
       parId: report.parId,
       parNome: report.parNome || '—',
+      isTest: !!report.isTest,
       inscId: report.inscId,
       lider: report.lider || '—',
       inicio: report.reportedAt ? new Date(report.reportedAt) : null,
@@ -6014,10 +6054,12 @@ function registrarAuditoria({ saida, motivoSaida, notas, parecer }) {
   const vals = notas.filter(Boolean).map(n => NV[n]);
   const pt = vals.length === 8 ? Math.round(vals.reduce((a,b)=>a+b,0)/8*25) : null;
   const fim = new Date();
+  const isTest = isTestParecerista(currentParId);
 
   logAuditoria.push({
     parId: currentParId,
     parNome: par?.nome || '—',
+    isTest,
     inscId: currentInscId,
     lider: e?.lider || '—',
     inicio: fichaStartTime,
@@ -6032,11 +6074,13 @@ function registrarAuditoria({ saida, motivoSaida, notas, parecer }) {
     {
       parecerista_id: currentParId,
       inscricao_id: fullInscId(currentInscId),
+      is_teste: isTest,
       motivo_saida: motivoSaida || '',
       parecer_geral: parecer || '',
       audit_snapshot: {
         parId: currentParId,
         parNome: par?.nome || '—',
+        isTest,
         inscId: currentInscId,
         lider: e?.lider || '—',
         inicio: fichaStartTime ? new Date(fichaStartTime).toISOString() : null,
@@ -6630,6 +6674,7 @@ async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
     justificativas,
     parecer,
     done,
+    isTest: isTestParecerista(parId),
     motivoCurtaDuracao,
     updatedAt: new Date().toISOString(),
   };
@@ -7530,6 +7575,7 @@ function pareceristasPayload() {
     nome: p.nome,
     email: p.email,
     instituicao: p.inst || '',
+    is_teste: !!p.isTest,
     capacidade_manual: null,
     capacidade_calculada: autoCap[p.id] || 0,
     ativo: true,
@@ -7564,6 +7610,7 @@ function avaliacoesPayload() {
         environment: activeEnvironment,
         inscricao_id_externo: fullInscId(inscId),
         parecerista_id_externo: parId,
+        is_teste: isTestParecerista(parId),
         status,
         parecer_geral: av.parecer || '',
         concluida: !!av.done,
@@ -7614,6 +7661,7 @@ function auditoriaPayload() {
       audit_snapshot: {
         parId: r.parId,
         parNome: r.parNome,
+        isTest: !!r.isTest,
         inscId: r.inscId,
         lider: r.lider,
         inicio: r.inicio ? new Date(r.inicio).toISOString() : null,
@@ -7643,6 +7691,7 @@ function auditoriaPayloadForEvaluation(parId, inscId) {
         audit_snapshot: {
           parId: r.parId,
           parNome: r.parNome,
+          isTest: !!r.isTest,
           inscId: r.inscId,
           lider: r.lider,
           inicio: r.inicio ? new Date(r.inicio).toISOString() : null,
@@ -7685,10 +7734,12 @@ async function persistReviewerEvaluationToSupabase(parId, inscId, options = {}) 
       }
     } else {
       const status = av.done ? 'concluida' : (av.notas?.some(Boolean) ? 'em_andamento' : 'nao_iniciada');
+      const isTest = isTestParecerista(parId);
       const row = {
         environment: activeEnvironment,
         inscricao_id_externo: fullId,
         parecerista_id_externo: parId,
+        is_teste: isTest,
         status,
         parecer_geral: av.parecer || '',
         concluida: !!av.done,
@@ -8284,6 +8335,7 @@ function remoteVideoIssueReportsToLocal(events) {
       ativo: status === 'aguardando_verificacao_video',
       parId,
       parNome: payload.par_nome || pareceristas.find(p => p.id === parId)?.nome || '—',
+      isTest: !!(payload.is_teste || payload.audit_snapshot?.isTest || pareceristas.find(p => p.id === parId)?.isTest),
       inscId,
       inscricaoId: fullId || fullInscId(inscId),
       lider: payload.lider || INSCRICOES.find(x => x.id === inscId)?.lider || '—',
@@ -8402,6 +8454,7 @@ function avaliaçõesFromRemote(rows, criterios) {
       justificativas: crits.length ? crits.map(c => c.justificativa || '') : (r.justificativas_json || []),
       parecer: r.parecer_geral || '',
       done: !!r.concluida,
+      isTest: !!r.is_teste,
       motivoCurtaDuracao: r.motivo_curta_duracao || '',
       updatedAt: r.updated_at || null,
     };
@@ -8581,6 +8634,7 @@ async function loadStateFromSupabase(options = {}) {
       inst: p.instituicao,
       cota: null,
       cotaManual: false,
+      isTest: !!p.is_teste,
     }));
 
     atribuicoes = {};
@@ -8680,9 +8734,22 @@ async function loadReviewerPortalStateFromSupabase(parId) {
       inst: parRes.data.instituicao,
       cota: null,
       cotaManual: false,
+      isTest: !!parRes.data.is_teste,
     }];
 
-    const inscIdsFull = [...new Set((atribData || []).map(r => r.inscricao_id_externo))];
+    const reviewerIsTest = !!parRes.data.is_teste;
+    let inscIdsFull = [...new Set((atribData || []).map(r => r.inscricao_id_externo))];
+    if (reviewerIsTest) {
+      const allInscRows = await fetchAllSupabaseRows(() =>
+        client
+          .from('inscricoes')
+          .select('id_externo')
+          .eq('environment', activeEnvironment)
+          .eq('ativo', true)
+          .order('id_curto')
+      );
+      inscIdsFull = [...new Set((allInscRows || []).map(r => r.id_externo).filter(Boolean))];
+    }
     if (inscIdsFull.length) {
       const inscRows = await fetchAllSupabaseRowsByIds('inscricoes', inscIdsFull, {
         idColumn: 'id_externo',
@@ -8771,6 +8838,7 @@ function hydrateAppState() {
         ...p,
         cota: p.cota ?? null,
         cotaManual: !!p.cotaManual,
+        isTest: !!p.isTest,
       }));
     }
     if (data.atribuicoes && typeof data.atribuicoes === 'object') {
@@ -8844,6 +8912,7 @@ function sanitizePareceristasState() {
       inst: inst || '',
       cota: cotaNum,
       cotaManual,
+      isTest: !!raw?.isTest,
     });
     return acc;
   }, []);
