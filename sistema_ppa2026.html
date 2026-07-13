@@ -6218,6 +6218,7 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
   // mode: 'seq' = 3 colunas | 'split' = 1 coluna (painel lateral)
   const isSplit = mode === 'split';
   const showVideoSupport = context === 'avaliacao';
+  const useAttachmentViewer = context === 'avaliacao' || context === 'modal';
   const links = materialLinks(e);
   const activeVideoIssue = showVideoSupport && currentParId ? getActiveVideoIssue(currentParId, e.id) : null;
   const resolvedVideoIssue = showVideoSupport && currentParId && !activeVideoIssue && requiresReevaluation(currentParId, e.id) ? getResolvedVideoIssue(currentParId, e.id) : null;
@@ -6284,9 +6285,9 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
 
       <div class="split-materials-wrap">
         <div class="split-materials-list">
-          ${materialButtonHTML({ url: links.video, label: 'Vídeo', icon: 'ti-player-play', tipo: 'video_criativo', inscricaoId: e.id, openInModal: showVideoSupport })}
-          ${materialButtonHTML({ url: links.roteiro30, label: 'Roteiro 30s', icon: 'ti-file', tipo: 'roteiro_30s', inscricaoId: e.id, openInModal: showVideoSupport })}
-          ${materialButtonHTML({ url: links.campanha, label: 'Campanha', icon: 'ti-file', tipo: 'campanha_multiplataforma', inscricaoId: e.id, openInModal: showVideoSupport })}
+          ${materialButtonHTML({ url: links.video, label: 'Vídeo', icon: 'ti-player-play', tipo: 'video_criativo', inscricaoId: e.id, openInModal: useAttachmentViewer })}
+          ${materialButtonHTML({ url: links.roteiro30, label: 'Roteiro 30s', icon: 'ti-file', tipo: 'roteiro_30s', inscricaoId: e.id, openInModal: useAttachmentViewer })}
+          ${materialButtonHTML({ url: links.campanha, label: 'Campanha', icon: 'ti-file', tipo: 'campanha_multiplataforma', inscricaoId: e.id, openInModal: useAttachmentViewer })}
         </div>
         ${showVideoSupport ? `
           ${activeVideoIssue ? `
@@ -6336,9 +6337,9 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
     <div class="field s3">
       <div class="mfl">Materiais</div>
       <div class="materiais">
-        ${materialButtonHTML({ url: links.video, label: 'Vídeo criativo', icon: 'ti-player-play', tipo: 'video_criativo', inscricaoId: e.id, openInModal: showVideoSupport })}
-        ${materialButtonHTML({ url: links.roteiro30, label: 'Roteiro 30s', icon: 'ti-file', tipo: 'roteiro_30s', inscricaoId: e.id, openInModal: showVideoSupport })}
-        ${materialButtonHTML({ url: links.campanha, label: 'Campanha', icon: 'ti-file', tipo: 'campanha_multiplataforma', inscricaoId: e.id, openInModal: showVideoSupport })}
+        ${materialButtonHTML({ url: links.video, label: 'Vídeo criativo', icon: 'ti-player-play', tipo: 'video_criativo', inscricaoId: e.id, openInModal: useAttachmentViewer })}
+        ${materialButtonHTML({ url: links.roteiro30, label: 'Roteiro 30s', icon: 'ti-file', tipo: 'roteiro_30s', inscricaoId: e.id, openInModal: useAttachmentViewer })}
+        ${materialButtonHTML({ url: links.campanha, label: 'Campanha', icon: 'ti-file', tipo: 'campanha_multiplataforma', inscricaoId: e.id, openInModal: useAttachmentViewer })}
       </div>
     </div>
     <div class="field s3"><div class="mfl">Defesa conceitual</div><div class="mfv-light">${e.defesa}</div></div>
