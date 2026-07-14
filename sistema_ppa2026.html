@@ -793,6 +793,19 @@ tr:hover td.sticky{background:#FAFAFA}
 #view-portal .portal-main > .tbl-card{width:calc(100% + 56px);margin-left:-28px;margin-right:-28px;overflow:hidden}
 #view-portal .results-table tbody > tr.portal-evaluation-row > td{border-bottom-color:#B8C1CC}
 #view-portal .results-table tbody > tr.portal-evaluation-row.has-observation > td{border-bottom-color:#D3D8E0}
+#view-portal .results-table tbody > tr.portal-observation-row > td:first-child{position:relative}
+#view-portal .results-table tbody > tr.portal-evaluation-row.is-complete > td:first-child::before,
+#view-portal .results-table tbody > tr.portal-observation-row > td:first-child::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:6px;
+  bottom:6px;
+  width:4px;
+  background:#34A853;
+}
+#view-portal .results-table tbody > tr.portal-evaluation-row.is-complete.has-observation > td:first-child::before{bottom:0}
+#view-portal .results-table tbody > tr.portal-observation-row > td:first-child::before{top:0}
 #view-portal .portal-main > .results-top-sticky{
   position:static;
   width:100%;
@@ -808,8 +821,11 @@ tr:hover td.sticky{background:#FAFAFA}
 }
 #view-portal #portalSummaryBar{margin-top:0 !important;white-space:nowrap}
 #view-portal .portal-main > .tbl-card > .tbl-scroll{
-  overflow:auto;
-  overscroll-behavior:contain;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior-y:contain;
+  scroll-behavior:auto;
+  padding-right:0;
 }
 #view-portal .results-table thead tr:first-child th{top:0}
 #view-portal .results-table thead tr:nth-child(2) th{top:42px}
@@ -1295,6 +1311,21 @@ tr:hover td.sticky{background:#FAFAFA}
   margin-bottom:6px;
   color:#202124;
 }
+.split-attachment-workspace{display:none;height:calc(100% - 20px);margin:8px 0 12px;border:1px solid rgba(15,23,42,.1);background:#fff;min-height:0;flex-direction:column;overflow:hidden}
+.split-attachment-head{min-height:54px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid #E5E7EB;background:#fff}
+.split-attachment-copy{min-width:0}
+.split-attachment-ey{font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9AA0A6}
+.split-attachment-title{font-size:12.5px;font-weight:700;color:#202124;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.split-attachment-actions{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.split-attachment-actions .btn{padding:5px 8px;font-size:10px}
+.split-attachment-workspace .attachment-viewer-stage{flex:1 1 auto;min-height:0;height:auto}
+#view-avaliacao.attachment-workspace-open .aval-split-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+#view-avaliacao.attachment-workspace-open{background:#F1F3F4}
+#view-avaliacao.attachment-workspace-open #avalWrap{max-width:none}
+#view-avaliacao.attachment-workspace-open #splitLeft > .aval-side-card{display:none}
+#view-avaliacao.attachment-workspace-open .split-attachment-workspace{display:flex}
+#view-avaliacao.attachment-workspace-open .criterio-main{grid-template-columns:24px minmax(0,1fr);gap:6px}
+#view-avaliacao.attachment-workspace-open .crit-num{font-size:11px}
 .ia-note{
   margin-top:12px;
   padding:12px 14px;
@@ -3072,6 +3103,20 @@ textarea::placeholder{color:#BDC1C6}
 
       <!-- painel esquerdo: resumo fixo -->
       <div id="splitLeft" class="aval-side-panel">
+        <div class="split-attachment-workspace" id="splitAttachmentWorkspace">
+          <div class="split-attachment-head">
+            <div class="split-attachment-copy">
+              <div class="split-attachment-ey">Material em análise</div>
+              <div class="split-attachment-title" id="splitAttachmentTitle">Visualização do material</div>
+            </div>
+            <div class="split-attachment-actions">
+              <a class="btn btn-secondary btn-sm" id="splitAttachmentExternal" href="#" target="_blank" rel="noopener noreferrer" title="Abrir em nova aba"><i class="ti ti-external-link"></i>Abrir em nova aba</a>
+              <button class="close-btn" type="button" onclick="closeAttachmentViewer()" aria-label="Fechar material" title="Fechar material"><i class="ti ti-x"></i></button>
+            </div>
+          </div>
+          <div class="attachment-viewer-stage" id="splitAttachmentStage"></div>
+          <div id="splitAttachmentSub" style="display:none"></div>
+        </div>
         <div class="aval-side-card">
           <div class="aval-side-scroll" data-panel="side">
             <div id="avalGridSplit" class="split-reference-grid"></div>
@@ -3577,6 +3622,7 @@ let currentParId = null;
 let currentInscId = null;
 let currentVideoIssueContext = null;
 let currentAttachmentViewer = null;
+let attachmentWorkspacePreviousScale = null;
 let pendingVideoIssueNavigation = null;
 let loadingNudgeTimer = null;
 let pendingNextEvaluation = null;
@@ -4915,7 +4961,8 @@ function buildAttachmentViewerConfig(url = '', tipo = '') {
   };
 }
 function renderAttachmentViewerContent() {
-  const stage = document.getElementById('attachmentViewerStage');
+  const isInline = !!currentAttachmentViewer?.inline;
+  const stage = document.getElementById(isInline ? 'splitAttachmentStage' : 'attachmentViewerStage');
   if (!stage) return;
   stage.innerHTML = '';
   const context = currentAttachmentViewer;
@@ -4924,7 +4971,7 @@ function renderAttachmentViewerContent() {
     return;
   }
   const viewer = buildAttachmentViewerConfig(context.url, context.tipo);
-  const helper = document.getElementById('attachmentViewerSub');
+  const helper = document.getElementById(isInline ? 'splitAttachmentSub' : 'attachmentViewerSub');
   if (helper) {
     helper.textContent = viewer.note || '';
   }
@@ -4970,31 +5017,48 @@ function renderAttachmentViewerContent() {
   stage.appendChild(frame);
 }
 function openAttachmentViewer(payload = {}) {
+  const avaliacaoView = document.getElementById('view-avaliacao');
+  const useInlineWorkspace = !!avaliacaoView?.classList.contains('active');
   const overlay = document.getElementById('overlayAttachmentViewer');
-  const title = document.getElementById('attachmentViewerTitle');
-  const sub = document.getElementById('attachmentViewerSub');
-  const external = document.getElementById('attachmentViewerExternal');
+  const title = document.getElementById(useInlineWorkspace ? 'splitAttachmentTitle' : 'attachmentViewerTitle');
+  const sub = document.getElementById(useInlineWorkspace ? 'splitAttachmentSub' : 'attachmentViewerSub');
+  const external = document.getElementById(useInlineWorkspace ? 'splitAttachmentExternal' : 'attachmentViewerExternal');
   if (!overlay || !title || !sub || !external) return false;
   currentAttachmentViewer = {
     url: payload.url || '',
     tipo: payload.tipo || '',
     label: payload.label || 'Visualização do material',
     inscricaoId: payload.inscricaoId || currentInscId || '',
+    inline: useInlineWorkspace,
   };
   title.textContent = payload.label || 'Visualização do material';
   sub.textContent = '';
   external.href = payload.url || '#';
   external.style.pointerEvents = payload.url ? '' : 'none';
   external.style.opacity = payload.url ? '' : '.5';
+  if (useInlineWorkspace) {
+    if (attachmentWorkspacePreviousScale === null) {
+      attachmentWorkspacePreviousScale = Number(getComputedStyle(avaliacaoView).getPropertyValue('--aval-scale')) || 1;
+    }
+    avaliacaoView.classList.add('attachment-workspace-open');
+    avaliacaoView.style.setProperty('--aval-scale', '1');
+  }
   renderAttachmentViewerContent();
-  overlay.classList.add('open');
+  if (!useInlineWorkspace) overlay.classList.add('open');
   return false;
 }
 function closeAttachmentViewer() {
+  const wasInline = !!currentAttachmentViewer?.inline;
   const overlay = document.getElementById('overlayAttachmentViewer');
-  const stage = document.getElementById('attachmentViewerStage');
+  const stage = document.getElementById(wasInline ? 'splitAttachmentStage' : 'attachmentViewerStage');
   if (overlay) overlay.classList.remove('open');
   if (stage) stage.innerHTML = '';
+  if (wasInline) {
+    const avaliacaoView = document.getElementById('view-avaliacao');
+    avaliacaoView?.classList.remove('attachment-workspace-open');
+    applyAvaliacaoScale(attachmentWorkspacePreviousScale || 1);
+    attachmentWorkspacePreviousScale = null;
+  }
   currentAttachmentViewer = null;
 }
 function openAttachmentViewerFromLink(el, event) {
@@ -5554,6 +5618,7 @@ let portalStateLoading = false;
 function syncPortalTableScrollHeight() {
   const scroll = document.getElementById('portalResultsScroll');
   if (!scroll) return;
+  scroll.scrollLeft = 0;
   const top = scroll.getBoundingClientRect().top;
   const available = Math.max(320, Math.floor(window.innerHeight - top - 24));
   scroll.style.maxHeight = `${available}px`;
@@ -5660,7 +5725,7 @@ function renderPortal() {
     const resolvedVideoIssue = !videoIssue && requiresReevaluation(parId, inscId) ? getResolvedVideoIssue(parId, inscId) : null;
     const statusLabel = videoIssue ? 'Aguardando vídeo' : resolvedVideoIssue ? 'Avaliar novamente' : isDone ? 'Finalizada' : 'Pendente';
     const statusClass = videoIssue ? 'b-antecipada' : resolvedVideoIssue || isDone ? 'b-ok' : 'b-pend';
-    return `<tr class="portal-evaluation-row ${isDone && parecerResumo ? 'has-observation' : ''}" style="cursor:pointer" onclick="abrirFicha('${parId}','${inscId}'${isDone?', true':''})">
+    return `<tr class="portal-evaluation-row ${isDone ? 'is-complete' : ''} ${isDone && parecerResumo ? 'has-observation' : ''}" style="cursor:pointer" onclick="abrirFicha('${parId}','${inscId}'${isDone?', true':''})">
       <td class="sticky s5"><div class="leader-cell"><div class="portal-team-name" title="${escapeHtmlAttr(displayPersonName(e.lider))}" style="font-size:12.5px;font-weight:600;color:#202124">${formatResultadoLeaderName(e.lider)}</div>
         ${e.p2 ? `<div class="team-members"><div class="team-member-line portal-team-name" title="${escapeHtmlAttr(displayPersonName(e.p2))}">${displayPersonName(e.p2)}</div>${e.p3 ? `<div class="team-member-line portal-team-name" title="${escapeHtmlAttr(displayPersonName(e.p3))}">${displayPersonName(e.p3)}</div>` : ''}</div>` : ''}
         <div class="res-muted" style="font-size:11px;margin-top:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-school"></i>${displayPersonName(e.mentor)}</div></div></td>
@@ -6577,6 +6642,7 @@ function updateAvaliacaoStatus(done) {
 }
 
 function abrirFicha(parId, inscId, abrirEmEdicao = false) {
+  if (currentAttachmentViewer?.inline) closeAttachmentViewer();
   scrollAppTop();
   currentParId = parId;
   currentInscId = inscId;
