@@ -968,7 +968,10 @@ tr:hover td.sticky{background:#FAFAFA}
 .fi-score{display:flex;align-items:center;gap:8px;padding:0;border:none;background:transparent}
 .fi-score-val{font-size:13.2px;font-weight:700;color:#202124;min-width:28px;text-align:right}
 .fi-score-bar{width:72px;height:6px;background:#E8EAED;border-radius:0;overflow:hidden}
-.fi-score-fill{height:100%;background:linear-gradient(90deg,#AECBFA 0%,#4285F4 55%,#1A73E8 100%);border-radius:0}
+.fi-score-fill{display:block;height:100%;background:linear-gradient(90deg,#AECBFA 0%,#4285F4 55%,#1A73E8 100%);border-radius:0}
+.fi-parecer-row{margin-top:6px;padding-top:6px;border-top:1px solid #EEF1F4}
+.fi-parecer-note{font-size:11px;line-height:1.4;color:#6B7280;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.fi-parecer-note strong{font-weight:600;color:#4B5563}
 .fi-last-tag{
   display:inline-flex;
   align-items:center;
@@ -5548,6 +5551,10 @@ function renderPortal() {
     if (!e) return '';
     const av = avaliacoes[parId]?.[inscId];
     const isDone = isEvaluationConcluded(parId, inscId);
+    const notaGeralParecerista = isDone ? notaExibida(notaGeralAvaliacao(av)) : null;
+    const notaFillPct = notaGeralParecerista === null ? 0 : Math.max(0, Math.min(100, (notaGeralParecerista / 4) * 100));
+    const notaFillColor = corConceitoNota(notaGeralParecerista);
+    const parecerResumo = String(av?.parecer || '').trim();
     const isLastReviewed = lastReviewedPortalInscId === inscId;
     const videoIssue = getActiveVideoIssue(parId, inscId);
     const resolvedVideoIssue = !videoIssue && requiresReevaluation(parId, inscId) ? getResolvedVideoIssue(parId, inscId) : null;
@@ -5566,6 +5573,7 @@ function renderPortal() {
           <div class="fi-team">${teamMarker(e.mod)}</div>
         </div>
         <div class="fi-inst">${portalInstitutionLabel(e.inst)}</div>
+        ${parecerResumo ? `<div class="fi-parecer-row"><div class="fi-parecer-note"><strong>Parecer geral:</strong> ${escapeHtmlAttr(parecerResumo)}</div></div>` : ''}
         ${videoIssue ? `<div class="fi-last-row"><span class="fi-last-tag" style="background:#FDECEC;color:#B3261E;border-color:#F2B8B5;animation:none">Vídeo com pendência técnica</span></div>` : ''}
         ${isLastReviewed ? `<div class="fi-last-row"><span class="fi-last-tag">Última avaliada</span></div>` : ''}
       </div>
@@ -5586,7 +5594,10 @@ function renderPortal() {
             <div class="fi-side-subline"><div class="fi-side-note">Pendência de vídeo resolvida</div></div>` : isDone ? `
             <div class="fi-side-topline">
               <div class="fi-side-status">
-                <span class="badge b-ok">Avaliado</span>
+                <div class="fi-score" aria-label="Nota da avaliação">
+                  <span class="fi-score-val">${fmtNotaGeral(notaGeralParecerista)}</span>
+                  <span class="fi-score-bar"><span class="fi-score-fill" style="width:${notaFillPct}%;background:${notaFillColor}"></span></span>
+                </div>
               </div>
             </div>
             <div class="fi-side-subline"></div>` : `
@@ -8531,6 +8542,11 @@ function inscricoesFromRemote(rows, participants) {
   });
 }
 
+function hydrateRawBaseFromRemote(rows) {
+  rawRows = (rows || []).map(row => ({ ...(row?.raw_json || {}) }));
+  rawParticipantes = [];
+}
+
 function avaliaçõesFromRemote(rows, criterios) {
   avaliacoes = {};
   const critMap = {};
@@ -8683,6 +8699,7 @@ async function loadStateFromSupabase(options = {}) {
       return false;
     }
 
+    hydrateRawBaseFromRemote(inscData || []);
     inscricoesFromRemote(inscData, partData || []);
     const remoteContainsNonSentRows =
       activeEnvironment === 'homolog' &&
@@ -8861,6 +8878,7 @@ async function loadReviewerPortalStateFromSupabase(parId) {
         orderBy: 'id',
         batchSize: 1000,
       });
+      hydrateRawBaseFromRemote(inscRows || []);
       inscricoesFromRemote(inscRows || [], participantRows || []);
     }
 
