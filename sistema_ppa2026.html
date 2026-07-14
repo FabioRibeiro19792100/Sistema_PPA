@@ -13,7 +13,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="base_fallbacks.js"></script>
 <style>
 /* ══════════════════════════════════════════════
    TEMAS — CSS CUSTOM PROPERTIES
@@ -3047,9 +3046,8 @@ textarea::placeholder{color:#BDC1C6}
     <div class="form-row cols-3">
       <div>
         <label class="fl">Ambiente ativo</label>
-        <select class="finput" id="sbEnvActive" onchange="handleSupabaseEnvironmentChange(this.value)">
+        <select class="finput" id="sbEnvActive" onchange="handleSupabaseEnvironmentChange(this.value)" disabled>
           <option value="homolog">Homologação</option>
-          <option value="producao">Produção</option>
         </select>
       </div>
       <div>
@@ -6810,10 +6808,11 @@ let rawIESAutoloadPromise = null;
 let rawIESAutoloadSource = '';
 let baseConfirmada = false;
 let dashCharts = {};
-const ARQUIVO_PADRAO = 'base_ficticia_ppa_inscricoes_participantes.xlsx';
-const ARQUIVO_PADRAO_HOMOLOG = 'inscricoes-ppa-{submissão final}.xlsx';
+const ARQUIVO_PADRAO = '';
+const ARQUIVO_PADRAO_HOMOLOG = '';
 const STORAGE_KEY = 'ppa2026_app_state_v1';
 const SUPABASE_SETTINGS_KEY = 'ppa2026_supabase_settings_v1';
+const PRIMARY_ENVIRONMENT = 'homolog';
 let reviewerBootMode = false;
 let tentativasCargaBase = 0;
 let carregandoBasePadrao = false;
@@ -6821,8 +6820,8 @@ let falhaCargaBasePadrao = false;
 let baseLoadAttemptToken = 0;
 let baseLoadRetryTimer = null;
 let persistenceMode = 'local';
-let activeEnvironment = 'homolog';
-let environmentBaseFiles = { homolog: ARQUIVO_PADRAO_HOMOLOG, producao: ARQUIVO_PADRAO };
+let activeEnvironment = PRIMARY_ENVIRONMENT;
+let environmentBaseFiles = { homolog:'', producao:'' };
 let selectedLocalBaseNames = { homolog:'', producao:'' };
 let environmentThemePrefs = {
   homolog: { theme:'default', dark:false },
@@ -6878,6 +6877,54 @@ function clearLocalAppStateForEnvironment(env = activeEnvironment) {
   }
 }
 
+function enforcePrimaryEnvironment() {
+  activeEnvironment = PRIMARY_ENVIRONMENT;
+  environmentBaseFiles = {
+    homolog: normalizeEnvironmentBaseFile('homolog', environmentBaseFiles?.homolog || ''),
+    producao: normalizeEnvironmentBaseFile('producao', environmentBaseFiles?.producao || ''),
+  };
+  selectedLocalBaseNames = {
+    homolog: selectedLocalBaseNames?.homolog || '',
+    producao: '',
+  };
+  currentImportIdByEnvironment = {
+    homolog: currentImportIdByEnvironment?.homolog || null,
+    producao: null,
+  };
+  environmentRemoteReady = {
+    homolog: !!environmentRemoteReady?.homolog,
+    producao: false,
+  };
+  environmentAuditReady = {
+    homolog: !!environmentAuditReady?.homolog,
+    producao: false,
+  };
+  remoteBootResolved = {
+    homolog: !!remoteBootResolved?.homolog,
+    producao: false,
+  };
+  remoteBootFailureReason = {
+    homolog: remoteBootFailureReason?.homolog || '',
+    producao: '',
+  };
+  environmentThemePrefs = {
+    homolog: {
+      theme: ['default','dense','editorial'].includes(environmentThemePrefs?.homolog?.theme)
+        ? environmentThemePrefs.homolog.theme
+        : 'default',
+      dark: !!environmentThemePrefs?.homolog?.dark,
+    },
+    producao: {
+      theme: 'default',
+      dark: false,
+    },
+  };
+}
+
+function purgeDeprecatedEnvironmentState() {
+  clearLocalAppStateForEnvironment('producao');
+}
+
 function normalizarModalidade(valor, p2, p3) {
   const raw = String(valor || '').trim().toLowerCase();
   if (raw) {
@@ -6914,24 +6961,12 @@ function currentEnvironmentConfig() {
 }
 
 function defaultBaseFileForEnvironment(env) {
-  return env === 'homolog' ? ARQUIVO_PADRAO_HOMOLOG : ARQUIVO_PADRAO;
+  return '';
 }
 
 function normalizeEnvironmentBaseFile(env, value) {
-  const fallback = defaultBaseFileForEnvironment(env);
   const raw = String(value || '').trim();
-  if (!raw) return fallback;
-  if (env === 'homolog') {
-    const lower = raw.toLowerCase();
-    if (
-      lower === 'homologar.xlsx' ||
-      lower === 'base_ficticia_ppa_inscricoes_participantes.xlsx' ||
-      lower === 'inscrições ppa - 06.07 - participantes.csv' ||
-      lower === 'inscricoes ppa - 06.07 - participantes.csv'
-    ) {
-      return ARQUIVO_PADRAO_HOMOLOG;
-    }
-  }
+  if (isLegacyFakeBaseName(raw)) return '';
   return raw;
 }
 
@@ -6951,26 +6986,11 @@ function activeBaseFile() {
 
 function baseFileCandidatesForEnvironment(env = activeEnvironment) {
   const primary = normalizeEnvironmentBaseFile(env, activeBaseFile());
-  const candidates = [primary];
-  if (env === 'homolog') {
-    [ARQUIVO_PADRAO_HOMOLOG, 'Homologar.xlsx', 'base_ficticia_ppa_inscricoes_participantes.xlsx'].forEach(name => {
-      if (!candidates.includes(name)) candidates.push(name);
-    });
-  } else {
-    [ARQUIVO_PADRAO].forEach(name => {
-      if (!candidates.includes(name)) candidates.push(name);
-    });
-  }
-  return candidates;
+  return primary ? [primary] : [];
 }
 
 function baseFallbackForFile(fileName) {
-  const registry = window.__PPA_BASE_FALLBACKS || {};
-  const normalizedTarget = String(fileName || '').trim().toLowerCase();
-  const direct = registry[fileName];
-  if (direct) return direct;
-  const matchedKey = Object.keys(registry).find(key => String(key || '').trim().toLowerCase() === normalizedTarget);
-  return matchedKey ? registry[matchedKey] : null;
+  return null;
 }
 
 function isValidSupabaseUrl(url) {
@@ -7169,7 +7189,10 @@ function updateSupabaseStatus(msg, tone) {
 }
 
 function populateSupabaseSettingsForm() {
+  enforcePrimaryEnvironment();
+  purgeDeprecatedEnvironmentState();
   document.getElementById('sbEnvActive').value = activeEnvironment;
+  document.getElementById('sbEnvActive').disabled = true;
   document.getElementById('sbPersistenceMode').value = persistenceMode;
   document.getElementById('sbBaseName').value = activeBaseFile();
   document.getElementById('sbProjectUrl').value = supabaseSettings.url || '';
@@ -7252,10 +7275,10 @@ function hydrateSupabaseSettings() {
     if (!raw) return;
     const parsed = JSON.parse(raw);
     persistenceMode = parsed.persistenceMode || persistenceMode;
-    activeEnvironment = parsed.activeEnvironment || activeEnvironment;
+    activeEnvironment = PRIMARY_ENVIRONMENT;
     environmentBaseFiles = {
-      homolog: normalizeEnvironmentBaseFile('homolog', parsed.environmentBaseFiles?.homolog || ARQUIVO_PADRAO_HOMOLOG),
-      producao: normalizeEnvironmentBaseFile('producao', parsed.environmentBaseFiles?.producao || ARQUIVO_PADRAO),
+      homolog: normalizeEnvironmentBaseFile('homolog', parsed.environmentBaseFiles?.homolog || ''),
+      producao: normalizeEnvironmentBaseFile('producao', parsed.environmentBaseFiles?.producao || ''),
     };
     const migratedUrl =
       parsed.url ||
@@ -7294,6 +7317,8 @@ function hydrateSupabaseSettings() {
         dark: !!parsed.environmentThemePrefs?.producao?.dark,
       },
     };
+    enforcePrimaryEnvironment();
+    purgeDeprecatedEnvironmentState();
   } catch (err) {
     console.warn('Falha ao restaurar configuração do Supabase:', err);
   }
@@ -7306,19 +7331,22 @@ async function loadSharedSupabaseSettings() {
     if (!res.ok) return;
     const parsed = await res.json();
     if (parsed.persistenceMode) persistenceMode = parsed.persistenceMode;
-    if (parsed.activeEnvironment) activeEnvironment = parsed.activeEnvironment;
+    activeEnvironment = PRIMARY_ENVIRONMENT;
     environmentBaseFiles = {
-      homolog: normalizeEnvironmentBaseFile('homolog', parsed.environmentBaseFiles?.homolog || environmentBaseFiles.homolog || ARQUIVO_PADRAO_HOMOLOG),
-      producao: normalizeEnvironmentBaseFile('producao', parsed.environmentBaseFiles?.producao || environmentBaseFiles.producao || ARQUIVO_PADRAO),
+      homolog: normalizeEnvironmentBaseFile('homolog', parsed.environmentBaseFiles?.homolog || environmentBaseFiles.homolog || ''),
+      producao: normalizeEnvironmentBaseFile('producao', parsed.environmentBaseFiles?.producao || environmentBaseFiles.producao || ''),
     };
     if (parsed.url) supabaseSettings.url = String(parsed.url).trim();
     if (parsed.anonKey) supabaseSettings.anonKey = String(parsed.anonKey).trim();
+    enforcePrimaryEnvironment();
+    purgeDeprecatedEnvironmentState();
   } catch (err) {
     console.warn('Falha ao carregar configuração compartilhada do Supabase:', err);
   }
 }
 
 function persistSupabaseSettings() {
+  enforcePrimaryEnvironment();
   localStorage.setItem(SUPABASE_SETTINGS_KEY, JSON.stringify({
     persistenceMode,
     activeEnvironment,
@@ -7405,16 +7433,18 @@ async function reloadEnvironmentState() {
 async function saveSupabaseSettings() {
   const previousEnvironment = activeEnvironment;
   persistenceMode = document.getElementById('sbPersistenceMode').value;
-  activeEnvironment = document.getElementById('sbEnvActive').value;
-  environmentBaseFiles[activeEnvironment] = normalizeEnvironmentBaseFile(
-    activeEnvironment,
-    document.getElementById('sbBaseName').value.trim() || defaultBaseFileForEnvironment(activeEnvironment)
+  activeEnvironment = PRIMARY_ENVIRONMENT;
+  environmentBaseFiles[PRIMARY_ENVIRONMENT] = normalizeEnvironmentBaseFile(
+    PRIMARY_ENVIRONMENT,
+    document.getElementById('sbBaseName').value.trim() || defaultBaseFileForEnvironment(PRIMARY_ENVIRONMENT)
   );
   supabaseSettings = {
     url: document.getElementById('sbProjectUrl').value.trim(),
     anonKey: document.getElementById('sbAnonKey').value.trim(),
   };
   supabaseClient = null;
+  enforcePrimaryEnvironment();
+  purgeDeprecatedEnvironmentState();
   persistSupabaseSettings();
   applyThemeForEnvironment(activeEnvironment, { persistLocal:false, persistRemote:false });
   populateSupabaseSettingsForm();
@@ -7425,19 +7455,13 @@ async function saveSupabaseSettings() {
 }
 
 async function handleSupabaseEnvironmentChange(nextEnvironment) {
-  const normalized = nextEnvironment === 'producao' ? 'producao' : 'homolog';
-  if (normalized === activeEnvironment) {
-    populateSupabaseSettingsForm();
-    return;
-  }
-
-  activeEnvironment = normalized;
+  activeEnvironment = PRIMARY_ENVIRONMENT;
+  purgeDeprecatedEnvironmentState();
   persistSupabaseSettings();
-  applyThemeForEnvironment(activeEnvironment, { persistLocal:false, persistRemote:false });
   populateSupabaseSettingsForm();
-  updateSupabaseStatus(`Trocando para ${activeEnvironment}...`);
-  await reloadEnvironmentState();
-  notify(`Ambiente ativo alterado para ${activeEnvironment}.`);
+  if (nextEnvironment && nextEnvironment !== PRIMARY_ENVIRONMENT) {
+    notify('Este sistema está operando apenas em homologação.');
+  }
 }
 
 async function testSupabaseConnection() {
@@ -7864,7 +7888,18 @@ async function deleteRemoteEvaluationsByReviewer(client, reviewerIds) {
 async function ensureImportRecord(client) {
   if (!rawRows.length) return currentImportIdByEnvironment[activeEnvironment];
   currentImportHash = simpleHash({ rows: rawRows, participantes: rawParticipantes, environment: activeEnvironment });
-  if (currentImportIdByEnvironment[activeEnvironment]) return currentImportIdByEnvironment[activeEnvironment];
+  if (currentImportIdByEnvironment[activeEnvironment]) {
+    const cachedImportId = currentImportIdByEnvironment[activeEnvironment];
+    const cachedImport = await client
+      .from('imports')
+      .select('id')
+      .eq('id', cachedImportId)
+      .eq('environment', activeEnvironment)
+      .maybeSingle();
+    if (cachedImport?.data?.id) return cachedImport.data.id;
+    currentImportIdByEnvironment[activeEnvironment] = null;
+    persistSupabaseSettings();
+  }
   const existing = await client
     .from('imports')
     .select('id')
@@ -7891,32 +7926,64 @@ async function ensureImportRecord(client) {
   if (error) throw error;
   currentImportIdByEnvironment[activeEnvironment] = data.id;
   persistSupabaseSettings();
-
-  const rawPayload = [
-    ...rawRows.map((row, idx) => ({
-      import_id: data.id,
-      environment: activeEnvironment,
-      source_sheet: 'Inscrições',
-      row_number: idx + 2,
-      payload_json: row,
-    })),
-    ...rawParticipantes.map((row, idx) => ({
-      import_id: data.id,
-      environment: activeEnvironment,
-      source_sheet: 'Participantes',
-      row_number: idx + 2,
-      payload_json: row,
-    })),
-  ];
-  if (rawPayload.length) {
+  const insertRawRows = async (importId) => {
+    const rawPayload = [
+      ...rawRows.map((row, idx) => ({
+        import_id: importId,
+        environment: activeEnvironment,
+        source_sheet: 'Inscrições',
+        row_number: idx + 2,
+        payload_json: row,
+      })),
+      ...rawParticipantes.map((row, idx) => ({
+        import_id: importId,
+        environment: activeEnvironment,
+        source_sheet: 'Participantes',
+        row_number: idx + 2,
+        payload_json: row,
+      })),
+    ];
+    if (!rawPayload.length) return;
     const chunkSize = 250;
     for (let i = 0; i < rawPayload.length; i += chunkSize) {
       const chunk = rawPayload.slice(i, i + chunkSize);
       const { error: rawError } = await client.from('import_rows_raw').insert(chunk);
       if (rawError) throw rawError;
     }
+  };
+
+  try {
+    await insertRawRows(data.id);
+  } catch (rawErr) {
+    const isImportFkFailure = String(rawErr?.message || rawErr || '').includes('import_rows_raw_import_id_fkey');
+    if (isImportFkFailure) {
+      const confirmedImport = await client
+        .from('imports')
+        .select('id')
+        .eq('id', data.id)
+        .eq('environment', activeEnvironment)
+        .maybeSingle();
+      if (!confirmedImport?.data?.id) {
+        currentImportIdByEnvironment[activeEnvironment] = null;
+        persistSupabaseSettings();
+        return ensureImportRecord(client);
+      }
+    }
+    throw rawErr;
   }
   return data.id;
+}
+
+async function confirmLiveImportId(client, importId) {
+  if (!importId) return null;
+  const { data, error } = await client
+    .from('imports')
+    .select('id')
+    .eq('id', importId)
+    .eq('environment', activeEnvironment)
+    .maybeSingle();
+  if (error) throw error;
+  return data?.id || null;
 }
 
 async function syncStateToSupabase(reason) {
@@ -7932,7 +7999,17 @@ async function syncStateToSupabase(reason) {
   remoteSyncInFlight = true;
   updateSupabaseStatus(`Sincronizando ${activeEnvironment}...`);
   try {
-    const importId = await ensureImportRecord(client);
+    let importId = await ensureImportRecord(client);
+    importId = await confirmLiveImportId(client, importId);
+    if (!importId && rawRows.length) {
+      currentImportIdByEnvironment[activeEnvironment] = null;
+      persistSupabaseSettings();
+      importId = await ensureImportRecord(client);
+      importId = await confirmLiveImportId(client, importId);
+    }
+    if (rawRows.length && !importId) {
+      throw new Error('Não consegui recriar o registro de importação da base ativa.');
+    }
     const themeSupported = await detectRemoteThemeColumns(client);
     const configPayload = { ...configSnapshotPayload(), id: activeEnvironment, updated_at: new Date().toISOString() };
     if (themeSupported) {
@@ -7943,7 +8020,11 @@ async function syncStateToSupabase(reason) {
       client.from('configuracoes_sistema').upsert(configPayload, { onConflict:'id' })
     );
 
-    const inscRows = inscricoesPayload().map(row => ({ ...row, import_id: importId }));
+    const buildInscRows = resolvedImportId => inscricoesPayload().map(row => ({
+      ...row,
+      import_id: resolvedImportId || null,
+    }));
+    let inscRows = buildInscRows(importId);
     const partRows = participantesPayload();
     const parsRows = pareceristasPayload();
     const atribRows = atribuicoesPayload();
@@ -7994,9 +8075,25 @@ async function syncStateToSupabase(reason) {
       row => `${row.event_type || 'evento'} · ${row.correlation_id || 'sem correlação'}`
     );
 
-    await runSupabaseQuery(
-      client.from('inscricoes').upsert(inscRows, { onConflict:'environment,id_externo' })
-    );
+    try {
+      await runSupabaseQuery(
+        client.from('inscricoes').upsert(inscRows, { onConflict:'environment,id_externo' })
+      );
+    } catch (inscErr) {
+      const isImportFkFailure = String(inscErr?.message || inscErr || '').includes('inscricoes_import_id_fkey');
+      if (!isImportFkFailure) throw inscErr;
+      currentImportIdByEnvironment[activeEnvironment] = null;
+      persistSupabaseSettings();
+      importId = await ensureImportRecord(client);
+      importId = await confirmLiveImportId(client, importId);
+      inscRows = buildInscRows(importId);
+      if (!importId) {
+        inscRows = buildInscRows(null);
+      }
+      await runSupabaseQuery(
+        client.from('inscricoes').upsert(inscRows, { onConflict:'environment,id_externo' })
+      );
+    }
     await runSupabaseQuery(
       client.from('participantes').upsert(partRows, { onConflict:'environment,inscricao_id_externo,papel,ordem' })
     );
@@ -8557,6 +8654,7 @@ async function loadStateFromSupabase(options = {}) {
     const shouldMigrateLegacyHomolog =
       !skipLegacyMigration &&
       activeEnvironment === 'homolog' &&
+      normalizedActiveSource &&
       latestImportSource &&
       normalizedLatestSource !== normalizedActiveSource;
 
@@ -8607,7 +8705,7 @@ async function loadStateFromSupabase(options = {}) {
         !materialLinks(e).roteiro30 &&
         !materialLinks(e).campanha
       );
-    if (!skipLegacyMigration && (remoteContainsNonSentRows || remoteLooksIncomplete)) {
+    if (!skipLegacyMigration && normalizedActiveSource && (remoteContainsNonSentRows || remoteLooksIncomplete)) {
       updateSupabaseStatus(
         remoteContainsNonSentRows
           ? 'Estado remoto com inscrições fora de "Enviado". Reimportando a planilha oficial...'
@@ -9041,18 +9139,17 @@ async function tentarCarregarArquivoPadrao(opts = {}) {
 
   try {
     const candidatos = baseFileCandidatesForEnvironment(activeEnvironment);
+    if (!candidatos.length) {
+      carregandoBasePadrao = false;
+      falhaCargaBasePadrao = true;
+      renderDashboard();
+      return false;
+    }
     let arquivoAtivo = candidatos[0];
     let payload = null;
     let ultimoErro = null;
-    let fallbackData = null;
     const xlsxReady = typeof XLSX !== 'undefined';
     for (const candidato of candidatos) {
-      const localFallback = baseFallbackForFile(candidato);
-      if (!xlsxReady && localFallback) {
-        fallbackData = localFallback;
-        arquivoAtivo = candidato;
-        break;
-      }
       const isCsvCandidate = /\.csv($|\?)/i.test(candidato);
       try {
         payload = await new Promise((resolve, reject) => {
@@ -9074,15 +9171,10 @@ async function tentarCarregarArquivoPadrao(opts = {}) {
         arquivoAtivo = candidato;
         break;
       } catch (err) {
-        if (localFallback) {
-          fallbackData = localFallback;
-          arquivoAtivo = candidato;
-          break;
-        }
         ultimoErro = err;
       }
     }
-    if (!payload && !fallbackData) {
+    if (!payload) {
       if (!xlsxReady && tentativasCargaBase < 20) {
         tentativasCargaBase++;
         if (baseLoadRetryTimer) clearTimeout(baseLoadRetryTimer);
@@ -9092,15 +9184,11 @@ async function tentarCarregarArquivoPadrao(opts = {}) {
         renderDashboard();
         return false;
       }
-      throw (ultimoErro || new Error('Nenhum arquivo padrão disponível.'));
+      throw (ultimoErro || new Error('Nenhum arquivo de base foi selecionado.'));
     }
     const isCsv = /\.csv($|\?)/i.test(arquivoAtivo);
     if (attemptToken !== baseLoadAttemptToken) return false;
-    if (fallbackData) {
-      rawRows = Array.isArray(fallbackData.rawRows) ? fallbackData.rawRows : [];
-      rawParticipantes = Array.isArray(fallbackData.rawParticipantes) ? fallbackData.rawParticipantes : [];
-      rawIES = Array.isArray(fallbackData.rawIES) ? fallbackData.rawIES : [];
-    } else if (isCsv) {
+    if (isCsv) {
       carregarCsvTexto(String(payload || ''));
     } else {
       const wb = XLSX.read(payload, { type: 'array', cellDates: true });
@@ -9121,7 +9209,6 @@ async function tentarCarregarArquivoPadrao(opts = {}) {
     } else if (!currentParId) {
       showView('dashboard');
     }
-    notify(`Base padrão carregada automaticamente: ${arquivoAtivo}`);
     return true;
   } catch (err) {
     if (attemptToken !== baseLoadAttemptToken) return false;
@@ -10359,7 +10446,7 @@ if (persistenceMode === 'supabase') {
   carregandoEstadoRemoto = true;
   resetRuntimeStateForEnvironment();
 }
-if (persistenceMode !== 'supabase') {
+if (persistenceMode !== 'supabase' && activeBaseFile()) {
   hydrateAppState();
 }
 hydrateAccessRole();
@@ -10389,7 +10476,7 @@ window.addEventListener('load', () => {
       resetRuntimeStateForEnvironment();
     } else {
       resetRuntimeStateForEnvironment();
-      hydrateAppState();
+      if (activeBaseFile()) hydrateAppState();
     }
     refreshRuntimeControls();
     refreshRuntimeViews();
@@ -10454,12 +10541,12 @@ window.addEventListener('load', () => {
           return;
         }
         if (!requestedParId) {
-          const loadedFromFile = await tentarCarregarArquivoPadrao();
+          clearLocalAppStateForEnvironment(activeEnvironment);
+          resetRuntimeStateForEnvironment();
           remoteBootResolved[activeEnvironment] = true;
-          remoteBootFailureReason[activeEnvironment] = loadedFromFile
-            ? ''
-            : 'Nenhum estado persistido foi encontrado no Supabase e a base local padrão não pôde ser carregada.';
-          if (loadedFromFile) return;
+          remoteBootFailureReason[activeEnvironment] = 'Nenhuma base persistida encontrada. Selecione e importe a base que deseja usar.';
+          updateSupabaseStatus('Nenhuma base persistida encontrada. Selecione o arquivo correto e importe para o ambiente.', 'danger');
+          showView('dashboard');
         } else {
           remoteBootResolved[activeEnvironment] = true;
           remoteBootFailureReason[activeEnvironment] = 'Este parecerista não tem dados persistidos disponíveis neste ambiente.';
@@ -10479,7 +10566,7 @@ window.addEventListener('load', () => {
       notify('O portal do parecerista só usa estado persistido. Configure e sincronize o Supabase antes.');
       return;
     }
-    tentarCarregarArquivoPadrao();
+    showView('dashboard');
   }, 150);
 });
 
