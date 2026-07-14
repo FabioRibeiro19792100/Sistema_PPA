@@ -928,7 +928,7 @@ tr:hover td.sticky{background:#FAFAFA}
 .fi-id{font-family:monospace;font-size:12px;color:#1A73E8;min-width:0}
 .fi-id-col .icon-btn{width:30px;height:30px;padding:0;border:1px solid #AECBFA;background:#E8F0FE;border-radius:999px;color:#1A73E8;display:inline-flex;align-items:center;justify-content:center}
 .fi-id-col .icon-btn:hover{background:#DCE8FF;border-color:#7BAAF7;color:#185ABC}
-.fi-main{min-width:0;padding-top:1px;padding-right:6px;overflow:hidden}
+.fi-main{min-width:0;padding-top:1px;padding-right:6px;overflow:visible}
 .fi-head{display:flex;align-items:center;gap:8px;min-width:0;overflow:hidden}
 .fi-issue-icon{
   display:inline-flex;
@@ -969,9 +969,10 @@ tr:hover td.sticky{background:#FAFAFA}
 .fi-score-val{font-size:13.2px;font-weight:700;color:#202124;min-width:28px;text-align:right}
 .fi-score-bar{width:72px;height:6px;background:#E8EAED;border-radius:0;overflow:hidden}
 .fi-score-fill{display:block;height:100%;background:linear-gradient(90deg,#AECBFA 0%,#4285F4 55%,#1A73E8 100%);border-radius:0}
-.fi-parecer-row{margin-top:6px;padding-top:6px;border-top:1px solid #EEF1F4}
-.fi-parecer-note{font-size:11px;line-height:1.4;color:#6B7280;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.fi-parecer-note i{font-size:11px;margin-right:4px;vertical-align:baseline;color:#1A73E8}
+.fi-parecer-row{position:relative;margin-top:8px;padding-top:8px}
+.fi-parecer-row::before{content:'';position:absolute;top:0;left:0;right:-206px;height:1px;background:#D6DCE3}
+.fi-parecer-note{font-size:12.1px;line-height:1.4;color:#6B7280;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.fi-parecer-note i{font-size:12.1px;margin-right:4px;vertical-align:baseline;color:#1A73E8}
 .fi-parecer-note strong{font-weight:600;color:#1A73E8}
 .fi-last-tag{
   display:inline-flex;
