@@ -971,7 +971,8 @@ tr:hover td.sticky{background:#FAFAFA}
 .fi-score-fill{display:block;height:100%;background:linear-gradient(90deg,#AECBFA 0%,#4285F4 55%,#1A73E8 100%);border-radius:0}
 .fi-parecer-row{margin-top:6px;padding-top:6px;border-top:1px solid #EEF1F4}
 .fi-parecer-note{font-size:11px;line-height:1.4;color:#6B7280;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.fi-parecer-note strong{font-weight:600;color:#4B5563}
+.fi-parecer-note i{font-size:11px;margin-right:4px;vertical-align:baseline;color:#1A73E8}
+.fi-parecer-note strong{font-weight:600;color:#1A73E8}
 .fi-last-tag{
   display:inline-flex;
   align-items:center;
@@ -5573,7 +5574,7 @@ function renderPortal() {
           <div class="fi-team">${teamMarker(e.mod)}</div>
         </div>
         <div class="fi-inst">${portalInstitutionLabel(e.inst)}</div>
-        ${parecerResumo ? `<div class="fi-parecer-row"><div class="fi-parecer-note"><strong>Parecer geral:</strong> ${escapeHtmlAttr(parecerResumo)}</div></div>` : ''}
+        ${parecerResumo ? `<div class="fi-parecer-row"><div class="fi-parecer-note"><i class="ti ti-message-circle" aria-hidden="true"></i><strong>Parecer geral:</strong> ${escapeHtmlAttr(parecerResumo)}</div></div>` : ''}
         ${videoIssue ? `<div class="fi-last-row"><span class="fi-last-tag" style="background:#FDECEC;color:#B3261E;border-color:#F2B8B5;animation:none">Vídeo com pendência técnica</span></div>` : ''}
         ${isLastReviewed ? `<div class="fi-last-row"><span class="fi-last-tag">Última avaliada</span></div>` : ''}
       </div>
