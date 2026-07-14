@@ -669,7 +669,7 @@ tr:hover td.sticky{background:#FAFAFA}
 .nota-progress-dot.is-done{background:#6B7280}
 .crit-group{font-weight:700;color:#4B5563;background:#EEF2F7 !important}
 
-#view-resultados .results-top-sticky{
+:is(#view-resultados,#view-portal) .results-top-sticky{
   position:sticky;
   top:0;
   z-index:30;
@@ -677,10 +677,10 @@ tr:hover td.sticky{background:#FAFAFA}
   padding:12px 0 14px;
   margin-bottom:8px;
 }
-#view-resultados .results-top-shell{
+:is(#view-resultados,#view-portal) .results-top-shell{
   background:var(--bg);
 }
-#view-resultados .results-reset-btn{
+:is(#view-resultados,#view-portal) .results-reset-btn{
   display:inline-flex;
   align-items:center;
   gap:6px;
@@ -694,39 +694,39 @@ tr:hover td.sticky{background:#FAFAFA}
   cursor:pointer;
   transition:color .12s ease, opacity .12s ease;
 }
-#view-resultados .results-reset-btn:hover{
+:is(#view-resultados,#view-portal) .results-reset-btn:hover{
   color:#1A73E8;
 }
-#view-resultados .results-reset-btn i{
+:is(#view-resultados,#view-portal) .results-reset-btn i{
   font-size:14px;
 }
-#view-resultados .tbl-card{overflow:hidden}
-#view-resultados .tbl-scroll{
+:is(#view-resultados,#view-portal) .tbl-card{overflow:hidden}
+:is(#view-resultados,#view-portal) .tbl-scroll{
   overflow:auto;
   position:relative;
   overscroll-behavior:contain;
   background:var(--surface);
   padding-right:18px;
 }
-#view-resultados th{border-bottom-color:#C7CDD6}
-#view-resultados td{border-bottom-color:#D3D8E0}
-#view-resultados .crit,
-#view-resultados .crit-td{border-left-color:#D3D8E0}
-#view-resultados thead tr:first-child th + th,
-#view-resultados thead tr:nth-child(2) th + th{border-left:1px solid #D3D8E0}
-#view-resultados thead th{background:#F3F4F6}
-#view-resultados thead th.sticky{
+:is(#view-resultados,#view-portal) th{border-bottom-color:#C7CDD6}
+:is(#view-resultados,#view-portal) td{border-bottom-color:#D3D8E0}
+:is(#view-resultados,#view-portal) .crit,
+:is(#view-resultados,#view-portal) .crit-td{border-left-color:#D3D8E0}
+:is(#view-resultados,#view-portal) thead tr:first-child th + th,
+:is(#view-resultados,#view-portal) thead tr:nth-child(2) th + th{border-left:1px solid #D3D8E0}
+:is(#view-resultados,#view-portal) thead th{background:#F3F4F6}
+:is(#view-resultados,#view-portal) thead th.sticky{
   border-left:none !important;
   border-right:none !important;
 }
-#view-resultados thead tr:first-child th{
+:is(#view-resultados,#view-portal) thead tr:first-child th{
   position:sticky;
   top:0;
   height:42px;
   vertical-align:middle;
   z-index:12;
 }
-#view-resultados thead tr:nth-child(2) th{
+:is(#view-resultados,#view-portal) thead tr:nth-child(2) th{
   position:sticky;
   top:42px;
   height:56px;
@@ -735,52 +735,107 @@ tr:hover td.sticky{background:#FAFAFA}
   background:#F8FAFC;
   z-index:12;
 }
-#view-resultados thead th[rowspan="2"]{
+:is(#view-resultados,#view-portal) thead th[rowspan="2"]{
   position:sticky;
   top:0;
   height:98px;
   vertical-align:middle;
   z-index:14;
 }
-#view-resultados thead tr:first-child th.sticky,
-#view-resultados thead tr:nth-child(2) th.sticky{
+:is(#view-resultados,#view-portal) thead tr:first-child th.sticky,
+:is(#view-resultados,#view-portal) thead tr:nth-child(2) th.sticky{
   z-index:16;
 }
-#view-resultados tbody td.sticky{
+:is(#view-resultados,#view-portal) tbody td.sticky{
   z-index:4;
 }
-#view-resultados .results-table{
+:is(#view-resultados,#view-portal) .results-table{
   table-layout:fixed;
   flex:0 0 auto;
 }
-#view-resultados .results-table th,
-#view-resultados .results-table td{
+:is(#view-resultados,#view-portal) .results-table th,
+:is(#view-resultados,#view-portal) .results-table td{
   box-sizing:border-box;
 }
-#view-resultados .results-table tbody > tr:not(.sub-row) > td{
+:is(#view-resultados,#view-portal) .results-table tbody > tr:not(.sub-row) > td{
   height:96px;
 }
-#view-resultados .results-table thead tr:first-child th:last-child,
-#view-resultados .results-table thead tr:nth-child(2) th:last-child,
-#view-resultados .results-table tbody tr > td:last-child{
+:is(#view-resultados,#view-portal) .results-table thead tr:first-child th:last-child,
+:is(#view-resultados,#view-portal) .results-table thead tr:nth-child(2) th:last-child,
+:is(#view-resultados,#view-portal) .results-table tbody tr > td:last-child{
   border-right:1px solid #D3D8E0;
 }
-#view-resultados .results-table th.id-col{
+:is(#view-resultados,#view-portal) .results-table th.id-col{
   background:#E6F0FF;
   color:#1F3A68;
 }
-#view-resultados .results-table td.id-col{
+:is(#view-resultados,#view-portal) .results-table td.id-col{
   background:#F5F9FF;
 }
-#view-resultados .results-table td.id-col .res-id{
+:is(#view-resultados,#view-portal) .results-table td.id-col .res-id{
   color:#1F3A68 !important;
   font-weight:700;
 }
-#view-resultados .results-table td.id-col .res-uf{
+:is(#view-resultados,#view-portal) .results-table td.id-col .res-uf{
   color:#49658F;
 }
-#view-resultados .results-table tbody tr:hover > td.id-col{
+:is(#view-resultados,#view-portal) .results-table tbody tr:hover > td.id-col{
   background:#EDF4FF;
+}
+#view-portal .results-table .s5{left:0;width:268px;min-width:268px;max-width:268px}
+#view-portal .results-table .s7{left:268px;width:96px;min-width:96px;max-width:96px}
+#view-portal .results-table .crit,
+#view-portal .results-table .crit-td{width:94px;min-width:94px;max-width:94px}
+#view-portal .results-table .crit{padding-left:0;padding-right:0;text-align:center;vertical-align:middle}
+#view-portal .results-table .crit-td{padding-left:0;padding-right:0;text-align:center;vertical-align:top}
+#view-portal .results-table .crit-td .badge{font-size:10px}
+#view-portal .leader-cell .portal-team-name{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+#view-portal .portal-main > .tbl-card{width:calc(100% + 56px);margin-left:-28px;margin-right:-28px;overflow:hidden}
+#view-portal .results-table tbody > tr.portal-evaluation-row > td{border-bottom-color:#B8C1CC}
+#view-portal .results-table tbody > tr.portal-evaluation-row.has-observation > td{border-bottom-color:#D3D8E0}
+#view-portal .portal-main > .results-top-sticky{
+  position:static;
+  width:100%;
+  margin-left:0;
+  margin-right:0;
+}
+#view-portal .portal-main > .results-top-sticky .results-top-shell > div:first-child{margin-left:-28px}
+#view-portal .portal-main > .results-top-sticky .results-top-shell{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+}
+#view-portal #portalSummaryBar{margin-top:0 !important;white-space:nowrap}
+#view-portal .portal-main > .tbl-card > .tbl-scroll{
+  overflow:auto;
+  overscroll-behavior:contain;
+}
+#view-portal .results-table thead tr:first-child th{top:0}
+#view-portal .results-table thead tr:nth-child(2) th{top:42px}
+#view-portal .results-table thead th[rowspan="2"]{top:0}
+#view-portal .results-table tbody > tr.portal-observation-row > td{
+  height:auto !important;
+  padding:7px 14px;
+  background:#F8FAFC;
+  border-top:.5px dashed #C7CFD8;
+  border-bottom:1px solid #B8C1CC;
+  cursor:pointer;
+}
+#view-portal .portal-observation{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  color:#6B7280;
+  font-size:11.5px;
+  line-height:1.45;
+}
+#view-portal .portal-observation i{color:#1A73E8;font-size:13px;margin-top:1px;flex:0 0 auto}
+#view-portal .portal-observation strong{color:#4B5563;font-weight:700;white-space:nowrap}
+#view-portal .portal-observation-text{
+  display:block;
+  overflow:visible;
+  white-space:normal;
 }
 
 /* ── BADGES ── */
@@ -956,6 +1011,10 @@ tr:hover td.sticky{background:#FAFAFA}
 .fi-side-status{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0;flex-wrap:nowrap}
 .fi-side-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-width:0;flex-wrap:nowrap}
 .fi-side-subline{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-height:20px}
+.fi-crit-grid{display:grid;grid-template-columns:repeat(2,minmax(86px,1fr));gap:6px 8px;width:100%;margin-top:4px}
+.fi-crit-pill{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:4px 6px;border:1px solid #E8EAED;background:#F8FAFC;min-width:0}
+.fi-crit-label{font-size:10px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:#5F6368;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fi-crit-value{font-size:10px;font-weight:700;flex-shrink:0}
 .fi-side-note{
   font-size:10.5px;
   font-weight:500;
@@ -2875,32 +2934,48 @@ textarea::placeholder{color:#BDC1C6}
     </div>
   </div>
 
-  <div class="portal-grid">
-    <aside class="portal-rail">
-      <div class="portal-quick-list">
-        <button class="portal-quick-btn active" id="portalQuickAll" type="button" onclick="filterPortal('')">
-          <span class="portal-quick-copy">
-            <span class="portal-quick-title">Total</span>
-          </span>
-          <span class="portal-quick-count" id="portalQuickAllCount">0</span>
-        </button>
-        <button class="portal-quick-btn" id="portalQuickDone" type="button" onclick="filterPortal('done')">
-          <span class="portal-quick-copy">
-            <span class="portal-quick-title">Concluídas</span>
-          </span>
-          <span class="portal-quick-count" id="portalQuickDoneCount">0</span>
-        </button>
-        <button class="portal-quick-btn" id="portalQuickPending" type="button" onclick="filterPortal('pending')">
-          <span class="portal-quick-copy">
-            <span class="portal-quick-title">Pendentes</span>
-          </span>
-          <span class="portal-quick-count" id="portalQuickPendingCount">0</span>
-        </button>
+  <div class="portal-main">
+    <div class="results-top-sticky">
+      <div class="results-top-shell">
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <select class="finput" id="portalFiltroStatus" onchange="renderPortal()" style="width:auto;min-width:170px">
+            <option value="">Total</option>
+            <option value="done">Finalizadas</option>
+            <option value="pending">Pendentes</option>
+          </select>
+        </div>
+        <div id="portalSummaryBar" style="margin-top:10px;font-size:12px;color:#7A828E"></div>
       </div>
-    </aside>
+    </div>
 
-    <div class="portal-main">
-      <div id="portalList"></div>
+    <div class="tbl-card">
+      <div class="tbl-scroll" id="portalResultsScroll">
+        <table class="results-table" style="width:max-content;min-width:100%">
+          <colgroup>
+            <col style="width:268px"><col style="width:96px">
+            <col style="width:94px"><col style="width:94px"><col style="width:94px"><col style="width:94px">
+            <col style="width:94px"><col style="width:94px"><col style="width:94px"><col style="width:94px">
+          </colgroup>
+          <thead>
+            <tr>
+              <th class="sticky s5" rowspan="2">Time (leader-first)</th>
+              <th class="sticky s7" rowspan="2" style="text-align:center;min-width:90px">Nota geral</th>
+              <th class="crit crit-group" colspan="2" style="text-align:center">Proposta</th>
+              <th class="crit crit-group" colspan="2" style="text-align:center">Impacto</th>
+              <th class="crit crit-group" colspan="2" style="text-align:center">Execução</th>
+              <th class="crit crit-group" colspan="2" style="text-align:center">Estratégia</th>
+            </tr>
+            <tr>
+              <th class="crit">Originalidade<span class="peso">12,5%</span></th><th class="crit">Clareza<span class="peso">12,5%</span></th>
+              <th class="crit">Engajamento<span class="peso">12,5%</span></th><th class="crit">Temática<span class="peso">12,5%</span></th>
+              <th class="crit">Narrativa<span class="peso">12,5%</span></th><th class="crit">Coerência<span class="peso">12,5%</span></th>
+              <th class="crit">Formatos<span class="peso">12,5%</span></th><th class="crit">Distribuição<span class="peso">12,5%</span></th>
+            </tr>
+          </thead>
+          <tbody id="portalList"></tbody>
+        </table>
+      </div>
+    </div>
 
       <!-- simulador de parecerista -->
       <div class="card" id="portalSimulatorCard" style="margin-top:24px">
@@ -2911,7 +2986,6 @@ textarea::placeholder{color:#BDC1C6}
           </select>
         </div>
       </div>
-    </div>
   </div>
 
 </div>
@@ -3476,6 +3550,7 @@ const CRITERIOS = [
 ];
 
 const NC = { 'Insuficiente':'b-ins','Regular':'b-reg','Bom':'b-bom','Ótimo':'b-oti' };
+const CRITERIOS_PORTAL_ABREV = ['ORIG','CLAR','ENG','TEMA','NARR','ENTR','FORM','DIST'];
 const NV = { 'Insuficiente':1,'Regular':2,'Bom':3,'Ótimo':4 };
 const PARECERISTAS_DEFAULT = [
   { id:'p1', nome:'Ana Paula Ribeiro', email:'ana@parecerista.com', inst:'Estácio', cota:null, cotaManual:false, isTest:false },
@@ -5294,6 +5369,7 @@ function bindResultadosScrollSync() {
 
 window.addEventListener('resize', () => {
   requestAnimationFrame(syncResultadosStickyLayout);
+  requestAnimationFrame(syncPortalTableScrollHeight);
 });
 
 function renderResultados() {
@@ -5468,10 +5544,20 @@ function updateSimSelect() {
 
 function filterPortal(val) {
   currentPortalFilter = val;
+  const status = document.getElementById('portalFiltroStatus');
+  if (status) status.value = val || '';
   renderPortal();
 }
 let currentPortalFilter = '';
 let portalStateLoading = false;
+
+function syncPortalTableScrollHeight() {
+  const scroll = document.getElementById('portalResultsScroll');
+  if (!scroll) return;
+  const top = scroll.getBoundingClientRect().top;
+  const available = Math.max(320, Math.floor(window.innerHeight - top - 24));
+  scroll.style.maxHeight = `${available}px`;
+}
 
 function setPortalQuickFiltersState(filter, counts = {}) {
   const activeFilter = filter || '';
@@ -5504,7 +5590,7 @@ function renderPortal() {
     document.getElementById('portalProgBar').style.width = '0%';
     document.getElementById('portalProgLabel').textContent = 'carregando...';
     setPortalQuickFiltersState(currentPortalFilter, { total:0, done:0, pending:0 });
-    document.getElementById('portalList').innerHTML = `<div style="text-align:center;padding:32px;color:#9AA0A6;font-size:12px">Carregando suas inscrições...</div>`;
+    document.getElementById('portalList').innerHTML = `<tr><td colspan="10" style="text-align:center;padding:32px;color:#9AA0A6;font-size:12px">Carregando suas inscrições...</td></tr>`;
     return;
   }
   const par = pareceristas.find(p => p.id === parId);
@@ -5514,7 +5600,7 @@ function renderPortal() {
     document.getElementById('portalProgBar').style.width = '0%';
     document.getElementById('portalProgLabel').textContent = '0 de 0 concluídas';
     setPortalQuickFiltersState(currentPortalFilter, { total:0, done:0, pending:0 });
-    document.getElementById('portalList').innerHTML = `<div style="text-align:center;padding:32px;color:#9AA0A6;font-size:12px">Parecerista não encontrado neste ambiente. Verifique se a base já foi importada e se a distribuição foi gerada.</div>`;
+    document.getElementById('portalList').innerHTML = `<tr><td colspan="10" style="text-align:center;padding:32px;color:#9AA0A6;font-size:12px">Parecerista não encontrado neste ambiente. Verifique se a base já foi importada e se a distribuição foi gerada.</td></tr>`;
     return;
   }
 
@@ -5535,16 +5621,31 @@ function renderPortal() {
   setPortalQuickFiltersState(currentPortalFilter, { total:minhasVisiveis.length, done, pending });
 
   if (!INSCRICOES.length) {
-    document.getElementById('portalList').innerHTML = `<div style="text-align:center;padding:32px;color:#9AA0A6;font-size:12px">A base deste ambiente ainda não foi persistida para o portal do parecerista. Primeiro o admin precisa carregar a base, sincronizar e gerar a distribuição.</div>`;
+    document.getElementById('portalList').innerHTML = `<tr><td colspan="10" style="text-align:center;padding:32px;color:#9AA0A6;font-size:12px">A base deste ambiente ainda não foi persistida para o portal do parecerista. Primeiro o admin precisa carregar a base, sincronizar e gerar a distribuição.</td></tr>`;
     return;
   }
 
-  let lista = minhasVisiveis;
-  if (currentPortalFilter === 'done') lista = minhasVisiveis.filter(id => isEvaluationConcluded(parId, id));
-  if (currentPortalFilter === 'pending') lista = minhasVisiveis.filter(id => !isEvaluationConcluded(parId, id));
+  const portalStatusField = document.getElementById('portalFiltroStatus');
+  currentPortalFilter = portalStatusField ? portalStatusField.value : (currentPortalFilter || '');
+  let lista = minhasVisiveis.filter(inscId => {
+    const e = INSCRICOES.find(x => x.id === inscId);
+    if (!e) return false;
+    if (currentPortalFilter === 'done' && !isEvaluationConcluded(parId, inscId)) return false;
+    if (currentPortalFilter === 'pending' && isEvaluationConcluded(parId, inscId)) return false;
+    return true;
+  });
+  const summary = document.getElementById('portalSummaryBar');
+  if (summary) {
+    const label = currentPortalFilter === 'done'
+      ? `${lista.length} ${lista.length === 1 ? 'avaliação finalizada' : 'avaliações finalizadas'}`
+      : currentPortalFilter === 'pending'
+        ? `${lista.length} ${lista.length === 1 ? 'avaliação pendente' : 'avaliações pendentes'}`
+        : `${lista.length} ${lista.length === 1 ? 'avaliação' : 'avaliações'}`;
+    summary.textContent = label;
+  }
 
   if (!lista.length) {
-    document.getElementById('portalList').innerHTML = `<div style="text-align:center;padding:32px;color:#9AA0A6;font-size:12px">${minhasVisiveis.length===0?'Nenhuma inscrição atribuída ainda.':'Nenhuma inscrição neste filtro.'}</div>`;
+    document.getElementById('portalList').innerHTML = `<tr><td colspan="10" style="padding:32px;text-align:center;color:#9AA0A6;font-size:12px">${minhasVisiveis.length===0?'Nenhuma inscrição atribuída ainda.':'Nenhuma inscrição neste filtro.'}</td></tr>`;
     return;
   }
 
@@ -5554,66 +5655,20 @@ function renderPortal() {
     const av = avaliacoes[parId]?.[inscId];
     const isDone = isEvaluationConcluded(parId, inscId);
     const notaGeralParecerista = isDone ? notaExibida(notaGeralAvaliacao(av)) : null;
-    const notaFillPct = notaGeralParecerista === null ? 0 : Math.max(0, Math.min(100, (notaGeralParecerista / 4) * 100));
-    const notaFillColor = corConceitoNota(notaGeralParecerista);
     const parecerResumo = String(av?.parecer || '').trim();
-    const isLastReviewed = lastReviewedPortalInscId === inscId;
     const videoIssue = getActiveVideoIssue(parId, inscId);
     const resolvedVideoIssue = !videoIssue && requiresReevaluation(parId, inscId) ? getResolvedVideoIssue(parId, inscId) : null;
-    return `<div class="ficha-item ${isDone?'done':'pending'} ${isLastReviewed?'is-last-reviewed':''}" onclick="abrirFicha('${parId}','${inscId}')">
-      <div class="fi-id-col">
-        <div class="fi-id">PPA2026-${e.id}</div>
-        ${isDone ? `<button class="icon-btn" onclick="event.stopPropagation();abrirFicha('${parId}','${inscId}', true)" title="Editar avaliação" aria-label="Editar avaliação"><i class="ti ti-pencil"></i></button>` : ''}
-      </div>
-      <div class="fi-main">
-        <div class="fi-head">
-          ${videoIssue ? `<span class="fi-issue-icon" title="Avaliação em análise técnica" aria-hidden="true"><i class="ti ti-alert-triangle"></i></span>` : resolvedVideoIssue ? `<span class="fi-issue-icon" title="Pendência resolvida" aria-hidden="true" style="border-color:#B7DFC5;background:#F3FCF6;color:#1F7A45"><i class="ti ti-refresh"></i></span>` : ''}
-          <div class="fi-nome">${displayPersonName(e.lider)}</div>
-        </div>
-        <div class="fi-meta-row">
-          <div class="fi-meta">${e.mod}</div>
-          <div class="fi-team">${teamMarker(e.mod)}</div>
-        </div>
-        <div class="fi-inst">${portalInstitutionLabel(e.inst)}</div>
-        ${parecerResumo ? `<div class="fi-parecer-row"><div class="fi-parecer-note"><i class="ti ti-message-circle" aria-hidden="true"></i><strong>Parecer geral:</strong> ${escapeHtmlAttr(parecerResumo)}</div></div>` : ''}
-        ${videoIssue ? `<div class="fi-last-row"><span class="fi-last-tag" style="background:#FDECEC;color:#B3261E;border-color:#F2B8B5;animation:none">Vídeo com pendência técnica</span></div>` : ''}
-        ${isLastReviewed ? `<div class="fi-last-row"><span class="fi-last-tag">Última avaliada</span></div>` : ''}
-      </div>
-      <div class="fi-side">
-        <div class="fi-side-main">
-          ${videoIssue ? `
-            <div class="fi-side-topline">
-              <div class="fi-side-status">
-                <span class="badge b-antecipada">Aguardando vídeo</span>
-              </div>
-            </div>
-            <div class="fi-side-subline"></div>` : resolvedVideoIssue ? `
-            <div class="fi-side-topline">
-              <div class="fi-side-status">
-                <span class="badge b-ok">Avaliar novamente</span>
-              </div>
-            </div>
-            <div class="fi-side-subline"><div class="fi-side-note">Pendência de vídeo resolvida</div></div>` : isDone ? `
-            <div class="fi-side-topline">
-              <div class="fi-side-status">
-                <div class="fi-score" aria-label="Nota da avaliação">
-                  <span class="fi-score-val">${fmtNotaGeral(notaGeralParecerista)}</span>
-                  <span class="fi-score-bar"><span class="fi-score-fill" style="width:${notaFillPct}%;background:${notaFillColor}"></span></span>
-                </div>
-              </div>
-            </div>
-            <div class="fi-side-subline"></div>` : `
-            <div class="fi-side-topline">
-              <div class="fi-side-status">
-                <span class="badge b-pend">Pendente</span>
-              </div>
-            </div>
-            <div class="fi-side-subline"></div>`}
-        </div>
-        <i class="ti ti-chevron-right fi-chevron"></i>
-      </div>
-    </div>`;
+    const statusLabel = videoIssue ? 'Aguardando vídeo' : resolvedVideoIssue ? 'Avaliar novamente' : isDone ? 'Finalizada' : 'Pendente';
+    const statusClass = videoIssue ? 'b-antecipada' : resolvedVideoIssue || isDone ? 'b-ok' : 'b-pend';
+    return `<tr class="portal-evaluation-row ${isDone && parecerResumo ? 'has-observation' : ''}" style="cursor:pointer" onclick="abrirFicha('${parId}','${inscId}'${isDone?', true':''})">
+      <td class="sticky s5"><div class="leader-cell"><div class="portal-team-name" title="${escapeHtmlAttr(displayPersonName(e.lider))}" style="font-size:12.5px;font-weight:600;color:#202124">${formatResultadoLeaderName(e.lider)}</div>
+        ${e.p2 ? `<div class="team-members"><div class="team-member-line portal-team-name" title="${escapeHtmlAttr(displayPersonName(e.p2))}">${displayPersonName(e.p2)}</div>${e.p3 ? `<div class="team-member-line portal-team-name" title="${escapeHtmlAttr(displayPersonName(e.p3))}">${displayPersonName(e.p3)}</div>` : ''}</div>` : ''}
+        <div class="res-muted" style="font-size:11px;margin-top:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-school"></i>${displayPersonName(e.mentor)}</div></div></td>
+      <td class="sticky s7" style="text-align:center"><div class="nota-cell"><div class="nota-main">${isDone ? fmtNotaGeral(notaGeralParecerista) : '—'}</div>${isDone && !resolvedVideoIssue ? '' : `<span class="badge ${statusClass}" style="margin-top:8px">${statusLabel}</span>`}</div></td>
+      ${Array(8).fill(0).map((_,ci) => `<td class="crit-td">${nc(isDone ? av?.notas?.[ci] : null)}</td>`).join('')}
+    </tr>${isDone && parecerResumo ? `<tr class="portal-observation-row" onclick="abrirFicha('${parId}','${inscId}', true)"><td colspan="10"><div class="portal-observation"><i class="ti ti-corner-down-right" aria-hidden="true"></i><strong>Observação</strong><span class="portal-observation-text" title="${escapeHtmlAttr(parecerResumo)}">${escapeHtmlAttr(parecerResumo)}</span></div></td></tr>` : ''}`;
   }).join('');
+  requestAnimationFrame(syncPortalTableScrollHeight);
 }
 
 // ═══ PARÂMETROS CONFIGURÁVEIS ═════════════════════════════
