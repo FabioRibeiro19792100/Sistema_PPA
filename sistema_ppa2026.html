@@ -793,19 +793,8 @@ tr:hover td.sticky{background:#FAFAFA}
 #view-portal .portal-main > .tbl-card{width:calc(100% + 56px);margin-left:-28px;margin-right:-28px;overflow:hidden}
 #view-portal .results-table tbody > tr.portal-evaluation-row > td{border-bottom-color:#B8C1CC}
 #view-portal .results-table tbody > tr.portal-evaluation-row.has-observation > td{border-bottom-color:#D3D8E0}
+#view-portal .results-table tbody > tr.portal-evaluation-row:not(.is-complete) > td > *{opacity:.9}
 #view-portal .results-table tbody > tr.portal-observation-row > td:first-child{position:relative}
-#view-portal .results-table tbody > tr.portal-evaluation-row.is-complete > td:first-child::before,
-#view-portal .results-table tbody > tr.portal-observation-row > td:first-child::before{
-  content:'';
-  position:absolute;
-  left:0;
-  top:6px;
-  bottom:6px;
-  width:4px;
-  background:#34A853;
-}
-#view-portal .results-table tbody > tr.portal-evaluation-row.is-complete.has-observation > td:first-child::before{bottom:0}
-#view-portal .results-table tbody > tr.portal-observation-row > td:first-child::before{top:0}
 #view-portal .portal-main > .results-top-sticky{
   position:static;
   width:100%;
@@ -834,9 +823,18 @@ tr:hover td.sticky{background:#FAFAFA}
   height:auto !important;
   padding:7px 14px;
   background:#F8FAFC;
-  border-top:.5px dashed #C7CFD8;
+  border-top:none;
   border-bottom:1px solid #B8C1CC;
   cursor:pointer;
+}
+#view-portal .results-table tbody > tr.portal-observation-row > td::after{
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  border-top:.5px dashed #C7CFD8;
+  pointer-events:none;
 }
 #view-portal .portal-observation{
   display:flex;
