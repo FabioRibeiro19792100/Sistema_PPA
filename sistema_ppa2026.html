@@ -4983,8 +4983,10 @@ function renderAttachmentViewerContent() {
     video.controls = true;
     video.playsInline = true;
     video.preload = 'auto';
-    video.autoplay = true;
-    video.muted = true;
+    video.autoplay = false;
+    video.muted = false;
+    video.defaultMuted = false;
+    video.volume = 1;
     video.setAttribute('playsinline', '');
     video.setAttribute('webkit-playsinline', '');
     video.src = viewer.src;
