@@ -3291,9 +3291,18 @@ textarea::placeholder{color:#BDC1C6}
 
   <div id="audTechAlert" style="display:none;margin-bottom:16px"></div>
 
+  <div class="kpi-row" id="audKpis" style="grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:16px"></div>
+
   <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center">
     <select class="finput" id="audFiltPar" style="width:auto;min-width:220px" onchange="renderAuditoria()">
       <option value="">Todos os pareceristas</option>
+    </select>
+    <select class="finput" id="audFiltStatus" style="width:auto;min-width:190px" onchange="renderAuditoria()">
+      <option value="">Todos os status</option>
+      <option value="concluida">Concluídas</option>
+      <option value="saida_antecipada">Saídas antecipadas</option>
+      <option value="rascunho">Rascunhos</option>
+      <option value="pendencia_video">Pendências técnicas</option>
     </select>
   </div>
 
@@ -3600,7 +3609,7 @@ const PARECERISTAS_DEFAULT = [
   { id:'p2', nome:'Carlos Eduardo Lima', email:'carlos@parecerista.com', inst:'Uninove', cota:null, cotaManual:false, isTest:false },
   { id:'p3', nome:'Fernanda Souza Dias', email:'fernanda@parecerista.com', inst:'FMU', cota:null, cotaManual:false, isTest:false },
 ];
-const ADMIN_PASSWORD = 'fabio';
+const ADMIN_PASSWORD = 'ppa2026';
 const ACCESS_ROLE_KEY = 'ppa2026_access_role_v1';
 const AVALIACAO_SCALE_KEY = 'ppa2026_avaliacao_scale_v1';
 const ADMIN_VIEWS = ['pareceristas', 'auditoria', 'config'];
@@ -3626,7 +3635,7 @@ let loadingNudgeTimer = null;
 let pendingNextEvaluation = null;
 let avaliacaoEmEdicao = false;
 let avaliacaoOriginalConcluida = false;
-let accessRole = 'viewer';
+let accessRole = 'guest';
 let authPromptMode = 'viewer';
 let authPromptMandatory = false;
 let authPromptAfterSuccess = null;
@@ -3692,12 +3701,7 @@ function parseBrDateTime(value) {
 }
 
 function hydrateAccessRole() {
-  try {
-    const saved = sessionStorage.getItem(ACCESS_ROLE_KEY) || 'viewer';
-    accessRole = saved === 'admin' ? 'admin' : 'viewer';
-  } catch(e) {
-    accessRole = 'viewer';
-  }
+  accessRole = 'guest';
 }
 
 function applyAvaliacaoScale(scale = 1) {
@@ -3728,7 +3732,7 @@ function setAvaliacaoScale(scale = 1) {
 
 function persistAccessRole() {
   try {
-    sessionStorage.setItem(ACCESS_ROLE_KEY, accessRole === 'admin' ? 'admin' : 'viewer');
+    sessionStorage.setItem(ACCESS_ROLE_KEY, accessRole);
   } catch(e) {}
 }
 
@@ -3796,13 +3800,13 @@ function activateView(v) {
 
 function showLoginView(options = {}) {
   viewerLoginAfterSuccess = typeof options.afterSuccess === 'function' ? options.afterSuccess : null;
-  if (accessRole !== 'admin') accessRole = 'viewer';
-  persistAccessRole();
   applyAccessUi();
-  const afterSuccess = viewerLoginAfterSuccess;
-  viewerLoginAfterSuccess = null;
-  if (typeof afterSuccess === 'function') afterSuccess();
-  else showView(requestedParId ? 'portal' : 'dashboard');
+  activateView('login');
+  const input = document.getElementById('loginPassword');
+  const error = document.getElementById('loginError');
+  if (input) input.value = '';
+  if (error) error.textContent = '';
+  setTimeout(() => input?.focus(), 20);
 }
 
 function openAuthPrompt(mode = 'viewer', options = {}) {
@@ -3854,10 +3858,7 @@ function closeAuthPrompt(force = false) {
 }
 
 function ensureViewerAccess(options = {}) {
-  if (accessRole !== 'admin') accessRole = 'viewer';
-  persistAccessRole();
-  applyAccessUi();
-  if (typeof options.afterSuccess === 'function') options.afterSuccess();
+  showLoginView(options);
   return false;
 }
 
@@ -3907,7 +3908,17 @@ function submitAuthPrompt() {
 }
 
 function submitViewerLogin() {
-  if (accessRole !== 'admin') accessRole = 'viewer';
+  const input = document.getElementById('loginPassword');
+  const error = document.getElementById('loginError');
+  if (!input || !error) return;
+  const secret = normalizeSecret(input.value);
+  if (secret !== ADMIN_PASSWORD) {
+    error.textContent = 'Senha inválida.';
+    input.focus();
+    input.select();
+    return;
+  }
+  accessRole = 'admin';
   persistAccessRole();
   applyAccessUi();
   const afterSuccess = viewerLoginAfterSuccess;
@@ -3920,7 +3931,7 @@ function submitViewerLogin() {
 function showView(v, opts = {}) {
   const skipExitGuard = !!opts.skipExitGuard;
   if (v === 'login') {
-    showView(requestedParId ? 'portal' : 'dashboard');
+    showLoginView();
     return;
   }
   if (VIEWER_VIEWS.includes(v) && !hasViewerAccess()) {
@@ -6273,6 +6284,8 @@ function renderAuditoria() {
   const hasAuditData = logAuditoria.length || logAuditoriaEventos.length || videoIssueReports.length;
   if (remoteAuditLoading && !hasAuditData) {
     document.getElementById('audCount').textContent = 'carregando...';
+    const kpis = document.getElementById('audKpis');
+    if (kpis) kpis.innerHTML = `<div class="kpi" style="grid-column:1/-1"><div class="kpi-sub">Carregando indicadores da auditoria...</div></div>`;
     document.getElementById('tblAuditoria').innerHTML = `<tr><td colspan="9" style="text-align:center;padding:32px;color:#9AA0A6">Carregando auditoria do ambiente...</td></tr>`;
     const techAlert = document.getElementById('audTechAlert');
     if (techAlert) techAlert.style.display = 'none';
@@ -6280,13 +6293,7 @@ function renderAuditoria() {
   }
 
   const filtPar = document.getElementById('audFiltPar')?.value || '';
-
-  const sel = document.getElementById('audFiltPar');
-  if (sel) {
-    const cur = sel.value;
-    sel.innerHTML = '<option value="">Todos os pareceristas</option>' +
-      pareceristas.map(p => `<option value="${p.id}" ${p.id===cur?'selected':''}>${p.nome}</option>`).join('');
-  }
+  const filtStatus = document.getElementById('audFiltStatus')?.value || '';
 
   const pendingVideoRows = buildPendingVideoIssueAuditRows();
   const techAlert = document.getElementById('audTechAlert');
@@ -6304,7 +6311,7 @@ function renderAuditoria() {
       : '';
   }
 
-  let rows = [
+  const allRows = [
     ...logAuditoria.map(r => {
       return {
         ...r,
@@ -6314,10 +6321,65 @@ function renderAuditoria() {
     }),
     ...pendingVideoRows,
   ];
+  const auditCountByPar = allRows.reduce((acc, row) => {
+    acc[row.parId] = (acc[row.parId] || 0) + 1;
+    return acc;
+  }, {});
+  const sel = document.getElementById('audFiltPar');
+  if (sel) {
+    const cur = sel.value;
+    sel.innerHTML = `<option value="">Todos os pareceristas (${allRows.length})</option>` +
+      pareceristas.map(p => `<option value="${p.id}" ${p.id===cur?'selected':''}>${p.nome} (${auditCountByPar[p.id] || 0})</option>`).join('');
+  }
+
+  const rowsForStatusCounts = filtPar ? allRows.filter(r => r.parId === filtPar) : allRows;
+  const statusCounts = rowsForStatusCounts.reduce((acc, row) => {
+    acc[row.status] = (acc[row.status] || 0) + 1;
+    return acc;
+  }, {});
+  const statusSel = document.getElementById('audFiltStatus');
+  if (statusSel) {
+    const cur = statusSel.value;
+    const statusOptions = [
+      ['', 'Todos os status', rowsForStatusCounts.length],
+      ['concluida', 'Concluídas', statusCounts.concluida || 0],
+      ['saida_antecipada', 'Saídas antecipadas', statusCounts.saida_antecipada || 0],
+      ['rascunho', 'Rascunhos', statusCounts.rascunho || 0],
+      ['pendencia_video', 'Pendências técnicas', statusCounts.pendencia_video || 0],
+    ];
+    statusSel.innerHTML = statusOptions.map(([value, label, count]) => `<option value="${value}" ${value===cur?'selected':''}>${label} (${count})</option>`).join('');
+  }
+
+  let rows = [...allRows];
   if (filtPar) rows = rows.filter(r => r.parId === filtPar);
+  if (filtStatus) rows = rows.filter(r => r.status === filtStatus);
   rows.sort((a, b) => new Date(b.sortAt || 0) - new Date(a.sortAt || 0));
   const totalRows = rows.length;
   const visibleRows = rows.slice(0, AUDIT_MAX_RENDER_ROWS);
+
+  const selectedOfficialReviewer = filtPar && !isTestParecerista(filtPar);
+  const expectedTotal = filtPar
+    ? (selectedOfficialReviewer ? getAtribAtivas(filtPar).length : 0)
+    : INSCRICOES.length * NUM_PARECERES_POR_EQUIPE;
+  const completedTotal = filtPar
+    ? (selectedOfficialReviewer ? getAtribAtivas(filtPar).filter(inscId => isEvaluationConcluded(filtPar, inscId)).length : 0)
+    : Object.entries(avaliacoes).reduce((acc, [parId, byInsc]) => (
+        acc + (isTestParecerista(parId) ? 0 : Object.keys(byInsc || {}).filter(inscId => isEvaluationConcluded(parId, inscId)).length)
+      ), 0);
+  const progressPct = expectedTotal ? Math.round(completedTotal / expectedTotal * 100) : 0;
+  const filteredCompleted = rows.filter(r => r.status === 'concluida').length;
+  const filteredInterruptions = rows.filter(r => ['saida_antecipada','rascunho'].includes(r.status)).length;
+  const filteredTechnical = rows.filter(r => r.status === 'pendencia_video').length;
+  const kpis = document.getElementById('audKpis');
+  if (kpis) kpis.innerHTML = `
+    <div class="kpi" style="border-color:#AECBFA;background:#F8FBFF">
+      <div class="kpi-lbl">Realizadas / esperadas</div>
+      <div class="kpi-val">${completedTotal} / ${expectedTotal}</div>
+      <div class="kpi-sub">${progressPct}% da distribuição oficial${filtPar ? ' deste parecerista' : ''}</div>
+    </div>
+    <div class="kpi"><div class="kpi-lbl">Resultados do filtro</div><div class="kpi-val">${totalRows}</div><div class="kpi-sub">registro${totalRows === 1 ? '' : 's'} encontrado${totalRows === 1 ? '' : 's'}</div></div>
+    <div class="kpi"><div class="kpi-lbl">Concluídas no filtro</div><div class="kpi-val">${filteredCompleted}</div><div class="kpi-sub">sessões concluídas</div></div>
+    <div class="kpi"><div class="kpi-lbl">Atenção no filtro</div><div class="kpi-val">${filteredInterruptions + filteredTechnical}</div><div class="kpi-sub">${filteredInterruptions} interrupções · ${filteredTechnical} técnicas</div></div>`;
 
   document.getElementById('audCount').textContent = remoteAuditLoading
     ? `${totalRows} registro${totalRows !== 1 ? 's' : ''} · atualizando...`
@@ -10565,6 +10627,7 @@ function applyReviewerShellMode(enabled) {
 
 function applyStartupRouteState() {
   if (requestedParId) {
+    if (!hasViewerAccess()) accessRole = 'viewer';
     reviewerBootMode = true;
     currentParId = requestedParId;
     currentInscId = null;
@@ -10575,11 +10638,13 @@ function applyStartupRouteState() {
   currentParId = null;
   currentInscId = null;
   applyReviewerShellMode(false);
-  return 'dashboard';
+  return hasViewerAccess() ? 'dashboard' : 'login';
 }
 
 function showStartupRoute() {
-  showView(applyStartupRouteState());
+  const route = applyStartupRouteState();
+  if (route === 'login') showLoginView();
+  else showView(route);
 }
 
 hydrateSupabaseSettings();
