@@ -790,7 +790,15 @@ tr:hover td.sticky{background:#FAFAFA}
 #view-portal .results-table .crit-td{padding-left:0;padding-right:0;text-align:center;vertical-align:top}
 #view-portal .results-table .crit-td .badge{font-size:10px}
 #view-portal .leader-cell .portal-team-name{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-#view-portal .portal-main > .tbl-card{width:calc(100% + 56px);margin-left:-28px;margin-right:-28px;overflow:hidden}
+#view-portal .portal-main > .tbl-card{
+  width:calc(100% + 56px);
+  margin-left:-28px;
+  margin-right:-28px;
+  overflow:hidden;
+  border-bottom:none;
+  border-bottom-left-radius:0;
+  border-bottom-right-radius:0;
+}
 #view-portal .results-table tbody > tr.portal-evaluation-row > td{border-bottom-color:#B8C1CC}
 #view-portal .results-table tbody > tr.portal-evaluation-row.has-observation > td{border-bottom-color:#D3D8E0}
 #view-portal .results-table tbody > tr.portal-evaluation-row:not(.is-complete) > td > *{opacity:.9}
@@ -2821,6 +2829,40 @@ textarea::placeholder{color:#BDC1C6}
     </table>
   </div>
 
+  <!-- Realocação individual segura -->
+  <div class="card" style="margin-top:16px">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px">
+      <div>
+        <div class="section-label">Realocação individual</div>
+        <div style="font-size:12px;color:#7A828E;margin-top:5px;max-width:720px;line-height:1.5">
+          Troca apenas um time entre dois pareceristas. A distribuição geral não é recalculada e a operação é bloqueada se a avaliação de origem já tiver qualquer conteúdo salvo.
+        </div>
+      </div>
+      <span class="badge b-pend">Operação protegida</span>
+    </div>
+    <div class="form-row cols-3">
+      <div>
+        <label class="fl">Time</label>
+        <select class="finput" id="reallocInsc" onchange="renderManualReassignmentControls()"></select>
+      </div>
+      <div>
+        <label class="fl">Parecerista atual</label>
+        <select class="finput" id="reallocFrom" onchange="renderManualReassignmentControls()"></select>
+      </div>
+      <div>
+        <label class="fl">Novo parecerista</label>
+        <select class="finput" id="reallocTo" onchange="renderManualReassignmentControls()"></select>
+      </div>
+    </div>
+    <div id="reallocPreview" style="margin-top:14px"></div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px">
+      <button class="btn btn-primary btn-sm" id="reallocConfirmBtn" onclick="confirmManualReassignment()" disabled>
+        <i class="ti ti-switch-horizontal"></i>Confirmar realocação
+      </button>
+      <span style="font-size:11px;color:#9AA0A6">A confirmação faz uma nova validação no banco antes da troca.</span>
+    </div>
+  </div>
+
   <!-- Parâmetros de avaliação -->
   <div class="card" style="margin-top:4px">
     <div class="section-label" style="margin-bottom:14px">Parâmetros de avaliação e distribuição</div>
@@ -3609,7 +3651,8 @@ const PARECERISTAS_DEFAULT = [
   { id:'p2', nome:'Carlos Eduardo Lima', email:'carlos@parecerista.com', inst:'Uninove', cota:null, cotaManual:false, isTest:false },
   { id:'p3', nome:'Fernanda Souza Dias', email:'fernanda@parecerista.com', inst:'FMU', cota:null, cotaManual:false, isTest:false },
 ];
-const ADMIN_PASSWORD = 'ppa2026';
+const VIEWER_PASSWORD = 'ppa2026';
+const ADMIN_PASSWORD = 'fabio';
 const ACCESS_ROLE_KEY = 'ppa2026_access_role_v1';
 const AVALIACAO_SCALE_KEY = 'ppa2026_avaliacao_scale_v1';
 const ADMIN_VIEWS = ['pareceristas', 'auditoria', 'config'];
@@ -3701,7 +3744,8 @@ function parseBrDateTime(value) {
 }
 
 function hydrateAccessRole() {
-  accessRole = 'guest';
+  const localHosts = new Set(['localhost', '127.0.0.1', '::1']);
+  accessRole = localHosts.has(window.location.hostname) ? 'admin' : 'guest';
 }
 
 function applyAvaliacaoScale(scale = 1) {
@@ -3912,13 +3956,13 @@ function submitViewerLogin() {
   const error = document.getElementById('loginError');
   if (!input || !error) return;
   const secret = normalizeSecret(input.value);
-  if (secret !== ADMIN_PASSWORD) {
+  if (secret !== normalizeSecret(VIEWER_PASSWORD)) {
     error.textContent = 'Senha inválida.';
     input.focus();
     input.select();
     return;
   }
-  accessRole = 'admin';
+  accessRole = 'viewer';
   persistAccessRole();
   applyAccessUi();
   const afterSuccess = viewerLoginAfterSuccess;
@@ -4390,7 +4434,168 @@ function renderPareceristas() {
     </tr>`;
   }).join('');
 
+  renderManualReassignmentControls();
   updateDistStatus();
+}
+
+function normalizeInstitutionForConflict(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .replace(/\s+/g, ' ')
+    .toLowerCase();
+}
+
+function evaluationHasSavedActivity(parId, inscId) {
+  const av = avaliacoes[parId]?.[inscId];
+  if (!av) return false;
+  const hasNotas = Array.isArray(av.notas) && av.notas.some(nota => String(nota || '').trim());
+  const hasJustificativas = Array.isArray(av.justificativas) && av.justificativas.some(texto => String(texto || '').trim());
+  return !!(
+    av.done ||
+    hasNotas ||
+    hasJustificativas ||
+    String(av.parecer || av.parecer_geral || '').trim() ||
+    String(av.motivoCurtaDuracao || av.motivo_curta_duracao || '').trim()
+  );
+}
+
+function getManualReassignmentAnalysis(inscId, fromParId, toParId) {
+  const inscricao = INSCRICOES.find(item => item.id === inscId) || null;
+  const origem = getPareceristaById(fromParId);
+  const destino = getPareceristaById(toParId);
+  const atuais = atribuicoes[inscId] || [];
+  const reasons = [];
+
+  if (!inscricao) reasons.push('Selecione um time válido.');
+  if (!origem || !atuais.includes(fromParId)) reasons.push('O parecerista de origem não está atribuído a este time.');
+  if (!destino) reasons.push('Selecione o novo parecerista.');
+  if (origem && destino && origem.id === destino.id) reasons.push('Origem e destino precisam ser pessoas diferentes.');
+  if (destino && isTestParecerista(destino)) reasons.push('Pareceristas de teste não recebem atribuições oficiais.');
+  if (destino && atuais.includes(destino.id)) reasons.push('O novo parecerista já está atribuído a este time.');
+  if (origem && evaluationHasSavedActivity(origem.id, inscId)) {
+    reasons.push('A avaliação de origem já possui conteúdo salvo e não pode ser realocada por este fluxo.');
+  }
+
+  const instituicaoTime = normalizeInstitutionForConflict(inscricao?.inst);
+  const instituicaoDestino = normalizeInstitutionForConflict(destino?.inst);
+  if (instituicaoTime && instituicaoDestino && instituicaoTime === instituicaoDestino) {
+    reasons.push('Há conflito entre a instituição cadastrada do time e a do novo parecerista.');
+  }
+
+  const cargaDestino = destino ? getAtrib(destino.id).length : 0;
+  const capacidadeDestino = destino ? capacidadeParecerista(destino.id) : 0;
+  const exceedsCapacity = !!(destino && capacidadeDestino > 0 && cargaDestino >= capacidadeDestino);
+
+  return { inscricao, origem, destino, cargaDestino, capacidadeDestino, exceedsCapacity, reasons, ok:reasons.length === 0 };
+}
+
+function renderManualReassignmentControls() {
+  const inscSelect = document.getElementById('reallocInsc');
+  const fromSelect = document.getElementById('reallocFrom');
+  const toSelect = document.getElementById('reallocTo');
+  const preview = document.getElementById('reallocPreview');
+  const button = document.getElementById('reallocConfirmBtn');
+  if (!inscSelect || !fromSelect || !toSelect || !preview || !button) return;
+
+  const previousInsc = inscSelect.value;
+  const timesAtribuidos = [...INSCRICOES]
+    .filter(item => (atribuicoes[item.id] || []).length > 0)
+    .sort((a, b) => String(a.id).localeCompare(String(b.id), 'pt-BR', { numeric:true }));
+  inscSelect.innerHTML = '<option value="">Selecione um time</option>' + timesAtribuidos.map(item => (
+    `<option value="${item.id}">${fullInscId(item.id)} · ${item.lider || 'Sem líder'}</option>`
+  )).join('');
+  if (timesAtribuidos.some(item => item.id === previousInsc)) inscSelect.value = previousInsc;
+
+  const inscId = inscSelect.value;
+  const previousFrom = fromSelect.value;
+  const atuais = inscId ? (atribuicoes[inscId] || []) : [];
+  fromSelect.innerHTML = '<option value="">Selecione</option>' + atuais.map(parId => {
+    const par = getPareceristaById(parId);
+    return `<option value="${parId}">${par?.nome || parId}</option>`;
+  }).join('');
+  if (atuais.includes(previousFrom)) fromSelect.value = previousFrom;
+  else if (atuais.length === 1) fromSelect.value = atuais[0];
+
+  const previousTo = toSelect.value;
+  const candidatos = getOfficialPareceristas()
+    .filter(par => !atuais.includes(par.id))
+    .sort((a, b) => String(a.nome || '').localeCompare(String(b.nome || ''), 'pt-BR', { sensitivity:'base' }));
+  toSelect.innerHTML = '<option value="">Selecione</option>' + candidatos.map(par => (
+    `<option value="${par.id}">${par.nome} · ${getAtrib(par.id).length}/${capacidadeParecerista(par.id)}</option>`
+  )).join('');
+  if (candidatos.some(par => par.id === previousTo)) toSelect.value = previousTo;
+
+  const analysis = getManualReassignmentAnalysis(inscId, fromSelect.value, toSelect.value);
+  button.disabled = !analysis.ok;
+  if (!inscId) {
+    preview.innerHTML = '<div class="dist-status dist-warn"><i class="ti ti-info-circle"></i>Selecione o time para analisar a troca sem alterar nenhum dado.</div>';
+    return;
+  }
+  if (!fromSelect.value || !toSelect.value) {
+    preview.innerHTML = '<div class="dist-status dist-warn"><i class="ti ti-info-circle"></i>Escolha a origem e o destino para concluir a análise de segurança.</div>';
+    return;
+  }
+  if (!analysis.ok) {
+    preview.innerHTML = `<div class="dist-status dist-warn" style="align-items:flex-start"><i class="ti ti-alert-triangle"></i><div><strong>Troca bloqueada</strong><br>${analysis.reasons.join('<br>')}</div></div>`;
+    return;
+  }
+  const capacityNotice = analysis.exceedsCapacity
+    ? `<br><span style="color:#B06000"><strong>Atenção:</strong> esta exceção deixará o destino acima da capacidade calculada (${analysis.cargaDestino + 1}/${analysis.capacidadeDestino}), mas não impede a troca manual.</span>`
+    : '';
+  preview.innerHTML = `<div class="dist-status dist-ok" style="align-items:flex-start"><i class="ti ti-shield-check"></i><div><strong>Troca elegível para confirmação</strong><br>${analysis.origem.nome} será substituído por ${analysis.destino.nome}. A carga do destino passará de ${analysis.cargaDestino} para ${analysis.cargaDestino + 1} de ${analysis.capacidadeDestino}.${capacityNotice}</div></div>`;
+}
+
+async function confirmManualReassignment() {
+  const inscId = document.getElementById('reallocInsc')?.value || '';
+  const fromParId = document.getElementById('reallocFrom')?.value || '';
+  const toParId = document.getElementById('reallocTo')?.value || '';
+  const analysis = getManualReassignmentAnalysis(inscId, fromParId, toParId);
+  if (!analysis.ok) {
+    renderManualReassignmentControls();
+    notify(analysis.reasons[0] || 'A realocação não passou na validação de segurança.');
+    return;
+  }
+  if (!window.confirm(`Realocar somente ${fullInscId(inscId)} de ${analysis.origem.nome} para ${analysis.destino.nome}?`)) return;
+
+  const client = getSupabaseClient(activeEnvironment);
+  if (!client) {
+    notify('Realocação bloqueada: conecte o Supabase para garantir a troca atômica.');
+    return;
+  }
+
+  const button = document.getElementById('reallocConfirmBtn');
+  if (button) button.disabled = true;
+  const { data, error } = await client.rpc('realocar_atribuicao_segura', {
+    p_environment: activeEnvironment,
+    p_inscricao_id_externo: fullInscId(inscId),
+    p_parecerista_origem: fromParId,
+    p_parecerista_destino: toParId,
+    p_actor_id: 'admin',
+  });
+
+  if (error || !data?.ok) {
+    console.error('Realocação individual recusada:', error || data);
+    renderManualReassignmentControls();
+    notify(`Nada foi alterado: ${error?.message || data?.message || 'o banco recusou a realocação.'}`);
+    return;
+  }
+
+  const atuais = [...(atribuicoes[inscId] || [])];
+  const index = atuais.indexOf(fromParId);
+  if (index >= 0) atuais[index] = toParId;
+  atribuicoes[inscId] = atuais;
+  if (avaliacoes[fromParId]?.[inscId] && !evaluationHasSavedActivity(fromParId, inscId)) {
+    delete avaliacoes[fromParId][inscId];
+    if (!Object.keys(avaliacoes[fromParId]).length) delete avaliacoes[fromParId];
+  }
+  saveAppState({ skipRemoteSync:true });
+  renderPareceristas();
+  renderResultados();
+  renderDashboard();
+  updateSimSelect();
+  notify('Time realocado com segurança. Nenhuma outra atribuição foi alterada.');
 }
 
 function copyLink(parId, nome) {
