@@ -648,7 +648,7 @@ tr:hover td.sticky{background:#FAFAFA}
 .peso{display:block;font-size:9px;font-weight:500;color:#9CA3AF;margin-top:2px}
 .team-marker-stack{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:6px;color:#9AA0A6}
 .team-members{display:flex;flex-direction:column;gap:2px;margin-top:3px}
-.team-member-line{font-size:11.8px;color:#8B949E;line-height:1.4}
+.team-member-line{font-size:11.8px;color:#8B949E;line-height:1.4;white-space:nowrap}
 .res-subtle{color:#7A828E !important}
 .res-muted{color:#8B949E !important}
 .res-faint{color:#A0A7B1 !important}
@@ -669,7 +669,7 @@ tr:hover td.sticky{background:#FAFAFA}
 .nota-progress-dot.is-done{background:#6B7280}
 .crit-group{font-weight:700;color:#4B5563;background:#EEF2F7 !important}
 
-:is(#view-resultados,#view-portal) .results-top-sticky{
+:is(#view-resultados,#view-portal,#view-banca) .results-top-sticky{
   position:sticky;
   top:0;
   z-index:30;
@@ -677,8 +677,22 @@ tr:hover td.sticky{background:#FAFAFA}
   padding:12px 0 14px;
   margin-bottom:8px;
 }
-:is(#view-resultados,#view-portal) .results-top-shell{
+:is(#view-resultados,#view-portal,#view-banca) .results-top-shell{
   background:var(--bg);
+}
+#view-resultados .results-filter-row{display:flex;align-items:center;gap:12px}
+#view-resultados .results-filter-group{display:flex;align-items:center;gap:8px;flex:1 1 auto;min-width:0;flex-wrap:nowrap}
+#view-resultados .results-filter-group .finput{height:34px;padding:6px 30px 6px 10px;font-size:12px}
+#view-resultados .results-top-stats-btn{flex:0 0 auto;margin-left:auto;border-color:#AECBFA;background:#E8F0FE;color:#1558B0;font-weight:600;box-shadow:0 1px 2px rgba(26,115,232,.08)}
+#view-resultados .results-top-stats-btn:hover{background:#DCE9FD;border-color:#8AB4F8}
+#view-resultados .results-utility-row{display:flex;align-items:center;gap:18px;min-height:30px;margin-top:8px;padding-top:7px;border-top:1px solid #E5E7EB}
+#view-resultados .results-export-btn{margin-left:auto;background:transparent;border-color:transparent;color:#68727D;box-shadow:none}
+#view-resultados .results-export-btn:hover{background:#F1F3F4;border-color:#E1E4E8}
+#view-resultados #resSummaryBar{margin:0 !important}
+@media (max-width:1100px){
+  #view-resultados .results-filter-row{align-items:flex-start;flex-wrap:wrap}
+  #view-resultados .results-filter-group{flex-wrap:wrap}
+  #view-resultados .results-top-stats-btn{margin-left:0}
 }
 :is(#view-resultados,#view-portal) .results-reset-btn{
   display:inline-flex;
@@ -700,33 +714,33 @@ tr:hover td.sticky{background:#FAFAFA}
 :is(#view-resultados,#view-portal) .results-reset-btn i{
   font-size:14px;
 }
-:is(#view-resultados,#view-portal) .tbl-card{overflow:hidden}
-:is(#view-resultados,#view-portal) .tbl-scroll{
+:is(#view-resultados,#view-portal,#view-banca) .tbl-card{overflow:hidden}
+:is(#view-resultados,#view-portal,#view-banca) .tbl-scroll{
   overflow:auto;
   position:relative;
   overscroll-behavior:contain;
   background:var(--surface);
   padding-right:18px;
 }
-:is(#view-resultados,#view-portal) th{border-bottom-color:#C7CDD6}
-:is(#view-resultados,#view-portal) td{border-bottom-color:#D3D8E0}
-:is(#view-resultados,#view-portal) .crit,
-:is(#view-resultados,#view-portal) .crit-td{border-left-color:#D3D8E0}
-:is(#view-resultados,#view-portal) thead tr:first-child th + th,
-:is(#view-resultados,#view-portal) thead tr:nth-child(2) th + th{border-left:1px solid #D3D8E0}
-:is(#view-resultados,#view-portal) thead th{background:#F3F4F6}
-:is(#view-resultados,#view-portal) thead th.sticky{
+:is(#view-resultados,#view-portal,#view-banca) th{border-bottom-color:#C7CDD6}
+:is(#view-resultados,#view-portal,#view-banca) td{border-bottom-color:#D3D8E0}
+:is(#view-resultados,#view-portal,#view-banca) .crit,
+:is(#view-resultados,#view-portal,#view-banca) .crit-td{border-left-color:#D3D8E0}
+:is(#view-resultados,#view-portal,#view-banca) thead tr:first-child th + th,
+:is(#view-resultados,#view-portal,#view-banca) thead tr:nth-child(2) th + th{border-left:1px solid #D3D8E0}
+:is(#view-resultados,#view-portal,#view-banca) thead th{background:#F3F4F6}
+:is(#view-resultados,#view-portal,#view-banca) thead th.sticky{
   border-left:none !important;
   border-right:none !important;
 }
-:is(#view-resultados,#view-portal) thead tr:first-child th{
+:is(#view-resultados,#view-portal,#view-banca) thead tr:first-child th{
   position:sticky;
   top:0;
   height:42px;
   vertical-align:middle;
   z-index:12;
 }
-:is(#view-resultados,#view-portal) thead tr:nth-child(2) th{
+:is(#view-resultados,#view-portal,#view-banca) thead tr:nth-child(2) th{
   position:sticky;
   top:42px;
   height:56px;
@@ -735,53 +749,106 @@ tr:hover td.sticky{background:#FAFAFA}
   background:#F8FAFC;
   z-index:12;
 }
-:is(#view-resultados,#view-portal) thead th[rowspan="2"]{
+:is(#view-resultados,#view-portal,#view-banca) thead th[rowspan="2"]{
   position:sticky;
   top:0;
   height:98px;
   vertical-align:middle;
   z-index:14;
 }
-:is(#view-resultados,#view-portal) thead tr:first-child th.sticky,
-:is(#view-resultados,#view-portal) thead tr:nth-child(2) th.sticky{
+:is(#view-resultados,#view-portal,#view-banca) thead tr:first-child th.sticky,
+:is(#view-resultados,#view-portal,#view-banca) thead tr:nth-child(2) th.sticky{
   z-index:16;
 }
-:is(#view-resultados,#view-portal) tbody td.sticky{
+:is(#view-resultados,#view-portal,#view-banca) tbody td.sticky{
   z-index:4;
 }
-:is(#view-resultados,#view-portal) .results-table{
+:is(#view-resultados,#view-portal,#view-banca) .results-table{
   table-layout:fixed;
   flex:0 0 auto;
 }
-:is(#view-resultados,#view-portal) .results-table th,
-:is(#view-resultados,#view-portal) .results-table td{
+:is(#view-resultados,#view-portal,#view-banca) .results-table th,
+:is(#view-resultados,#view-portal,#view-banca) .results-table td{
   box-sizing:border-box;
 }
-:is(#view-resultados,#view-portal) .results-table tbody > tr:not(.sub-row) > td{
+:is(#view-resultados,#view-portal,#view-banca) .results-table tbody > tr:not(.sub-row) > td{
   height:96px;
 }
-:is(#view-resultados,#view-portal) .results-table thead tr:first-child th:last-child,
-:is(#view-resultados,#view-portal) .results-table thead tr:nth-child(2) th:last-child,
-:is(#view-resultados,#view-portal) .results-table tbody tr > td:last-child{
+:is(#view-resultados,#view-portal,#view-banca) .results-table thead tr:first-child th:last-child,
+:is(#view-resultados,#view-portal,#view-banca) .results-table thead tr:nth-child(2) th:last-child,
+:is(#view-resultados,#view-portal,#view-banca) .results-table tbody tr > td:last-child{
   border-right:1px solid #D3D8E0;
 }
-:is(#view-resultados,#view-portal) .results-table th.id-col{
+:is(#view-resultados,#view-portal,#view-banca) .results-table th.id-col{
   background:#E6F0FF;
   color:#1F3A68;
 }
-:is(#view-resultados,#view-portal) .results-table td.id-col{
+:is(#view-resultados,#view-portal,#view-banca) .results-table td.id-col{
   background:#F5F9FF;
 }
-:is(#view-resultados,#view-portal) .results-table td.id-col .res-id{
+:is(#view-resultados,#view-portal,#view-banca) .results-table td.id-col .res-id{
   color:#1F3A68 !important;
   font-weight:700;
 }
-:is(#view-resultados,#view-portal) .results-table td.id-col .res-uf{
+:is(#view-resultados,#view-portal,#view-banca) .results-table td.id-col .res-uf{
   color:#49658F;
 }
-:is(#view-resultados,#view-portal) .results-table tbody tr:hover > td.id-col{
+:is(#view-resultados,#view-portal,#view-banca) .results-table tbody tr:hover > td.id-col{
   background:#EDF4FF;
 }
+#view-resultados .results-table tbody > tr.res-top-row > td{
+  background:#F8F9FA;
+}
+#view-resultados .results-table tbody > tr.res-top-row > td.sticky{
+  background:#F5F7F9;
+}
+#view-resultados .results-table tbody > tr.res-near-row > td{
+  background:#F6F7F8;
+}
+#view-resultados .results-table tbody > tr.res-near-row > td.sticky{
+  background:#F1F3F5;
+}
+#view-resultados .results-table tbody > tr.res-top-row:hover > td,
+#view-resultados .results-table tbody > tr.res-top-row:hover > td.sticky{
+  background:#F0F2F4;
+}
+#view-resultados .results-table tbody > tr.res-near-row:hover > td,
+#view-resultados .results-table tbody > tr.res-near-row:hover > td.sticky{
+  background:#ECEFF1;
+}
+.res-rank-line{display:flex;align-items:center;gap:7px;min-height:16px}
+.res-rank-line .sw-sm{flex:0 0 auto}
+.res-bank-toggle{width:28px;height:16px;padding:0;border:0;background:#DADCE0;border-radius:8px;position:relative;cursor:pointer;flex:0 0 auto;transition:background .15s ease}
+.res-bank-toggle::after{content:'';width:12px;height:12px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;box-shadow:0 1px 2px rgba(0,0,0,.15);transition:transform .15s ease}
+.res-bank-toggle.is-selected{background:#1A73E8}
+.res-bank-toggle.is-selected::after{transform:translateX(12px)}
+.banca-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding:16px 0 14px}
+.banca-count{font-size:12px;color:#7A828E}
+#view-banca .tbl-scroll{max-height:calc(100vh - 205px)}
+.res-cut-label{display:block;margin-top:3px;color:#2563B8;font-size:9px;font-weight:600;line-height:1.2;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap}
+.res-near-label{color:#B77908}
+.res-criterion-result{display:flex;flex-direction:column;align-items:center;gap:6px;line-height:1.15}
+.res-criterion-score{font-size:12px;font-weight:600;color:#3F4752;font-variant-numeric:tabular-nums}
+.res-criterion-calc{font-size:8.5px;font-weight:500;color:#B0B6BE;white-space:nowrap;font-variant-numeric:tabular-nums}
+.results-stats-drawer{position:fixed;top:0;right:0;width:min(420px,92vw);height:100vh;background:#fff;box-shadow:-10px 0 30px rgba(15,23,42,.16);z-index:120;transform:translateX(105%);transition:transform .22s ease;display:flex;flex-direction:column}
+.results-stats-drawer.open{transform:translateX(0)}
+.results-drawer-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.18);z-index:119;opacity:0;pointer-events:none;transition:opacity .2s ease}
+.results-drawer-backdrop.open{opacity:1;pointer-events:auto}
+.results-drawer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:22px 22px 16px;border-bottom:1px solid #E5E7EB}
+.results-drawer-body{padding:18px 22px 28px;overflow:auto}
+.results-stat-section{padding:14px 0;border-bottom:1px solid #EEF0F2}
+.results-stat-section:last-child{border-bottom:none}
+.results-stat-title{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#737B85;margin-bottom:10px}
+.results-stat-columns,.results-stat-row{display:grid;grid-template-columns:minmax(0,1fr) 36px 40px;column-gap:10px;align-items:center}
+.results-stat-columns{padding-bottom:2px;color:#9AA1AA;font-size:9px;font-weight:700;letter-spacing:.045em;text-transform:uppercase}
+.results-stat-columns span:nth-child(n+2){text-align:right;white-space:nowrap}
+.results-stat-row{row-gap:8px;margin:10px 0;font-size:12px;color:#4B5563}
+.results-stat-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.results-stat-value,.results-stat-percent{font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right}
+.results-stat-value{min-width:20px;color:#374151}
+.results-stat-percent{min-width:34px;color:#7A828E;font-weight:600}
+.results-stat-bar{grid-column:1/-1;height:5px;border-radius:999px;background:#EDF0F2;overflow:hidden;margin-top:-5px}
+.results-stat-bar span{display:block;height:100%;border-radius:inherit;background:#AEB7C1}
 #view-portal .results-table .s5{left:0;width:268px;min-width:268px;max-width:268px}
 #view-portal .results-table .s7{left:268px;width:96px;min-width:96px;max-width:96px}
 #view-portal .results-table .crit,
@@ -2612,8 +2679,9 @@ textarea::placeholder{color:#BDC1C6}
 </div>
 
 <div class="subnav" id="mainSubnav" style="display:none">
-  <div class="snav" data-view="dashboard"><span class="icon icon-sm"><i class="ti ti-chart-bar"></i></span>Dashboard</div>
   <div class="snav" data-view="resultados"><span class="icon icon-sm"><i class="ti ti-chart-histogram"></i></span>Resultados</div>
+  <div class="snav" data-view="banca"><span class="icon icon-sm"><i class="ti ti-users-group"></i></span>Banca</div>
+  <div class="snav" data-view="dashboard"><span class="icon icon-sm"><i class="ti ti-chart-bar"></i></span>Dashboard</div>
   <div class="snav" data-view="pareceristas" style="display:none"><span class="icon icon-sm"><i class="ti ti-arrows-left-right"></i></span>Pareceristas e atribuições</div>
   <div class="snav" data-view="auditoria" style="display:none"><span class="icon icon-sm"><i class="ti ti-shield-check"></i></span>Auditoria</div>
   <div class="snav-right">
@@ -2863,6 +2931,40 @@ textarea::placeholder{color:#BDC1C6}
     </div>
   </div>
 
+  <!-- Redistribuição em lote segura -->
+  <div class="card" style="margin-top:16px">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px">
+      <div>
+        <div class="section-label">Redistribuição de pendências</div>
+        <div style="font-size:12px;color:#7A828E;margin-top:5px;max-width:760px;line-height:1.5">
+          Substitui somente atribuições ainda não iniciadas. Selecione quantos destinos precisar e informe a quantidade exata para cada pessoa. Avaliações com qualquer conteúdo salvo permanecem intocadas.
+        </div>
+      </div>
+      <span class="badge b-pend">Prévia obrigatória</span>
+    </div>
+    <div class="form-row cols-2">
+      <div>
+        <label class="fl">Parecerista de origem</label>
+        <select class="finput" id="batchReallocFrom" onchange="renderBatchReassignmentControls()"></select>
+      </div>
+      <div>
+        <label class="fl">Modo</label>
+        <div style="min-height:36px;display:flex;align-items:center;padding:0 12px;border:1px solid #DADCE0;border-radius:6px;background:#F8F9FA;font-size:12px;color:#5F6368">Quantidades definidas por destino</div>
+      </div>
+    </div>
+    <div style="margin-top:14px">
+      <label class="fl">Destinos e quantidades</label>
+      <div id="batchReallocTargets" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px"></div>
+    </div>
+    <div id="batchReallocPreview" style="margin-top:14px"></div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px">
+      <button class="btn btn-primary btn-sm" id="batchReallocConfirmBtn" onclick="confirmBatchReassignment()" disabled>
+        <i class="ti ti-arrows-shuffle"></i>Confirmar redistribuição
+      </button>
+      <span style="font-size:11px;color:#9AA0A6">A confirmação só é liberada quando todas as quantidades solicitadas podem ser cumpridas com segurança.</span>
+    </div>
+  </div>
+
   <!-- Parâmetros de avaliação -->
   <div class="card" style="margin-top:4px">
     <div class="section-label" style="margin-bottom:14px">Parâmetros de avaliação e distribuição</div>
@@ -2914,30 +3016,50 @@ textarea::placeholder{color:#BDC1C6}
 
   <div class="results-top-sticky" id="resultsTopSticky">
     <div class="results-top-shell">
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <select class="finput" id="resFiltroStatus" onchange="renderResultados()" style="width:auto;min-width:170px">
+      <div class="results-filter-row">
+        <div class="results-filter-group">
+        <select class="finput" id="resFiltroStatus" onchange="renderResultados()" style="width:165px;min-width:165px">
           <option>Todas as avaliações</option>
           <option>Finalizadas</option>
           <option>Parciais</option>
           <option>Não iniciadas</option>
         </select>
-        <select class="finput" id="resFiltroTime" onchange="renderResultados()" style="width:auto;min-width:170px">
+        <select class="finput" id="resFiltroTime" onchange="renderResultados()" style="width:130px;min-width:130px">
           <option>Todos os times</option>
           <option>Individual</option>
           <option>Em dupla</option>
           <option>Em trio</option>
         </select>
-        <select class="finput" id="resFiltroUf" onchange="renderResultados()" style="width:auto;min-width:160px"><option value="">Todos os estados</option></select>
-        <select class="finput" id="resFiltroGenero" onchange="renderResultados()" style="width:auto;min-width:160px"><option>Todos os gêneros</option><option>Feminino</option><option>Masculino</option></select>
-        <select class="finput" id="resFiltroRanking" onchange="renderResultados()" style="width:auto;min-width:220px">
+        <select class="finput" id="resFiltroUf" onchange="renderResultados()" style="width:140px;min-width:140px"><option value="">Todos os estados</option></select>
+        <select class="finput" id="resFiltroGenero" onchange="renderResultados()" style="width:145px;min-width:145px"><option>Todos os gêneros</option><option>Feminino</option><option>Masculino</option></select>
+        <select class="finput" id="resFiltroRanking" onchange="renderResultados()" style="width:175px;min-width:175px">
           <option>Ranking normal</option>
           <option>Ranking calibrado</option>
-          <option>Sem melhor nota</option>
+          <option>Ranking sem a pior nota</option>
+          <option>Ranking sem a melhor nota</option>
         </select>
-        <button class="results-reset-btn" type="button" onclick="zerarFiltrosResultados()"><i class="ti ti-x"></i>Zerar filtros</button>
-        <button class="btn btn-secondary btn-sm" style="margin-left:auto"><i class="ti ti-download"></i>Exportar Excel</button>
+        <select class="finput" id="resFiltroTop" onchange="renderResultados()" style="width:90px;min-width:90px">
+          <option value="0">Todos</option>
+          <option value="10">Top 10</option>
+          <option value="15">Top 15</option>
+          <option value="20">Top 20</option>
+        </select>
+        <select class="finput" id="resFiltroVariacao" onchange="renderResultados()" style="display:none;width:155px;min-width:155px">
+          <option value="0">Sem faixa do corte</option>
+          <option value="1">Até 1% do corte</option>
+          <option value="2">Até 2% do corte</option>
+          <option value="3">Até 3% do corte</option>
+          <option value="4">Até 4% do corte</option>
+          <option value="5">Até 5% do corte</option>
+        </select>
+        </div>
+        <button class="btn btn-secondary btn-sm results-top-stats-btn" id="resultsStatsBtn" type="button" onclick="openResultsStatsDrawer()" style="display:none"><i class="ti ti-chart-dots"></i>Estatísticas do Top</button>
       </div>
-      <div id="resSummaryBar" style="display:none;margin-top:10px;font-size:12px;color:#7A828E"></div>
+      <div class="results-utility-row">
+        <button class="results-reset-btn" type="button" onclick="zerarFiltrosResultados()"><i class="ti ti-x"></i>Zerar filtros</button>
+        <div id="resSummaryBar" style="display:none;font-size:12px;color:#7A828E"></div>
+        <button class="btn btn-secondary btn-sm results-export-btn"><i class="ti ti-download"></i>Exportar Excel</button>
+      </div>
     </div>
   </div>
 
@@ -2970,7 +3092,7 @@ textarea::placeholder{color:#BDC1C6}
             <th class="crit crit-group" colspan="2" style="text-align:center;border-left:1px solid #E0E0E0">Estratégia</th>
           </tr>
           <tr>
-            <th class="crit">Originalidade<span class="peso">12,5%</span></th>
+            <th class="crit">Originalidade<span class="peso">Peso 12,5%</span></th>
             <th class="crit">Clareza<span class="peso">12,5%</span></th>
             <th class="crit">Engajamento<span class="peso">12,5%</span></th>
             <th class="crit">Temática<span class="peso">12,5%</span></th>
@@ -2985,6 +3107,60 @@ textarea::placeholder{color:#BDC1C6}
     </div>
   </div>
 
+</div>
+</div>
+
+<div class="results-drawer-backdrop" id="resultsDrawerBackdrop" onclick="closeResultsStatsDrawer()"></div>
+<aside class="results-stats-drawer" id="resultsStatsDrawer" aria-hidden="true">
+  <div class="results-drawer-head">
+    <div><div class="section-label" style="margin-bottom:5px">Estatísticas rápidas</div><div id="resultsStatsDrawerSubtitle" style="font-size:12px;color:#7A828E"></div></div>
+    <button class="icon-btn" type="button" onclick="closeResultsStatsDrawer()" title="Fechar"><i class="ti ti-x"></i></button>
+  </div>
+  <div class="results-drawer-body" id="resultsStatsDrawerBody"></div>
+</aside>
+
+<!-- ═══════════════════════════════════════════════
+     VIEW: SELEÇÃO PARA A BANCA
+════════════════════════════════════════════════ -->
+<div class="view" id="view-banca">
+<div style="max-width:none;margin:0;padding-left:8px;padding-right:0">
+  <div class="banca-head">
+    <div>
+      <div class="page-title">Equipes selecionadas para a banca</div>
+      <div class="page-sub">A seleção é preenchida pelos toggles da coluna de ranking.</div>
+    </div>
+    <div class="banca-count" id="bancaSummary">0 equipes selecionadas</div>
+  </div>
+  <div class="tbl-card">
+    <div class="tbl-scroll" id="bancaBodyScroll">
+      <table class="results-table" style="width:max-content;min-width:100%">
+        <colgroup>
+          <col style="width:70px"><col style="width:124px"><col style="width:262px"><col style="width:96px">
+          <col style="width:104px"><col style="width:104px"><col style="width:104px"><col style="width:104px">
+          <col style="width:104px"><col style="width:104px"><col style="width:104px"><col style="width:104px">
+        </colgroup>
+        <thead>
+          <tr>
+            <th class="sticky s0" rowspan="2">Ranking</th>
+            <th class="sticky s3 id-col" rowspan="2" style="text-align:center">Identificacao</th>
+            <th class="sticky s5" rowspan="2">Time (leader-first)</th>
+            <th class="sticky s7" rowspan="2" style="text-align:center;min-width:90px">Nota geral</th>
+            <th class="crit crit-group" colspan="2" style="text-align:center">Proposta</th>
+            <th class="crit crit-group" colspan="2" style="text-align:center">Impacto</th>
+            <th class="crit crit-group" colspan="2" style="text-align:center">Execução</th>
+            <th class="crit crit-group" colspan="2" style="text-align:center">Estratégia</th>
+          </tr>
+          <tr>
+            <th class="crit">Originalidade<span class="peso">Peso 12,5%</span></th><th class="crit">Clareza<span class="peso">12,5%</span></th>
+            <th class="crit">Engajamento<span class="peso">12,5%</span></th><th class="crit">Temática<span class="peso">12,5%</span></th>
+            <th class="crit">Narrativa<span class="peso">12,5%</span></th><th class="crit">Coerência<span class="peso">12,5%</span></th>
+            <th class="crit">Formatos<span class="peso">12,5%</span></th><th class="crit">Distribuição<span class="peso">12,5%</span></th>
+          </tr>
+        </thead>
+        <tbody id="tblBanca"></tbody>
+      </table>
+    </div>
+  </div>
 </div>
 </div>
 
@@ -3340,8 +3516,8 @@ textarea::placeholder{color:#BDC1C6}
       <option value="">Todos os pareceristas</option>
     </select>
     <select class="finput" id="audFiltStatus" style="width:auto;min-width:190px" onchange="renderAuditoria()">
-      <option value="">Todos os status</option>
-      <option value="concluida">Concluídas</option>
+      <option value="">Registros de auditoria</option>
+      <option value="concluida">Concluídas com auditoria</option>
       <option value="saida_antecipada">Saídas antecipadas</option>
       <option value="rascunho">Rascunhos</option>
       <option value="pendencia_video">Pendências técnicas</option>
@@ -3655,8 +3831,9 @@ const VIEWER_PASSWORD = 'ppa2026';
 const ADMIN_PASSWORD = 'fabio';
 const ACCESS_ROLE_KEY = 'ppa2026_access_role_v1';
 const AVALIACAO_SCALE_KEY = 'ppa2026_avaliacao_scale_v1';
+const BANCA_SELECTION_KEY = 'ppa2026_banca_selection_v1';
 const ADMIN_VIEWS = ['pareceristas', 'auditoria', 'config'];
-const VIEWER_VIEWS = ['dashboard', 'resultados', 'portal', 'avaliacao'];
+const VIEWER_VIEWS = ['dashboard', 'resultados', 'banca', 'portal', 'avaliacao'];
 
 // ═══ ESTADO ═══════════════════════════════════════════════
 let pareceristas = PARECERISTAS_DEFAULT.map(p => ({ ...p }));
@@ -3968,7 +4145,7 @@ function submitViewerLogin() {
   const afterSuccess = viewerLoginAfterSuccess;
   viewerLoginAfterSuccess = null;
   if (typeof afterSuccess === 'function') afterSuccess();
-  else showView(requestedParId ? 'portal' : 'dashboard');
+  else showView(requestedParId ? 'portal' : 'resultados');
 }
 
 // ═══ NAV ══════════════════════════════════════════════════
@@ -4014,6 +4191,7 @@ function showView(v, opts = {}) {
   }
   if (v === 'dashboard') renderDashboard();
   if (v === 'resultados') renderResultados();
+  if (v === 'banca') renderBanca();
   if (v === 'pareceristas') renderPareceristas();
   if (v === 'portal') {
     const portalParId = currentParId || document.getElementById('simParecerista')?.value || '';
@@ -4027,7 +4205,7 @@ function showView(v, opts = {}) {
   }
   if (v === 'config') {} // static view
 
-  if (!reviewerBootMode && !adminImportInFlight && ['dashboard','resultados','pareceristas'].includes(v)) {
+  if (!reviewerBootMode && !adminImportInFlight && ['dashboard','resultados','banca','pareceristas'].includes(v)) {
     refreshStateFromSupabaseInBackground();
   }
 }
@@ -4435,6 +4613,7 @@ function renderPareceristas() {
   }).join('');
 
   renderManualReassignmentControls();
+  renderBatchReassignmentControls();
   updateDistStatus();
 }
 
@@ -4598,6 +4777,213 @@ async function confirmManualReassignment() {
   notify('Time realocado com segurança. Nenhuma outra atribuição foi alterada.');
 }
 
+function buildBatchReassignmentPlan(fromParId, targetRequests = {}) {
+  const origem = getPareceristaById(fromParId);
+  const requests = Object.fromEntries(Object.entries(targetRequests)
+    .map(([parId, quantidade]) => [parId, Math.max(0, Math.floor(Number(quantidade) || 0))])
+    .filter(([, quantidade]) => quantidade > 0));
+  const destinos = Object.keys(requests).map(getPareceristaById).filter(Boolean);
+  const atribuidas = fromParId ? getAtrib(fromParId) : [];
+  const protegidas = atribuidas.filter(inscId => evaluationHasSavedActivity(fromParId, inscId));
+  const pendentes = atribuidas.filter(inscId => !evaluationHasSavedActivity(fromParId, inscId));
+  const additions = Object.fromEntries(destinos.map(par => [par.id, 0]));
+
+  const eligibleDestinationIds = inscId => {
+    const inscricao = INSCRICOES.find(item => item.id === inscId);
+    const instituicaoTime = normalizeInstitutionForConflict(inscricao?.inst);
+    return destinos.filter(destino => {
+      if (isTestParecerista(destino)) return false;
+      if ((atribuicoes[inscId] || []).includes(destino.id)) return false;
+      const instituicaoDestino = normalizeInstitutionForConflict(destino.inst);
+      return !(instituicaoTime && instituicaoDestino && instituicaoTime === instituicaoDestino);
+    }).map(destino => destino.id);
+  };
+
+  const slots = destinos.flatMap(destino => Array.from({ length:requests[destino.id] || 0 }, (_, index) => ({
+    key:`${destino.id}::${index}`,
+    destinoId:destino.id,
+  })));
+  const slotToTeam = new Map();
+  const eligibleCache = new Map(pendentes.map(inscId => [inscId, new Set(eligibleDestinationIds(inscId))]));
+  const orderedPending = [...pendentes].sort((a, b) => (
+    eligibleCache.get(a).size - eligibleCache.get(b).size ||
+    String(a).localeCompare(String(b), 'pt-BR', { numeric:true })
+  ));
+
+  const tryAssign = (inscId, seenSlots) => {
+    const eligibleIds = eligibleCache.get(inscId) || new Set();
+    for (const slot of slots) {
+      if (!eligibleIds.has(slot.destinoId) || seenSlots.has(slot.key)) continue;
+      seenSlots.add(slot.key);
+      const currentTeam = slotToTeam.get(slot.key);
+      if (!currentTeam || tryAssign(currentTeam, seenSlots)) {
+        slotToTeam.set(slot.key, inscId);
+        return true;
+      }
+    }
+    return false;
+  };
+  orderedPending.forEach(inscId => tryAssign(inscId, new Set()));
+
+  const moves = [...slotToTeam.entries()].map(([slotKey, inscId]) => {
+    const destinoId = slotKey.split('::')[0];
+    additions[destinoId] = (additions[destinoId] || 0) + 1;
+    return { inscId, inscricaoIdExterno:fullInscId(inscId), destinoId };
+  });
+  const movedIds = new Set(moves.map(move => move.inscId));
+  const remaining = pendentes.filter(inscId => !movedIds.has(inscId));
+  const unmet = destinos.map(destino => ({
+    par:destino,
+    requested:requests[destino.id] || 0,
+    assigned:additions[destino.id] || 0,
+  })).filter(item => item.assigned < item.requested);
+  const totalRequested = Object.values(requests).reduce((sum, value) => sum + value, 0);
+  const complete = totalRequested > 0 && totalRequested <= pendentes.length && unmet.length === 0;
+  return { origem, destinos, requests, atribuidas, protegidas, pendentes, additions, moves, remaining, unmet, totalRequested, complete };
+}
+
+function renderBatchReassignmentControls() {
+  const fromSelect = document.getElementById('batchReallocFrom');
+  const targetsEl = document.getElementById('batchReallocTargets');
+  const preview = document.getElementById('batchReallocPreview');
+  const button = document.getElementById('batchReallocConfirmBtn');
+  if (!fromSelect || !targetsEl || !preview || !button) return;
+
+  const previousFrom = fromSelect.value;
+  const previousRequests = {};
+  targetsEl.querySelectorAll('.batch-target-row').forEach(row => {
+    const checkbox = row.querySelector('.batch-target-check');
+    const quantity = row.querySelector('.batch-target-qty');
+    if (checkbox?.checked) previousRequests[checkbox.value] = Math.max(1, Number(quantity?.value) || 1);
+  });
+  const oficiais = getOfficialPareceristas()
+    .sort((a, b) => String(a.nome || '').localeCompare(String(b.nome || ''), 'pt-BR', { sensitivity:'base' }));
+  fromSelect.innerHTML = '<option value="">Selecione</option>' + oficiais.map(par => {
+    const pendentes = getAtrib(par.id).filter(inscId => !evaluationHasSavedActivity(par.id, inscId)).length;
+    return `<option value="${par.id}">${par.nome} · ${pendentes} pendentes</option>`;
+  }).join('');
+  if (oficiais.some(par => par.id === previousFrom)) fromSelect.value = previousFrom;
+
+  const fromParId = fromSelect.value;
+  const candidatos = oficiais.filter(par => par.id !== fromParId);
+  targetsEl.innerHTML = candidatos.map(par => {
+    const selectedQuantity = previousRequests[par.id] || 0;
+    const checked = selectedQuantity > 0 ? 'checked' : '';
+    const carga = getAtrib(par.id).length;
+    const capacidade = capacidadeParecerista(par.id);
+    return `<div class="batch-target-row" style="display:grid;grid-template-columns:18px minmax(0,1fr) 76px;align-items:center;gap:9px;padding:10px 12px;border:1px solid #DADCE0;border-radius:7px;background:#fff;font-size:12px;color:#202124">
+      <input class="batch-target-check" type="checkbox" value="${par.id}" ${checked} onchange="renderBatchReassignmentControls()" style="margin:0">
+      <label style="min-width:0;cursor:pointer"><strong>${par.nome}</strong><br><span style="font-size:10px;color:#9AA0A6">carga atual ${carga}/${capacidade}</span></label>
+      <input class="batch-target-qty" type="number" min="1" step="1" value="${selectedQuantity || 1}" ${checked ? '' : 'disabled'} onchange="renderBatchReassignmentControls()" aria-label="Quantidade para ${escapeHtmlAttr(par.nome)}" style="width:76px;padding:6px 8px;text-align:center">
+    </div>`;
+  }).join('') || '<div style="font-size:12px;color:#9AA0A6">Nenhum destino disponível.</div>';
+
+  const targetRequests = {};
+  targetsEl.querySelectorAll('.batch-target-row').forEach(row => {
+    const checkbox = row.querySelector('.batch-target-check');
+    const quantity = row.querySelector('.batch-target-qty');
+    if (checkbox?.checked) targetRequests[checkbox.value] = Math.max(1, Math.floor(Number(quantity?.value) || 1));
+  });
+  const plan = buildBatchReassignmentPlan(fromParId, targetRequests);
+  button.disabled = !fromParId || !plan.complete;
+
+  if (!fromParId) {
+    preview.innerHTML = '<div class="dist-status dist-warn"><i class="ti ti-info-circle"></i>Selecione o parecerista que terá as pendências redistribuídas.</div>';
+    return;
+  }
+  if (!plan.pendentes.length) {
+    preview.innerHTML = '<div class="dist-status dist-warn"><i class="ti ti-alert-triangle"></i>Este parecerista não possui atribuições totalmente não iniciadas para redistribuir.</div>';
+    return;
+  }
+  if (!Object.keys(targetRequests).length) {
+    preview.innerHTML = '<div class="dist-status dist-warn"><i class="ti ti-info-circle"></i>Selecione um ou mais destinos e informe a quantidade para cada pessoa.</div>';
+    return;
+  }
+  if (plan.totalRequested > plan.pendentes.length) {
+    preview.innerHTML = `<div class="dist-status dist-warn"><i class="ti ti-alert-triangle"></i>Foram solicitadas ${plan.totalRequested} redistribuições, mas existem somente ${plan.pendentes.length} pendências disponíveis.</div>`;
+    return;
+  }
+  if (plan.unmet.length) {
+    const faltas = plan.unmet.map(item => `<strong>${item.par.nome}</strong>: faltam ${item.requested - item.assigned}`).join('<br>');
+    preview.innerHTML = `<div class="dist-status dist-warn" style="align-items:flex-start"><i class="ti ti-alert-triangle"></i><div>As quantidades não podem ser cumpridas por conflito institucional ou destino já atribuído:<br><br>${faltas}</div></div>`;
+    return;
+  }
+
+  const distribution = plan.destinos.map(par => {
+    const add = plan.additions[par.id] || 0;
+    const finalLoad = getAtrib(par.id).length + add;
+    const capacity = capacidadeParecerista(par.id);
+    const warning = capacity > 0 && finalLoad > capacity ? ' · acima da capacidade' : '';
+    return `<strong>${par.nome}</strong>: +${add} (${finalLoad}/${capacity}${warning})`;
+  }).join('<br>');
+  const remainingText = plan.remaining.length
+    ? `<br><span style="color:#7A828E"><strong>${plan.remaining.length}</strong> pendências não solicitadas permanecerão com a origem.</span>`
+    : '';
+  preview.innerHTML = `<div class="dist-status dist-ok" style="align-items:flex-start"><i class="ti ti-shield-check"></i><div>
+    <strong>${plan.moves.length} pendências serão redistribuídas</strong><br>
+    ${plan.protegidas.length} atribuições iniciadas ou concluídas permanecerão intocadas.<br><br>
+    ${distribution}${remainingText}
+  </div></div>`;
+}
+
+async function confirmBatchReassignment() {
+  const fromParId = document.getElementById('batchReallocFrom')?.value || '';
+  const targetRequests = {};
+  document.querySelectorAll('#batchReallocTargets .batch-target-row').forEach(row => {
+    const checkbox = row.querySelector('.batch-target-check');
+    const quantity = row.querySelector('.batch-target-qty');
+    if (checkbox?.checked) targetRequests[checkbox.value] = Math.max(1, Math.floor(Number(quantity?.value) || 1));
+  });
+  const plan = buildBatchReassignmentPlan(fromParId, targetRequests);
+  if (!fromParId || !plan.complete) {
+    renderBatchReassignmentControls();
+    notify('Revise os destinos, as quantidades e os conflitos antes de confirmar.');
+    return;
+  }
+  if (!window.confirm(`Redistribuir ${plan.moves.length} pendências de ${plan.origem?.nome || 'parecerista'} entre ${plan.destinos.length} pessoas, respeitando as quantidades informadas?`)) return;
+
+  const client = getSupabaseClient(activeEnvironment);
+  if (!client) {
+    notify('Redistribuição bloqueada: conecte o Supabase para garantir a operação atômica.');
+    return;
+  }
+  const button = document.getElementById('batchReallocConfirmBtn');
+  if (button) button.disabled = true;
+  const { data, error } = await client.rpc('redistribuir_atribuicoes_pendentes_segura', {
+    p_environment: activeEnvironment,
+    p_parecerista_origem: fromParId,
+    p_movimentos: plan.moves.map(move => ({
+      inscricao_id_externo: move.inscricaoIdExterno,
+      parecerista_destino: move.destinoId,
+    })),
+    p_actor_id: 'admin',
+  });
+
+  if (error || !data?.ok) {
+    console.error('Redistribuição em lote recusada:', error || data);
+    renderBatchReassignmentControls();
+    notify(`Nada foi alterado: ${error?.message || data?.message || 'o banco recusou a redistribuição.'}`);
+    return;
+  }
+
+  plan.moves.forEach(move => {
+    const pars = [...(atribuicoes[move.inscId] || [])];
+    const index = pars.indexOf(fromParId);
+    if (index >= 0) pars[index] = move.destinoId;
+    atribuicoes[move.inscId] = pars;
+    if (avaliacoes[fromParId]?.[move.inscId] && !evaluationHasSavedActivity(fromParId, move.inscId)) {
+      delete avaliacoes[fromParId][move.inscId];
+    }
+  });
+  if (avaliacoes[fromParId] && !Object.keys(avaliacoes[fromParId]).length) delete avaliacoes[fromParId];
+  saveAppState({ skipRemoteSync:true });
+  renderPareceristas();
+  renderResultados();
+  renderDashboard();
+  updateSimSelect();
+  notify(`${plan.moves.length} pendências redistribuídas com segurança.`);
+}
+
 function copyLink(parId, nome) {
   const link = getAppBaseUrl() + '?par=' + parId;
   navigator.clipboard?.writeText(link).catch(()=>{});
@@ -4742,6 +5128,70 @@ function mediaPorCrit(inscId, critIdx) {
   return Object.entries(freq).sort((a,b)=>b[1]-a[1])[0][0];
 }
 
+function mediaNumericaPorCrit(inscId, critIdx) {
+  const valores = getOfficialPareceristas().map(p => {
+    if (!isEvaluationConcluded(p.id, inscId)) return null;
+    const conceito = avaliacoes[p.id]?.[inscId]?.notas?.[critIdx];
+    return NV[conceito] || null;
+  }).filter(valor => valor !== null);
+  if (!valores.length) return null;
+  return valores.reduce((soma, valor) => soma + valor, 0) / valores.length;
+}
+
+function notaNumericaCriterioHTML(valor) {
+  if (valor === null) return '<span style="color:#E0E0E0;font-size:14px">—</span>';
+  const pesoPercentual = 100 / CRITERIOS.length;
+  const contribuicao = valor * (pesoPercentual / 100);
+  const notaLabel = Number(valor).toFixed(2).replace('.', ',');
+  const pesoLabel = Number(pesoPercentual).toLocaleString('pt-BR', { maximumFractionDigits:2 });
+  const contribuicaoLabel = Number(contribuicao).toFixed(2).replace('.', ',');
+  return `<div class="res-criterion-result"><span class="res-criterion-score">${contribuicaoLabel}</span><span class="res-criterion-calc">${notaLabel} × ${pesoLabel}%</span></div>`;
+}
+
+function bancaSelectionStorageKey() {
+  return `${BANCA_SELECTION_KEY}_${activeEnvironment || 'default'}`;
+}
+
+function getBancaSelectionIds() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem(bancaSelectionStorageKey()) || '[]');
+    return Array.isArray(parsed) ? [...new Set(parsed.map(String))] : [];
+  } catch(e) {
+    return [];
+  }
+}
+
+function isSelectedForBanca(inscId) {
+  return getBancaSelectionIds().includes(String(inscId));
+}
+
+function toggleBancaSelection(inscId, event) {
+  event?.stopPropagation?.();
+  const id = String(inscId);
+  const selected = new Set(getBancaSelectionIds());
+  if (selected.has(id)) selected.delete(id);
+  else selected.add(id);
+  try {
+    localStorage.setItem(bancaSelectionStorageKey(), JSON.stringify([...selected]));
+  } catch(e) {}
+  const isSelected = selected.has(id);
+  document.querySelectorAll('.res-bank-toggle').forEach(button => {
+    if (button.dataset.inscId !== id) return;
+    const action = isSelected ? 'Retirar da banca' : 'Selecionar para a banca';
+    button.classList.toggle('is-selected', isSelected);
+    button.setAttribute('aria-pressed', String(isSelected));
+    button.setAttribute('aria-label', action);
+    button.title = action;
+  });
+  renderBanca();
+}
+
+function bancaToggleHTML(inscId) {
+  const selected = isSelectedForBanca(inscId);
+  const action = selected ? 'Retirar da banca' : 'Selecionar para a banca';
+  return `<button class="res-bank-toggle${selected ? ' is-selected' : ''}" data-insc-id="${escapeHtmlAttr(String(inscId))}" type="button" onclick='toggleBancaSelection(${JSON.stringify(String(inscId))}, event)' title="${action}" aria-label="${action}" aria-pressed="${selected}"></button>`;
+}
+
 function avalCount(inscId) {
   const oficiais = getOfficialPareceristas();
   const total = oficiais.filter(p => atribuicoes[inscId]?.includes(p.id)).length;
@@ -4862,6 +5312,10 @@ function formatResultadoLeaderName(value) {
   if (!text) return 'N/D';
   const upper = text.toUpperCase();
   return upper.length > 25 ? `${upper.slice(0, 25).trimEnd()}...` : upper;
+}
+function formatResultadoMemberName(value) {
+  const text = displayPersonName(value);
+  return text.length > 25 ? `${text.slice(0, 25).trimEnd()}...` : text;
 }
 function compactCourseLabel(value) {
   const text = String(value || '').trim();
@@ -5469,6 +5923,9 @@ function confirmVideoIssueReport() {
 function fmtNotaGeral(valor) {
   return valor === null ? '—' : valor.toFixed(1).replace('.', ',');
 }
+function fmtResultadoFinal(valor) {
+  return valor === null ? '—' : valor.toFixed(2).replace('.', ',');
+}
 function notaExibida(valor) {
   return valor === null || valor === undefined ? null : Math.round((valor + Number.EPSILON) * 10) / 10;
 }
@@ -5495,13 +5952,26 @@ function rankingCoverageValue(inscId) {
   const c = avalCount(inscId);
   return c.total ? (c.done / c.total) : 0;
 }
-function compareResultadoRows(a, b, rankingMode) {
-  if (rankingMode === 'Sem melhor nota') {
-    return compareInscIdAsc(a, b);
+function notasGeraisConcluidas(inscId) {
+  return getOfficialPareceristas().map(p => {
+    const av = avaliacoes[p.id]?.[inscId];
+    return isEvaluationConcluded(p.id, inscId) ? notaGeralAvaliacao(av) : null;
+  }).filter(n => n !== null && Number.isFinite(n));
+}
+function mediaNotasRanking(inscId, rankingMode) {
+  const notas = notasGeraisConcluidas(inscId);
+  if (!notas.length) return null;
+  let consideradas = [...notas];
+  if (notas.length > 1 && rankingMode === 'Ranking sem a pior nota') {
+    consideradas.splice(consideradas.indexOf(Math.min(...consideradas)), 1);
+  } else if (notas.length > 1 && rankingMode === 'Ranking sem a melhor nota') {
+    consideradas.splice(consideradas.indexOf(Math.max(...consideradas)), 1);
   }
-
-  const notaA = notaExibida(mediaNotas(a.id));
-  const notaB = notaExibida(mediaNotas(b.id));
+  return consideradas.reduce((sum, nota) => sum + nota, 0) / consideradas.length;
+}
+function compareResultadoRows(a, b, rankingMode) {
+  const notaA = mediaNotasRanking(a.id, rankingMode);
+  const notaB = mediaNotasRanking(b.id, rankingMode);
 
   if (notaA === null && notaB !== null) return 1;
   if (notaA !== null && notaB === null) return -1;
@@ -5520,23 +5990,19 @@ function compareResultadoRows(a, b, rankingMode) {
   return compareInscIdAsc(a, b);
 }
 function buildRankingMeta(rows, rankingMode) {
-  if (rankingMode === 'Sem melhor nota') {
-    return rows.map((_, index) => ({ rank:index + 1, tied:false }));
-  }
-
   const tieCounts = {};
   rows.forEach(({ e }, index) => {
-    const nota = notaExibida(mediaNotas(e.id));
+    const nota = mediaNotasRanking(e.id, rankingMode);
     if (nota === null) return;
-    const key = nota.toFixed(1);
+    const key = nota.toFixed(4);
     tieCounts[key] = (tieCounts[key] || 0) + 1;
   });
 
   let currentRank = 0;
   let prevKey = null;
   return rows.map(({ e }, index) => {
-    const nota = notaExibida(mediaNotas(e.id));
-    const key = nota === null ? `null-${index}` : nota.toFixed(1);
+    const nota = mediaNotasRanking(e.id, rankingMode);
+    const key = nota === null ? `null-${index}` : nota.toFixed(4);
     const sameAsPrev = nota !== null && key === prevKey;
     if (!sameAsPrev) currentRank = index + 1;
     prevKey = nota !== null ? key : null;
@@ -5545,6 +6011,33 @@ function buildRankingMeta(rows, rankingMode) {
       tied: nota !== null && (tieCounts[key] || 0) > 1,
     };
   });
+}
+function buildAbsoluteRankingById(rankingMode) {
+  const scored = INSCRICOES.map(e => ({ e, score:mediaNotasRanking(e.id, rankingMode) }));
+  const validScores = scored.map(item => item.score).filter(score => score !== null && Number.isFinite(score));
+  const countByScore = {};
+  validScores.forEach(score => {
+    const key = score.toFixed(4);
+    countByScore[key] = (countByScore[key] || 0) + 1;
+  });
+  const uniqueScores = [...new Set(validScores.map(score => score.toFixed(4)))]
+    .map(Number)
+    .sort((a, b) => b - a);
+  const rankByScore = new Map();
+  let consumed = 0;
+  uniqueScores.forEach(score => {
+    const key = score.toFixed(4);
+    rankByScore.set(key, consumed + 1);
+    consumed += countByScore[key] || 0;
+  });
+  const nullRows = scored.filter(item => item.score === null || !Number.isFinite(item.score))
+    .sort((a, b) => compareInscIdAsc(a.e, b.e));
+  const nullRankById = new Map(nullRows.map((item, index) => [String(item.e.id), validScores.length + index + 1]));
+  return new Map(scored.map(({ e, score }) => {
+    if (score === null || !Number.isFinite(score)) return [String(e.id), { rank:nullRankById.get(String(e.id)), tied:false }];
+    const key = score.toFixed(4);
+    return [String(e.id), { rank:rankByScore.get(key), tied:(countByScore[key] || 0) > 1 }];
+  }));
 }
 function generoInscricao(e) {
   return e?._raw?.['Gênero'] || e?._raw?.['genero'] || '';
@@ -5623,7 +6116,9 @@ function zerarFiltrosResultados() {
     resFiltroTime: 'Todos os times',
     resFiltroUf: '',
     resFiltroGenero: 'Todos os gêneros',
-    resFiltroRanking: 'Ranking normal'
+    resFiltroRanking: 'Ranking normal',
+    resFiltroTop: '0',
+    resFiltroVariacao: '0'
   };
   Object.entries(defaults).forEach(([id, value]) => {
     const field = document.getElementById(id);
@@ -5655,8 +6150,25 @@ window.addEventListener('resize', () => {
 function renderResultados() {
   syncResultadosFilters();
   const rankingMode = document.getElementById('resFiltroRanking')?.value || 'Ranking normal';
-  const rows = [...filtrarResultados()].sort((a, b) => compareResultadoRows(a.e, b.e, rankingMode));
-  const rankingMeta = buildRankingMeta(rows, rankingMode);
+  const absoluteRankingById = buildAbsoluteRankingById(rankingMode);
+  const topLimit = Number(document.getElementById('resFiltroTop')?.value || 0);
+  const variacaoField = document.getElementById('resFiltroVariacao');
+  if (variacaoField) {
+    variacaoField.style.display = topLimit ? '' : 'none';
+    if (!topLimit) variacaoField.value = '0';
+  }
+  const variacaoPct = topLimit ? Number(variacaoField?.value || 0) : 0;
+  const allRankedRows = [...filtrarResultados()].sort((a, b) => compareResultadoRows(a.e, b.e, rankingMode));
+  const rankedWithScore = allRankedRows.filter(({ e }) => mediaNotasRanking(e.id, rankingMode) !== null);
+  const officialTopRows = topLimit ? rankedWithScore.slice(0, topLimit) : [];
+  const cutoffScore = officialTopRows.length ? mediaNotasRanking(officialTopRows[officialTopRows.length - 1].e.id, rankingMode) : null;
+  const nearCutRows = topLimit && variacaoPct > 0 && cutoffScore !== null
+    ? rankedWithScore.slice(topLimit).filter(({ e }) => {
+        const score = mediaNotasRanking(e.id, rankingMode);
+        return score !== null && score < cutoffScore && ((cutoffScore - score) / cutoffScore) * 100 <= variacaoPct;
+      })
+    : [];
+  const rows = topLimit ? [...officialTopRows, ...nearCutRows] : allRankedRows;
   const total = rows.length;
   const finalizadas = rows.filter(({ e }) => { const c = avalCount(e.id); return c.done > 0 && c.done === c.total; }).length;
   const parciais = rows.filter(({ e }) => { const c = avalCount(e.id); return c.done > 0 && c.done < c.total; }).length;
@@ -5665,23 +6177,34 @@ function renderResultados() {
     (document.getElementById('resFiltroStatus')?.value || 'Todas as avaliações') !== 'Todas as avaliações' ||
     (document.getElementById('resFiltroTime')?.value || 'Todos os times') !== 'Todos os times' ||
     !!(document.getElementById('resFiltroUf')?.value || '') ||
-    (document.getElementById('resFiltroGenero')?.value || 'Todos os gêneros') !== 'Todos os gêneros';
+    (document.getElementById('resFiltroGenero')?.value || 'Todos os gêneros') !== 'Todos os gêneros' ||
+    topLimit > 0 || variacaoPct > 0 || rankingMode !== 'Ranking normal';
   const summaryBar = document.getElementById('resSummaryBar');
   if (summaryBar) {
     summaryBar.style.display = hasActiveFilters ? 'block' : 'none';
-    summaryBar.innerHTML = hasActiveFilters ? `<span class="res-subtle">${total} equipes · ${finalizadas} finalizadas · ${parciais} parciais · ${naoIniciadas} não iniciadas</span>` : '';
+    const cutSummary = topLimit
+      ? ` · ${officialTopRows.length} no Top oficial${nearCutRows.length ? ` · ${nearCutRows.length} na faixa de até ${variacaoPct}% abaixo do corte` : ''}`
+      : '';
+    summaryBar.innerHTML = hasActiveFilters ? `<span class="res-subtle">${total} equipes exibidas · ${finalizadas} finalizadas · ${parciais} parciais · ${naoIniciadas} não iniciadas${cutSummary}</span>` : '';
   }
+  window.currentResultsTopRows = officialTopRows;
+  const statsBtn = document.getElementById('resultsStatsBtn');
+  if (statsBtn) statsBtn.style.display = topLimit ? 'inline-flex' : 'none';
+  if (!topLimit) closeResultsStatsDrawer();
 
   document.getElementById('tblResultados').innerHTML = rows.length ? rows.map(({ e, idx }, i) => {
     const { done, total: tot } = avalCount(e.id);
     const avcls = done===0?'b-pend':done===tot?'b-ok':'b-par';
-    const pt = mediaNotas(e.id);
-    const ranking = rankingMeta[i];
+    const pt = mediaNotasRanking(e.id, rankingMode);
+    const ranking = absoluteRankingById.get(String(e.id)) || { rank:'—', tied:false };
+    const isOfficialTop = topLimit > 0 && i < officialTopRows.length;
+    const isNearCut = topLimit > 0 && !isOfficialTop;
+    const rowClass = isOfficialTop ? 'res-top-row' : isNearCut ? 'res-near-row' : '';
     const subRows = getOfficialPareceristas().filter(p => atribuicoes[e.id]?.includes(p.id)).map(p => {
       const av = avaliacoes[p.id]?.[e.id];
       const parecerConcluido = isEvaluationConcluded(p.id, e.id);
       const notaGeralParecerista = parecerConcluido ? notaGeralAvaliacao(av) : null;
-      return `<tr class="sub-row sub-res-${i}">
+      return `<tr class="sub-row sub-res-${i} ${rowClass}">
         <td class="sticky s0"></td>
         <td class="sticky s3 id-col"></td>
         <td class="sticky s5" style="padding-left:22px">
@@ -5693,8 +6216,8 @@ function renderResultados() {
       </tr>`;
     }).join('');
 
-    return `<tr>
-      <td class="sticky s0"><div style="font-size:13px;font-weight:600;color:#202124">${ranking.rank}</div><div style="margin-top:6px"><div class="sw-sm"></div></div>${ranking.tied ? `<div class="res-faint" style="font-size:10px;margin-top:6px">(empate)</div>` : ''}</td>
+    return `<tr class="${rowClass}">
+      <td class="sticky s0"><div class="res-rank-line"><span style="font-size:13px;font-weight:600;color:#202124">${ranking.rank}</span>${bancaToggleHTML(e.id)}</div>${ranking.tied ? `<div class="res-faint" style="font-size:10px;margin-top:3px">(empate)</div>` : ''}${isOfficialTop ? `<span class="res-cut-label">Top ${topLimit}</span>` : isNearCut ? `<span class="res-cut-label res-near-label">Margem ${variacaoPct}%</span>` : ''}</td>
       <td class="sticky s3 id-col" style="text-align:center">
         <div class="res-id-hub">
           <div class="res-id-meta">
@@ -5712,26 +6235,115 @@ function renderResultados() {
         <div class="leader-cell">
           <div style="font-size:12.5px;font-weight:600;color:#202124">${formatResultadoLeaderName(e.lider)}</div>
           ${e.p2 ? `<div class="team-members">
-          <div class="team-member-line">${displayPersonName(e.p2)}</div>
-          ${e.p3 ? `<div class="team-member-line">${displayPersonName(e.p3)}</div>` : ''}
+          <div class="team-member-line" title="${escapeHtmlAttr(displayPersonName(e.p2))}">${formatResultadoMemberName(e.p2)}</div>
+          ${e.p3 ? `<div class="team-member-line" title="${escapeHtmlAttr(displayPersonName(e.p3))}">${formatResultadoMemberName(e.p3)}</div>` : ''}
         </div>` : ''}
           <div class="res-muted" style="font-size:11px;margin-top:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-school" style="font-size:11px"></i>${displayPersonName(e.mentor)}</div>
         </div>
       </td>
       <td class="sticky s7" style="text-align:center;vertical-align:top">
         <div class="nota-cell">
-          <div class="nota-main">${pt !== null ? fmtNotaGeral(pt) : '<span style="color:#E0E0E0;font-size:15px">—</span>'}</div>
+          <div class="nota-main">${pt !== null ? fmtResultadoFinal(pt) : '<span style="color:#E0E0E0;font-size:15px">—</span>'}</div>
           <div class="nota-actions">
             ${parecerProgressHTML(e.id, i)}
           </div>
         </div>
       </td>
-      ${Array(8).fill(0).map((_,ci) => `<td class="crit-td">${nc(mediaPorCrit(e.id,ci))}</td>`).join('')}
+      ${Array(8).fill(0).map((_,ci) => `<td class="crit-td">${notaNumericaCriterioHTML(mediaNumericaPorCrit(e.id,ci))}</td>`).join('')}
     </tr>${subRows}`;
   }).join('') : `<tr><td colspan="12" style="padding:22px 14px;text-align:center;color:#9AA0A6">Nenhum registro encontrado para os filtros aplicados.</td></tr>`;
 
-  requestAnimationFrame(syncResultadosStickyLayout);
+  requestAnimationFrame(() => {
+    const scroll = document.getElementById('resultsBodyScroll');
+    if (scroll) scroll.scrollTop = 0;
+    syncResultadosStickyLayout();
+    requestAnimationFrame(syncResultadosStickyLayout);
+  });
 
+}
+
+function renderBanca() {
+  const body = document.getElementById('tblBanca');
+  if (!body) return;
+  const selectedIds = new Set(getBancaSelectionIds());
+  const allRanked = INSCRICOES.map((e, idx) => ({ e, idx }))
+    .sort((a, b) => compareResultadoRows(a.e, b.e, 'Ranking normal'));
+  const rankById = buildAbsoluteRankingById('Ranking normal');
+  const rows = allRanked.filter(({ e }) => selectedIds.has(String(e.id)));
+  const summary = document.getElementById('bancaSummary');
+  if (summary) summary.textContent = `${rows.length} ${rows.length === 1 ? 'equipe selecionada' : 'equipes selecionadas'}`;
+
+  body.innerHTML = rows.length ? rows.map(({ e, idx }) => {
+    const ranking = rankById.get(String(e.id)) || { rank:'—', tied:false };
+    const pt = mediaNotasRanking(e.id, 'Ranking normal');
+    return `<tr>
+      <td class="sticky s0"><div class="res-rank-line"><span style="font-size:13px;font-weight:600;color:#202124">${ranking.rank}</span>${bancaToggleHTML(e.id)}</div>${ranking.tied ? '<div class="res-faint" style="font-size:10px;margin-top:3px">(empate)</div>' : ''}</td>
+      <td class="sticky s3 id-col" style="text-align:center">
+        <div class="res-id-hub"><div class="res-id-meta"><div class="res-muted res-id" style="font-family:monospace;font-size:11px">${shortInscId(e.id)}</div><div class="team-marker-stack">${teamMarker(e.mod)}</div><div class="res-uf">${compactUfLabel(e.uf) || '—'}</div></div><div class="res-id-actions"><button class="icon-btn" onclick="openModal(${idx})" title="Ver inscrição"><i class="ti ti-eye"></i></button><button class="icon-btn" onclick="openModalPar(${idx})" title="Ver notas dos pareceristas"><i class="ti ti-notes"></i></button></div></div>
+      </td>
+      <td class="sticky s5"><div class="leader-cell"><div style="font-size:12.5px;font-weight:600;color:#202124">${formatResultadoLeaderName(e.lider)}</div>${e.p2 ? `<div class="team-members"><div class="team-member-line" title="${escapeHtmlAttr(displayPersonName(e.p2))}">${formatResultadoMemberName(e.p2)}</div>${e.p3 ? `<div class="team-member-line" title="${escapeHtmlAttr(displayPersonName(e.p3))}">${formatResultadoMemberName(e.p3)}</div>` : ''}</div>` : ''}<div class="res-muted" style="font-size:11px;margin-top:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-school" style="font-size:11px"></i>${displayPersonName(e.mentor)}</div></div></td>
+      <td class="sticky s7" style="text-align:center;vertical-align:top"><div class="nota-cell"><div class="nota-main">${pt !== null ? fmtResultadoFinal(pt) : '<span style="color:#E0E0E0;font-size:15px">—</span>'}</div></div></td>
+      ${Array(8).fill(0).map((_, ci) => `<td class="crit-td">${notaNumericaCriterioHTML(mediaNumericaPorCrit(e.id, ci))}</td>`).join('')}
+    </tr>`;
+  }).join('') : '<tr><td colspan="12" style="padding:38px 14px;text-align:center;color:#9AA0A6">Nenhuma equipe foi selecionada para a banca.</td></tr>';
+}
+
+function resultadoParticipantRows(e) {
+  const targetId = shortInscId(e?.id);
+  const rows = (Array.isArray(rawParticipantes) ? rawParticipantes : []).filter(row => {
+    const rowId = shortInscId(row?.['ID inscrição'] || row?.['ID Inscrição'] || row?.['ID'] || '');
+    return rowId === targetId;
+  });
+  return rows.length ? rows : [e?._raw || {}];
+}
+function firstRawValue(row, keys) {
+  for (const key of keys) {
+    const value = row?.[key];
+    if (value !== undefined && value !== null && String(value).trim()) return String(value).trim();
+  }
+  return '';
+}
+function countResultsStats(values) {
+  const counts = {};
+  values.filter(Boolean).forEach(value => { counts[value] = (counts[value] || 0) + 1; });
+  return Object.entries(counts).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'pt-BR'));
+}
+function resultsStatSection(title, entries) {
+  if (!entries.length) return `<div class="results-stat-section"><div class="results-stat-title">${title}</div><div class="res-faint" style="font-size:12px">Sem dados disponíveis.</div></div>`;
+  const total = entries.reduce((sum, [, value]) => sum + value, 0);
+  const max = Math.max(...entries.map(([, value]) => value), 1);
+  return `<div class="results-stat-section"><div class="results-stat-title">${title}</div><div class="results-stat-columns"><span>Categoria</span><span>Qtd.</span><span>%</span></div>${entries.slice(0, 10).map(([label, value]) => `<div class="results-stat-row"><span class="results-stat-label" title="${escapeHtmlAttr(label)}">${escapeHtmlAttr(label)}</span><strong class="results-stat-value">${value}</strong><span class="results-stat-percent">${Math.round((value / total) * 100)}%</span><div class="results-stat-bar"><span style="width:${(value / max) * 100}%"></span></div></div>`).join('')}</div>`;
+}
+function normalizeResultsGender(value) {
+  const text = String(value || '').trim();
+  return /não me identifico com nenhuma das opções acima/i.test(text) ? 'Outro' : text;
+}
+function renderResultsStatsDrawer() {
+  const rows = Array.isArray(window.currentResultsTopRows) ? window.currentResultsTopRows : [];
+  const teams = rows.map(({ e }) => e);
+  const participants = teams.flatMap(resultadoParticipantRows);
+  const modalidades = countResultsStats(teams.map(e => e.mod || 'N/D'));
+  const estados = countResultsStats(teams.map(e => compactUfLabel(e.uf) || 'N/D'));
+  const universidades = countResultsStats(teams.map(e => compactInstitutionLabel(e.inst) || 'N/D'));
+  const generos = countResultsStats(participants.map(row => normalizeResultsGender(firstRawValue(row, ['Gênero', 'genero'])) || 'N/D'));
+  const racas = countResultsStats(participants.map(row => firstRawValue(row, ['Cor/raça', 'Cor/Raça', 'raca']) || 'N/D'));
+  const topLimit = Number(document.getElementById('resFiltroTop')?.value || 0);
+  const subtitle = document.getElementById('resultsStatsDrawerSubtitle');
+  const body = document.getElementById('resultsStatsDrawerBody');
+  if (subtitle) subtitle.textContent = `Top ${topLimit} · ${teams.length} equipes · ${participants.length} participantes com perfil`;
+  if (body) body.innerHTML = resultsStatSection('Formação das equipes', modalidades) + resultsStatSection('Distribuição por estado', estados) + resultsStatSection('Gênero', generos) + resultsStatSection('Cor / raça', racas) + resultsStatSection('Universidade', universidades);
+}
+function openResultsStatsDrawer() {
+  if (!window.currentResultsTopRows?.length) return;
+  renderResultsStatsDrawer();
+  document.getElementById('resultsStatsDrawer')?.classList.add('open');
+  document.getElementById('resultsDrawerBackdrop')?.classList.add('open');
+  document.getElementById('resultsStatsDrawer')?.setAttribute('aria-hidden', 'false');
+}
+function closeResultsStatsDrawer() {
+  document.getElementById('resultsStatsDrawer')?.classList.remove('open');
+  document.getElementById('resultsDrawerBackdrop')?.classList.remove('open');
+  document.getElementById('resultsStatsDrawer')?.setAttribute('aria-hidden', 'true');
 }
 
 function toggleRes(i) {
@@ -5943,7 +6555,7 @@ function renderPortal() {
     const statusClass = videoIssue ? 'b-antecipada' : resolvedVideoIssue || isDone ? 'b-ok' : 'b-pend';
     return `<tr class="portal-evaluation-row ${isDone ? 'is-complete' : ''} ${isDone && parecerResumo ? 'has-observation' : ''}" style="cursor:pointer" onclick="abrirFicha('${parId}','${inscId}'${isDone?', true':''})">
       <td class="sticky s5"><div class="leader-cell"><div class="portal-team-name" title="${escapeHtmlAttr(displayPersonName(e.lider))}" style="font-size:12.5px;font-weight:600;color:#202124">${formatResultadoLeaderName(e.lider)}</div>
-        ${e.p2 ? `<div class="team-members"><div class="team-member-line portal-team-name" title="${escapeHtmlAttr(displayPersonName(e.p2))}">${displayPersonName(e.p2)}</div>${e.p3 ? `<div class="team-member-line portal-team-name" title="${escapeHtmlAttr(displayPersonName(e.p3))}">${displayPersonName(e.p3)}</div>` : ''}</div>` : ''}
+        ${e.p2 ? `<div class="team-members"><div class="team-member-line portal-team-name" title="${escapeHtmlAttr(displayPersonName(e.p2))}">${formatResultadoMemberName(e.p2)}</div>${e.p3 ? `<div class="team-member-line portal-team-name" title="${escapeHtmlAttr(displayPersonName(e.p3))}">${formatResultadoMemberName(e.p3)}</div>` : ''}</div>` : ''}
         <div class="res-muted" style="font-size:11px;margin-top:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-school"></i>${displayPersonName(e.mentor)}</div></div></td>
       <td class="sticky s7" style="text-align:center"><div class="nota-cell"><div class="nota-main">${isDone ? fmtNotaGeral(notaGeralParecerista) : '—'}</div>${isDone && !resolvedVideoIssue ? '' : `<span class="badge ${statusClass}" style="margin-top:8px">${statusLabel}</span>`}</div></td>
       ${Array(8).fill(0).map((_,ci) => `<td class="crit-td">${nc(isDone ? av?.notas?.[ci] : null)}</td>`).join('')}
@@ -6525,16 +7137,19 @@ function renderAuditoria() {
       };
     }),
     ...pendingVideoRows,
-  ];
-  const auditCountByPar = allRows.reduce((acc, row) => {
-    acc[row.parId] = (acc[row.parId] || 0) + 1;
+  ].filter(r => !isTestParecerista(r.parId));
+  const completedCountByPar = getOfficialPareceristas().reduce((acc, par) => {
+    acc[par.id] = Object.keys(avaliacoes[par.id] || {})
+      .filter(inscId => INSCRICOES.some(i => i.id === inscId) && isEvaluationConcluded(par.id, inscId))
+      .length;
     return acc;
   }, {});
+  const officialCompletedTotal = Object.values(completedCountByPar).reduce((sum, count) => sum + count, 0);
   const sel = document.getElementById('audFiltPar');
   if (sel) {
     const cur = sel.value;
-    sel.innerHTML = `<option value="">Todos os pareceristas (${allRows.length})</option>` +
-      pareceristas.map(p => `<option value="${p.id}" ${p.id===cur?'selected':''}>${p.nome} (${auditCountByPar[p.id] || 0})</option>`).join('');
+    sel.innerHTML = `<option value="">Todos os pareceristas (${officialCompletedTotal} concluídas)</option>` +
+      getOfficialPareceristas().map(p => `<option value="${p.id}" ${p.id===cur?'selected':''}>${p.nome} (${completedCountByPar[p.id] || 0} concluídas)</option>`).join('');
   }
 
   const rowsForStatusCounts = filtPar ? allRows.filter(r => r.parId === filtPar) : allRows;
@@ -6546,8 +7161,8 @@ function renderAuditoria() {
   if (statusSel) {
     const cur = statusSel.value;
     const statusOptions = [
-      ['', 'Todos os status', rowsForStatusCounts.length],
-      ['concluida', 'Concluídas', statusCounts.concluida || 0],
+      ['', 'Registros de auditoria', rowsForStatusCounts.length],
+      ['concluida', 'Concluídas com auditoria', statusCounts.concluida || 0],
       ['saida_antecipada', 'Saídas antecipadas', statusCounts.saida_antecipada || 0],
       ['rascunho', 'Rascunhos', statusCounts.rascunho || 0],
       ['pendencia_video', 'Pendências técnicas', statusCounts.pendencia_video || 0],
@@ -6567,14 +7182,32 @@ function renderAuditoria() {
     ? (selectedOfficialReviewer ? getAtribAtivas(filtPar).length : 0)
     : INSCRICOES.length * NUM_PARECERES_POR_EQUIPE;
   const completedTotal = filtPar
-    ? (selectedOfficialReviewer ? getAtribAtivas(filtPar).filter(inscId => isEvaluationConcluded(filtPar, inscId)).length : 0)
-    : Object.entries(avaliacoes).reduce((acc, [parId, byInsc]) => (
-        acc + (isTestParecerista(parId) ? 0 : Object.keys(byInsc || {}).filter(inscId => isEvaluationConcluded(parId, inscId)).length)
-      ), 0);
+    ? (selectedOfficialReviewer ? completedCountByPar[filtPar] || 0 : 0)
+    : officialCompletedTotal;
   const progressPct = expectedTotal ? Math.round(completedTotal / expectedTotal * 100) : 0;
-  const filteredCompleted = rows.filter(r => r.status === 'concluida').length;
   const filteredInterruptions = rows.filter(r => ['saida_antecipada','rascunho'].includes(r.status)).length;
   const filteredTechnical = rows.filter(r => r.status === 'pendencia_video').length;
+  const completedDurations = allRows.filter(r =>
+    r.kind === 'avaliacao' &&
+    r.status === 'concluida' &&
+    typeof r.duracaoMs === 'number' &&
+    Number.isFinite(r.duracaoMs) &&
+    r.duracaoMs >= 0 &&
+    r.duracaoMs <= 30 * 60 * 1000
+  );
+  const officialCompletedDurations = completedDurations.filter(r => !isTestParecerista(r.parId));
+  const averageDuration = durationRows => durationRows.length
+    ? Math.round(durationRows.reduce((sum, r) => sum + r.duracaoMs, 0) / durationRows.length)
+    : null;
+  const selectedAverageDuration = filtPar
+    ? averageDuration(completedDurations.filter(r => r.parId === filtPar))
+    : null;
+  const selectedValidDurationCount = filtPar
+    ? completedDurations.filter(r => r.parId === filtPar).length
+    : completedDurations.length;
+  const remainingReviewersAverageDuration = filtPar
+    ? averageDuration(officialCompletedDurations.filter(r => r.parId !== filtPar))
+    : averageDuration(officialCompletedDurations);
   const kpis = document.getElementById('audKpis');
   if (kpis) kpis.innerHTML = `
     <div class="kpi" style="border-color:#AECBFA;background:#F8FBFF">
@@ -6582,13 +7215,15 @@ function renderAuditoria() {
       <div class="kpi-val">${completedTotal} / ${expectedTotal}</div>
       <div class="kpi-sub">${progressPct}% da distribuição oficial${filtPar ? ' deste parecerista' : ''}</div>
     </div>
-    <div class="kpi"><div class="kpi-lbl">Resultados do filtro</div><div class="kpi-val">${totalRows}</div><div class="kpi-sub">registro${totalRows === 1 ? '' : 's'} encontrado${totalRows === 1 ? '' : 's'}</div></div>
-    <div class="kpi"><div class="kpi-lbl">Concluídas no filtro</div><div class="kpi-val">${filteredCompleted}</div><div class="kpi-sub">sessões concluídas</div></div>
-    <div class="kpi"><div class="kpi-lbl">Atenção no filtro</div><div class="kpi-val">${filteredInterruptions + filteredTechnical}</div><div class="kpi-sub">${filteredInterruptions} interrupções · ${filteredTechnical} técnicas</div></div>`;
+    <div class="kpi"><div class="kpi-lbl">Avaliações concluídas</div><div class="kpi-val">${completedTotal}</div><div class="kpi-sub">quantidade oficial no sistema</div></div>
+    <div class="kpi"><div class="kpi-lbl">Fora da estatística</div><div class="kpi-val">${filteredInterruptions + filteredTechnical}</div><div class="kpi-sub">${filteredInterruptions} interrupções · ${filteredTechnical} técnicas</div></div>
+    <div class="kpi"><div class="kpi-lbl">Registros de auditoria</div><div class="kpi-val">${totalRows}</div><div class="kpi-sub">histórico completo do filtro</div></div>`;
 
-  document.getElementById('audCount').textContent = remoteAuditLoading
-    ? `${totalRows} registro${totalRows !== 1 ? 's' : ''} · atualizando...`
-    : `${totalRows} registro${totalRows !== 1 ? 's' : ''}`;
+  const durationComparison = filtPar
+    ? ` · tempo médio: ${selectedAverageDuration !== null ? formatDuracao(selectedAverageDuration) : 'sem avaliações concluídas'} · média dos demais: ${remainingReviewersAverageDuration !== null ? formatDuracao(remainingReviewersAverageDuration) : 'sem dados'}`
+    : '';
+  const durationSample = ` · ${selectedValidDurationCount} com tempo válido`;
+  document.getElementById('audCount').textContent = `${completedTotal} ${completedTotal === 1 ? 'avaliação concluída' : 'avaliações concluídas'}${durationSample}${durationComparison}${remoteAuditLoading ? ' · atualizando...' : ''}`;
 
   const fmt = d => d ? d.toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit',second:'2-digit'}) : '—';
   const fmtData = d => d ? d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}) : '—';
@@ -7255,7 +7890,6 @@ let remoteAuditLoading = false;
 let remoteAuditEventCache = { homolog:[], producao:[] };
 let remoteAuditCursorByEnvironment = { homolog:'', producao:'' };
 const REMOTE_REFRESH_MIN_INTERVAL_MS = 12000;
-const AUDIT_RECENT_EVENT_LIMIT = 1200;
 const AUDIT_MAX_RENDER_ROWS = 300;
 const AUDIT_RELEVANT_EVENT_TYPES = [
   'auditoria_concluida',
@@ -8871,8 +9505,7 @@ function mergeRemoteAuditEvents(existingRows, incomingRows) {
     merged.set(auditRemoteEventKey(row), row);
   });
   return [...merged.values()]
-    .sort((a, b) => new Date(a?.created_at || 0) - new Date(b?.created_at || 0))
-    .slice(-AUDIT_RECENT_EVENT_LIMIT);
+    .sort((a, b) => new Date(a?.created_at || 0) - new Date(b?.created_at || 0));
 }
 
 function latestAuditCreatedAt(rows) {
@@ -9533,7 +10166,7 @@ function carregarCsvTexto(csvText) {
 
 async function tentarCarregarArquivoPadrao(opts = {}) {
   const forceAdmin = !!opts.forceAdmin;
-  const successView = opts.successView || 'dashboard';
+  const successView = opts.successView || 'resultados';
   const attemptToken = opts._token ?? (++baseLoadAttemptToken);
   if (baseConfirmada && INSCRICOES.length) {
     carregandoBasePadrao = false;
@@ -9615,7 +10248,7 @@ async function tentarCarregarArquivoPadrao(opts = {}) {
     if (forceAdmin) {
       enterAdminShell(successView);
     } else if (!currentParId) {
-      showView('dashboard');
+      showView('resultados');
     }
     return true;
   } catch (err) {
@@ -10843,7 +11476,7 @@ function applyStartupRouteState() {
   currentParId = null;
   currentInscId = null;
   applyReviewerShellMode(false);
-  return hasViewerAccess() ? 'dashboard' : 'login';
+  return hasViewerAccess() ? 'resultados' : 'login';
 }
 
 function showStartupRoute() {
@@ -10948,7 +11581,7 @@ window.addEventListener('load', () => {
           remoteBootFailureReason[activeEnvironment] = 'O ambiente já foi persistido, mas a restauração do estado falhou.';
           updateSupabaseStatus(`O ambiente ${activeEnvironment} já foi persistido, mas não pôde ser restaurado do Supabase.`, 'danger');
           notify(`Falha ao restaurar ${activeEnvironment} do Supabase. O app não vai recarregar a planilha local automaticamente.`);
-          showView('dashboard');
+          showView('resultados');
           return;
         }
         if (!requestedParId) {
@@ -10957,7 +11590,7 @@ window.addEventListener('load', () => {
           remoteBootResolved[activeEnvironment] = true;
           remoteBootFailureReason[activeEnvironment] = 'Nenhuma base persistida encontrada. Selecione e importe a base que deseja usar.';
           updateSupabaseStatus('Nenhuma base persistida encontrada. Selecione o arquivo correto e importe para o ambiente.', 'danger');
-          showView('dashboard');
+          showView('resultados');
         } else {
           remoteBootResolved[activeEnvironment] = true;
           remoteBootFailureReason[activeEnvironment] = 'Este parecerista não tem dados persistidos disponíveis neste ambiente.';
@@ -10977,7 +11610,7 @@ window.addEventListener('load', () => {
       notify('O portal do parecerista só usa estado persistido. Configure e sincronize o Supabase antes.');
       return;
     }
-    showView('dashboard');
+    showView('resultados');
   }, 150);
 });
 
