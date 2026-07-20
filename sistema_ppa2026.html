@@ -8545,8 +8545,11 @@ function normalizeEventInscricaoId(value) {
 
 function queueSystemEvent(eventType, payload) {
   const { actor_type, actor_id } = actorContext();
-  const pareceristaId = currentParId || payload?.parecerista_id || null;
-  const inscricaoId = normalizeEventInscricaoId(currentInscId || payload?.inscricao_id || null);
+  // When the event explicitly identifies its subject (for example, resolving a
+  // video report from the audit screen), do not replace it with whichever
+  // reviewer/card happens to be open in the current session.
+  const pareceristaId = payload?.parecerista_id || currentParId || null;
+  const inscricaoId = normalizeEventInscricaoId(payload?.inscricao_id || currentInscId || null);
   const entry = {
     environment: activeEnvironment,
     event_type: eventType,
