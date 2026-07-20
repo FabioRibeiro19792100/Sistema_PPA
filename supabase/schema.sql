@@ -170,6 +170,7 @@ create table if not exists configuracoes_sistema (
   insuf_obriga_parecer integer not null default 3,
   pareceres_por_equipe integer not null default 3,
   evitar_conflito_institucional boolean not null default true,
+  criterios_pesos jsonb not null default '[12.5,12.5,12.5,12.5,12.5,12.5,12.5,12.5]'::jsonb,
   theme_name text not null default 'default',
   theme_dark boolean not null default false,
   updated_at timestamptz not null default now(),

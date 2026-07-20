@@ -685,6 +685,19 @@ tr:hover td.sticky{background:#FAFAFA}
 #view-resultados .results-filter-group .finput{height:34px;padding:6px 30px 6px 10px;font-size:12px}
 #view-resultados .results-top-stats-btn{flex:0 0 auto;margin-left:auto;border-color:#AECBFA;background:#E8F0FE;color:#1558B0;font-weight:600;box-shadow:0 1px 2px rgba(26,115,232,.08)}
 #view-resultados .results-top-stats-btn:hover{background:#DCE9FD;border-color:#8AB4F8}
+#view-resultados .results-special-filter-row{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:8px;padding:4px 0;background:transparent}
+#view-resultados .results-cut-controls{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+#view-resultados .results-cut-controls .finput{height:32px;padding-top:5px;padding-bottom:5px;font-size:11.5px}
+#view-resultados .results-special-filter{display:flex;align-items:center;gap:9px;min-width:0;cursor:pointer;color:#4B5563}
+#view-resultados .results-special-filter input{position:absolute;opacity:0;pointer-events:none}
+#view-resultados .results-special-check{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;flex:0 0 18px;border:1px solid #B8C1CC;border-radius:5px;background:#fff;color:transparent;font-size:12px}
+#view-resultados .results-special-filter input:checked + .results-special-check{border-color:#1A73E8;background:#1A73E8;color:#fff}
+#view-resultados .results-special-filter input:disabled + .results-special-check{background:#EEF0F2;border-color:#D8DCE2}
+#view-resultados .results-special-filter strong{display:block;font-size:11.5px;color:#3F4752;line-height:1.25}
+#view-resultados .results-special-filter small{display:block;margin-top:2px;font-size:10px;color:#8A929D;line-height:1.3}
+#view-resultados .results-special-hint{font-size:10px;color:#9AA0A6;white-space:nowrap}
+#view-resultados .res-coral-origin{margin-top:3px;color:#C45F4A;font-size:9px;font-weight:700;line-height:1.2;white-space:nowrap}
+#view-resultados .res-coral-origin span{display:block}
 #view-resultados .results-utility-row{display:flex;align-items:center;gap:18px;min-height:30px;margin-top:8px;padding-top:7px;border-top:1px solid #E5E7EB}
 #view-resultados .results-export-btn{margin-left:auto;background:transparent;border-color:transparent;color:#68727D;box-shadow:none}
 #view-resultados .results-export-btn:hover{background:#F1F3F4;border-color:#E1E4E8}
@@ -736,6 +749,16 @@ tr:hover td.sticky{background:#FAFAFA}
   right:0;
   bottom:-8px;
   height:8px;
+  background:var(--bg);
+  pointer-events:none;
+}
+#view-resultados .results-top-sticky::before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:-24px;
+  height:24px;
   background:var(--bg);
   pointer-events:none;
 }
@@ -904,6 +927,22 @@ tr:hover td.sticky{background:#FAFAFA}
 .results-stat-percent{min-width:34px;color:#7A828E;font-weight:600}
 .results-stat-bar{grid-column:1/-1;height:5px;border-radius:999px;background:#EDF0F2;overflow:hidden;margin-top:-5px}
 .results-stat-bar span{display:block;height:100%;border-radius:inherit;background:#AEB7C1}
+.calibration-layout{max-width:760px}
+.calibration-card{margin:0}
+.calibration-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:16px}
+.calibration-helper{font-size:11.5px;line-height:1.5;color:var(--text-tertiary)}
+.calibration-total{min-width:82px;padding:8px 10px;border-radius:8px;background:#E8F0FE;color:#1558B0;font-size:14px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums}
+.calibration-total.invalid{background:#FCE8E6;color:#B3261E}
+.calibration-inputs{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px}
+.calibration-row{display:grid;grid-template-columns:minmax(0,1fr) 118px;align-items:center;gap:14px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface2)}
+.calibration-row-label{min-width:0;font-size:12px;font-weight:600;color:var(--text-primary);line-height:1.35}
+.calibration-weight-wrap{display:flex;align-items:center;gap:5px}
+.calibration-weight{width:92px!important;min-width:92px;text-align:right;font-variant-numeric:tabular-nums;padding:7px 10px!important;background:var(--surface)!important;-moz-appearance:textfield}
+.calibration-weight::-webkit-inner-spin-button,.calibration-weight::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.calibration-percent{font-size:11px;color:var(--text-tertiary)}
+.calibration-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
+.calibration-message{min-height:18px;margin-top:10px;font-size:11.5px;color:var(--text-tertiary);text-align:right}
+@media (max-width:700px){.calibration-inputs{grid-template-columns:1fr}}
 #view-portal .results-table .s5{left:0;width:268px;min-width:268px;max-width:268px}
 #view-portal .results-table .s7{left:268px;width:96px;min-width:96px;max-width:96px}
 #view-portal .results-table .crit,
@@ -2753,6 +2792,7 @@ textarea::placeholder{color:#BDC1C6}
 <div class="subnav" id="mainSubnav" style="display:none">
   <div class="snav" data-view="resultados"><span class="icon icon-sm"><i class="ti ti-chart-histogram"></i></span>Resultados</div>
   <div class="snav" data-view="banca"><span class="icon icon-sm"><i class="ti ti-users-group"></i></span>Banca</div>
+  <div class="snav" data-view="calibracao" style="display:none"><span class="icon icon-sm"><i class="ti ti-adjustments-alt"></i></span>Calibração</div>
   <div class="snav" data-view="dashboard"><span class="icon icon-sm"><i class="ti ti-chart-bar"></i></span>Dashboard</div>
   <div class="snav" data-view="pareceristas" style="display:none"><span class="icon icon-sm"><i class="ti ti-arrows-left-right"></i></span>Pareceristas e atribuições</div>
   <div class="snav" data-view="auditoria" style="display:none"><span class="icon icon-sm"><i class="ti ti-shield-check"></i></span>Auditoria</div>
@@ -3105,27 +3145,37 @@ textarea::placeholder{color:#BDC1C6}
         <select class="finput" id="resFiltroUf" onchange="renderResultados()" style="width:140px;min-width:140px"><option value="">Todos os estados</option></select>
         <select class="finput" id="resFiltroGenero" onchange="renderResultados()" style="width:145px;min-width:145px"><option>Todos os gêneros</option><option>Feminino</option><option>Masculino</option></select>
         <select class="finput" id="resFiltroRaca" onchange="renderResultados()" style="width:135px;min-width:135px"><option value="">Todas as raças</option></select>
-        <select class="finput" id="resFiltroRanking" onchange="renderResultados()" style="width:175px;min-width:175px">
+        <select class="finput" id="resFiltroRanking" onchange="renderResultados()" style="width:225px;min-width:225px">
           <option>Ranking normal</option>
-          <option>Ranking sem a pior nota</option>
-          <option>Ranking sem a melhor nota</option>
-        </select>
-        <select class="finput" id="resFiltroTop" onchange="renderResultados()" style="width:100px;min-width:100px">
-          <option value="0">Sem corte</option>
-          <option value="10">Top 10</option>
-          <option value="15">Top 15</option>
-          <option value="20">Top 20</option>
-        </select>
-        <select class="finput" id="resFiltroVariacao" onchange="renderResultados()" style="display:none;width:155px;min-width:155px">
-          <option value="0">Sem faixa do corte</option>
-          <option value="1">Até 1% do corte</option>
-          <option value="2">Até 2% do corte</option>
-          <option value="3">Até 3% do corte</option>
-          <option value="4">Até 4% do corte</option>
-          <option value="5">Até 5% do corte</option>
+          <option value="Ranking sem a pior nota">RSPN · Ranking sem pior nota</option>
+          <option value="Ranking sem a melhor nota">RSMN · Ranking sem melhor nota</option>
+          <option value="Ranking ajustado por parecerista">RC · Ranking calibrado</option>
         </select>
         </div>
         <button class="btn btn-secondary btn-sm results-top-stats-btn" id="resultsStatsBtn" type="button" onclick="openResultsStatsDrawer()" style="display:none"><i class="ti ti-chart-dots"></i>Estatísticas do Top</button>
+      </div>
+      <div class="results-special-filter-row">
+        <div class="results-cut-controls">
+          <select class="finput" id="resFiltroTop" onchange="renderResultados()" style="width:100px;min-width:100px">
+            <option value="0">Sem corte</option>
+            <option value="10">Top 10</option>
+            <option value="15">Top 15</option>
+            <option value="20">Top 20</option>
+          </select>
+          <select class="finput" id="resFiltroVariacao" onchange="renderResultados()" style="display:none;width:155px;min-width:155px">
+            <option value="0">Sem faixa do corte</option>
+            <option value="1">Até 1% do corte</option>
+            <option value="2">Até 2% do corte</option>
+            <option value="3">Até 3% do corte</option>
+            <option value="4">Até 4% do corte</option>
+            <option value="5">Até 5% do corte</option>
+          </select>
+          <label class="results-special-filter" for="resFiltroAnyTop">
+            <input id="resFiltroAnyTop" type="checkbox" onchange="renderResultados()">
+            <span class="results-special-check"><i class="ti ti-check"></i></span>
+            <span><strong>Aplicar em todos os cenários</strong><small>Reúne o recorte e a faixa nos quatro rankings.</small></span>
+          </label>
+        </div>
       </div>
       <div class="results-utility-row">
         <button class="results-reset-btn" type="button" onclick="zerarFiltrosResultados()"><i class="ti ti-x"></i>Zerar filtros</button>
@@ -3232,6 +3282,35 @@ textarea::placeholder{color:#BDC1C6}
         <tbody id="tblBanca"></tbody>
       </table>
     </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     VIEW: CALIBRAÇÃO DOS PESOS
+════════════════════════════════════════════════ -->
+<div class="view" id="view-calibracao">
+<div style="max-width:760px;margin:0 auto">
+  <div style="margin-bottom:20px">
+    <div class="page-title">Calibração dos critérios</div>
+    <div class="page-sub">Ajuste os pesos usados no cálculo e consulte o efeito diretamente na tela de Resultados.</div>
+  </div>
+  <div class="calibration-layout">
+    <section class="card calibration-card">
+      <div class="calibration-head">
+        <div>
+          <div class="section-label" style="margin-bottom:4px">Pesos dos critérios</div>
+          <div class="calibration-helper">As avaliações originais permanecem intactas. A soma precisa ser exatamente 100%.</div>
+        </div>
+        <div class="calibration-total" id="calibrationTotal">100,0%</div>
+      </div>
+      <div id="calibrationInputs" class="calibration-inputs"></div>
+      <div class="calibration-actions">
+        <button class="btn btn-secondary" type="button" onclick="resetCalibrationDraft()">Restaurar pesos iguais</button>
+        <button class="btn btn-primary" id="applyCalibrationBtn" type="button" onclick="applyCalibrationWeights()"><i class="ti ti-check"></i>Aplicar novos pesos</button>
+      </div>
+      <div class="calibration-message" id="calibrationMessage"></div>
+    </section>
   </div>
 </div>
 </div>
@@ -3885,6 +3964,8 @@ const CRITERIOS = [
   { nome:'Exploração dos formatos', desc:'A proposta usa as características específicas de cada formato para ampliar o impacto?' },
   { nome:'Estratégia de distribuição', desc:'A ideia demonstra potencial de circulação no ecossistema Globo?' },
 ];
+const CRITERIO_PESOS_PADRAO = CRITERIOS.map(() => 100 / CRITERIOS.length);
+let CRITERIO_PESOS = [...CRITERIO_PESOS_PADRAO];
 
 const NC = { 'Insuficiente':'b-ins','Regular':'b-reg','Bom':'b-bom','Ótimo':'b-oti' };
 const CRITERIOS_PORTAL_ABREV = ['ORIG','CLAR','ENG','TEMA','NARR','ENTR','FORM','DIST'];
@@ -3899,7 +3980,7 @@ const ADMIN_PASSWORD = 'fabio';
 const ACCESS_ROLE_KEY = 'ppa2026_access_role_v1';
 const AVALIACAO_SCALE_KEY = 'ppa2026_avaliacao_scale_v1';
 const BANCA_SELECTION_KEY = 'ppa2026_banca_selection_v1';
-const ADMIN_VIEWS = ['pareceristas', 'auditoria', 'config'];
+const ADMIN_VIEWS = ['calibracao', 'pareceristas', 'auditoria', 'config'];
 const VIEWER_VIEWS = ['dashboard', 'resultados', 'banca', 'portal', 'avaliacao'];
 
 // ═══ ESTADO ═══════════════════════════════════════════════
@@ -4259,6 +4340,7 @@ function showView(v, opts = {}) {
   if (v === 'dashboard') renderDashboard();
   if (v === 'resultados') renderResultados();
   if (v === 'banca') renderBanca();
+  if (v === 'calibracao') renderCalibration();
   if (v === 'pareceristas') renderPareceristas();
   if (v === 'portal') {
     const portalParId = currentParId || document.getElementById('simParecerista')?.value || '';
@@ -5168,12 +5250,100 @@ function autoDistribuirSeNecessario() {
 }
 
 // ═══ RESULTADOS ═══════════════════════════════════════════
-function notaGeralAvaliacao(av) {
+function normalizeCriterionWeights(value) {
+  const source = Array.isArray(value) ? value : [];
+  const parsed = CRITERIOS.map((_, index) => Math.max(0, Number(source[index]) || 0));
+  const total = parsed.reduce((sum, weight) => sum + weight, 0);
+  if (!total) return [...CRITERIO_PESOS_PADRAO];
+  return parsed.map(weight => (weight / total) * 100);
+}
+
+function formatCriterionWeight(weight) {
+  return Number(weight || 0).toLocaleString('pt-BR', { minimumFractionDigits:1, maximumFractionDigits:2 });
+}
+
+function syncCriterionWeightLabels() {
+  document.querySelectorAll('.results-table thead').forEach(head => {
+    head.querySelectorAll('.peso').forEach((label, index) => {
+      const criterionIndex = index % CRITERIOS.length;
+      label.textContent = `${criterionIndex === 0 ? 'Peso ' : ''}${formatCriterionWeight(CRITERIO_PESOS[criterionIndex])}%`;
+    });
+  });
+}
+
+function calibrationDraftWeights() {
+  return CRITERIOS.map((_, index) => Number(document.getElementById(`calibrationWeight${index}`)?.value || 0));
+}
+
+function updateCalibrationTotal() {
+  const total = calibrationDraftWeights().reduce((sum, weight) => sum + weight, 0);
+  const totalEl = document.getElementById('calibrationTotal');
+  const valid = Math.abs(total - 100) < 0.01;
+  if (totalEl) {
+    totalEl.textContent = `${formatCriterionWeight(total)}%`;
+    totalEl.classList.toggle('invalid', !valid);
+  }
+  const applyBtn = document.getElementById('applyCalibrationBtn');
+  if (applyBtn) applyBtn.disabled = !valid;
+  return valid;
+}
+
+function renderCalibration() {
+  const inputs = document.getElementById('calibrationInputs');
+  if (!inputs) return;
+  inputs.innerHTML = CRITERIOS.map((criterion, index) => `
+    <label class="calibration-row" for="calibrationWeight${index}">
+      <span class="calibration-row-label">${criterion.nome}</span>
+      <span class="calibration-weight-wrap">
+        <input class="calibration-weight" id="calibrationWeight${index}" type="number" min="0" max="100" step="0.5" value="${Number(CRITERIO_PESOS[index]).toFixed(2)}" oninput="updateCalibrationTotal()">
+        <span class="calibration-percent">%</span>
+      </span>
+    </label>`).join('');
+  const message = document.getElementById('calibrationMessage');
+  if (message) message.textContent = 'Pesos ativos carregados.';
+  updateCalibrationTotal();
+}
+
+function resetCalibrationDraft() {
+  CRITERIO_PESOS_PADRAO.forEach((weight, index) => {
+    const input = document.getElementById(`calibrationWeight${index}`);
+    if (input) input.value = Number(weight).toFixed(2);
+  });
+  updateCalibrationTotal();
+  applyCalibrationWeights();
+  const message = document.getElementById('calibrationMessage');
+  if (message) message.textContent = 'Pesos iguais restaurados e aplicados aos resultados.';
+}
+
+function applyCalibrationWeights() {
+  const message = document.getElementById('calibrationMessage');
+  if (!updateCalibrationTotal()) {
+    if (message) message.textContent = 'A soma dos pesos precisa ser 100%.';
+    return;
+  }
+  const previous = [...CRITERIO_PESOS];
+  CRITERIO_PESOS = normalizeCriterionWeights(calibrationDraftWeights());
+  syncCriterionWeightLabels();
+  queueSystemEvent('pesos_criterios_alterados', { anteriores:previous, atuais:[...CRITERIO_PESOS] });
+  saveAppState();
+  renderResultados();
+  renderBanca();
+  if (message) message.textContent = 'Novos pesos aplicados aos resultados e registrados para sincronização.';
+}
+
+function notaGeralAvaliacao(av, pesos = CRITERIO_PESOS) {
   if (!av?.notas?.length) return null;
-  const notasValidas = av.notas.filter(Boolean);
-  if (!notasValidas.length) return null;
-  const soma = notasValidas.reduce((acc, nota) => acc + NV[nota], 0);
-  return soma / notasValidas.length;
+  const weights = normalizeCriterionWeights(pesos);
+  let weightedSum = 0;
+  let appliedWeight = 0;
+  av.notas.forEach((nota, index) => {
+    const numeric = NV[nota];
+    const weight = weights[index] || 0;
+    if (!numeric || !weight) return;
+    weightedSum += numeric * weight;
+    appliedWeight += weight;
+  });
+  return appliedWeight ? weightedSum / appliedWeight : null;
 }
 
 function mediaNotas(inscId) {
@@ -5205,9 +5375,9 @@ function mediaNumericaPorCrit(inscId, critIdx) {
   return valores.reduce((soma, valor) => soma + valor, 0) / valores.length;
 }
 
-function notaNumericaCriterioHTML(valor) {
+function notaNumericaCriterioHTML(valor, critIdx) {
   if (valor === null) return '<span style="color:#E0E0E0;font-size:14px">—</span>';
-  const pesoPercentual = 100 / CRITERIOS.length;
+  const pesoPercentual = CRITERIO_PESOS[critIdx] ?? (100 / CRITERIOS.length);
   const contribuicao = valor * (pesoPercentual / 100);
   const notaLabel = Number(valor).toFixed(2).replace('.', ',');
   const pesoLabel = Number(pesoPercentual).toLocaleString('pt-BR', { maximumFractionDigits:2 });
@@ -6027,7 +6197,73 @@ function notasGeraisConcluidas(inscId) {
     return isEvaluationConcluded(p.id, inscId) ? notaGeralAvaliacao(av) : null;
   }).filter(n => n !== null && Number.isFinite(n));
 }
+let reviewerAdjustedScoreCache = new Map();
+function buildReviewerAdjustedScoreCache() {
+  const percentilesByTeam = new Map();
+  getOfficialPareceristas().forEach(reviewer => {
+    const scored = Object.entries(avaliacoes[reviewer.id] || {}).map(([inscId, evaluation]) => ({
+      inscId:String(inscId),
+      score:isEvaluationConcluded(reviewer.id, inscId) ? notaGeralAvaliacao(evaluation) : null,
+    })).filter(row => row.score !== null && Number.isFinite(row.score) && INSCRICOES.some(team => String(team.id) === row.inscId));
+    if (!scored.length) return;
+    const groups = new Map();
+    scored.forEach(row => {
+      const key = row.score.toFixed(6);
+      if (!groups.has(key)) groups.set(key, { score:row.score, rows:[] });
+      groups.get(key).rows.push(row);
+    });
+    const orderedGroups = [...groups.values()].sort((a, b) => a.score - b.score);
+    let below = 0;
+    orderedGroups.forEach(group => {
+      const percentile = ((below + (group.rows.length / 2)) / scored.length) * 100;
+      group.rows.forEach(row => {
+        if (!percentilesByTeam.has(row.inscId)) percentilesByTeam.set(row.inscId, []);
+        percentilesByTeam.get(row.inscId).push(percentile);
+      });
+      below += group.rows.length;
+    });
+  });
+  return new Map(INSCRICOES.map(team => {
+    const percentiles = percentilesByTeam.get(String(team.id)) || [];
+    const score = percentiles.length === 3
+      ? percentiles.reduce((sum, percentile) => sum + percentile, 0) / 3
+      : null;
+    return [String(team.id), score];
+  }));
+}
+function buildAnyTopMembership(topLimit, variationPercent = 0) {
+  const modes = [
+    ['Ranking normal', 'RN', 'Ranking normal'],
+    ['Ranking sem a pior nota', 'RSPN', 'Ranking sem pior nota'],
+    ['Ranking sem a melhor nota', 'RSMN', 'Ranking sem melhor nota'],
+    ['Ranking ajustado por parecerista', 'RC', 'Ranking calibrado'],
+  ];
+  const membership = new Map();
+  modes.forEach(([mode, code, label]) => {
+    const rankById = buildAbsoluteRankingById(mode);
+    const ranked = INSCRICOES.map(team => ({ team, score:mediaNotasRanking(team.id, mode) }))
+      .filter(row => row.score !== null && Number.isFinite(row.score))
+      .sort((a, b) => (b.score - a.score) || compareInscIdAsc(a.team, b.team));
+    const cutoffScore = ranked[topLimit - 1]?.score ?? null;
+    ranked.filter((row, index) => index < topLimit || (
+      variationPercent > 0 && cutoffScore !== null && row.score < cutoffScore && ((cutoffScore - row.score) / cutoffScore) * 100 <= variationPercent
+    ))
+      .forEach((row, index) => {
+        const id = String(row.team.id);
+        const rank = Number(rankById.get(id)?.rank) || (index + 1);
+        if (!membership.has(id)) membership.set(id, { origins:[], bestRank:rank });
+        const item = membership.get(id);
+        item.origins.push({ code, label, rank });
+        item.bestRank = Math.min(item.bestRank, rank);
+      });
+  });
+  return membership;
+}
 function mediaNotasRanking(inscId, rankingMode) {
+  if (rankingMode === 'Ranking ajustado por parecerista') {
+    const score = reviewerAdjustedScoreCache.get(String(inscId));
+    return Number.isFinite(score) ? score : null;
+  }
   const notas = notasGeraisConcluidas(inscId);
   if (!notas.length) return null;
   let consideradas = [...notas];
@@ -6054,7 +6290,7 @@ function buildRankingMeta(rows, rankingMode) {
   rows.forEach(({ e }, index) => {
     const nota = mediaNotasRanking(e.id, rankingMode);
     if (nota === null) return;
-    const key = nota.toFixed(4);
+    const key = nota.toFixed(2);
     tieCounts[key] = (tieCounts[key] || 0) + 1;
   });
 
@@ -6062,7 +6298,7 @@ function buildRankingMeta(rows, rankingMode) {
   let prevKey = null;
   return rows.map(({ e }, index) => {
     const nota = mediaNotasRanking(e.id, rankingMode);
-    const key = nota === null ? `null-${index}` : nota.toFixed(4);
+    const key = nota === null ? `null-${index}` : nota.toFixed(2);
     const sameAsPrev = nota !== null && key === prevKey;
     if (!sameAsPrev) currentRank = index + 1;
     prevKey = nota !== null ? key : null;
@@ -6077,16 +6313,16 @@ function buildAbsoluteRankingById(rankingMode) {
   const validScores = scored.map(item => item.score).filter(score => score !== null && Number.isFinite(score));
   const countByScore = {};
   validScores.forEach(score => {
-    const key = score.toFixed(4);
+    const key = score.toFixed(2);
     countByScore[key] = (countByScore[key] || 0) + 1;
   });
-  const uniqueScores = [...new Set(validScores.map(score => score.toFixed(4)))]
+  const uniqueScores = [...new Set(validScores.map(score => score.toFixed(2)))]
     .map(Number)
     .sort((a, b) => b - a);
   const rankByScore = new Map();
   let consumed = 0;
   uniqueScores.forEach(score => {
-    const key = score.toFixed(4);
+    const key = score.toFixed(2);
     rankByScore.set(key, consumed + 1);
     consumed += countByScore[key] || 0;
   });
@@ -6094,8 +6330,8 @@ function buildAbsoluteRankingById(rankingMode) {
     .sort((a, b) => compareInscIdAsc(a.e, b.e));
   const nullRankById = new Map(nullRows.map((item, index) => [String(item.e.id), validScores.length + index + 1]));
   return new Map(scored.map(({ e, score }) => {
-    if (score === null || !Number.isFinite(score)) return [String(e.id), { rank:nullRankById.get(String(e.id)), tied:false }];
-    const key = score.toFixed(4);
+    if (score === null || !Number.isFinite(score)) return [String(e.id), { rank:rankingMode === 'Ranking ajustado por parecerista' ? '—' : nullRankById.get(String(e.id)), tied:false }];
+    const key = score.toFixed(2);
     return [String(e.id), { rank:rankByScore.get(key), tied:(countByScore[key] || 0) > 1 }];
   }));
 }
@@ -6199,6 +6435,8 @@ function zerarFiltrosResultados() {
     const field = document.getElementById(id);
     if (field) field.value = value;
   });
+  const anyTop = document.getElementById('resFiltroAnyTop');
+  if (anyTop) anyTop.checked = false;
   renderResultados();
 }
 
@@ -6221,30 +6459,52 @@ window.addEventListener('resize', () => {
 });
 
 function renderResultados() {
+  syncCriterionWeightLabels();
   syncResultadosFilters();
   const rankingMode = document.getElementById('resFiltroRanking')?.value || 'Ranking normal';
-  const absoluteRankingById = buildAbsoluteRankingById(rankingMode);
-  const baseRankingById = rankingMode === 'Ranking normal'
-    ? absoluteRankingById
-    : buildAbsoluteRankingById('Ranking normal');
   const topLimit = Number(document.getElementById('resFiltroTop')?.value || 0);
+  const anyTopField = document.getElementById('resFiltroAnyTop');
+  if (anyTopField) {
+    anyTopField.disabled = !topLimit;
+    if (!topLimit) anyTopField.checked = false;
+  }
+  const anyTopActive = !!(topLimit && anyTopField?.checked);
   const variacaoField = document.getElementById('resFiltroVariacao');
   if (variacaoField) {
     variacaoField.style.display = topLimit ? '' : 'none';
     if (!topLimit) variacaoField.value = '0';
   }
   const variacaoPct = topLimit ? Number(variacaoField?.value || 0) : 0;
-  const allRankedRows = [...filtrarResultados()].sort((a, b) => compareResultadoRows(a.e, b.e, rankingMode));
+  reviewerAdjustedScoreCache = rankingMode === 'Ranking ajustado por parecerista' || anyTopActive
+    ? buildReviewerAdjustedScoreCache()
+    : new Map();
+  const anyTopMembership = anyTopActive ? buildAnyTopMembership(topLimit, variacaoPct) : new Map();
+  const absoluteRankingById = buildAbsoluteRankingById(rankingMode);
+  const baseRankingById = rankingMode === 'Ranking normal'
+    ? absoluteRankingById
+    : buildAbsoluteRankingById('Ranking normal');
+  const filteredRankedRows = [...filtrarResultados()].sort((a, b) => compareResultadoRows(a.e, b.e, rankingMode));
+  let allRankedRows = rankingMode === 'Ranking ajustado por parecerista'
+    ? filteredRankedRows.filter(({ e }) => mediaNotasRanking(e.id, rankingMode) !== null)
+    : filteredRankedRows;
+  if (anyTopActive) allRankedRows = allRankedRows.filter(({ e }) => anyTopMembership.has(String(e.id)));
   const rankedWithScore = allRankedRows.filter(({ e }) => mediaNotasRanking(e.id, rankingMode) !== null);
-  const officialTopRows = topLimit ? rankedWithScore.slice(0, topLimit) : [];
+  const officialTopRows = anyTopActive ? allRankedRows : topLimit ? rankedWithScore.slice(0, topLimit) : [];
   const cutoffScore = officialTopRows.length ? mediaNotasRanking(officialTopRows[officialTopRows.length - 1].e.id, rankingMode) : null;
-  const nearCutRows = topLimit && variacaoPct > 0 && cutoffScore !== null
+  const nearCutRows = !anyTopActive && topLimit && variacaoPct > 0 && cutoffScore !== null
     ? rankedWithScore.slice(topLimit).filter(({ e }) => {
         const score = mediaNotasRanking(e.id, rankingMode);
         return score !== null && score < cutoffScore && ((cutoffScore - score) / cutoffScore) * 100 <= variacaoPct;
       })
     : [];
   const rows = topLimit ? [...officialTopRows, ...nearCutRows] : allRankedRows;
+  const visibleTieCounts = {};
+  rows.forEach(({ e }) => {
+    const score = mediaNotasRanking(e.id, rankingMode);
+    if (score === null || !Number.isFinite(score)) return;
+    const key = score.toFixed(2);
+    visibleTieCounts[key] = (visibleTieCounts[key] || 0) + 1;
+  });
   const total = rows.length;
   const finalizadas = rows.filter(({ e }) => { const c = avalCount(e.id); return c.done > 0 && c.done === c.total; }).length;
   const parciais = rows.filter(({ e }) => { const c = avalCount(e.id); return c.done > 0 && c.done < c.total; }).length;
@@ -6255,15 +6515,17 @@ function renderResultados() {
     !!(document.getElementById('resFiltroUf')?.value || '') ||
     (document.getElementById('resFiltroGenero')?.value || 'Todos os gêneros') !== 'Todos os gêneros' ||
     !!(document.getElementById('resFiltroRaca')?.value || '') ||
-    topLimit > 0 || variacaoPct > 0 || rankingMode !== 'Ranking normal';
+    topLimit > 0 || variacaoPct > 0 || anyTopActive || rankingMode !== 'Ranking normal';
   document.getElementById('view-resultados')?.classList.toggle('results-has-filters', hasActiveFilters);
   const summaryBar = document.getElementById('resSummaryBar');
   if (summaryBar) {
     summaryBar.style.display = hasActiveFilters ? 'block' : 'none';
-    const cutSummary = topLimit
+    const cutSummary = topLimit && !anyTopActive
       ? ` · ${officialTopRows.length} no Top oficial${nearCutRows.length ? ` · ${nearCutRows.length} na faixa de até ${variacaoPct}% abaixo do corte` : ''}`
       : '';
-    summaryBar.innerHTML = hasActiveFilters ? `<span class="res-subtle">${total} equipes exibidas · ${finalizadas} finalizadas · ${parciais} parciais · ${naoIniciadas} não iniciadas${cutSummary}</span>` : '';
+    const adjustedSummary = rankingMode === 'Ranking ajustado por parecerista' ? ' · percentil médio de 3 avaliações' : '';
+    const anyTopSummary = anyTopActive ? ` · união do Top ${topLimit}${variacaoPct ? ` + faixa de ${variacaoPct}%` : ''} em todos os cenários` : '';
+    summaryBar.innerHTML = hasActiveFilters ? `<span class="res-subtle">${total} equipes exibidas · ${finalizadas} finalizadas · ${parciais} parciais · ${naoIniciadas} não iniciadas${adjustedSummary}${anyTopSummary}${cutSummary}</span>` : '';
   }
   window.currentResultsTopRows = officialTopRows;
   const statsBtn = document.getElementById('resultsStatsBtn');
@@ -6274,6 +6536,7 @@ function renderResultados() {
     const { done, total: tot } = avalCount(e.id);
     const avcls = done===0?'b-pend':done===tot?'b-ok':'b-par';
     const pt = mediaNotasRanking(e.id, rankingMode);
+    const isVisibleTie = Number.isFinite(pt) && (visibleTieCounts[pt.toFixed(2)] || 0) > 1;
     const ranking = absoluteRankingById.get(String(e.id)) || { rank:'—', tied:false };
     const baseRanking = baseRankingById.get(String(e.id)) || { rank:'—', tied:false };
     const baseRankingLabel = rankingMode !== 'Ranking normal'
@@ -6281,7 +6544,18 @@ function renderResultados() {
       : '';
     const isOfficialTop = topLimit > 0 && i < officialTopRows.length;
     const isNearCut = topLimit > 0 && !isOfficialTop;
-    const isOutsideBaseTop = isOfficialTop && rankingMode !== 'Ranking normal' && Number(baseRanking.rank) > topLimit;
+    const isOutsideBaseTop = isOfficialTop && Number(baseRanking.rank) > topLimit && (anyTopActive || rankingMode !== 'Ranking normal');
+    const coralOrigins = (anyTopMembership.get(String(e.id))?.origins || []).filter(origin => origin.code !== 'RN');
+    const rankingModeCode = {
+      'Ranking sem a pior nota':'RSPN',
+      'Ranking sem a melhor nota':'RSMN',
+      'Ranking ajustado por parecerista':'RC',
+    }[rankingMode] || '';
+    const coralOriginLabel = isOutsideBaseTop
+      ? anyTopActive
+        ? `<div class="res-coral-origin" title="${escapeHtmlAttr(coralOrigins.map(origin => `${origin.label}: ${origin.rank}º`).join(' · '))}">${coralOrigins.map(origin => `<span>${origin.code} ${origin.rank}º</span>`).join('')}</div>`
+        : `<div class="res-coral-origin">${rankingModeCode} ${ranking.rank}º</div>`
+      : '';
     const rowClass = [
       isOfficialTop ? 'res-top-row' : isNearCut ? 'res-near-row' : '',
       isOutsideBaseTop ? 'res-outside-base-top' : '',
@@ -6303,7 +6577,7 @@ function renderResultados() {
     }).join('');
 
     return `<tr class="${rowClass}">
-      <td class="sticky s0"><div class="res-rank-line"><span style="font-size:13px;font-weight:600;color:#202124">${ranking.rank}</span>${bancaToggleHTML(e.id)}</div>${baseRankingLabel}${ranking.tied ? `<div class="res-faint" style="font-size:10px;margin-top:3px">(empate)</div>` : ''}${isOfficialTop ? `<span class="res-cut-label">Top ${topLimit}</span>` : isNearCut ? `<span class="res-cut-label res-near-label">Margem ${variacaoPct}%</span>` : ''}</td>
+      <td class="sticky s0"><div class="res-rank-line"><span style="font-size:13px;font-weight:600;color:#202124">${ranking.rank}</span>${bancaToggleHTML(e.id)}</div>${isVisibleTie ? `<div class="res-faint" style="font-size:10px;margin-top:3px">(empate)</div>` : ''}${baseRankingLabel}${coralOriginLabel}${isOfficialTop && !anyTopActive ? `<span class="res-cut-label">Top ${topLimit}</span>` : isNearCut ? `<span class="res-cut-label res-near-label">Margem ${variacaoPct}%</span>` : ''}</td>
       <td class="sticky s3 id-col" style="text-align:center">
         <div class="res-id-hub">
           <div class="res-id-meta">
@@ -6330,12 +6604,13 @@ function renderResultados() {
       <td class="sticky s7" style="text-align:center;vertical-align:top">
         <div class="nota-cell">
           <div class="nota-main">${pt !== null ? fmtResultadoFinal(pt) : '<span style="color:#E0E0E0;font-size:15px">—</span>'}</div>
+          ${rankingMode === 'Ranking ajustado por parecerista' && pt !== null ? '<div class="res-faint" style="font-size:8.5px;margin-top:-3px;white-space:nowrap">percentil médio</div>' : ''}
           <div class="nota-actions">
             ${parecerProgressHTML(e.id, i)}
           </div>
         </div>
       </td>
-      ${Array(8).fill(0).map((_,ci) => `<td class="crit-td">${notaNumericaCriterioHTML(mediaNumericaPorCrit(e.id,ci))}</td>`).join('')}
+      ${Array(8).fill(0).map((_,ci) => `<td class="crit-td">${notaNumericaCriterioHTML(mediaNumericaPorCrit(e.id,ci), ci)}</td>`).join('')}
     </tr>${subRows}`;
   }).join('') : `<tr><td colspan="12" style="padding:22px 14px;text-align:center;color:#9AA0A6">Nenhum registro encontrado para os filtros aplicados.</td></tr>`;
 
@@ -6349,6 +6624,7 @@ function renderResultados() {
 }
 
 function renderBanca() {
+  syncCriterionWeightLabels();
   const body = document.getElementById('tblBanca');
   if (!body) return;
   const selectedIds = new Set(getBancaSelectionIds());
@@ -6369,7 +6645,7 @@ function renderBanca() {
       </td>
       <td class="sticky s5"><div class="leader-cell"><div style="font-size:12.5px;font-weight:600;color:#202124">${formatResultadoLeaderName(e.lider)}</div>${e.p2 ? `<div class="team-members"><div class="team-member-line" title="${escapeHtmlAttr(displayPersonName(e.p2))}">${formatResultadoMemberName(e.p2)}</div>${e.p3 ? `<div class="team-member-line" title="${escapeHtmlAttr(displayPersonName(e.p3))}">${formatResultadoMemberName(e.p3)}</div>` : ''}</div>` : ''}<div class="res-muted" style="font-size:11px;margin-top:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-school" style="font-size:11px"></i>${displayPersonName(e.mentor)}</div></div></td>
       <td class="sticky s7" style="text-align:center;vertical-align:top"><div class="nota-cell"><div class="nota-main">${pt !== null ? fmtResultadoFinal(pt) : '<span style="color:#E0E0E0;font-size:15px">—</span>'}</div></div></td>
-      ${Array(8).fill(0).map((_, ci) => `<td class="crit-td">${notaNumericaCriterioHTML(mediaNumericaPorCrit(e.id, ci))}</td>`).join('')}
+      ${Array(8).fill(0).map((_, ci) => `<td class="crit-td">${notaNumericaCriterioHTML(mediaNumericaPorCrit(e.id, ci), ci)}</td>`).join('')}
     </tr>`;
   }).join('') : '<tr><td colspan="12" style="padding:38px 14px;text-align:center;color:#9AA0A6">Nenhuma equipe foi selecionada para a banca.</td></tr>';
 }
@@ -6566,6 +6842,7 @@ function setPortalQuickFiltersState(filter, counts = {}) {
 }
 
 function renderPortal() {
+  syncCriterionWeightLabels();
   const sel = document.getElementById('simParecerista');
   const parId = currentParId || sel.value;
   if (!parId) return;
@@ -7976,6 +8253,7 @@ let pendingDistributionSnapshot = null;
 let requestedParId = null;
 let adminImportInFlight = false;
 let remoteThemeColumnsAvailable = null;
+let remoteCriterionWeightsColumnAvailable = null;
 let themeRemoteSyncTimer = null;
 let remoteThemePersistInFlight = false;
 let remoteBootWatchdog = null;
@@ -8668,6 +8946,7 @@ function configSnapshotPayload() {
     insuf_obriga_parecer: INSUF_OBRIGA_PARECER,
     pareceres_por_equipe: NUM_PARECERES_POR_EQUIPE,
     evitar_conflito_institucional: EVITAR_CONFLITO_INSTITUCIONAL,
+    criterios_pesos: [...CRITERIO_PESOS],
   };
 }
 
@@ -9142,7 +9421,9 @@ async function syncStateToSupabase(reason) {
       throw new Error('Não consegui recriar o registro de importação da base ativa.');
     }
     const themeSupported = await detectRemoteThemeColumns(client);
+    const criterionWeightsSupported = await detectRemoteCriterionWeightsColumn(client);
     const configPayload = { ...configSnapshotPayload(), id: activeEnvironment, updated_at: new Date().toISOString() };
+    if (!criterionWeightsSupported) delete configPayload.criterios_pesos;
     if (themeSupported) {
       configPayload.theme_name = currentTheme;
       configPayload.theme_dark = !!isDark;
@@ -9890,6 +10171,7 @@ async function loadStateFromSupabase(options = {}) {
       INSUF_OBRIGA_PARECER = Number(cfgRes.data.insuf_obriga_parecer) || INSUF_OBRIGA_PARECER;
       NUM_PARECERES_POR_EQUIPE = Number(cfgRes.data.pareceres_por_equipe) || NUM_PARECERES_POR_EQUIPE;
       EVITAR_CONFLITO_INSTITUCIONAL = !!cfgRes.data.evitar_conflito_institucional;
+      if (Array.isArray(cfgRes.data.criterios_pesos)) CRITERIO_PESOS = normalizeCriterionWeights(cfgRes.data.criterios_pesos);
       if (typeof cfgRes.data.theme_name !== 'undefined' || typeof cfgRes.data.theme_dark !== 'undefined') {
         environmentThemePrefs[activeEnvironment] = {
           theme: normalizeThemeName(cfgRes.data.theme_name || getThemePref(activeEnvironment).theme),
@@ -9945,6 +10227,7 @@ async function loadReviewerPortalStateFromSupabase(parId) {
       INSUF_OBRIGA_PARECER = Number(cfgRes.data.insuf_obriga_parecer) || INSUF_OBRIGA_PARECER;
       NUM_PARECERES_POR_EQUIPE = Number(cfgRes.data.pareceres_por_equipe) || NUM_PARECERES_POR_EQUIPE;
       EVITAR_CONFLITO_INSTITUCIONAL = !!cfgRes.data.evitar_conflito_institucional;
+      if (Array.isArray(cfgRes.data.criterios_pesos)) CRITERIO_PESOS = normalizeCriterionWeights(cfgRes.data.criterios_pesos);
       if (typeof cfgRes.data.theme_name !== 'undefined' || typeof cfgRes.data.theme_dark !== 'undefined') {
         environmentThemePrefs[activeEnvironment] = {
           theme: normalizeThemeName(cfgRes.data.theme_name || getThemePref(activeEnvironment).theme),
@@ -10053,6 +10336,7 @@ function saveAppState(opts = {}) {
         insufObrigaParecer: INSUF_OBRIGA_PARECER,
         pareceresPorEquipe: NUM_PARECERES_POR_EQUIPE,
         evitarConflitoInstitucional: EVITAR_CONFLITO_INSTITUCIONAL,
+        criteriosPesos: [...CRITERIO_PESOS],
       },
       savedAt: new Date().toISOString(),
     }));
@@ -10110,6 +10394,9 @@ function hydrateAppState() {
       EVITAR_CONFLITO_INSTITUCIONAL = data.parametros.evitarConflitoInstitucional !== undefined
         ? !!data.parametros.evitarConflitoInstitucional
         : EVITAR_CONFLITO_INSTITUCIONAL;
+      if (Array.isArray(data.parametros.criteriosPesos)) {
+        CRITERIO_PESOS = normalizeCriterionWeights(data.parametros.criteriosPesos);
+      }
     }
   } catch (err) {
     console.warn('Falha ao restaurar estado local:', err);
@@ -11477,6 +11764,22 @@ async function detectRemoteThemeColumns(client) {
   const msg = String(error.message || '').toLowerCase();
   if (msg.includes('theme_name') || msg.includes('theme_dark') || msg.includes('column')) {
     remoteThemeColumnsAvailable = false;
+    return false;
+  }
+  throw error;
+}
+
+async function detectRemoteCriterionWeightsColumn(client) {
+  if (!client) return false;
+  if (remoteCriterionWeightsColumnAvailable !== null) return remoteCriterionWeightsColumnAvailable;
+  const { error } = await client.from('configuracoes_sistema').select('criterios_pesos').limit(1);
+  if (!error) {
+    remoteCriterionWeightsColumnAvailable = true;
+    return true;
+  }
+  const msg = String(error.message || '').toLowerCase();
+  if (msg.includes('criterios_pesos') || msg.includes('column')) {
+    remoteCriterionWeightsColumnAvailable = false;
     return false;
   }
   throw error;
