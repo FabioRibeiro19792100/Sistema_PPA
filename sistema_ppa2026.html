@@ -722,6 +722,37 @@ tr:hover td.sticky{background:#FAFAFA}
   background:var(--surface);
   padding-right:18px;
 }
+#view-resultados .tbl-scroll{
+  overflow:visible;
+  padding-right:0;
+}
+#view-resultados > div > .tbl-card{
+  overflow:visible;
+}
+#view-resultados .results-top-sticky::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-8px;
+  height:8px;
+  background:var(--bg);
+  pointer-events:none;
+}
+#view-resultados .results-top-sticky{
+  top:24px;
+}
+#view-resultados .results-table thead{
+  position:sticky;
+  top:calc(24px + var(--results-toolbar-h, 0px) + 8px);
+  z-index:20;
+}
+#view-resultados .results-table thead tr:first-child th,
+#view-resultados .results-table thead tr:nth-child(2) th,
+#view-resultados .results-table thead th[rowspan="2"]{
+  position:static;
+  top:auto;
+}
 :is(#view-resultados,#view-portal,#view-banca) th{border-bottom-color:#C7CDD6}
 :is(#view-resultados,#view-portal,#view-banca) td{border-bottom-color:#D3D8E0}
 :is(#view-resultados,#view-portal,#view-banca) .crit,
@@ -1773,6 +1804,23 @@ textarea::placeholder{color:#BDC1C6}
   top:0;
   z-index:3;
   box-shadow:0 1px 0 rgba(255,255,255,.12), 0 8px 18px rgba(15,23,42,.14);
+}
+#overlay .split-hero-close{
+  position:absolute;
+  top:12px;
+  right:12px;
+  width:32px;
+  height:32px;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.28);
+  background:rgba(255,255,255,.14);
+  color:#fff;
+  box-shadow:none;
+  z-index:2;
+}
+#overlay .split-hero-close:hover{
+  background:rgba(255,255,255,.24);
+  color:#fff;
 }
 .split-hero-top{
   display:block;
@@ -3062,8 +3110,8 @@ textarea::placeholder{color:#BDC1C6}
           <option>Ranking sem a pior nota</option>
           <option>Ranking sem a melhor nota</option>
         </select>
-        <select class="finput" id="resFiltroTop" onchange="renderResultados()" style="width:90px;min-width:90px">
-          <option value="0">Todos</option>
+        <select class="finput" id="resFiltroTop" onchange="renderResultados()" style="width:100px;min-width:100px">
+          <option value="0">Sem corte</option>
           <option value="10">Top 10</option>
           <option value="15">Top 15</option>
           <option value="20">Top 20</option>
@@ -3783,11 +3831,6 @@ textarea::placeholder{color:#BDC1C6}
 <!-- MODAL INSCRIÇÃO -->
 <div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal" role="dialog" aria-modal="true">
-    <div class="mh">
-      <div class="mh-right">
-        <button class="close-btn" onclick="closeModal()"><i class="ti ti-x"></i></button>
-      </div>
-    </div>
     <div class="mb">
       <div class="mfl" style="padding:0 0 8px">Dados da equipe</div>
       <div id="mGrid"></div>
@@ -5677,7 +5720,7 @@ function renderAttachmentViewerContent() {
     video.controls = true;
     video.playsInline = true;
     video.preload = 'auto';
-    video.autoplay = false;
+    video.autoplay = !isInline;
     video.muted = false;
     video.defaultMuted = false;
     video.volume = 1;
@@ -5690,6 +5733,12 @@ function renderAttachmentViewerContent() {
     video.addEventListener('error', clearLoading, { once:true });
     stage.appendChild(video);
     try { video.load(); } catch {}
+    if (!isInline) {
+      try {
+        const playRequest = video.play();
+        if (playRequest?.catch) playRequest.catch(() => {});
+      } catch {}
+    }
     return;
   }
   if (viewer.kind === 'pdf') {
@@ -6158,10 +6207,8 @@ function syncResultadosStickyLayout() {
   const view = document.getElementById('view-resultados');
   const scroll = document.getElementById('resultsBodyScroll');
   if (!top || !view || !scroll) return;
-  const topRect = top.getBoundingClientRect();
-  const available = Math.max(320, Math.floor(window.innerHeight - topRect.bottom - 18));
-  view.style.setProperty('--results-toolbar-h', `${Math.ceil(topRect.height)}px`);
-  scroll.style.maxHeight = `${available}px`;
+  view.style.setProperty('--results-toolbar-h', `${Math.ceil(top.getBoundingClientRect().height)}px`);
+  scroll.style.maxHeight = 'none';
 }
 
 function bindResultadosScrollSync() {
@@ -6369,13 +6416,14 @@ function renderResultsStatsDrawer() {
   const teams = rows.map(({ e }) => e);
   const participants = teams.flatMap(resultadoParticipantRows);
   const modalidades = countResultsStats(teams.map(e => e.mod || 'N/D'));
+  const regioes = countResultsStats(teams.map(e => regionFromUf(e.uf) || 'N/D'));
   const estados = countResultsStats(teams.map(e => compactUfLabel(e.uf) || 'N/D'));
   const universidades = countResultsStats(teams.map(e => compactInstitutionLabel(e.inst) || 'N/D'));
   const generos = countResultsStats(participants.map(row => normalizeResultsGender(firstRawValue(row, ['Gênero', 'genero'])) || 'N/D'));
   const racas = countResultsStats(participants.map(row => normalizeResultsRace(firstRawValue(row, ['Cor/raça', 'Cor/Raça', 'raca'])) || 'N/D'));
   const usoIA = countResultsStats(teams.map(e => normalizeResultsIA(e.ia)));
   const body = document.getElementById('resultsStatsDrawerBody');
-  if (body) body.innerHTML = resultsStatSection('Formação das equipes', modalidades) + resultsStatSection('Distribuição por estado', estados) + resultsStatSection('Gênero', generos) + resultsStatSection('Cor / raça', racas) + resultsStatSection('Uso de IA no vídeo criativo', usoIA) + resultsStatSection('Universidade', universidades);
+  if (body) body.innerHTML = resultsStatSection('Gênero', generos) + resultsStatSection('Cor / raça', racas) + resultsStatSection('Distribuição por região', regioes) + resultsStatSection('Distribuição por estado', estados) + resultsStatSection('Universidade', universidades) + resultsStatSection('Formação das equipes', modalidades) + resultsStatSection('Uso de IA no vídeo criativo', usoIA);
 }
 function openResultsStatsDrawer() {
   if (!window.currentResultsTopRows?.length) return;
@@ -7386,6 +7434,7 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
       </div>` : '';
     return `
       <div class="split-hero">
+        ${context === 'modal' ? '<button class="close-btn split-hero-close" type="button" onclick="closeModal()" aria-label="Fechar"><i class="ti ti-x"></i></button>' : ''}
         <div class="split-hero-top">
           <div class="split-kicker">${kicker}</div>
         </div>
