@@ -636,8 +636,8 @@ tr:hover td{background:var(--surface2)}
 
 /* sticky cols for results */
 .sticky{position:sticky;background:#fff;z-index:2}
-.s0{left:0;width:70px;min-width:70px;max-width:70px}
-.s3{left:70px;width:124px;min-width:124px;max-width:124px}
+.s0{left:0;width:86px;min-width:86px;max-width:86px}
+.s3{left:86px;width:108px;min-width:108px;max-width:108px}
 .s5{left:194px;width:262px;min-width:262px;max-width:262px}
 .s7{left:456px;width:96px;min-width:96px;max-width:96px;box-shadow:2px 0 6px -2px rgba(0,0,0,.08)}
 th.sticky{background:#E2E8F0;z-index:3;color:#4B5563;border-bottom-color:#CBD5E1}
@@ -653,15 +653,19 @@ tr:hover td.sticky{background:#FAFAFA}
 .res-muted{color:#8B949E !important}
 .res-faint{color:#A0A7B1 !important}
 .res-id-hub{display:grid;grid-template-columns:minmax(0,1fr) 24px;align-items:start;column-gap:8px;width:100%}
-.res-id-meta{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;width:100%;padding-top:1px}
-.res-id{display:block;max-width:100%;overflow-wrap:anywhere;line-height:1.2;text-align:center}
-.res-uf{display:block;margin-top:4px;font-size:10px;font-weight:700;letter-spacing:.04em;color:#7A828E;text-align:center}
+.res-id-meta{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0;width:100%;padding-top:1px}
+.res-id{display:block;max-width:100%;overflow-wrap:anywhere;line-height:1.2;text-align:left}
+.res-uf{display:block;margin-top:4px;font-size:10px;font-weight:700;letter-spacing:.04em;color:#7A828E;text-align:left}
 .res-id-actions{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:6px;width:24px;min-width:24px;max-width:24px;padding-top:0}
 .leader-cell{position:relative;min-height:74px}
 .nota-cell{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:8px;min-height:74px;padding-top:2px}
 .nota-main{font-size:15px;font-weight:600;color:#202124;line-height:1}
 .nota-actions{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:10px}
-.nota-progress-btn{display:inline-flex;align-items:center;gap:4px;padding:0;border:none;background:transparent;cursor:pointer}
+.nota-progress-btn{display:inline-flex;flex-direction:column;align-items:center;gap:7px;padding:0;border:none;background:transparent;cursor:pointer}
+.nota-progress-dots{display:flex;align-items:center;gap:4px}
+.nota-progress-arrow{font-size:12px;line-height:1;color:#A0A7B1;transition:transform .18s ease,color .12s ease}
+.nota-progress-btn:hover .nota-progress-arrow{color:#6B7280}
+.nota-progress-btn.open .nota-progress-arrow{transform:rotate(180deg)}
 .nota-progress-btn:hover .nota-progress-dot{opacity:1}
 .nota-progress-dot{display:block;width:7px;height:7px;border-radius:999px;background:#E5E7EB;opacity:.95;transition:opacity .12s, background-color .12s}
 .nota-progress-dot.is-pending{background:#E5E7EB}
@@ -698,6 +702,12 @@ tr:hover td.sticky{background:#FAFAFA}
 #view-resultados .results-special-hint{font-size:10px;color:#9AA0A6;white-space:nowrap}
 #view-resultados .res-coral-origin{margin-top:3px;color:#C45F4A;font-size:9px;font-weight:700;line-height:1.2;white-space:nowrap}
 #view-resultados .res-coral-origin span{display:block}
+#view-resultados .res-comparison-ranks{display:grid;gap:3px;margin-top:5px}
+#view-resultados .res-comparison-rank{display:flex;align-items:baseline;gap:7px;white-space:nowrap;line-height:1}
+#view-resultados .res-comparison-rank b{font-size:13px;font-weight:400;letter-spacing:.01em}
+#view-resultados .res-comparison-rank span{width:22px;text-align:left;font-size:13px;font-weight:400;font-variant-numeric:tabular-nums}
+#view-resultados .res-comparison-rank.spn{color:#C45F4A}
+#view-resultados .res-comparison-rank.rc{color:#6557C7}
 #view-resultados .results-utility-row{display:flex;align-items:center;gap:18px;min-height:30px;margin-top:8px;padding-top:7px;border-top:1px solid #E5E7EB}
 #view-resultados .results-export-btn{margin-left:auto;background:transparent;border-color:transparent;color:#68727D;box-shadow:none}
 #view-resultados .results-export-btn:hover{background:#F1F3F4;border-color:#E1E4E8}
@@ -836,7 +846,9 @@ tr:hover td.sticky{background:#FAFAFA}
 :is(#view-resultados,#view-portal,#view-banca) .results-table th.id-col{
   background:#E6F0FF;
   color:#1F3A68;
+  text-align:left;
 }
+:is(#view-resultados,#view-banca) .results-table th.rank-col-head{text-align:left}
 :is(#view-resultados,#view-portal,#view-banca) .results-table td.id-col{
   background:#F5F9FF;
 }
@@ -892,9 +904,17 @@ tr:hover td.sticky{background:#FAFAFA}
 #view-resultados.results-has-filters .results-table tbody > tr:not(.res-top-row):not(.res-near-row):hover > td.id-col{
   background:#FAFAFA;
 }
-.res-rank-line{display:flex;align-items:center;gap:7px;min-height:16px}
+.res-rank-line{display:grid;grid-template-columns:22px max-content max-content;align-items:center;gap:7px;min-height:16px}
 .res-rank-line .sw-sm{flex:0 0 auto}
-.res-base-rank{margin-top:3px;color:#7A828E;font-size:9px;font-weight:600;line-height:1.2;white-space:nowrap}
+.res-rank-axis{display:flex;align-items:center;min-width:0}
+.res-primary-rank{display:inline-block;width:22px;font-size:13px;font-weight:600;color:#202124;font-variant-numeric:tabular-nums}
+.res-rank-mode-code{margin-left:-3px;font-size:13px;font-weight:400;letter-spacing:.01em}
+.res-primary-rank.spn,.res-rank-mode-code.spn{color:#C45F4A;font-weight:400}
+.res-primary-rank.rc,.res-rank-mode-code.rc{color:#6557C7;font-weight:400}
+.res-primary-rank.rsmn,.res-rank-mode-code.rsmn{color:#3973B8;font-weight:400}
+.res-base-rank{display:flex;align-items:baseline;gap:7px;margin-top:4px;color:#7A828E;line-height:1;white-space:nowrap}
+.res-base-rank span{width:22px;text-align:left;font-size:13px;font-weight:400;font-variant-numeric:tabular-nums}
+.res-base-rank b{font-size:13px;font-weight:400;letter-spacing:.01em}
 #view-resultados .results-table tbody > tr.res-outside-base-top:not(.sub-row) > td:first-child{box-shadow:inset 3px 0 #E07A5F}
 .res-bank-toggle{width:28px;height:16px;padding:0;border:0;background:#DADCE0;border-radius:8px;position:relative;cursor:pointer;flex:0 0 auto;transition:background .15s ease}
 .res-bank-toggle::after{content:'';width:12px;height:12px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;box-shadow:0 1px 2px rgba(0,0,0,.15);transition:transform .15s ease}
@@ -904,6 +924,7 @@ tr:hover td.sticky{background:#FAFAFA}
 .banca-count{font-size:12px;color:#7A828E}
 #view-banca .tbl-scroll{max-height:calc(100vh - 205px)}
 .res-cut-label{display:block;margin-top:3px;color:#2563B8;font-size:9px;font-weight:600;line-height:1.2;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap}
+.res-cut-label.rank-top-label{margin:0 0 5px}
 .res-near-label{color:#B77908}
 .res-criterion-result{display:flex;flex-direction:column;align-items:center;gap:6px;line-height:1.15}
 .res-criterion-score{font-size:12px;font-weight:600;color:#3F4752;font-variant-numeric:tabular-nums}
@@ -943,6 +964,8 @@ tr:hover td.sticky{background:#FAFAFA}
 .calibration-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:16px;padding-top:14px;border-top:1px solid var(--border)}
 .calibration-message{min-height:18px;margin-top:10px;font-size:11.5px;color:var(--text-tertiary);text-align:right}
 @media (max-width:700px){.calibration-inputs{grid-template-columns:1fr}}
+#view-auditoria .audit-table{table-layout:fixed}
+#view-auditoria .audit-table th,#view-auditoria .audit-table td{box-sizing:border-box}
 #view-portal .results-table .s5{left:0;width:268px;min-width:268px;max-width:268px}
 #view-portal .results-table .s7{left:268px;width:96px;min-width:96px;max-width:96px}
 #view-portal .results-table .crit,
@@ -3145,10 +3168,14 @@ textarea::placeholder{color:#BDC1C6}
         <select class="finput" id="resFiltroUf" onchange="renderResultados()" style="width:140px;min-width:140px"><option value="">Todos os estados</option></select>
         <select class="finput" id="resFiltroGenero" onchange="renderResultados()" style="width:145px;min-width:145px"><option>Todos os gêneros</option><option>Feminino</option><option>Masculino</option></select>
         <select class="finput" id="resFiltroRaca" onchange="renderResultados()" style="width:135px;min-width:135px"><option value="">Todas as raças</option></select>
+        <select class="finput" id="resFiltroIA" onchange="renderResultados()" style="width:110px;min-width:110px">
+          <option value="">Uso de IA?</option>
+          <option value="Sim">Sim</option>
+          <option value="Não">Não</option>
+        </select>
         <select class="finput" id="resFiltroRanking" onchange="renderResultados()" style="width:225px;min-width:225px">
           <option>Ranking normal</option>
-          <option value="Ranking sem a pior nota">RSPN · Ranking sem pior nota</option>
-          <option value="Ranking sem a melhor nota">RSMN · Ranking sem melhor nota</option>
+          <option value="Ranking sem a pior nota">SPN · Ranking sem pior nota</option>
           <option value="Ranking ajustado por parecerista">RC · Ranking calibrado</option>
         </select>
         </div>
@@ -3156,8 +3183,8 @@ textarea::placeholder{color:#BDC1C6}
       </div>
       <div class="results-special-filter-row">
         <div class="results-cut-controls">
-          <select class="finput" id="resFiltroTop" onchange="renderResultados()" style="width:100px;min-width:100px">
-            <option value="0">Sem corte</option>
+          <select class="finput" id="resFiltroTop" onchange="renderResultados()" style="width:120px;min-width:120px">
+            <option value="0">Lista completa</option>
             <option value="10">Top 10</option>
             <option value="15">Top 15</option>
             <option value="20">Top 20</option>
@@ -3173,7 +3200,7 @@ textarea::placeholder{color:#BDC1C6}
           <label class="results-special-filter" for="resFiltroAnyTop">
             <input id="resFiltroAnyTop" type="checkbox" onchange="renderResultados()">
             <span class="results-special-check"><i class="ti ti-check"></i></span>
-            <span><strong>Aplicar em todos os cenários</strong><small>Reúne o recorte e a faixa nos quatro rankings.</small></span>
+            <span><strong>Aplicar em todos os cenários</strong><small>Compara o ranking oficial, o ranking sem a pior nota e o ranking calibrado.</small></span>
           </label>
         </div>
       </div>
@@ -3189,8 +3216,8 @@ textarea::placeholder{color:#BDC1C6}
     <div class="tbl-scroll" id="resultsBodyScroll">
       <table class="results-table" style="width:max-content;min-width:100%">
         <colgroup>
-          <col style="width:70px">
-          <col style="width:124px">
+          <col style="width:86px">
+          <col style="width:108px">
           <col style="width:262px">
           <col style="width:96px">
           <col style="width:104px">
@@ -3204,8 +3231,8 @@ textarea::placeholder{color:#BDC1C6}
         </colgroup>
         <thead>
           <tr>
-            <th class="sticky s0" rowspan="2">Ranking</th>
-            <th class="sticky s3 id-col" rowspan="2" style="text-align:center">Identificacao</th>
+            <th class="sticky s0 rank-col-head" rowspan="2">Ranking</th>
+            <th class="sticky s3 id-col" rowspan="2">Identificação</th>
             <th class="sticky s5" rowspan="2">Time (leader-first)</th>
             <th class="sticky s7" rowspan="2" style="text-align:center;min-width:90px">Nota geral</th>
             <th class="crit crit-group" colspan="2" style="text-align:center;border-left:1px solid #E0E0E0">Proposta</th>
@@ -3257,14 +3284,14 @@ textarea::placeholder{color:#BDC1C6}
     <div class="tbl-scroll" id="bancaBodyScroll">
       <table class="results-table" style="width:max-content;min-width:100%">
         <colgroup>
-          <col style="width:70px"><col style="width:124px"><col style="width:262px"><col style="width:96px">
+          <col style="width:86px"><col style="width:108px"><col style="width:262px"><col style="width:96px">
           <col style="width:104px"><col style="width:104px"><col style="width:104px"><col style="width:104px">
           <col style="width:104px"><col style="width:104px"><col style="width:104px"><col style="width:104px">
         </colgroup>
         <thead>
           <tr>
-            <th class="sticky s0" rowspan="2">Ranking</th>
-            <th class="sticky s3 id-col" rowspan="2" style="text-align:center">Identificacao</th>
+            <th class="sticky s0 rank-col-head" rowspan="2">Ranking</th>
+            <th class="sticky s3 id-col" rowspan="2">Identificação</th>
             <th class="sticky s5" rowspan="2">Time (leader-first)</th>
             <th class="sticky s7" rowspan="2" style="text-align:center;min-width:90px">Nota geral</th>
             <th class="crit crit-group" colspan="2" style="text-align:center">Proposta</th>
@@ -3676,18 +3703,27 @@ textarea::placeholder{color:#BDC1C6}
   </div>
 
   <div class="tbl-card">
-    <table>
+    <table class="audit-table">
+      <colgroup>
+        <col style="width:18%">
+        <col style="width:22%">
+        <col style="width:11%">
+        <col style="width:9%">
+        <col style="width:9%">
+        <col style="width:8%">
+        <col style="width:7%">
+        <col style="width:16%">
+      </colgroup>
       <thead>
         <tr>
-          <th style="width:120px">Parecerista</th>
-          <th style="width:120px">Candidato</th>
-          <th style="width:90px">ID inscrição</th>
-          <th style="width:80px">Início</th>
-          <th style="width:80px">Fim</th>
-          <th style="width:70px">Duração</th>
-          <th style="width:80px">Nota</th>
-          <th style="width:100px">Status</th>
-          <th>Obs. saída</th>
+          <th>Parecerista</th>
+          <th>Candidato</th>
+          <th>ID inscrição</th>
+          <th>Início</th>
+          <th>Fim</th>
+          <th>Duração</th>
+          <th>Nota</th>
+          <th>Status</th>
         </tr>
       </thead>
       <tbody id="tblAuditoria"></tbody>
@@ -5442,8 +5478,9 @@ function parecerProgressHTML(inscId, rowIdx) {
   const done = oficiais.filter(p => atribuicoes[inscId]?.includes(p.id) && isEvaluationConcluded(p.id, inscId)).length;
   const states = Array.from({ length: totalEsperado }, (_, idx) => idx < done ? 'done' : 'pending');
   const title = `${done} de ${totalEsperado} pareceres concluídos`;
-  return `<button class="nota-progress-btn" onclick="toggleRes(${rowIdx})" title="${title}" aria-label="${title}">
-    ${states.map(state => `<span class="nota-progress-dot is-${state}"></span>`).join('')}
+  return `<button class="nota-progress-btn" id="exp-res-${rowIdx}" onclick="toggleRes(${rowIdx})" title="${title}" aria-label="${title}" aria-expanded="false">
+    <span class="nota-progress-dots">${states.map(state => `<span class="nota-progress-dot is-${state}"></span>`).join('')}</span>
+    <i class="ti ti-chevron-down nota-progress-arrow" aria-hidden="true"></i>
   </button>`;
 }
 
@@ -6234,8 +6271,7 @@ function buildReviewerAdjustedScoreCache() {
 function buildAnyTopMembership(topLimit, variationPercent = 0) {
   const modes = [
     ['Ranking normal', 'RN', 'Ranking normal'],
-    ['Ranking sem a pior nota', 'RSPN', 'Ranking sem pior nota'],
-    ['Ranking sem a melhor nota', 'RSMN', 'Ranking sem melhor nota'],
+    ['Ranking sem a pior nota', 'SPN', 'Ranking sem pior nota'],
     ['Ranking ajustado por parecerista', 'RC', 'Ranking calibrado'],
   ];
   const membership = new Map();
@@ -6245,15 +6281,16 @@ function buildAnyTopMembership(topLimit, variationPercent = 0) {
       .filter(row => row.score !== null && Number.isFinite(row.score))
       .sort((a, b) => (b.score - a.score) || compareInscIdAsc(a.team, b.team));
     const cutoffScore = ranked[topLimit - 1]?.score ?? null;
-    ranked.filter((row, index) => index < topLimit || (
-      variationPercent > 0 && cutoffScore !== null && row.score < cutoffScore && ((cutoffScore - row.score) / cutoffScore) * 100 <= variationPercent
-    ))
-      .forEach((row, index) => {
+    const cutoffKey = Number.isFinite(cutoffScore) ? cutoffScore.toFixed(2) : null;
+    ranked.forEach((row, index) => {
+        const isTop = index < topLimit || row.score.toFixed(2) === cutoffKey;
+        const isMargin = !isTop && variationPercent > 0 && cutoffScore !== null && row.score < cutoffScore && ((cutoffScore - row.score) / cutoffScore) * 100 <= variationPercent;
+        if (!isTop && !isMargin) return;
         const id = String(row.team.id);
         const rank = Number(rankById.get(id)?.rank) || (index + 1);
         if (!membership.has(id)) membership.set(id, { origins:[], bestRank:rank });
         const item = membership.get(id);
-        item.origins.push({ code, label, rank });
+        item.origins.push({ code, label, rank, source:isTop ? 'top' : 'margin' });
         item.bestRank = Math.min(item.bestRank, rank);
       });
   });
@@ -6408,6 +6445,7 @@ function filtrarResultados() {
   const uf = document.getElementById('resFiltroUf')?.value || '';
   const genero = document.getElementById('resFiltroGenero')?.value || 'Todos os gêneros';
   const raca = document.getElementById('resFiltroRaca')?.value || '';
+  const usoIA = document.getElementById('resFiltroIA')?.value || '';
   return INSCRICOES.map((e, idx) => ({ e, idx })).filter(({ e }) => {
     const c = avalCount(e.id);
     const statusAtual = c.done === 0 ? 'Não iniciadas' : c.done === c.total ? 'Finalizadas' : 'Parciais';
@@ -6416,6 +6454,7 @@ function filtrarResultados() {
     if (uf && ufDisplayLabel(e.uf) !== uf) return false;
     if (genero !== 'Todos os gêneros' && !generosTimeInscricao(e).has(genero)) return false;
     if (raca && !racasTimeInscricao(e).has(raca)) return false;
+    if (usoIA && normalizeResultsIA(e.ia) !== usoIA) return false;
     return true;
   });
 }
@@ -6427,6 +6466,7 @@ function zerarFiltrosResultados() {
     resFiltroUf: '',
     resFiltroGenero: 'Todos os gêneros',
     resFiltroRaca: '',
+    resFiltroIA: '',
     resFiltroRanking: 'Ranking normal',
     resFiltroTop: '0',
     resFiltroVariacao: '0'
@@ -6483,16 +6523,27 @@ function renderResultados() {
   const baseRankingById = rankingMode === 'Ranking normal'
     ? absoluteRankingById
     : buildAbsoluteRankingById('Ranking normal');
+  const comparisonRankings = anyTopActive ? {
+    spn:buildAbsoluteRankingById('Ranking sem a pior nota'),
+    rc:buildAbsoluteRankingById('Ranking ajustado por parecerista'),
+  } : null;
   const filteredRankedRows = [...filtrarResultados()].sort((a, b) => compareResultadoRows(a.e, b.e, rankingMode));
   let allRankedRows = rankingMode === 'Ranking ajustado por parecerista'
     ? filteredRankedRows.filter(({ e }) => mediaNotasRanking(e.id, rankingMode) !== null)
     : filteredRankedRows;
   if (anyTopActive) allRankedRows = allRankedRows.filter(({ e }) => anyTopMembership.has(String(e.id)));
   const rankedWithScore = allRankedRows.filter(({ e }) => mediaNotasRanking(e.id, rankingMode) !== null);
-  const officialTopRows = anyTopActive ? allRankedRows : topLimit ? rankedWithScore.slice(0, topLimit) : [];
-  const cutoffScore = officialTopRows.length ? mediaNotasRanking(officialTopRows[officialTopRows.length - 1].e.id, rankingMode) : null;
+  const cutoffScore = topLimit && rankedWithScore.length >= topLimit
+    ? mediaNotasRanking(rankedWithScore[topLimit - 1].e.id, rankingMode)
+    : null;
+  const cutoffKey = Number.isFinite(cutoffScore) ? cutoffScore.toFixed(2) : null;
+  const officialTopRows = anyTopActive
+    ? allRankedRows
+    : topLimit
+      ? rankedWithScore.filter(({ e }, index) => index < topLimit || mediaNotasRanking(e.id, rankingMode)?.toFixed(2) === cutoffKey)
+      : [];
   const nearCutRows = !anyTopActive && topLimit && variacaoPct > 0 && cutoffScore !== null
-    ? rankedWithScore.slice(topLimit).filter(({ e }) => {
+    ? rankedWithScore.slice(officialTopRows.length).filter(({ e }) => {
         const score = mediaNotasRanking(e.id, rankingMode);
         return score !== null && score < cutoffScore && ((cutoffScore - score) / cutoffScore) * 100 <= variacaoPct;
       })
@@ -6515,6 +6566,7 @@ function renderResultados() {
     !!(document.getElementById('resFiltroUf')?.value || '') ||
     (document.getElementById('resFiltroGenero')?.value || 'Todos os gêneros') !== 'Todos os gêneros' ||
     !!(document.getElementById('resFiltroRaca')?.value || '') ||
+    !!(document.getElementById('resFiltroIA')?.value || '') ||
     topLimit > 0 || variacaoPct > 0 || anyTopActive || rankingMode !== 'Ranking normal';
   document.getElementById('view-resultados')?.classList.toggle('results-has-filters', hasActiveFilters);
   const summaryBar = document.getElementById('resSummaryBar');
@@ -6539,25 +6591,32 @@ function renderResultados() {
     const isVisibleTie = Number.isFinite(pt) && (visibleTieCounts[pt.toFixed(2)] || 0) > 1;
     const ranking = absoluteRankingById.get(String(e.id)) || { rank:'—', tied:false };
     const baseRanking = baseRankingById.get(String(e.id)) || { rank:'—', tied:false };
-    const baseRankingLabel = rankingMode !== 'Ranking normal'
-      ? `<div class="res-base-rank" title="Posição no Ranking normal">Base ${baseRanking.rank}º</div>`
+    const baseRankingLabel = rankingMode !== 'Ranking normal' && !anyTopActive
+      ? `<div class="res-base-rank" title="Posição no Ranking normal"><span>${baseRanking.rank}</span><b>RN</b></div>`
       : '';
     const isOfficialTop = topLimit > 0 && i < officialTopRows.length;
     const isNearCut = topLimit > 0 && !isOfficialTop;
-    const isOutsideBaseTop = isOfficialTop && Number(baseRanking.rank) > topLimit && (anyTopActive || rankingMode !== 'Ranking normal');
-    const coralOrigins = (anyTopMembership.get(String(e.id))?.origins || []).filter(origin => origin.code !== 'RN');
+    const isBaseOfficialTop = topLimit > 0 && Number(baseRanking.rank) <= topLimit;
+    const anyTopOrigins = anyTopMembership.get(String(e.id))?.origins || [];
+    const isAnyTopMarginOnly = anyTopActive && anyTopOrigins.length > 0 && anyTopOrigins.every(origin => origin.source === 'margin');
+    const isOutsideBaseTop = isOfficialTop && !isBaseOfficialTop && !isAnyTopMarginOnly && (anyTopActive || rankingMode !== 'Ranking normal');
     const rankingModeCode = {
-      'Ranking sem a pior nota':'RSPN',
+      'Ranking sem a pior nota':'SPN',
       'Ranking sem a melhor nota':'RSMN',
       'Ranking ajustado por parecerista':'RC',
     }[rankingMode] || '';
-    const coralOriginLabel = isOutsideBaseTop
-      ? anyTopActive
-        ? `<div class="res-coral-origin" title="${escapeHtmlAttr(coralOrigins.map(origin => `${origin.label}: ${origin.rank}º`).join(' · '))}">${coralOrigins.map(origin => `<span>${origin.code} ${origin.rank}º</span>`).join('')}</div>`
-        : `<div class="res-coral-origin">${rankingModeCode} ${ranking.rank}º</div>`
+    const rankingModeClass = rankingModeCode.toLowerCase();
+    const primaryRankingCode = rankingModeCode
+      ? `<b class="res-rank-mode-code ${rankingModeClass}">${rankingModeCode}</b>`
+      : '';
+    const comparisonRankLabel = anyTopActive
+      ? `<div class="res-comparison-ranks" title="Posições nos rankings comparados">
+          <div class="res-comparison-rank spn"><span>${comparisonRankings.spn.get(String(e.id))?.rank ?? '—'}</span><b>SPN</b></div>
+          <div class="res-comparison-rank rc"><span>${comparisonRankings.rc.get(String(e.id))?.rank ?? '—'}</span><b>RC</b></div>
+        </div>`
       : '';
     const rowClass = [
-      isOfficialTop ? 'res-top-row' : isNearCut ? 'res-near-row' : '',
+      isAnyTopMarginOnly ? 'res-near-row' : isOfficialTop ? 'res-top-row' : isNearCut ? 'res-near-row' : '',
       isOutsideBaseTop ? 'res-outside-base-top' : '',
     ].filter(Boolean).join(' ');
     const subRows = getOfficialPareceristas().filter(p => atribuicoes[e.id]?.includes(p.id)).map(p => {
@@ -6577,11 +6636,11 @@ function renderResultados() {
     }).join('');
 
     return `<tr class="${rowClass}">
-      <td class="sticky s0"><div class="res-rank-line"><span style="font-size:13px;font-weight:600;color:#202124">${ranking.rank}</span>${bancaToggleHTML(e.id)}</div>${isVisibleTie ? `<div class="res-faint" style="font-size:10px;margin-top:3px">(empate)</div>` : ''}${baseRankingLabel}${coralOriginLabel}${isOfficialTop && !anyTopActive ? `<span class="res-cut-label">Top ${topLimit}</span>` : isNearCut ? `<span class="res-cut-label res-near-label">Margem ${variacaoPct}%</span>` : ''}</td>
+      <td class="sticky s0">${isBaseOfficialTop ? `<span class="res-cut-label rank-top-label">Top ${topLimit}</span>` : ''}<div class="res-rank-line"><span class="res-primary-rank ${rankingModeClass}">${ranking.rank}</span><span class="res-rank-axis">${primaryRankingCode || bancaToggleHTML(e.id)}</span>${primaryRankingCode ? bancaToggleHTML(e.id) : ''}</div>${isVisibleTie ? `<div class="res-faint" style="font-size:10px;margin-top:3px">(empate)</div>` : ''}${baseRankingLabel}${isAnyTopMarginOnly || (!isBaseOfficialTop && isNearCut) ? `<span class="res-cut-label res-near-label">Margem ${variacaoPct}%</span>` : ''}${comparisonRankLabel}</td>
       <td class="sticky s3 id-col" style="text-align:center">
         <div class="res-id-hub">
           <div class="res-id-meta">
-            <div class="res-muted res-id" style="font-family:monospace;font-size:11px">${shortInscId(e.id)}</div>
+            <div class="res-muted res-id" style="font-family:monospace;font-size:11px">ID ${shortInscId(e.id)}</div>
             <div class="team-marker-stack">${teamMarker(e.mod)}</div>
             <div class="res-uf">${compactUfLabel(e.uf) || '—'}</div>
           </div>
@@ -6641,7 +6700,7 @@ function renderBanca() {
     return `<tr>
       <td class="sticky s0"><div class="res-rank-line"><span style="font-size:13px;font-weight:600;color:#202124">${ranking.rank}</span>${bancaToggleHTML(e.id)}</div>${ranking.tied ? '<div class="res-faint" style="font-size:10px;margin-top:3px">(empate)</div>' : ''}</td>
       <td class="sticky s3 id-col" style="text-align:center">
-        <div class="res-id-hub"><div class="res-id-meta"><div class="res-muted res-id" style="font-family:monospace;font-size:11px">${shortInscId(e.id)}</div><div class="team-marker-stack">${teamMarker(e.mod)}</div><div class="res-uf">${compactUfLabel(e.uf) || '—'}</div></div><div class="res-id-actions"><button class="icon-btn" onclick="openModal(${idx})" title="Ver inscrição"><i class="ti ti-eye"></i></button><button class="icon-btn" onclick="openModalPar(${idx})" title="Ver notas dos pareceristas"><i class="ti ti-notes"></i></button></div></div>
+        <div class="res-id-hub"><div class="res-id-meta"><div class="res-muted res-id" style="font-family:monospace;font-size:11px">ID ${shortInscId(e.id)}</div><div class="team-marker-stack">${teamMarker(e.mod)}</div><div class="res-uf">${compactUfLabel(e.uf) || '—'}</div></div><div class="res-id-actions"><button class="icon-btn" onclick="openModal(${idx})" title="Ver inscrição"><i class="ti ti-eye"></i></button><button class="icon-btn" onclick="openModalPar(${idx})" title="Ver notas dos pareceristas"><i class="ti ti-notes"></i></button></div></div>
       </td>
       <td class="sticky s5"><div class="leader-cell"><div style="font-size:12.5px;font-weight:600;color:#202124">${formatResultadoLeaderName(e.lider)}</div>${e.p2 ? `<div class="team-members"><div class="team-member-line" title="${escapeHtmlAttr(displayPersonName(e.p2))}">${formatResultadoMemberName(e.p2)}</div>${e.p3 ? `<div class="team-member-line" title="${escapeHtmlAttr(displayPersonName(e.p3))}">${formatResultadoMemberName(e.p3)}</div>` : ''}</div>` : ''}<div class="res-muted" style="font-size:11px;margin-top:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-school" style="font-size:11px"></i>${displayPersonName(e.mentor)}</div></div></td>
       <td class="sticky s7" style="text-align:center;vertical-align:top"><div class="nota-cell"><div class="nota-main">${pt !== null ? fmtResultadoFinal(pt) : '<span style="color:#E0E0E0;font-size:15px">—</span>'}</div></div></td>
@@ -6716,7 +6775,10 @@ function closeResultsStatsDrawer() {
 
 function toggleRes(i) {
   const btn = document.getElementById('exp-res-'+i);
-  if (btn) btn.classList.toggle('open');
+  if (btn) {
+    const isOpen = btn.classList.toggle('open');
+    btn.setAttribute('aria-expanded', String(isOpen));
+  }
   document.querySelectorAll('.sub-res-'+i).forEach(r => r.classList.toggle('open'));
 }
 
@@ -7472,7 +7534,7 @@ function renderAuditoria() {
     document.getElementById('audCount').textContent = 'carregando...';
     const kpis = document.getElementById('audKpis');
     if (kpis) kpis.innerHTML = `<div class="kpi" style="grid-column:1/-1"><div class="kpi-sub">Carregando indicadores da auditoria...</div></div>`;
-    document.getElementById('tblAuditoria').innerHTML = `<tr><td colspan="9" style="text-align:center;padding:32px;color:#9AA0A6">Carregando auditoria do ambiente...</td></tr>`;
+    document.getElementById('tblAuditoria').innerHTML = `<tr><td colspan="8" style="text-align:center;padding:32px;color:#9AA0A6">Carregando auditoria do ambiente...</td></tr>`;
     const techAlert = document.getElementById('audTechAlert');
     if (techAlert) techAlert.style.display = 'none';
     return;
@@ -7601,7 +7663,7 @@ function renderAuditoria() {
   const statusCls   = { concluida:'b-concluida', saida_antecipada:'b-antecipada', rascunho:'b-rascunho', pendencia_video:'b-pend' };
 
   document.getElementById('tblAuditoria').innerHTML = visibleRows.length === 0
-    ? `<tr><td colspan="9" style="text-align:center;padding:32px;color:#BDC1C6">Nenhum registro de auditoria ainda. As avaliações salvas aparecerão aqui.</td></tr>`
+    ? `<tr><td colspan="8" style="text-align:center;padding:32px;color:#BDC1C6">Nenhum registro de auditoria ainda. As avaliações salvas aparecerão aqui.</td></tr>`
     : visibleRows.map(r => `
       <tr>
         <td style="font-weight:500;color:#202124">${r.parNome}</td>
@@ -7611,12 +7673,7 @@ function renderAuditoria() {
         <td style="font-size:11px;color:#5F6368">${fmtData(r.fim)} ${fmt(r.fim)}</td>
         <td class="${typeof r.duracaoMs === 'number' ? (r.duracaoMs >= TEMPO_MINIMO ? 'dur-ok' : 'dur-low') : ''}">${typeof r.duracaoMs === 'number' ? formatDuracao(r.duracaoMs) : '—'}</td>
         <td>${r.nota !== null ? `<span style="font-size:14px;font-weight:600;color:#202124">${r.nota}</span>` : '<span style="color:#DADCE0">—</span>'}</td>
-        <td><span class="badge ${statusCls[r.status]}">${statusLabel[r.status]}</span></td>
-        <td style="font-size:11px;color:#9AA0A6;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-          ${r.kind === 'video_issue'
-            ? `<button class="btn btn-secondary btn-sm" type="button" onclick="resolveVideoIssueReport('${r.reportId}')" style="min-height:28px">Marcar vídeo verificado</button>`
-            : (r.motivoSaida || '—')}
-        </td>
+        <td><div style="display:flex;align-items:flex-start;gap:7px;flex-wrap:wrap"><span class="badge ${statusCls[r.status]}">${statusLabel[r.status]}</span>${r.kind === 'video_issue' ? `<button class="btn btn-secondary btn-sm" type="button" onclick="resolveVideoIssueReport('${r.reportId}')" style="min-height:28px;padding:4px 8px">Verificar vídeo</button>` : ''}</div></td>
       </tr>`).join('');
 }
 
