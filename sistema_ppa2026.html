@@ -717,6 +717,7 @@ tr:hover td.sticky{background:#FAFAFA}
 #view-resultados .results-export-btn:hover{background:#F1F3F4;border-color:#E1E4E8}
 #view-resultados #resSummaryBar{margin:0 !important}
 #view-resultados #resSummaryBar .res-subtle{color:var(--accent) !important;font-weight:500}
+#view-resultados #resSummaryBar .res-summary-coral{color:#C45F4A}
 @media (max-width:1100px){
   #view-resultados .results-filter-row{align-items:flex-start;flex-wrap:wrap}
   #view-resultados .results-filter-group{flex-wrap:wrap}
@@ -6629,6 +6630,12 @@ function renderResultados() {
       .map(origin => origin.code));
     return ['RN', 'SPN', 'RR'].every(code => topCodes.has(code));
   }).length : 0;
+  const otherRankingTopCount = anyTopActive ? rows.filter(({ e }) => {
+    const id = String(e.id);
+    const origins = anyTopMembership.get(id)?.origins || [];
+    const isBaseTop = Number(baseRankingById.get(id)?.rank) <= topLimit;
+    return !isBaseTop && origins.some(origin => origin.source === 'top' && ['SPN', 'RR'].includes(origin.code));
+  }).length : 0;
   const hasActiveFilters =
     (document.getElementById('resFiltroStatus')?.value || 'Todas as avaliações') !== 'Todas as avaliações' ||
     (document.getElementById('resFiltroTime')?.value || 'Todos os times') !== 'Todos os times' ||
@@ -6642,7 +6649,7 @@ function renderResultados() {
   if (summaryBar) {
     summaryBar.style.display = hasActiveFilters ? 'block' : 'none';
     summaryBar.innerHTML = hasActiveFilters
-      ? `<span class="res-subtle">${total} ${total === 1 ? 'equipe exibida' : 'equipes exibidas'}${anyTopActive ? ` · ${convergenceCount} ${convergenceCount === 1 ? 'convergência' : 'convergências'}` : ''}</span>`
+      ? `<span class="res-subtle">${total} ${total === 1 ? 'equipe exibida' : 'equipes exibidas'}${anyTopActive ? ` · ${convergenceCount} ${convergenceCount === 1 ? 'convergência' : 'convergências'}<span class="res-summary-coral"> · ${otherRankingTopCount} ${otherRankingTopCount === 1 ? 'entrada no Top por SPN ou RR' : 'entradas no Top por SPN ou RR'}</span>` : ''}</span>`
       : '';
   }
   window.currentResultsTopRows = officialTopRows;
