@@ -992,7 +992,10 @@ tr:hover td.sticky{background:#FAFAFA}
 .banca-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding:16px 0 14px}
 .banca-head-actions{display:flex;align-items:center;gap:14px}
 .banca-count{font-size:12px;color:#7A828E}
-#view-banca .tbl-scroll{max-height:calc(100vh - 205px)}
+#view-banca .tbl-scroll{max-height:none;overflow-x:auto;overflow-y:visible;overscroll-behavior-x:contain;overscroll-behavior-y:auto}
+#view-banca .results-table .banca-id-sticky{left:0;width:108px;min-width:108px;max-width:108px}
+#view-banca .results-table .banca-team-sticky{left:108px;width:262px;min-width:262px;max-width:262px}
+#view-banca .results-table .banca-score-sticky{left:370px;width:96px;min-width:96px;max-width:96px;box-shadow:2px 0 6px -2px rgba(0,0,0,.08)}
 .res-cut-label{display:block;margin-top:3px;color:#2563B8;font-size:9px;font-weight:600;line-height:1.2;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap}
 .res-cut-label.rank-top-label{margin:0 0 5px}
 .res-near-label{color:#B77908}
@@ -3382,7 +3385,7 @@ textarea::placeholder{color:#BDC1C6}
   <div class="banca-head">
     <div>
       <div class="page-title">Equipes selecionadas para a banca</div>
-      <div class="page-sub">A seleção é preenchida pelos toggles da coluna de ranking.</div>
+      <div class="page-sub">Equipes em ordem alfabética, sem herdar a posição dos rankings anteriores.</div>
     </div>
     <div class="banca-head-actions">
       <div class="banca-count" id="bancaSummary">0 equipes selecionadas</div>
@@ -3393,16 +3396,15 @@ textarea::placeholder{color:#BDC1C6}
     <div class="tbl-scroll" id="bancaBodyScroll">
       <table class="results-table" style="width:max-content;min-width:100%">
         <colgroup>
-          <col style="width:86px"><col style="width:108px"><col style="width:262px"><col style="width:96px">
+          <col style="width:108px"><col style="width:262px"><col style="width:96px">
           <col style="width:104px"><col style="width:104px"><col style="width:104px"><col style="width:104px">
           <col style="width:104px"><col style="width:104px"><col style="width:104px"><col style="width:104px">
         </colgroup>
         <thead>
           <tr>
-            <th class="sticky s0 rank-col-head" rowspan="2">Ranking</th>
-            <th class="sticky s3 id-col" rowspan="2">Identificação</th>
-            <th class="sticky s5" rowspan="2">Time (leader-first)</th>
-            <th class="sticky s7" rowspan="2" style="text-align:center;min-width:90px">Nota geral</th>
+            <th class="sticky banca-id-sticky id-col" rowspan="2">Identificação</th>
+            <th class="sticky banca-team-sticky" rowspan="2">Time (leader-first)</th>
+            <th class="sticky banca-score-sticky" rowspan="2" style="text-align:center;min-width:90px">Nota geral</th>
             <th class="crit crit-group" colspan="2" style="text-align:center">Proposta</th>
             <th class="crit crit-group" colspan="2" style="text-align:center">Impacto</th>
             <th class="crit crit-group" colspan="2" style="text-align:center">Execução</th>
@@ -6914,27 +6916,24 @@ function renderBanca() {
   const body = document.getElementById('tblBanca');
   if (!body) return;
   const selectedIds = new Set(getBancaSelectionIds());
-  const allRanked = INSCRICOES.map((e, idx) => ({ e, idx }))
-    .sort((a, b) => compareResultadoRows(a.e, b.e, 'Ranking normal'));
-  const rankById = buildAbsoluteRankingById('Ranking normal');
-  const rows = allRanked.filter(({ e }) => selectedIds.has(String(e.id)));
+  const rows = INSCRICOES.map((e, idx) => ({ e, idx }))
+    .filter(({ e }) => selectedIds.has(String(e.id)))
+    .sort((a, b) => displayPersonName(a.e.lider).localeCompare(displayPersonName(b.e.lider), 'pt-BR', { sensitivity:'base', numeric:true }) || String(a.e.id).localeCompare(String(b.e.id), 'pt-BR', { numeric:true }));
   window.currentBancaRows = rows;
   const summary = document.getElementById('bancaSummary');
   if (summary) summary.textContent = `${rows.length} ${rows.length === 1 ? 'equipe selecionada' : 'equipes selecionadas'}`;
 
   body.innerHTML = rows.length ? rows.map(({ e, idx }) => {
-    const ranking = rankById.get(String(e.id)) || { rank:'—', tied:false };
     const pt = mediaNotasRanking(e.id, 'Ranking normal');
     return `<tr>
-      <td class="sticky s0"><div class="res-rank-line"><span style="font-size:13px;font-weight:600;color:#202124">${ranking.rank}</span>${bancaToggleHTML(e.id)}</div>${ranking.tied ? '<div class="res-faint" style="font-size:10px;margin-top:3px">(empate)</div>' : ''}</td>
-      <td class="sticky s3 id-col" style="text-align:center">
-        <div class="res-id-hub"><div class="res-id-meta"><div class="res-muted res-id" style="font-family:monospace;font-size:11px">ID ${shortInscId(e.id)}</div><div class="team-marker-stack">${teamMarker(e.mod)}</div><div class="res-uf">${compactUfLabel(e.uf) || '—'}</div></div><div class="res-id-actions"><button class="icon-btn" onclick="openModal(${idx})" title="Ver inscrição"><i class="ti ti-eye"></i></button><button class="icon-btn" onclick="openModalPar(${idx})" title="Ver notas dos pareceristas"><i class="ti ti-notes"></i></button></div></div>
+      <td class="sticky banca-id-sticky id-col" style="text-align:center">
+        <div class="res-id-hub"><div class="res-id-meta"><div class="res-muted res-id" style="font-family:monospace;font-size:11px">ID ${shortInscId(e.id)}</div><div class="team-marker-stack">${teamMarker(e.mod)}</div><div class="res-uf">${compactUfLabel(e.uf) || '—'}</div></div><div class="res-id-actions"><button class="icon-btn" onclick="openModal(${idx})" title="Ver inscrição"><i class="ti ti-eye"></i></button><button class="icon-btn" onclick="openModalPar(${idx})" title="Ver notas dos pareceristas"><i class="ti ti-notes"></i></button>${bancaToggleHTML(e.id)}</div></div>
       </td>
-      <td class="sticky s5"><div class="leader-cell"><div style="font-size:12.5px;font-weight:600;color:#202124">${formatResultadoLeaderName(e.lider)}</div>${e.p2 ? `<div class="team-members"><div class="team-member-line" title="${escapeHtmlAttr(displayPersonName(e.p2))}">${formatResultadoMemberName(e.p2)}</div>${e.p3 ? `<div class="team-member-line" title="${escapeHtmlAttr(displayPersonName(e.p3))}">${formatResultadoMemberName(e.p3)}</div>` : ''}</div>` : ''}<div class="res-muted" style="font-size:11px;margin-top:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-school" style="font-size:11px"></i>${displayPersonName(e.mentor)}</div></div></td>
-      <td class="sticky s7" style="text-align:center;vertical-align:top"><div class="nota-cell"><div class="nota-main">${pt !== null ? fmtResultadoFinal(pt) : '<span style="color:#E0E0E0;font-size:15px">—</span>'}</div></div></td>
+      <td class="sticky banca-team-sticky"><div class="leader-cell"><div style="font-size:12.5px;font-weight:600;color:#202124">${formatResultadoLeaderName(e.lider)}</div>${e.p2 ? `<div class="team-members"><div class="team-member-line" title="${escapeHtmlAttr(displayPersonName(e.p2))}">${formatResultadoMemberName(e.p2)}</div>${e.p3 ? `<div class="team-member-line" title="${escapeHtmlAttr(displayPersonName(e.p3))}">${formatResultadoMemberName(e.p3)}</div>` : ''}</div>` : ''}<div class="res-muted" style="font-size:11px;margin-top:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-school" style="font-size:11px"></i>${displayPersonName(e.mentor)}</div></div></td>
+      <td class="sticky banca-score-sticky" style="text-align:center;vertical-align:top"><div class="nota-cell"><div class="nota-main">${pt !== null ? fmtResultadoFinal(pt) : '<span style="color:#E0E0E0;font-size:15px">—</span>'}</div></div></td>
       ${Array(8).fill(0).map((_, ci) => `<td class="crit-td">${notaNumericaCriterioHTML(mediaNumericaPorCrit(e.id, ci), ci)}</td>`).join('')}
     </tr>`;
-  }).join('') : '<tr><td colspan="12" style="padding:38px 14px;text-align:center;color:#9AA0A6">Nenhuma equipe foi selecionada para a banca.</td></tr>';
+  }).join('') : '<tr><td colspan="11" style="padding:38px 14px;text-align:center;color:#9AA0A6">Nenhuma equipe foi selecionada para a banca.</td></tr>';
 }
 
 function resultadoParticipantRows(e) {
