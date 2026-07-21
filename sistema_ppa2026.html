@@ -218,7 +218,7 @@ body {
 }
 
 [data-theme="dense"] .topnav-brand {
-  font-size: 15px;
+  font-size: 16.5px;
 }
 
 [data-theme="dense"] .snav {
@@ -323,9 +323,9 @@ body {
 
 
 /* ── NAV ── */
-.topnav{background:var(--nav-bg);border-bottom:1px solid var(--nav-border);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:52px;position:relative;z-index:100;transition:background .2s;flex-shrink:0}
-.topnav-brand{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:var(--font-weight-bold);color:var(--text-primary)}
-.topnav-right{font-size:12px;color:var(--text-tertiary);display:flex;align-items:center;gap:8px}
+.topnav{background:var(--nav-bg);border-bottom:1px solid var(--nav-border);padding:0 42px;display:flex;align-items:center;justify-content:space-between;height:52px;position:relative;z-index:100;transition:background .2s;flex-shrink:0}
+.topnav-brand{display:flex;align-items:center;gap:10px;font-size:15.4px;font-weight:var(--font-weight-bold);color:var(--text-primary)}
+.topnav-right{font-size:13.2px;color:var(--text-tertiary);display:flex;align-items:center;gap:8px}
 .topnav-right span{color:var(--text-primary);font-weight:var(--font-weight-bold)}
 .topnav-ficha-controls{display:none;align-items:center;gap:12px;margin-right:8px}
 .topnav-ficha-controls .btn.btn-secondary.btn-sm{
@@ -563,9 +563,9 @@ body {
   box-shadow:none;
 }
 
-.subnav{background:var(--nav-bg);border-bottom:1px solid var(--nav-border);padding:0 28px;display:flex;align-items:center;height:44px;overflow-x:auto;transition:background .2s;flex-shrink:0}
+.subnav{background:var(--nav-bg);border-bottom:0;padding:0 28px;display:flex;align-items:center;height:52px;overflow:hidden;transition:background .2s;flex-shrink:0}
 .subnav::-webkit-scrollbar{display:none}
-.snav{display:flex;align-items:center;gap:7px;padding:0 14px;height:44px;font-size:var(--font-size-base);font-weight:var(--font-weight-medium);color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;user-select:none}
+.snav{display:flex;align-items:center;gap:7px;padding:0 14px;height:52px;font-size:calc(var(--font-size-base) * 1.10);font-weight:var(--font-weight-medium);color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;user-select:none}
 .snav svg{width:14px;height:14px;flex-shrink:0}
 .snav:hover{color:var(--text-primary)}
 .snav.active{color:var(--nav-active-text);border-bottom-color:var(--nav-active-border)}
@@ -712,6 +712,7 @@ tr:hover td.sticky{background:#FAFAFA}
 #view-resultados .results-export-btn{margin-left:auto;background:transparent;border-color:transparent;color:#68727D;box-shadow:none}
 #view-resultados .results-export-btn:hover{background:#F1F3F4;border-color:#E1E4E8}
 #view-resultados #resSummaryBar{margin:0 !important}
+#view-resultados #resSummaryBar .res-subtle{color:var(--accent) !important;font-weight:500}
 @media (max-width:1100px){
   #view-resultados .results-filter-row{align-items:flex-start;flex-wrap:wrap}
   #view-resultados .results-filter-group{flex-wrap:wrap}
@@ -844,13 +845,13 @@ tr:hover td.sticky{background:#FAFAFA}
   border-right:1px solid #D3D8E0;
 }
 :is(#view-resultados,#view-portal,#view-banca) .results-table th.id-col{
-  background:#E6F0FF;
-  color:#1F3A68;
+  background:#F3F4F6;
+  color:#4B5563;
   text-align:left;
 }
 :is(#view-resultados,#view-banca) .results-table th.rank-col-head{text-align:left}
 :is(#view-resultados,#view-portal,#view-banca) .results-table td.id-col{
-  background:#F5F9FF;
+  background:#fff;
 }
 :is(#view-resultados,#view-portal,#view-banca) .results-table td.id-col .res-id{
   color:#1F3A68 !important;
@@ -860,7 +861,7 @@ tr:hover td.sticky{background:#FAFAFA}
   color:#49658F;
 }
 :is(#view-resultados,#view-portal,#view-banca) .results-table tbody tr:hover > td.id-col{
-  background:#EDF4FF;
+  background:#FAFAFA;
 }
 #view-resultados .results-table tbody > tr.res-top-row > td{
   background:#F8F9FA;
@@ -6557,9 +6558,6 @@ function renderResultados() {
     visibleTieCounts[key] = (visibleTieCounts[key] || 0) + 1;
   });
   const total = rows.length;
-  const finalizadas = rows.filter(({ e }) => { const c = avalCount(e.id); return c.done > 0 && c.done === c.total; }).length;
-  const parciais = rows.filter(({ e }) => { const c = avalCount(e.id); return c.done > 0 && c.done < c.total; }).length;
-  const naoIniciadas = total - finalizadas - parciais;
   const hasActiveFilters =
     (document.getElementById('resFiltroStatus')?.value || 'Todas as avaliações') !== 'Todas as avaliações' ||
     (document.getElementById('resFiltroTime')?.value || 'Todos os times') !== 'Todos os times' ||
@@ -6572,12 +6570,9 @@ function renderResultados() {
   const summaryBar = document.getElementById('resSummaryBar');
   if (summaryBar) {
     summaryBar.style.display = hasActiveFilters ? 'block' : 'none';
-    const cutSummary = topLimit && !anyTopActive
-      ? ` · ${officialTopRows.length} no Top oficial${nearCutRows.length ? ` · ${nearCutRows.length} na faixa de até ${variacaoPct}% abaixo do corte` : ''}`
+    summaryBar.innerHTML = hasActiveFilters
+      ? `<span class="res-subtle">${total} ${total === 1 ? 'equipe exibida' : 'equipes exibidas'}</span>`
       : '';
-    const adjustedSummary = rankingMode === 'Ranking ajustado por parecerista' ? ' · percentil médio de 3 avaliações' : '';
-    const anyTopSummary = anyTopActive ? ` · união do Top ${topLimit}${variacaoPct ? ` + faixa de ${variacaoPct}%` : ''} em todos os cenários` : '';
-    summaryBar.innerHTML = hasActiveFilters ? `<span class="res-subtle">${total} equipes exibidas · ${finalizadas} finalizadas · ${parciais} parciais · ${naoIniciadas} não iniciadas${adjustedSummary}${anyTopSummary}${cutSummary}</span>` : '';
   }
   window.currentResultsTopRows = officialTopRows;
   const statsBtn = document.getElementById('resultsStatsBtn');
