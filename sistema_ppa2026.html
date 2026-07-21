@@ -708,7 +708,7 @@ tr:hover td.sticky{background:#FAFAFA}
 #view-resultados .res-comparison-rank b{font-size:13px;font-weight:400;letter-spacing:.01em}
 #view-resultados .res-comparison-rank span{width:22px;text-align:left;font-size:13px;font-weight:400;font-variant-numeric:tabular-nums}
 #view-resultados .res-comparison-rank.spn{color:#C45F4A}
-#view-resultados .res-comparison-rank.rc{color:#6557C7}
+#view-resultados .res-comparison-rank.rr{color:#6557C7}
 #view-resultados .results-utility-row{display:flex;align-items:center;gap:18px;min-height:30px;margin-top:8px;padding-top:7px;border-top:1px solid #E5E7EB}
 #view-resultados .results-export-btn{margin-left:auto;background:transparent;border-color:transparent;color:#68727D;box-shadow:none}
 #view-resultados .results-export-btn:hover{background:#F1F3F4;border-color:#E1E4E8}
@@ -906,13 +906,24 @@ tr:hover td.sticky{background:#FAFAFA}
 #view-resultados.results-has-filters .results-table tbody > tr:not(.res-top-row):not(.res-near-row):hover > td.id-col{
   background:#FAFAFA;
 }
+#view-resultados .results-table tbody > tr.res-convergence-row > td,
+#view-resultados .results-table tbody > tr.res-convergence-row > td.sticky,
+#view-resultados.results-has-filters .results-table tbody > tr.res-convergence-row > td.id-col{
+  background:#EAF3FF;
+}
+#view-resultados .results-table tbody > tr.res-convergence-row:hover > td,
+#view-resultados .results-table tbody > tr.res-convergence-row:hover > td.sticky,
+#view-resultados.results-has-filters .results-table tbody > tr.res-convergence-row:hover > td.id-col{
+  background:#DCEBFF;
+}
+.res-convergence-label{display:block;margin-top:5px;color:#1A73E8;font-size:8.5px;font-weight:600;line-height:1.15;letter-spacing:.01em;text-transform:uppercase;white-space:nowrap}
 .res-rank-line{display:grid;grid-template-columns:22px max-content max-content;align-items:center;gap:7px;min-height:16px}
 .res-rank-line .sw-sm{flex:0 0 auto}
 .res-rank-axis{display:flex;align-items:center;min-width:0}
 .res-primary-rank{display:inline-block;width:22px;font-size:13px;font-weight:600;color:#202124;font-variant-numeric:tabular-nums}
 .res-rank-mode-code{margin-left:-3px;font-size:13px;font-weight:400;letter-spacing:.01em}
 .res-primary-rank.spn,.res-rank-mode-code.spn{color:#C45F4A;font-weight:400}
-.res-primary-rank.rc,.res-rank-mode-code.rc{color:#6557C7;font-weight:400}
+.res-primary-rank.rr,.res-rank-mode-code.rr{color:#6557C7;font-weight:400}
 .res-primary-rank.rsmn,.res-rank-mode-code.rsmn{color:#3973B8;font-weight:400}
 .res-base-rank{display:flex;align-items:baseline;gap:7px;margin-top:4px;color:#7A828E;line-height:1;white-space:nowrap}
 .res-base-rank span{width:22px;text-align:left;font-size:13px;font-weight:400;font-variant-numeric:tabular-nums}
@@ -3178,7 +3189,7 @@ textarea::placeholder{color:#BDC1C6}
         <select class="finput" id="resFiltroRanking" onchange="renderResultados()" style="width:225px;min-width:225px">
           <option>Ranking normal</option>
           <option value="Ranking sem a pior nota">SPN · Ranking sem pior nota</option>
-          <option value="Ranking ajustado por parecerista">RC · Ranking calibrado</option>
+          <option value="Ranking ajustado por parecerista">RR · Ranking relativo</option>
         </select>
         </div>
         <button class="btn btn-secondary btn-sm results-top-stats-btn" id="resultsStatsBtn" type="button" onclick="openResultsStatsDrawer()" style="display:none"><i class="ti ti-chart-dots"></i>Estatísticas do Top</button>
@@ -3202,7 +3213,7 @@ textarea::placeholder{color:#BDC1C6}
           <label class="results-special-filter" for="resFiltroAnyTop">
             <input id="resFiltroAnyTop" type="checkbox" onchange="renderResultados()">
             <span class="results-special-check"><i class="ti ti-check"></i></span>
-            <span><strong>Aplicar em todos os cenários</strong><small>Compara o ranking oficial, o ranking sem a pior nota e o ranking calibrado.</small></span>
+            <span><strong>Aplicar em todos os cenários</strong><small>Compara o ranking oficial, o ranking sem a pior nota e o ranking relativo.</small></span>
           </label>
         </div>
       </div>
@@ -6287,7 +6298,7 @@ function buildAnyTopMembership(topLimit, variationPercent = 0) {
   const modes = [
     ['Ranking normal', 'RN', 'Ranking normal'],
     ['Ranking sem a pior nota', 'SPN', 'Ranking sem pior nota'],
-    ['Ranking ajustado por parecerista', 'RC', 'Ranking calibrado'],
+    ['Ranking ajustado por parecerista', 'RR', 'Ranking relativo'],
   ];
   const membership = new Map();
   modes.forEach(([mode, code, label]) => {
@@ -6540,7 +6551,7 @@ function renderResultados() {
     : buildAbsoluteRankingById('Ranking normal');
   const comparisonRankings = anyTopActive ? {
     spn:buildAbsoluteRankingById('Ranking sem a pior nota'),
-    rc:buildAbsoluteRankingById('Ranking ajustado por parecerista'),
+    rr:buildAbsoluteRankingById('Ranking ajustado por parecerista'),
   } : null;
   const filteredRankedRows = [...filtrarResultados()].sort((a, b) => compareResultadoRows(a.e, b.e, rankingMode));
   let allRankedRows = rankingMode === 'Ranking ajustado por parecerista'
@@ -6572,6 +6583,12 @@ function renderResultados() {
     visibleTieCounts[key] = (visibleTieCounts[key] || 0) + 1;
   });
   const total = rows.length;
+  const convergenceCount = anyTopActive ? rows.filter(({ e }) => {
+    const topCodes = new Set((anyTopMembership.get(String(e.id))?.origins || [])
+      .filter(origin => origin.source === 'top')
+      .map(origin => origin.code));
+    return ['RN', 'SPN', 'RR'].every(code => topCodes.has(code));
+  }).length : 0;
   const hasActiveFilters =
     (document.getElementById('resFiltroStatus')?.value || 'Todas as avaliações') !== 'Todas as avaliações' ||
     (document.getElementById('resFiltroTime')?.value || 'Todos os times') !== 'Todos os times' ||
@@ -6585,7 +6602,7 @@ function renderResultados() {
   if (summaryBar) {
     summaryBar.style.display = hasActiveFilters ? 'block' : 'none';
     summaryBar.innerHTML = hasActiveFilters
-      ? `<span class="res-subtle">${total} ${total === 1 ? 'equipe exibida' : 'equipes exibidas'}</span>`
+      ? `<span class="res-subtle">${total} ${total === 1 ? 'equipe exibida' : 'equipes exibidas'}${anyTopActive ? ` · ${convergenceCount} ${convergenceCount === 1 ? 'convergência' : 'convergências'}` : ''}</span>`
       : '';
   }
   window.currentResultsTopRows = officialTopRows;
@@ -6607,12 +6624,14 @@ function renderResultados() {
     const isNearCut = topLimit > 0 && !isOfficialTop;
     const isBaseOfficialTop = topLimit > 0 && Number(baseRanking.rank) <= topLimit;
     const anyTopOrigins = anyTopMembership.get(String(e.id))?.origins || [];
+    const topOriginCodes = new Set(anyTopOrigins.filter(origin => origin.source === 'top').map(origin => origin.code));
+    const isConvergentTop = anyTopActive && ['RN', 'SPN', 'RR'].every(code => topOriginCodes.has(code));
     const isAnyTopMarginOnly = anyTopActive && anyTopOrigins.length > 0 && anyTopOrigins.every(origin => origin.source === 'margin');
     const isOutsideBaseTop = isOfficialTop && !isBaseOfficialTop && !isAnyTopMarginOnly && (anyTopActive || rankingMode !== 'Ranking normal');
     const rankingModeCode = {
       'Ranking sem a pior nota':'SPN',
       'Ranking sem a melhor nota':'RSMN',
-      'Ranking ajustado por parecerista':'RC',
+      'Ranking ajustado por parecerista':'RR',
     }[rankingMode] || '';
     const rankingModeClass = rankingModeCode.toLowerCase();
     const primaryRankingCode = rankingModeCode
@@ -6621,12 +6640,13 @@ function renderResultados() {
     const comparisonRankLabel = anyTopActive
       ? `<div class="res-comparison-ranks" title="Posições nos rankings comparados">
           <div class="res-comparison-rank spn"><span>${comparisonRankings.spn.get(String(e.id))?.rank ?? '—'}</span><b>SPN</b></div>
-          <div class="res-comparison-rank rc"><span>${comparisonRankings.rc.get(String(e.id))?.rank ?? '—'}</span><b>RC</b></div>
+          <div class="res-comparison-rank rr"><span>${comparisonRankings.rr.get(String(e.id))?.rank ?? '—'}</span><b>RR</b></div>
         </div>`
       : '';
     const rowClass = [
       isAnyTopMarginOnly ? 'res-near-row' : isOfficialTop ? 'res-top-row' : isNearCut ? 'res-near-row' : '',
       isOutsideBaseTop ? 'res-outside-base-top' : '',
+      isConvergentTop ? 'res-convergence-row' : '',
     ].filter(Boolean).join(' ');
     const subRows = getOfficialPareceristas().filter(p => atribuicoes[e.id]?.includes(p.id)).map(p => {
       const av = avaliacoes[p.id]?.[e.id];
@@ -6645,7 +6665,7 @@ function renderResultados() {
     }).join('');
 
     return `<tr class="${rowClass}">
-      <td class="sticky s0">${isBaseOfficialTop ? `<span class="res-cut-label rank-top-label">Top ${topLimit}</span>` : ''}<div class="res-rank-line"><span class="res-primary-rank ${rankingModeClass}">${ranking.rank}</span><span class="res-rank-axis">${primaryRankingCode || bancaToggleHTML(e.id)}</span>${primaryRankingCode ? bancaToggleHTML(e.id) : ''}</div>${isVisibleTie ? `<div class="res-faint" style="font-size:10px;margin-top:3px">(empate)</div>` : ''}${baseRankingLabel}${isAnyTopMarginOnly || (!isBaseOfficialTop && isNearCut) ? `<span class="res-cut-label res-near-label">Margem ${variacaoPct}%</span>` : ''}${comparisonRankLabel}</td>
+      <td class="sticky s0">${isBaseOfficialTop ? `<span class="res-cut-label rank-top-label">Top ${topLimit}</span>` : ''}<div class="res-rank-line"><span class="res-primary-rank ${rankingModeClass}">${ranking.rank}</span><span class="res-rank-axis">${primaryRankingCode || bancaToggleHTML(e.id)}</span>${primaryRankingCode ? bancaToggleHTML(e.id) : ''}</div>${isVisibleTie ? `<div class="res-faint" style="font-size:10px;margin-top:3px">(empate)</div>` : ''}${baseRankingLabel}${isAnyTopMarginOnly || (!isBaseOfficialTop && isNearCut) ? `<span class="res-cut-label res-near-label">Margem ${variacaoPct}%</span>` : ''}${isConvergentTop ? '<span class="res-convergence-label">Convergência</span>' : ''}${comparisonRankLabel}</td>
       <td class="sticky s3 id-col" style="text-align:center">
         <div class="res-id-hub">
           <div class="res-id-meta">
