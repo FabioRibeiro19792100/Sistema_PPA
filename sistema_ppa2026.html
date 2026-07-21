@@ -3238,9 +3238,9 @@ textarea::placeholder{color:#BDC1C6}
             <option value="5">Até 5% do corte</option>
           </select>
           <label class="results-special-filter" for="resFiltroAnyTop">
-            <input id="resFiltroAnyTop" type="checkbox" onchange="renderResultados()">
+            <input id="resFiltroAnyTop" type="checkbox" onchange="toggleAnyTopResults(this)">
             <span class="results-special-check"><i class="ti ti-check"></i></span>
-            <span><strong>Aplicar em todos os cenários</strong><small>Compara o ranking oficial, o ranking sem a pior nota e o ranking relativo.</small></span>
+            <span><strong>Comparar rankings</strong><small>Compara o ranking oficial, o ranking sem a pior nota e o ranking relativo.</small></span>
           </label>
           <button class="results-ranking-help" type="button" onclick="openRelativeRankingHelp()"><i class="ti ti-info-circle"></i><span>Entenda o ranking relativo</span></button>
           <label class="results-summary-flag" for="resultsSummaryFlag">
@@ -6645,11 +6645,8 @@ function renderResultados() {
   const rankingMode = document.getElementById('resFiltroRanking')?.value || 'Ranking normal';
   const topLimit = Number(document.getElementById('resFiltroTop')?.value || 0);
   const anyTopField = document.getElementById('resFiltroAnyTop');
-  if (anyTopField) {
-    anyTopField.disabled = !topLimit;
-    if (!topLimit) anyTopField.checked = false;
-  }
-  const anyTopActive = !!(topLimit && anyTopField?.checked);
+  const anyTopActive = !!anyTopField?.checked;
+  const anyTopCutActive = !!(topLimit && anyTopActive);
   const variacaoField = document.getElementById('resFiltroVariacao');
   if (variacaoField) {
     variacaoField.style.display = 'none';
@@ -6659,7 +6656,7 @@ function renderResultados() {
   reviewerAdjustedScoreCache = rankingMode === 'Ranking ajustado por parecerista' || anyTopActive
     ? buildReviewerAdjustedScoreCache()
     : new Map();
-  const anyTopMembership = anyTopActive ? buildAnyTopMembership(topLimit, variacaoPct) : new Map();
+  const anyTopMembership = anyTopCutActive ? buildAnyTopMembership(topLimit, variacaoPct) : new Map();
   const absoluteRankingById = buildAbsoluteRankingById(rankingMode);
   const baseRankingById = rankingMode === 'Ranking normal'
     ? absoluteRankingById
@@ -6672,7 +6669,7 @@ function renderResultados() {
   let allRankedRows = rankingMode === 'Ranking ajustado por parecerista'
     ? filteredRankedRows.filter(({ e }) => mediaNotasRanking(e.id, rankingMode) !== null)
     : filteredRankedRows;
-  if (anyTopActive) allRankedRows = allRankedRows.filter(({ e }) => anyTopMembership.has(String(e.id)));
+  if (anyTopCutActive) allRankedRows = allRankedRows.filter(({ e }) => anyTopMembership.has(String(e.id)));
   const rankedWithScore = allRankedRows.filter(({ e }) => mediaNotasRanking(e.id, rankingMode) !== null);
   const absoluteRankedWithScore = INSCRICOES.map((e, idx) => ({ e, idx }))
     .filter(({ e }) => mediaNotasRanking(e.id, rankingMode) !== null)
@@ -6680,7 +6677,7 @@ function renderResultados() {
   const cutoffScore = topLimit && absoluteRankedWithScore.length >= topLimit
     ? mediaNotasRanking(absoluteRankedWithScore[topLimit - 1].e.id, rankingMode)
     : null;
-  const officialTopRows = anyTopActive
+  const officialTopRows = anyTopCutActive
     ? allRankedRows
     : topLimit
       ? rankedWithScore.filter(({ e }) => Number(absoluteRankingById.get(String(e.id))?.rank) <= topLimit)
@@ -6702,13 +6699,13 @@ function renderResultados() {
     visibleTieCounts[key] = (visibleTieCounts[key] || 0) + 1;
   });
   const total = rows.length;
-  const convergenceCount = anyTopActive ? rows.filter(({ e }) => {
+  const convergenceCount = anyTopCutActive ? rows.filter(({ e }) => {
     const topCodes = new Set((anyTopMembership.get(String(e.id))?.origins || [])
       .filter(origin => origin.source === 'top')
       .map(origin => origin.code));
     return ['RN', 'SPN', 'RR'].every(code => topCodes.has(code));
   }).length : 0;
-  const otherRankingTopCount = anyTopActive ? rows.filter(({ e }) => {
+  const otherRankingTopCount = anyTopCutActive ? rows.filter(({ e }) => {
     const id = String(e.id);
     const origins = anyTopMembership.get(id)?.origins || [];
     const isBaseTop = Number(baseRankingById.get(id)?.rank) <= topLimit;
@@ -6727,7 +6724,7 @@ function renderResultados() {
   if (summaryBar) {
     summaryBar.style.display = hasActiveFilters ? 'block' : 'none';
     summaryBar.innerHTML = hasActiveFilters
-      ? `<span class="res-subtle">${total} ${total === 1 ? 'equipe exibida' : 'equipes exibidas'}${anyTopActive ? ` · ${convergenceCount} ${convergenceCount === 1 ? 'convergência' : 'convergências'}<span class="res-summary-coral"> · ${otherRankingTopCount} ${otherRankingTopCount === 1 ? 'entrada no Top por SPN ou RR' : 'entradas no Top por SPN ou RR'}</span>` : ''}</span>`
+      ? `<span class="res-subtle">${total} ${total === 1 ? 'equipe exibida' : 'equipes exibidas'}${anyTopCutActive ? ` · ${convergenceCount} ${convergenceCount === 1 ? 'convergência' : 'convergências'}<span class="res-summary-coral"> · ${otherRankingTopCount} ${otherRankingTopCount === 1 ? 'entrada no Top por SPN ou RR' : 'entradas no Top por SPN ou RR'}</span>` : ''}</span>`
       : '';
   }
   window.currentResultsTopRows = officialTopRows;
@@ -6834,6 +6831,10 @@ function renderResultados() {
     requestAnimationFrame(syncResultadosStickyLayout);
   });
 
+}
+
+function toggleAnyTopResults(field) {
+  renderResultados();
 }
 
 function renderBanca() {
