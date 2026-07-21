@@ -658,6 +658,27 @@ tr:hover td.sticky{background:#FAFAFA}
 .res-id{display:block;max-width:100%;overflow-wrap:anywhere;line-height:1.2;text-align:left}
 .res-uf{display:block;margin-top:4px;font-size:10px;font-weight:700;letter-spacing:.04em;color:#7A828E;text-align:left}
 .res-id-actions{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:6px;width:24px;min-width:24px;max-width:24px;padding-top:0}
+.results-team-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.results-summary-toggle{display:none;flex-direction:column;align-items:center;justify-content:center;gap:1px;width:64px;min-height:34px;flex:0 0 64px;padding:3px 7px;border:1px solid #D9E0E8;border-radius:9px;background:#F8FAFC;color:#64748B;line-height:1;cursor:pointer;transition:background .12s,border-color .12s,color .12s}
+.results-summary-toggle:hover{border-color:#B8CCE8;background:#F2F7FD;color:#1A73E8}
+.results-summary-toggle-sign{font-size:15px;font-weight:500;line-height:.9}
+.results-summary-toggle-label{font-size:7.5px;font-weight:600;letter-spacing:.04em;line-height:1.1;white-space:nowrap;text-transform:uppercase}
+#view-resultados{--results-summary-width:0px}
+#view-resultados.results-summary-open{--results-summary-width:320px}
+#view-resultados .results-table{min-width:calc(100% + var(--results-summary-width)) !important}
+#view-resultados col.res-project-summary-col{display:none}
+#view-resultados th.res-project-summary-col,
+#view-resultados td.res-project-summary-col{display:none}
+#view-resultados.results-summary-open col.res-project-summary-col{display:table-column}
+#view-resultados.results-summary-open th.res-project-summary-col,
+#view-resultados.results-summary-open td.res-project-summary-col{display:table-cell}
+#view-resultados .results-table .s7{left:calc(456px + var(--results-summary-width))}
+.res-project-summary-head{text-align:left;border-left:0 !important}
+.res-project-summary-text{font-size:11.5px;line-height:1.45;color:#5F6368;white-space:normal}
+.res-project-summary-empty{color:#BDC1C6}
+.results-summary-flag{display:inline-flex;align-items:center;gap:7px;margin-left:10px;padding-left:14px;border-left:1px solid #E5E7EB;color:#64748B;font-size:11px;line-height:1;white-space:nowrap;cursor:pointer;user-select:none}
+.results-summary-flag input{width:14px;height:14px;margin:0;accent-color:#1A73E8;cursor:pointer}
+.results-summary-flag span{font-weight:600}
 .leader-cell{position:relative;min-height:74px}
 .nota-cell{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:8px;min-height:74px;padding-top:2px}
 .nota-main{font-size:15px;font-weight:600;color:#202124;line-height:1}
@@ -700,8 +721,9 @@ tr:hover td.sticky{background:#FAFAFA}
 #view-resultados .results-special-filter input:disabled + .results-special-check{background:#EEF0F2;border-color:#D8DCE2}
 #view-resultados .results-special-filter strong{display:block;font-size:11.5px;color:#3F4752;line-height:1.25}
 #view-resultados .results-special-filter small{display:block;margin-top:2px;font-size:10px;color:#8A929D;line-height:1.3}
-#view-resultados .results-ranking-help{display:inline-flex;align-items:center;gap:5px;padding:4px 2px;border:0;background:transparent;color:#1A73E8;font-size:11px;font-weight:500;white-space:nowrap;cursor:pointer}
-#view-resultados .results-ranking-help:hover{color:#1558B0;text-decoration:underline;text-underline-offset:3px}
+#view-resultados .results-ranking-help{display:inline-flex;align-items:center;gap:5px;margin-left:8px;padding:4px 2px;border:0;background:transparent;color:#1A73E8;font-size:11px;font-weight:500;white-space:nowrap;cursor:pointer}
+#view-resultados .results-ranking-help:hover{color:#1558B0}
+#view-resultados .results-ranking-help:hover span{text-decoration:underline;text-underline-offset:3px}
 #view-resultados .results-ranking-help i{font-size:14px}
 #view-resultados .results-special-hint{font-size:10px;color:#9AA0A6;white-space:nowrap}
 #view-resultados .res-coral-origin{margin-top:3px;color:#C45F4A;font-size:9px;font-weight:700;line-height:1.2;white-space:nowrap}
@@ -3220,7 +3242,11 @@ textarea::placeholder{color:#BDC1C6}
             <span class="results-special-check"><i class="ti ti-check"></i></span>
             <span><strong>Aplicar em todos os cenários</strong><small>Compara o ranking oficial, o ranking sem a pior nota e o ranking relativo.</small></span>
           </label>
-          <button class="results-ranking-help" type="button" onclick="openRelativeRankingHelp()"><i class="ti ti-info-circle"></i>Entenda o ranking relativo</button>
+          <button class="results-ranking-help" type="button" onclick="openRelativeRankingHelp()"><i class="ti ti-info-circle"></i><span>Entenda o ranking relativo</span></button>
+          <label class="results-summary-flag" for="resultsSummaryFlag">
+            <input id="resultsSummaryFlag" type="checkbox" onchange="toggleResultsSummaryColumn(this.checked)">
+            <span>Exibir resumos</span>
+          </label>
         </div>
       </div>
       <div class="results-utility-row">
@@ -3238,6 +3264,7 @@ textarea::placeholder{color:#BDC1C6}
           <col style="width:86px">
           <col style="width:108px">
           <col style="width:262px">
+          <col class="res-project-summary-col" style="width:320px">
           <col style="width:96px">
           <col style="width:104px">
           <col style="width:104px">
@@ -3252,7 +3279,8 @@ textarea::placeholder{color:#BDC1C6}
           <tr>
             <th class="sticky s0 rank-col-head" rowspan="2">Ranking</th>
             <th class="sticky s3 id-col" rowspan="2">Identificação</th>
-            <th class="sticky s5" rowspan="2">Time (leader-first)</th>
+            <th class="sticky s5" rowspan="2"><div class="results-team-head"><span>Time (leader-first)</span><button class="results-summary-toggle" id="resultsSummaryToggle" type="button" onclick="toggleResultsSummaryColumn()" title="Mostrar resumos dos projetos" aria-label="Mostrar resumos dos projetos" aria-expanded="false"><span class="results-summary-toggle-sign">+</span><span class="results-summary-toggle-label">Ver resumo</span></button></div></th>
+            <th class="res-project-summary-col res-project-summary-head" rowspan="2">Resumo do projeto</th>
             <th class="sticky s7" rowspan="2" style="text-align:center;min-width:90px">Nota geral</th>
             <th class="crit crit-group" colspan="2" style="text-align:center;border-left:1px solid #E0E0E0">Proposta</th>
             <th class="crit crit-group" colspan="2" style="text-align:center;border-left:1px solid #E0E0E0">Impacto</th>
@@ -4077,6 +4105,8 @@ let atribuicoes = {};
 // avaliacoes[parId][inscId] = { notas:[...], justificativas:[...], parecer:'', done:bool }
 let avaliacoes = {};
 let videoIssueReports = [];
+let projectSummaries = new Map();
+let resultsSummaryColumnOpen = false;
 
 let currentParId = null;
 let currentInscId = null;
@@ -6543,6 +6573,53 @@ function zerarFiltrosResultados() {
   renderResultados();
 }
 
+async function loadProjectSummaries() {
+  try {
+    if (typeof XLSX === 'undefined') return false;
+    const response = await fetch('./Resumos%20PPA.xlsx', { cache:'no-store' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const workbook = XLSX.read(await response.arrayBuffer(), { type:'array' });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(sheet, { defval:'' });
+    const nextSummaries = new Map();
+    rows.forEach(row => {
+      const id = row.ID ?? row.Id ?? row.id ?? '';
+      const summary = row.Resummo ?? row.Resumo ?? row.resummo ?? row.resumo ?? '';
+      const normalizedId = String(id).trim();
+      const normalizedSummary = String(summary).trim();
+      if (normalizedId && normalizedSummary) nextSummaries.set(normalizedId, normalizedSummary);
+    });
+    projectSummaries = nextSummaries;
+    return true;
+  } catch (error) {
+    console.warn('Não foi possível carregar os resumos dos projetos:', error);
+    projectSummaries = new Map();
+    return false;
+  }
+}
+
+function syncResultsSummaryColumn() {
+  const view = document.getElementById('view-resultados');
+  const toggle = document.getElementById('resultsSummaryToggle');
+  const flag = document.getElementById('resultsSummaryFlag');
+  view?.classList.toggle('results-summary-open', resultsSummaryColumnOpen);
+  if (flag) flag.checked = resultsSummaryColumnOpen;
+  if (!toggle) return;
+  const sign = toggle.querySelector('.results-summary-toggle-sign');
+  const label = toggle.querySelector('.results-summary-toggle-label');
+  if (sign) sign.textContent = resultsSummaryColumnOpen ? '−' : '+';
+  if (label) label.textContent = resultsSummaryColumnOpen ? 'Ocultar' : 'Ver resumo';
+  toggle.title = resultsSummaryColumnOpen ? 'Ocultar resumos dos projetos' : 'Mostrar resumos dos projetos';
+  toggle.setAttribute('aria-label', toggle.title);
+  toggle.setAttribute('aria-expanded', String(resultsSummaryColumnOpen));
+}
+
+function toggleResultsSummaryColumn(forceOpen) {
+  resultsSummaryColumnOpen = typeof forceOpen === 'boolean' ? forceOpen : !resultsSummaryColumnOpen;
+  syncResultsSummaryColumn();
+  requestAnimationFrame(syncResultadosStickyLayout);
+}
+
 function syncResultadosStickyLayout() {
   const top = document.getElementById('resultsTopSticky');
   const view = document.getElementById('view-resultados');
@@ -6564,6 +6641,7 @@ window.addEventListener('resize', () => {
 function renderResultados() {
   syncCriterionWeightLabels();
   syncResultadosFilters();
+  syncResultsSummaryColumn();
   const rankingMode = document.getElementById('resFiltroRanking')?.value || 'Ranking normal';
   const topLimit = Number(document.getElementById('resFiltroTop')?.value || 0);
   const anyTopField = document.getElementById('resFiltroAnyTop');
@@ -6687,6 +6765,7 @@ function renderResultados() {
           <div class="res-comparison-rank rr"><span>${comparisonRankings.rr.get(String(e.id))?.rank ?? '—'}</span><b>RR</b></div>
         </div>`
       : '';
+    const projectSummary = projectSummaries.get(String(shortInscId(e.id))) || '';
     const rowClass = [
       isAnyTopMarginOnly ? 'res-near-row' : isOfficialTop ? 'res-top-row' : isNearCut ? 'res-near-row' : '',
       isOutsideBaseTop ? 'res-outside-base-top' : '',
@@ -6703,6 +6782,7 @@ function renderResultados() {
           <div style="font-size:11px;font-weight:500;color:#5F6368">${p.nome}</div>
           <div class="res-faint" style="font-size:10px">Parecerista</div>
         </td>
+        <td class="res-project-summary-col"></td>
         <td class="sticky s7" style="text-align:center">${parecerConcluido ? `<span style="font-size:13px;font-weight:600;color:#202124">${fmtNotaGeral(notaGeralParecerista)}</span>` : '<span style="color:#E0E0E0">—</span>'}</td>
         ${Array(8).fill(0).map((_,ci) => `<td class="crit-td">${nc(parecerConcluido ? av.notas[ci] : null)}</td>`).join('')}
       </tr>`;
@@ -6733,6 +6813,7 @@ function renderResultados() {
           <div class="res-muted" style="font-size:11px;margin-top:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-school" style="font-size:11px"></i>${displayPersonName(e.mentor)}</div>
         </div>
       </td>
+      <td class="res-project-summary-col">${projectSummary ? `<div class="res-project-summary-text">${escapeHtmlAttr(projectSummary)}</div>` : '<span class="res-project-summary-empty">Resumo não disponível</span>'}</td>
       <td class="sticky s7" style="text-align:center;vertical-align:top">
         <div class="nota-cell">
           <div class="nota-main">${pt !== null ? fmtResultadoFinal(pt) : '<span style="color:#E0E0E0;font-size:15px">—</span>'}</div>
@@ -6744,7 +6825,7 @@ function renderResultados() {
       </td>
       ${Array(8).fill(0).map((_,ci) => `<td class="crit-td">${notaNumericaCriterioHTML(mediaNumericaPorCrit(e.id,ci), ci)}</td>`).join('')}
     </tr>${subRows}`;
-  }).join('') : `<tr><td colspan="12" style="padding:22px 14px;text-align:center;color:#9AA0A6">Nenhum registro encontrado para os filtros aplicados.</td></tr>`;
+  }).join('') : `<tr><td colspan="13" style="padding:22px 14px;text-align:center;color:#9AA0A6">Nenhum registro encontrado para os filtros aplicados.</td></tr>`;
 
   requestAnimationFrame(() => {
     const scroll = document.getElementById('resultsBodyScroll');
@@ -12057,6 +12138,7 @@ showStartupRoute();
 
 window.addEventListener('load', () => {
   setTimeout(async () => {
+    await loadProjectSummaries();
     await loadSharedSupabaseSettings();
     if (persistenceMode === 'supabase' && hasSupabaseCredentials()) {
       await waitForSupabaseSdk();
