@@ -663,16 +663,19 @@ tr:hover td.sticky{background:#FAFAFA}
 .results-summary-toggle:hover{border-color:#B8CCE8;background:#F2F7FD;color:#1A73E8}
 .results-summary-toggle-sign{font-size:15px;font-weight:500;line-height:.9}
 .results-summary-toggle-label{font-size:7.5px;font-weight:600;letter-spacing:.04em;line-height:1.1;white-space:nowrap;text-transform:uppercase}
-#view-resultados{--results-summary-width:0px}
-#view-resultados.results-summary-open{--results-summary-width:320px}
-#view-resultados .results-table{min-width:calc(100% + var(--results-summary-width)) !important}
+#view-resultados .results-table{min-width:100% !important}
+#view-resultados.results-summary-open .results-table{width:1704px!important;min-width:1704px!important;table-layout:fixed}
+#view-resultados.results-summary-open .results-table th,
+#view-resultados.results-summary-open .results-table td{box-sizing:border-box}
 #view-resultados col.res-project-summary-col{display:none}
 #view-resultados th.res-project-summary-col,
 #view-resultados td.res-project-summary-col{display:none}
 #view-resultados.results-summary-open col.res-project-summary-col{display:table-column}
 #view-resultados.results-summary-open th.res-project-summary-col,
 #view-resultados.results-summary-open td.res-project-summary-col{display:table-cell}
-#view-resultados .results-table .s7{left:calc(456px + var(--results-summary-width))}
+#view-resultados .results-table .s7{left:456px}
+#view-resultados.results-summary-open .results-table tbody td.sticky{position:relative;left:auto;z-index:1;box-shadow:none}
+#view-resultados.results-summary-open .results-table thead th.sticky{left:auto;box-shadow:none}
 .res-project-summary-head{text-align:left;border-left:0 !important}
 .res-project-summary-text{font-size:11.5px;line-height:1.45;color:#5F6368;white-space:normal}
 .res-project-summary-empty{color:#BDC1C6}
@@ -777,6 +780,15 @@ tr:hover td.sticky{background:#FAFAFA}
   overflow:visible;
   padding-right:0;
 }
+#view-resultados.results-summary-open > div > .tbl-card{overflow:hidden}
+#view-resultados.results-summary-open .tbl-scroll{
+  max-width:100%;
+  overflow:auto;
+  padding-bottom:8px;
+  scrollbar-gutter:stable;
+  overscroll-behavior-x:contain;
+}
+#view-resultados.results-summary-open .results-table thead{top:0}
 #view-resultados > div > .tbl-card{
   overflow:visible;
 }
@@ -975,6 +987,8 @@ tr:hover td.sticky{background:#FAFAFA}
 .results-drawer-backdrop.open{opacity:1;pointer-events:auto}
 .results-drawer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:22px 22px 16px;border-bottom:1px solid #E5E7EB}
 .results-drawer-body{padding:18px 22px 28px;overflow:auto}
+.results-stats-intro{margin:0 0 4px;padding:0 0 14px;border-bottom:1px solid #EEF0F2;color:#4B5563;font-size:12.5px;line-height:1.55}
+.results-stats-intro strong{color:#202124;font-weight:700;font-variant-numeric:tabular-nums}
 .results-stat-section{padding:14px 0;border-bottom:1px solid #EEF0F2}
 .results-stat-section:last-child{border-bottom:none}
 .results-stat-title{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#737B85;margin-bottom:10px}
@@ -3205,7 +3219,7 @@ textarea::placeholder{color:#BDC1C6}
           <option>Em dupla</option>
           <option>Em trio</option>
         </select>
-        <select class="finput" id="resFiltroUf" onchange="renderResultados()" style="width:140px;min-width:140px"><option value="">Todos os estados</option></select>
+        <select class="finput" id="resFiltroUf" onchange="renderResultados()" style="width:150px;min-width:150px"><option value="">Todos os estados</option></select>
         <select class="finput" id="resFiltroGenero" onchange="renderResultados()" style="width:175px;min-width:175px"><option>Todos os gêneros</option><option>Feminino</option><option>Masculino</option><option>Prefiro não indicar</option></select>
         <select class="finput" id="resFiltroRaca" onchange="renderResultados()" style="width:135px;min-width:135px"><option value="">Todas as raças</option></select>
         <select class="finput" id="resFiltroIA" onchange="renderResultados()" style="width:110px;min-width:110px">
@@ -3244,7 +3258,7 @@ textarea::placeholder{color:#BDC1C6}
           </label>
           <button class="results-ranking-help" type="button" onclick="openRelativeRankingHelp()"><i class="ti ti-info-circle"></i><span>Entenda o ranking relativo</span></button>
           <label class="results-summary-flag" for="resultsSummaryFlag">
-            <input id="resultsSummaryFlag" type="checkbox" onchange="toggleResultsSummaryColumn(this.checked)">
+            <input id="resultsSummaryFlag" type="checkbox" autocomplete="off" onchange="toggleResultsSummaryColumn(this.checked)">
             <span>Exibir resumos</span>
           </label>
         </div>
@@ -6603,6 +6617,8 @@ function syncResultsSummaryColumn() {
   const toggle = document.getElementById('resultsSummaryToggle');
   const flag = document.getElementById('resultsSummaryFlag');
   view?.classList.toggle('results-summary-open', resultsSummaryColumnOpen);
+  const tableScroll = document.getElementById('resultsBodyScroll');
+  if (!resultsSummaryColumnOpen && tableScroll) tableScroll.scrollLeft = 0;
   if (flag) flag.checked = resultsSummaryColumnOpen;
   if (!toggle) return;
   const sign = toggle.querySelector('.results-summary-toggle-sign');
@@ -6616,7 +6632,9 @@ function syncResultsSummaryColumn() {
 
 function toggleResultsSummaryColumn(forceOpen) {
   resultsSummaryColumnOpen = typeof forceOpen === 'boolean' ? forceOpen : !resultsSummaryColumnOpen;
-  syncResultsSummaryColumn();
+  renderResultados();
+  const tableScroll = document.getElementById('resultsBodyScroll');
+  if (tableScroll) tableScroll.scrollLeft = 0;
   requestAnimationFrame(syncResultadosStickyLayout);
 }
 
@@ -6626,7 +6644,12 @@ function syncResultadosStickyLayout() {
   const scroll = document.getElementById('resultsBodyScroll');
   if (!top || !view || !scroll) return;
   view.style.setProperty('--results-toolbar-h', `${Math.ceil(top.getBoundingClientRect().height)}px`);
-  scroll.style.maxHeight = 'none';
+  if (resultsSummaryColumnOpen) {
+    const available = Math.max(320, Math.floor(window.innerHeight - scroll.getBoundingClientRect().top - 18));
+    scroll.style.maxHeight = `${available}px`;
+  } else {
+    scroll.style.maxHeight = 'none';
+  }
 }
 
 function bindResultadosScrollSync() {
@@ -6756,6 +6779,9 @@ function renderResultados() {
     const primaryRankingCode = rankingModeCode
       ? `<b class="res-rank-mode-code ${rankingModeClass}">${rankingModeCode}</b>`
       : '';
+    const baseRankingLabel = rankingMode !== 'Ranking normal'
+      ? `<div class="res-base-rank" title="Posição no ranking oficial"><span>${baseRanking.rank}</span><b>RN</b></div>`
+      : '';
     const comparisonRankLabel = anyTopActive
       ? `<div class="res-comparison-ranks" title="Posições nos rankings comparados">
           <div class="res-comparison-rank spn"><span>${comparisonRankings.spn.get(String(e.id))?.rank ?? '—'}</span><b>SPN</b></div>
@@ -6786,7 +6812,7 @@ function renderResultados() {
     }).join('');
 
     return `<tr class="${rowClass}">
-      <td class="sticky s0">${isBaseOfficialTop ? `<span class="res-cut-label rank-top-label">Top ${topLimit}</span>` : ''}<div class="res-rank-line"><span class="res-primary-rank ${rankingModeClass}">${ranking.rank}</span><span class="res-rank-axis">${primaryRankingCode || bancaToggleHTML(e.id)}</span>${primaryRankingCode ? bancaToggleHTML(e.id) : ''}</div>${isVisibleTie ? `<div class="res-faint" style="font-size:10px;margin-top:3px">(empate)</div>` : ''}${isAnyTopMarginOnly || (!isBaseOfficialTop && isNearCut) ? `<span class="res-cut-label res-near-label">Margem ${variacaoPct}%</span>` : ''}${isConvergentTop ? '<span class="res-convergence-label">Convergência</span>' : ''}${comparisonRankLabel}</td>
+      <td class="sticky s0">${isBaseOfficialTop ? `<span class="res-cut-label rank-top-label">Top ${topLimit}</span>` : ''}<div class="res-rank-line"><span class="res-primary-rank ${rankingModeClass}">${ranking.rank}</span><span class="res-rank-axis">${primaryRankingCode || bancaToggleHTML(e.id)}</span>${primaryRankingCode ? bancaToggleHTML(e.id) : ''}</div>${baseRankingLabel}${isVisibleTie ? `<div class="res-faint" style="font-size:10px;margin-top:3px">(empate)</div>` : ''}${isAnyTopMarginOnly || (!isBaseOfficialTop && isNearCut) ? `<span class="res-cut-label res-near-label">Margem ${variacaoPct}%</span>` : ''}${isConvergentTop ? '<span class="res-convergence-label">Convergência</span>' : ''}${comparisonRankLabel}</td>
       <td class="sticky s3 id-col" style="text-align:center">
         <div class="res-id-hub">
           <div class="res-id-meta">
@@ -6826,9 +6852,15 @@ function renderResultados() {
 
   requestAnimationFrame(() => {
     const scroll = document.getElementById('resultsBodyScroll');
-    if (scroll) scroll.scrollTop = 0;
+    if (scroll) {
+      scroll.scrollTop = 0;
+      if (resultsSummaryColumnOpen) scroll.scrollLeft = 0;
+    }
     syncResultadosStickyLayout();
-    requestAnimationFrame(syncResultadosStickyLayout);
+    requestAnimationFrame(() => {
+      syncResultadosStickyLayout();
+      if (resultsSummaryColumnOpen && scroll) scroll.scrollLeft = 0;
+    });
   });
 
 }
@@ -6869,9 +6901,16 @@ function resultadoParticipantRows(e) {
   const targetId = shortInscId(e?.id);
   const rows = (Array.isArray(rawParticipantes) ? rawParticipantes : []).filter(row => {
     const rowId = shortInscId(row?.['ID inscrição'] || row?.['ID Inscrição'] || row?.['ID'] || '');
-    return rowId === targetId;
+    if (rowId !== targetId) return false;
+    const role = String(row?.['Papel'] || row?.['papel'] || '').trim().toLowerCase();
+    return !role || ['líder', 'lider', 'participante 2', 'participante 3'].includes(role);
   });
-  return rows.length ? rows : [e?._raw || {}];
+  if (rows.length) return rows;
+  return [
+    { ...(e?._raw || {}), Nome:e?.lider || '', 'E-mail':e?.le || '', Papel:'Líder' },
+    e?.p2 ? { Nome:e.p2, 'E-mail':e.p2e || '', Papel:'Participante 2' } : null,
+    e?.p3 ? { Nome:e.p3, 'E-mail':e.p3e || '', Papel:'Participante 3' } : null,
+  ].filter(Boolean);
 }
 function firstRawValue(row, keys) {
   for (const key of keys) {
@@ -6909,16 +6948,28 @@ function renderResultsStatsDrawer(source = 'resultados') {
     ? (Array.isArray(window.currentBancaRows) ? window.currentBancaRows : [])
     : (Array.isArray(window.currentResultsTopRows) ? window.currentResultsTopRows : []);
   const teams = rows.map(({ e }) => e);
-  const participants = teams.flatMap(resultadoParticipantRows);
+  const participants = teams.flatMap(team => resultadoParticipantRows(team).map(row => ({ row, team })));
   const modalidades = countResultsStats(teams.map(e => e.mod || 'N/D'));
-  const regioes = countResultsStats(teams.map(e => regionFromUf(e.uf) || 'N/D'));
-  const estados = countResultsStats(teams.map(e => compactUfLabel(e.uf) || 'N/D'));
-  const universidades = countResultsStats(teams.map(e => compactInstitutionLabel(e.inst) || 'N/D'));
-  const generos = countResultsStats(participants.map(row => normalizeResultsGender(firstRawValue(row, ['Gênero', 'genero'])) || 'N/D'));
-  const racas = countResultsStats(participants.map(row => normalizeResultsRace(firstRawValue(row, ['Cor/raça', 'Cor/Raça', 'raca'])) || 'N/D'));
+  const participantUf = ({ row, team }) => firstRawValue(row, ['UF', 'Estado', 'uf']) || team.uf;
+  const participantInstitution = ({ row, team }) => firstRawValue(row, ['Nome da instituição de ensino em que você possui vínculo estudantil ativo', 'Instituição', 'Universidade']) || team.inst;
+  const regioes = countResultsStats(participants.map(profile => regionFromUf(participantUf(profile)) || 'N/D'));
+  const estados = countResultsStats(participants.map(profile => compactUfLabel(participantUf(profile)) || 'N/D'));
+  const universidades = countResultsStats(participants.map(profile => compactInstitutionLabel(participantInstitution(profile)) || 'N/D'));
+  const generos = countResultsStats(participants.map(({ row }) => normalizeResultsGender(firstRawValue(row, ['Gênero', 'genero'])) || 'N/D'));
+  const racas = countResultsStats(participants.map(({ row }) => normalizeResultsRace(firstRawValue(row, ['Cor/raça', 'Cor/Raça', 'raca'])) || 'N/D'));
   const usoIA = countResultsStats(teams.map(e => normalizeResultsIA(e.ia)));
   const body = document.getElementById('resultsStatsDrawerBody');
-  if (body) body.innerHTML = resultsStatSection('Gênero', generos) + resultsStatSection('Cor / raça', racas) + resultsStatSection('Distribuição por região', regioes) + resultsStatSection('Distribuição por estado', estados) + resultsStatSection('Universidade', universidades) + resultsStatSection('Formação das equipes', modalidades) + resultsStatSection('Uso de IA no vídeo criativo', usoIA);
+  const peopleCount = participants.length;
+  const teamsCount = teams.length;
+  const topLimit = source === 'resultados' ? Number(document.getElementById('resFiltroTop')?.value || 0) : 0;
+  const comparesRankings = source === 'resultados' && !!document.getElementById('resFiltroAnyTop')?.checked;
+  const selectionReason = topLimit > 0 && teamsCount > topLimit
+    ? comparesRankings
+      ? ` Embora o recorte seja Top ${topLimit}, a lista reúne ${teamsCount.toLocaleString('pt-BR')} equipes porque considera os três rankings e preserva eventuais empates.`
+      : ` Embora o recorte seja Top ${topLimit}, a lista inclui ${teamsCount.toLocaleString('pt-BR')} equipes porque houve empate na posição de corte.`
+    : '';
+  const intro = `<p class="results-stats-intro">Esta seleção reúne <strong>${peopleCount.toLocaleString('pt-BR')} ${peopleCount === 1 ? 'pessoa' : 'pessoas'}</strong> ${teamsCount === 1 ? 'em 1 equipe' : `em ${teamsCount.toLocaleString('pt-BR')} equipes`}, considerando todos os seus integrantes.${selectionReason}</p>`;
+  if (body) body.innerHTML = intro + resultsStatSection('Gênero', generos) + resultsStatSection('Cor / raça', racas) + resultsStatSection('Distribuição por região', regioes) + resultsStatSection('Distribuição por estado', estados) + resultsStatSection('Universidade', universidades) + resultsStatSection('Formação das equipes', modalidades) + resultsStatSection('Uso de IA no vídeo criativo', usoIA);
 }
 function openResultsStatsDrawer(source = 'resultados') {
   const rows = source === 'banca' ? window.currentBancaRows : window.currentResultsTopRows;
@@ -8748,7 +8799,7 @@ async function syncAtribuicoesSnapshot(client, atribRows, reason) {
   }
 }
 
-function startRemoteBootWatchdog(timeoutMs = 8000) {
+function startRemoteBootWatchdog(timeoutMs = 30000) {
   stopRemoteBootWatchdog();
   remoteBootWatchdog = setTimeout(() => {
     carregandoEstadoRemoto = false;
@@ -10171,9 +10222,18 @@ function inscricoesFromRemote(rows, participants) {
   });
 }
 
-function hydrateRawBaseFromRemote(rows) {
+function hydrateRawBaseFromRemote(rows, participantProfileRows = []) {
   rawRows = (rows || []).map(row => ({ ...(row?.raw_json || {}) }));
-  rawParticipantes = [];
+  const seenProfiles = new Set();
+  rawParticipantes = (participantProfileRows || []).map(row => ({ ...(row?.payload_json || row || {}) })).filter(profile => {
+    const id = shortInscId(profile?.['ID inscrição'] || profile?.['ID Inscrição'] || profile?.['ID'] || '');
+    const role = String(profile?.['Papel'] || profile?.['papel'] || '').trim().toLowerCase();
+    const order = String(profile?.['Ordem'] || '').trim();
+    const key = `${id}::${role}::${order}`;
+    if (!id || seenProfiles.has(key)) return false;
+    seenProfiles.add(key);
+    return true;
+  });
 }
 
 function avaliaçõesFromRemote(rows, criterios) {
@@ -10276,7 +10336,7 @@ async function loadStateFromSupabase(options = {}) {
       auditData,
     ] = await Promise.all([
       client.from('configuracoes_sistema').select('*').eq('id', activeEnvironment).maybeSingle(),
-      client.from('imports').select('source_name, imported_at').eq('environment', activeEnvironment).order('imported_at', { ascending:false }).limit(1).maybeSingle(),
+      client.from('imports').select('id, source_name, imported_at').eq('environment', activeEnvironment).order('imported_at', { ascending:false }).limit(1).maybeSingle(),
       fetchAllSupabaseRows(() => client.from('inscricoes').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('id_curto')),
       fetchAllSupabaseRows(() => client.from('participantes').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('id')),
       fetchAllSupabaseRows(() => client.from('pareceristas').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('nome')),
@@ -10328,7 +10388,34 @@ async function loadStateFromSupabase(options = {}) {
       return false;
     }
 
-    hydrateRawBaseFromRemote(inscData || []);
+    let participantProfileRows = [];
+    if (latestImportRes.data?.id) {
+      try {
+        participantProfileRows = await fetchAllSupabaseRows(() => client
+          .from('import_rows_raw')
+          .select('payload_json,row_number')
+          .eq('environment', activeEnvironment)
+          .eq('import_id', latestImportRes.data.id)
+          .eq('source_sheet', 'Participantes')
+          .order('row_number'));
+      } catch (profileError) {
+        console.warn('Não foi possível reidratar os perfis completos dos participantes:', profileError);
+      }
+    }
+    if (!participantProfileRows.length) {
+      try {
+        participantProfileRows = await fetchAllSupabaseRows(() => client
+          .from('import_rows_raw')
+          .select('payload_json,row_number,created_at')
+          .eq('environment', activeEnvironment)
+          .eq('source_sheet', 'Participantes')
+          .order('created_at', { ascending:false })
+          .order('row_number'));
+      } catch (profileFallbackError) {
+        console.warn('Não foi possível recuperar perfis de imports anteriores:', profileFallbackError);
+      }
+    }
+    hydrateRawBaseFromRemote(inscData || [], participantProfileRows);
     inscricoesFromRemote(inscData, partData || []);
     const remoteContainsNonSentRows =
       activeEnvironment === 'homolog' &&
@@ -12168,7 +12255,7 @@ window.addEventListener('load', () => {
           renderPortal();
           const reviewerLoaded = await withTimeout(
             loadReviewerPortalStateFromSupabase(requestedParId),
-            6500,
+            30000,
             'A restauração do portal do parecerista demorou além do esperado.'
           );
           refreshRuntimeControls();
@@ -12188,7 +12275,7 @@ window.addEventListener('load', () => {
               includeAudit: false,
               includeCriteria: false,
             }),
-            6500,
+            30000,
             'A restauração do ambiente no Supabase demorou além do esperado.'
           );
         } catch (err) {
