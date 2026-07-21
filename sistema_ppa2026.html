@@ -674,8 +674,25 @@ tr:hover td.sticky{background:#FAFAFA}
 #view-resultados.results-summary-open th.res-project-summary-col,
 #view-resultados.results-summary-open td.res-project-summary-col{display:table-cell}
 #view-resultados .results-table .s7{left:456px}
-#view-resultados.results-summary-open .results-table tbody td.sticky{position:relative;left:auto;z-index:1;box-shadow:none}
-#view-resultados.results-summary-open .results-table thead th.sticky{left:auto;box-shadow:none}
+#view-resultados.results-summary-open .results-table th.s0,
+#view-resultados.results-summary-open .results-table td.s0{position:sticky;left:0}
+#view-resultados.results-summary-open .results-table th.s3,
+#view-resultados.results-summary-open .results-table td.s3{position:sticky;left:86px}
+#view-resultados.results-summary-open .results-table th.s5,
+#view-resultados.results-summary-open .results-table td.s5{position:sticky;left:194px}
+#view-resultados.results-summary-open .results-table tbody td.s0,
+#view-resultados.results-summary-open .results-table tbody td.s3,
+#view-resultados.results-summary-open .results-table tbody td.s5{z-index:5;background:#fff}
+#view-resultados.results-summary-open .results-table thead th.s0,
+#view-resultados.results-summary-open .results-table thead th.s3,
+#view-resultados.results-summary-open .results-table thead th.s5{z-index:18;background:#F3F4F6}
+#view-resultados.results-summary-open .results-table th.res-project-summary-col,
+#view-resultados.results-summary-open .results-table td.res-project-summary-col{position:sticky;left:456px;background:#fff;z-index:4;box-shadow:3px 0 7px -4px rgba(15,23,42,.28)}
+#view-resultados.results-summary-open .results-table th.res-project-summary-col{background:#F3F4F6;z-index:17}
+#view-resultados.results-summary-open .results-table th.s7,
+#view-resultados.results-summary-open .results-table td.s7{position:sticky;left:776px;box-shadow:3px 0 7px -4px rgba(15,23,42,.28)}
+#view-resultados.results-summary-open .results-table tbody td.s7{z-index:5;background:#fff}
+#view-resultados.results-summary-open .results-table thead th.s7{z-index:18;background:#F3F4F6}
 .res-project-summary-head{text-align:left;border-left:0 !important}
 .res-project-summary-text{font-size:11.5px;line-height:1.45;color:#5F6368;white-space:normal}
 .res-project-summary-empty{color:#BDC1C6}
@@ -787,6 +804,7 @@ tr:hover td.sticky{background:#FAFAFA}
   padding-bottom:8px;
   scrollbar-gutter:stable;
   overscroll-behavior-x:contain;
+  overscroll-behavior-y:auto;
 }
 #view-resultados.results-summary-open .results-table thead{top:0}
 #view-resultados > div > .tbl-card{
@@ -5551,6 +5569,7 @@ function toggleBancaSelection(inscId, event) {
   try {
     localStorage.setItem(bancaSelectionStorageKey(), JSON.stringify([...selected]));
   } catch(e) {}
+  queueBancaSelectionRemotePersist([...selected]);
   const bancaVisible = updateBancaNavVisibility();
   const isSelected = selected.has(id);
   document.querySelectorAll('.res-bank-toggle').forEach(button => {
@@ -5569,6 +5588,27 @@ function bancaToggleHTML(inscId) {
   const selected = isSelectedForBanca(inscId);
   const action = selected ? 'Retirar da banca' : 'Selecionar para a banca';
   return `<button class="res-bank-toggle${selected ? ' is-selected' : ''}" data-insc-id="${escapeHtmlAttr(String(inscId))}" type="button" onclick='toggleBancaSelection(${JSON.stringify(String(inscId))}, event)' title="${action}" aria-label="${action}" aria-pressed="${selected}"></button>`;
+}
+
+function applyRemoteBancaSelection(ids) {
+  if (!Array.isArray(ids)) return;
+  const normalized = [...new Set(ids.map(String))];
+  try {
+    localStorage.setItem(bancaSelectionStorageKey(), JSON.stringify(normalized));
+  } catch(e) {}
+}
+
+function queueBancaSelectionRemotePersist(ids) {
+  const snapshot = [...new Set((ids || []).map(String))];
+  bancaRemotePersistQueue = bancaRemotePersistQueue
+    .catch(() => false)
+    .then(() => persistBancaSelectionToSupabase(snapshot))
+    .catch(error => {
+      console.error('Falha ao salvar seleção da banca no Supabase:', error);
+      updateSupabaseStatus(`Falha ao salvar banca: ${error.message || error}`, 'danger');
+      return false;
+    });
+  return bancaRemotePersistQueue;
 }
 
 function avalCount(inscId) {
@@ -8533,8 +8573,10 @@ let requestedParId = null;
 let adminImportInFlight = false;
 let remoteThemeColumnsAvailable = null;
 let remoteCriterionWeightsColumnAvailable = null;
+let remoteBancaSelectionColumnAvailable = null;
 let themeRemoteSyncTimer = null;
 let remoteThemePersistInFlight = false;
+let bancaRemotePersistQueue = Promise.resolve();
 let remoteBootWatchdog = null;
 let remoteAuditLoading = false;
 let remoteAuditEventCache = { homolog:[], producao:[] };
@@ -9227,6 +9269,7 @@ function configSnapshotPayload() {
     pareceres_por_equipe: NUM_PARECERES_POR_EQUIPE,
     evitar_conflito_institucional: EVITAR_CONFLITO_INSTITUCIONAL,
     criterios_pesos: [...CRITERIO_PESOS],
+    banca_selecionados: getBancaSelectionIds(),
   };
 }
 
@@ -9702,8 +9745,10 @@ async function syncStateToSupabase(reason) {
     }
     const themeSupported = await detectRemoteThemeColumns(client);
     const criterionWeightsSupported = await detectRemoteCriterionWeightsColumn(client);
+    const bancaSelectionSupported = await detectRemoteBancaSelectionColumn(client);
     const configPayload = { ...configSnapshotPayload(), id: activeEnvironment, updated_at: new Date().toISOString() };
     if (!criterionWeightsSupported) delete configPayload.criterios_pesos;
+    if (!bancaSelectionSupported) delete configPayload.banca_selecionados;
     if (themeSupported) {
       configPayload.theme_name = currentTheme;
       configPayload.theme_dark = !!isDark;
@@ -10488,6 +10533,11 @@ async function loadStateFromSupabase(options = {}) {
       NUM_PARECERES_POR_EQUIPE = Number(cfgRes.data.pareceres_por_equipe) || NUM_PARECERES_POR_EQUIPE;
       EVITAR_CONFLITO_INSTITUCIONAL = !!cfgRes.data.evitar_conflito_institucional;
       if (Array.isArray(cfgRes.data.criterios_pesos)) CRITERIO_PESOS = normalizeCriterionWeights(cfgRes.data.criterios_pesos);
+      if (Array.isArray(cfgRes.data.banca_selecionados)) {
+        applyRemoteBancaSelection(cfgRes.data.banca_selecionados);
+      } else if (getBancaSelectionIds().length) {
+        queueBancaSelectionRemotePersist(getBancaSelectionIds());
+      }
       if (typeof cfgRes.data.theme_name !== 'undefined' || typeof cfgRes.data.theme_dark !== 'undefined') {
         environmentThemePrefs[activeEnvironment] = {
           theme: normalizeThemeName(cfgRes.data.theme_name || getThemePref(activeEnvironment).theme),
@@ -12099,6 +12149,40 @@ async function detectRemoteCriterionWeightsColumn(client) {
     return false;
   }
   throw error;
+}
+
+async function detectRemoteBancaSelectionColumn(client) {
+  if (!client) return false;
+  if (remoteBancaSelectionColumnAvailable !== null) return remoteBancaSelectionColumnAvailable;
+  const { error } = await client.from('configuracoes_sistema').select('banca_selecionados').limit(1);
+  if (!error) {
+    remoteBancaSelectionColumnAvailable = true;
+    return true;
+  }
+  const msg = String(error.message || '').toLowerCase();
+  if (msg.includes('banca_selecionados') || msg.includes('column')) {
+    remoteBancaSelectionColumnAvailable = false;
+    return false;
+  }
+  throw error;
+}
+
+async function persistBancaSelectionToSupabase(ids) {
+  if (persistenceMode !== 'supabase' || !isSupabaseConfigured()) return false;
+  const client = getSupabaseClient();
+  if (!client) return false;
+  const supported = await detectRemoteBancaSelectionColumn(client);
+  if (!supported) {
+    updateSupabaseStatus('Banca salva só neste navegador. Aplique a migração de banca no Supabase para compartilhá-la.', 'muted');
+    return false;
+  }
+  const { error } = await client
+    .from('configuracoes_sistema')
+    .update({ banca_selecionados:[...new Set((ids || []).map(String))], updated_at:new Date().toISOString() })
+    .eq('id', activeEnvironment);
+  if (error) throw error;
+  updateSupabaseStatus('Seleção da banca salva no Supabase.', 'ok');
+  return true;
 }
 
 async function persistThemePreferenceToSupabase() {
