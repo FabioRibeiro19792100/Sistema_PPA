@@ -688,8 +688,8 @@ tr:hover td.sticky{background:#FAFAFA}
 #view-resultados .results-filter-row{display:flex;align-items:center;gap:12px}
 #view-resultados .results-filter-group{display:flex;align-items:center;gap:8px;flex:1 1 auto;min-width:0;flex-wrap:nowrap}
 #view-resultados .results-filter-group .finput{height:34px;padding:6px 30px 6px 10px;font-size:12px}
-#view-resultados .results-top-stats-btn{flex:0 0 auto;margin-left:auto;border-color:#AECBFA;background:#E8F0FE;color:#1558B0;font-weight:600;box-shadow:0 1px 2px rgba(26,115,232,.08)}
-#view-resultados .results-top-stats-btn:hover{background:#DCE9FD;border-color:#8AB4F8}
+:is(#view-resultados,#view-banca) .results-top-stats-btn{flex:0 0 auto;margin-left:auto;border-color:#AECBFA;background:#E8F0FE;color:#1558B0;font-weight:600;box-shadow:0 1px 2px rgba(26,115,232,.08)}
+:is(#view-resultados,#view-banca) .results-top-stats-btn:hover{background:#DCE9FD;border-color:#8AB4F8}
 #view-resultados .results-special-filter-row{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:8px;padding:4px 0;background:transparent}
 #view-resultados .results-cut-controls{display:flex;align-items:center;gap:8px;flex:0 0 auto}
 #view-resultados .results-cut-controls .finput{height:32px;padding-top:5px;padding-bottom:5px;font-size:11.5px}
@@ -700,6 +700,9 @@ tr:hover td.sticky{background:#FAFAFA}
 #view-resultados .results-special-filter input:disabled + .results-special-check{background:#EEF0F2;border-color:#D8DCE2}
 #view-resultados .results-special-filter strong{display:block;font-size:11.5px;color:#3F4752;line-height:1.25}
 #view-resultados .results-special-filter small{display:block;margin-top:2px;font-size:10px;color:#8A929D;line-height:1.3}
+#view-resultados .results-ranking-help{display:inline-flex;align-items:center;gap:5px;padding:4px 2px;border:0;background:transparent;color:#1A73E8;font-size:11px;font-weight:500;white-space:nowrap;cursor:pointer}
+#view-resultados .results-ranking-help:hover{color:#1558B0;text-decoration:underline;text-underline-offset:3px}
+#view-resultados .results-ranking-help i{font-size:14px}
 #view-resultados .results-special-hint{font-size:10px;color:#9AA0A6;white-space:nowrap}
 #view-resultados .res-coral-origin{margin-top:3px;color:#C45F4A;font-size:9px;font-weight:700;line-height:1.2;white-space:nowrap}
 #view-resultados .res-coral-origin span{display:block}
@@ -934,6 +937,7 @@ tr:hover td.sticky{background:#FAFAFA}
 .res-bank-toggle.is-selected{background:#1A73E8}
 .res-bank-toggle.is-selected::after{transform:translateX(12px)}
 .banca-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding:16px 0 14px}
+.banca-head-actions{display:flex;align-items:center;gap:14px}
 .banca-count{font-size:12px;color:#7A828E}
 #view-banca .tbl-scroll{max-height:calc(100vh - 205px)}
 .res-cut-label{display:block;margin-top:3px;color:#2563B8;font-size:9px;font-weight:600;line-height:1.2;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap}
@@ -3179,7 +3183,7 @@ textarea::placeholder{color:#BDC1C6}
           <option>Em trio</option>
         </select>
         <select class="finput" id="resFiltroUf" onchange="renderResultados()" style="width:140px;min-width:140px"><option value="">Todos os estados</option></select>
-        <select class="finput" id="resFiltroGenero" onchange="renderResultados()" style="width:145px;min-width:145px"><option>Todos os gêneros</option><option>Feminino</option><option>Masculino</option></select>
+        <select class="finput" id="resFiltroGenero" onchange="renderResultados()" style="width:175px;min-width:175px"><option>Todos os gêneros</option><option>Feminino</option><option>Masculino</option><option>Prefiro não indicar</option></select>
         <select class="finput" id="resFiltroRaca" onchange="renderResultados()" style="width:135px;min-width:135px"><option value="">Todas as raças</option></select>
         <select class="finput" id="resFiltroIA" onchange="renderResultados()" style="width:110px;min-width:110px">
           <option value="">Uso de IA?</option>
@@ -3202,7 +3206,7 @@ textarea::placeholder{color:#BDC1C6}
             <option value="15">Top 15</option>
             <option value="20">Top 20</option>
           </select>
-          <select class="finput" id="resFiltroVariacao" onchange="renderResultados()" style="display:none;width:155px;min-width:155px">
+          <select class="finput" id="resFiltroVariacao" onchange="renderResultados()" hidden style="display:none;width:155px;min-width:155px">
             <option value="0">Sem faixa do corte</option>
             <option value="1">Até 1% do corte</option>
             <option value="2">Até 2% do corte</option>
@@ -3215,6 +3219,7 @@ textarea::placeholder{color:#BDC1C6}
             <span class="results-special-check"><i class="ti ti-check"></i></span>
             <span><strong>Aplicar em todos os cenários</strong><small>Compara o ranking oficial, o ranking sem a pior nota e o ranking relativo.</small></span>
           </label>
+          <button class="results-ranking-help" type="button" onclick="openRelativeRankingHelp()"><i class="ti ti-info-circle"></i>Entenda o ranking relativo</button>
         </div>
       </div>
       <div class="results-utility-row">
@@ -3275,11 +3280,38 @@ textarea::placeholder{color:#BDC1C6}
 <div class="results-drawer-backdrop" id="resultsDrawerBackdrop" onclick="closeResultsStatsDrawer()"></div>
 <aside class="results-stats-drawer" id="resultsStatsDrawer" aria-hidden="true">
   <div class="results-drawer-head">
-    <div class="section-label">Estatísticas rápidas</div>
+    <div class="section-label" id="resultsStatsDrawerTitle">Estatísticas rápidas</div>
     <button class="icon-btn" type="button" onclick="closeResultsStatsDrawer()" title="Fechar"><i class="ti ti-x"></i></button>
   </div>
   <div class="results-drawer-body" id="resultsStatsDrawerBody"></div>
 </aside>
+
+<div class="overlay" id="overlayRelativeRankingHelp" style="z-index:230" onclick="if(event.target===this)closeRelativeRankingHelp()">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="relativeRankingHelpTitle" style="max-width:560px">
+    <div class="mh">
+      <div>
+        <div class="mh-ey">RANKING RELATIVO</div>
+        <div class="mh-title" id="relativeRankingHelpTitle">Como o RR torna a comparação mais equilibrada</div>
+        <div class="mh-sub">Ele reduz o efeito de pareceristas mais rígidos ou mais generosos sem alterar nenhuma nota original.</div>
+      </div>
+      <button class="icon-btn" type="button" onclick="closeRelativeRankingHelp()" title="Fechar"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="mb">
+      <div class="modal-copy">
+        Primeiro, o sistema observa todas as notas concluídas de cada parecerista e identifica a posição percentual de cada equipe dentro do padrão daquele avaliador. Depois, calcula a média das três posições percentuais recebidas pela equipe.
+      </div>
+      <div class="modal-copy" style="margin-top:14px">
+        Por exemplo, se uma equipe ficar nos percentis 90, 70 e 80 para seus três pareceristas, seu resultado relativo será <strong>80</strong>. Quanto maior esse número, melhor foi sua posição em relação às demais equipes avaliadas pelas mesmas pessoas.
+      </div>
+      <div class="modal-copy-emphasis" style="margin-top:16px;padding:12px 14px;border-radius:8px;background:#F3F7FD;color:#31527A">
+        O RR usa apenas avaliações concluídas, exige três resultados válidos e considera os pesos de critérios que estiverem ativos. As notas originais permanecem preservadas.
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-primary" type="button" onclick="closeRelativeRankingHelp()">Entendi</button>
+    </div>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════════════
      VIEW: SELEÇÃO PARA A BANCA
@@ -3291,7 +3323,10 @@ textarea::placeholder{color:#BDC1C6}
       <div class="page-title">Equipes selecionadas para a banca</div>
       <div class="page-sub">A seleção é preenchida pelos toggles da coluna de ranking.</div>
     </div>
-    <div class="banca-count" id="bancaSummary">0 equipes selecionadas</div>
+    <div class="banca-head-actions">
+      <div class="banca-count" id="bancaSummary">0 equipes selecionadas</div>
+      <button class="btn btn-secondary btn-sm results-top-stats-btn" type="button" onclick="openResultsStatsDrawer('banca')"><i class="ti ti-chart-dots"></i>Estatísticas da Banca</button>
+    </div>
   </div>
   <div class="tbl-card">
     <div class="tbl-scroll" id="bancaBodyScroll">
@@ -6408,6 +6443,7 @@ function generoCategoria(valor) {
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '');
   if (!txt) return '';
+  if (txt.includes('prefiro nao indicar')) return 'Prefiro não indicar';
   if (
     txt === 'f' ||
     txt === 'fem' ||
@@ -6537,10 +6573,10 @@ function renderResultados() {
   const anyTopActive = !!(topLimit && anyTopField?.checked);
   const variacaoField = document.getElementById('resFiltroVariacao');
   if (variacaoField) {
-    variacaoField.style.display = topLimit ? '' : 'none';
-    if (!topLimit) variacaoField.value = '0';
+    variacaoField.style.display = 'none';
+    variacaoField.value = '0';
   }
-  const variacaoPct = topLimit ? Number(variacaoField?.value || 0) : 0;
+  const variacaoPct = 0;
   reviewerAdjustedScoreCache = rankingMode === 'Ranking ajustado por parecerista' || anyTopActive
     ? buildReviewerAdjustedScoreCache()
     : new Map();
@@ -6559,17 +6595,21 @@ function renderResultados() {
     : filteredRankedRows;
   if (anyTopActive) allRankedRows = allRankedRows.filter(({ e }) => anyTopMembership.has(String(e.id)));
   const rankedWithScore = allRankedRows.filter(({ e }) => mediaNotasRanking(e.id, rankingMode) !== null);
-  const cutoffScore = topLimit && rankedWithScore.length >= topLimit
-    ? mediaNotasRanking(rankedWithScore[topLimit - 1].e.id, rankingMode)
+  const absoluteRankedWithScore = INSCRICOES.map((e, idx) => ({ e, idx }))
+    .filter(({ e }) => mediaNotasRanking(e.id, rankingMode) !== null)
+    .sort((a, b) => compareResultadoRows(a.e, b.e, rankingMode));
+  const cutoffScore = topLimit && absoluteRankedWithScore.length >= topLimit
+    ? mediaNotasRanking(absoluteRankedWithScore[topLimit - 1].e.id, rankingMode)
     : null;
-  const cutoffKey = Number.isFinite(cutoffScore) ? cutoffScore.toFixed(2) : null;
   const officialTopRows = anyTopActive
     ? allRankedRows
     : topLimit
-      ? rankedWithScore.filter(({ e }, index) => index < topLimit || mediaNotasRanking(e.id, rankingMode)?.toFixed(2) === cutoffKey)
+      ? rankedWithScore.filter(({ e }) => Number(absoluteRankingById.get(String(e.id))?.rank) <= topLimit)
       : [];
+  const officialTopIds = new Set(officialTopRows.map(({ e }) => String(e.id)));
   const nearCutRows = !anyTopActive && topLimit && variacaoPct > 0 && cutoffScore !== null
-    ? rankedWithScore.slice(officialTopRows.length).filter(({ e }) => {
+    ? rankedWithScore.filter(({ e }) => {
+        if (officialTopIds.has(String(e.id))) return false;
         const score = mediaNotasRanking(e.id, rankingMode);
         return score !== null && score < cutoffScore && ((cutoffScore - score) / cutoffScore) * 100 <= variacaoPct;
       })
@@ -6617,9 +6657,6 @@ function renderResultados() {
     const isVisibleTie = Number.isFinite(pt) && (visibleTieCounts[pt.toFixed(2)] || 0) > 1;
     const ranking = absoluteRankingById.get(String(e.id)) || { rank:'—', tied:false };
     const baseRanking = baseRankingById.get(String(e.id)) || { rank:'—', tied:false };
-    const baseRankingLabel = rankingMode !== 'Ranking normal' && !anyTopActive
-      ? `<div class="res-base-rank" title="Posição no Ranking normal"><span>${baseRanking.rank}</span><b>RN</b></div>`
-      : '';
     const isOfficialTop = topLimit > 0 && i < officialTopRows.length;
     const isNearCut = topLimit > 0 && !isOfficialTop;
     const isBaseOfficialTop = topLimit > 0 && Number(baseRanking.rank) <= topLimit;
@@ -6665,7 +6702,7 @@ function renderResultados() {
     }).join('');
 
     return `<tr class="${rowClass}">
-      <td class="sticky s0">${isBaseOfficialTop ? `<span class="res-cut-label rank-top-label">Top ${topLimit}</span>` : ''}<div class="res-rank-line"><span class="res-primary-rank ${rankingModeClass}">${ranking.rank}</span><span class="res-rank-axis">${primaryRankingCode || bancaToggleHTML(e.id)}</span>${primaryRankingCode ? bancaToggleHTML(e.id) : ''}</div>${isVisibleTie ? `<div class="res-faint" style="font-size:10px;margin-top:3px">(empate)</div>` : ''}${baseRankingLabel}${isAnyTopMarginOnly || (!isBaseOfficialTop && isNearCut) ? `<span class="res-cut-label res-near-label">Margem ${variacaoPct}%</span>` : ''}${isConvergentTop ? '<span class="res-convergence-label">Convergência</span>' : ''}${comparisonRankLabel}</td>
+      <td class="sticky s0">${isBaseOfficialTop ? `<span class="res-cut-label rank-top-label">Top ${topLimit}</span>` : ''}<div class="res-rank-line"><span class="res-primary-rank ${rankingModeClass}">${ranking.rank}</span><span class="res-rank-axis">${primaryRankingCode || bancaToggleHTML(e.id)}</span>${primaryRankingCode ? bancaToggleHTML(e.id) : ''}</div>${isVisibleTie ? `<div class="res-faint" style="font-size:10px;margin-top:3px">(empate)</div>` : ''}${isAnyTopMarginOnly || (!isBaseOfficialTop && isNearCut) ? `<span class="res-cut-label res-near-label">Margem ${variacaoPct}%</span>` : ''}${isConvergentTop ? '<span class="res-convergence-label">Convergência</span>' : ''}${comparisonRankLabel}</td>
       <td class="sticky s3 id-col" style="text-align:center">
         <div class="res-id-hub">
           <div class="res-id-meta">
@@ -6720,6 +6757,7 @@ function renderBanca() {
     .sort((a, b) => compareResultadoRows(a.e, b.e, 'Ranking normal'));
   const rankById = buildAbsoluteRankingById('Ranking normal');
   const rows = allRanked.filter(({ e }) => selectedIds.has(String(e.id)));
+  window.currentBancaRows = rows;
   const summary = document.getElementById('bancaSummary');
   if (summary) summary.textContent = `${rows.length} ${rows.length === 1 ? 'equipe selecionada' : 'equipes selecionadas'}`;
 
@@ -6766,6 +6804,8 @@ function resultsStatSection(title, entries) {
 }
 function normalizeResultsGender(value) {
   const text = String(value || '').trim();
+  const category = generoCategoria(text);
+  if (category) return category;
   return /não me identifico com nenhuma das opções acima/i.test(text) ? 'Outro' : text;
 }
 function normalizeResultsIA(value) {
@@ -6775,8 +6815,10 @@ function normalizeResultsIA(value) {
   if (text.startsWith('não') || text.startsWith('nao')) return 'Não';
   return text.includes('não') || text.includes('nao') ? 'Não' : 'Sim';
 }
-function renderResultsStatsDrawer() {
-  const rows = Array.isArray(window.currentResultsTopRows) ? window.currentResultsTopRows : [];
+function renderResultsStatsDrawer(source = 'resultados') {
+  const rows = source === 'banca'
+    ? (Array.isArray(window.currentBancaRows) ? window.currentBancaRows : [])
+    : (Array.isArray(window.currentResultsTopRows) ? window.currentResultsTopRows : []);
   const teams = rows.map(({ e }) => e);
   const participants = teams.flatMap(resultadoParticipantRows);
   const modalidades = countResultsStats(teams.map(e => e.mod || 'N/D'));
@@ -6789,9 +6831,12 @@ function renderResultsStatsDrawer() {
   const body = document.getElementById('resultsStatsDrawerBody');
   if (body) body.innerHTML = resultsStatSection('Gênero', generos) + resultsStatSection('Cor / raça', racas) + resultsStatSection('Distribuição por região', regioes) + resultsStatSection('Distribuição por estado', estados) + resultsStatSection('Universidade', universidades) + resultsStatSection('Formação das equipes', modalidades) + resultsStatSection('Uso de IA no vídeo criativo', usoIA);
 }
-function openResultsStatsDrawer() {
-  if (!window.currentResultsTopRows?.length) return;
-  renderResultsStatsDrawer();
+function openResultsStatsDrawer(source = 'resultados') {
+  const rows = source === 'banca' ? window.currentBancaRows : window.currentResultsTopRows;
+  if (!rows?.length) return;
+  const title = document.getElementById('resultsStatsDrawerTitle');
+  if (title) title.textContent = source === 'banca' ? 'Estatísticas da banca' : 'Estatísticas rápidas';
+  renderResultsStatsDrawer(source);
   document.getElementById('resultsStatsDrawer')?.classList.add('open');
   document.getElementById('resultsDrawerBackdrop')?.classList.add('open');
   document.getElementById('resultsStatsDrawer')?.setAttribute('aria-hidden', 'false');
@@ -6800,6 +6845,14 @@ function closeResultsStatsDrawer() {
   document.getElementById('resultsStatsDrawer')?.classList.remove('open');
   document.getElementById('resultsDrawerBackdrop')?.classList.remove('open');
   document.getElementById('resultsStatsDrawer')?.setAttribute('aria-hidden', 'true');
+}
+
+function openRelativeRankingHelp() {
+  document.getElementById('overlayRelativeRankingHelp')?.classList.add('open');
+}
+
+function closeRelativeRankingHelp() {
+  document.getElementById('overlayRelativeRankingHelp')?.classList.remove('open');
 }
 
 function toggleRes(i) {
