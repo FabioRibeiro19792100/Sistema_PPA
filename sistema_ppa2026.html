@@ -2816,7 +2816,7 @@ textarea::placeholder{color:#BDC1C6}
 
 <div class="subnav" id="mainSubnav" style="display:none">
   <div class="snav" data-view="resultados"><span class="icon icon-sm"><i class="ti ti-chart-histogram"></i></span>Resultados</div>
-  <div class="snav" data-view="banca"><span class="icon icon-sm"><i class="ti ti-users-group"></i></span>Banca</div>
+  <div class="snav" data-view="banca" style="display:none"><span class="icon icon-sm"><i class="ti ti-users-group"></i></span>Banca</div>
   <div class="snav" data-view="calibracao" style="display:none"><span class="icon icon-sm"><i class="ti ti-adjustments-alt"></i></span>Calibração</div>
   <div class="snav" data-view="dashboard"><span class="icon icon-sm"><i class="ti ti-chart-bar"></i></span>Dashboard</div>
   <div class="snav" data-view="pareceristas" style="display:none"><span class="icon icon-sm"><i class="ti ti-arrows-left-right"></i></span>Pareceristas e atribuições</div>
@@ -4187,6 +4187,7 @@ function applyAccessUi() {
     if (!el) return;
     el.style.display = !reviewerBootMode && adminReady ? '' : 'none';
   });
+  updateBancaNavVisibility();
   updateAdminFabVisibility();
   updateAvaliacaoTopnavControls();
 }
@@ -5436,6 +5437,16 @@ function getBancaSelectionIds() {
   }
 }
 
+function updateBancaNavVisibility() {
+  const tab = document.querySelector('.snav[data-view="banca"]');
+  if (!tab) return false;
+  const availableIds = new Set(INSCRICOES.map(item => String(item.id)));
+  const hasSelectedTeam = getBancaSelectionIds().some(id => availableIds.has(String(id)));
+  const visible = hasViewerAccess() && !reviewerBootMode && hasSelectedTeam;
+  tab.style.display = visible ? '' : 'none';
+  return visible;
+}
+
 function isSelectedForBanca(inscId) {
   return getBancaSelectionIds().includes(String(inscId));
 }
@@ -5449,6 +5460,7 @@ function toggleBancaSelection(inscId, event) {
   try {
     localStorage.setItem(bancaSelectionStorageKey(), JSON.stringify([...selected]));
   } catch(e) {}
+  const bancaVisible = updateBancaNavVisibility();
   const isSelected = selected.has(id);
   document.querySelectorAll('.res-bank-toggle').forEach(button => {
     if (button.dataset.inscId !== id) return;
@@ -5458,7 +5470,8 @@ function toggleBancaSelection(inscId, event) {
     button.setAttribute('aria-label', action);
     button.title = action;
   });
-  renderBanca();
+  if (!bancaVisible && currentActiveViewName() === 'banca') showView('resultados');
+  else renderBanca();
 }
 
 function bancaToggleHTML(inscId) {
@@ -8600,6 +8613,7 @@ function refreshRuntimeControls() {
 }
 
 function refreshRuntimeViews() {
+  updateBancaNavVisibility();
   renderPareceristas();
   renderResultados();
   renderDashboard();
