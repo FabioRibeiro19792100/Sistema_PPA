@@ -1816,6 +1816,21 @@ tr:hover td.sticky{background:#FAFAFA}
 .criterio.numeric-scale .escala{grid-template-columns:repeat(5,minmax(0,1fr))}
 .criterio.numeric-scale .escala input:checked + label{background:#E8F0FE;box-shadow:inset 0 0 0 1px #1A73E8;z-index:1}
 .criterio.numeric-scale .escala input:checked + label .escala-title{color:#1558B0}
+.criterio.numeric-scale .escala input[value="1"]:checked + label{background-color:#FCE8E6 !important;box-shadow:inset 0 0 0 1px #D93025}
+.criterio.numeric-scale .escala input[value="2"]:checked + label{background-color:#FEEFC3 !important;box-shadow:inset 0 0 0 1px #E67C1F}
+.criterio.numeric-scale .escala input[value="3"]:checked + label{background-color:#FFF6D6 !important;box-shadow:inset 0 0 0 1px #D9A400}
+.criterio.numeric-scale .escala input[value="4"]:checked + label{background-color:#EAF4E3 !important;box-shadow:inset 0 0 0 1px #6AA84F}
+.criterio.numeric-scale .escala input[value="5"]:checked + label{background-color:#E6F4EA !important;box-shadow:inset 0 0 0 1px #188038}
+.criterio.numeric-scale .escala input[value="1"]:checked + label .escala-title,
+.criterio.numeric-scale .escala input[value="1"]:checked + label .escala-desc{color:#A61B1B}
+.criterio.numeric-scale .escala input[value="2"]:checked + label .escala-title,
+.criterio.numeric-scale .escala input[value="2"]:checked + label .escala-desc{color:#A45100}
+.criterio.numeric-scale .escala input[value="3"]:checked + label .escala-title,
+.criterio.numeric-scale .escala input[value="3"]:checked + label .escala-desc{color:#7A5B00}
+.criterio.numeric-scale .escala input[value="4"]:checked + label .escala-title,
+.criterio.numeric-scale .escala input[value="4"]:checked + label .escala-desc{color:#3E6F2A}
+.criterio.numeric-scale .escala input[value="5"]:checked + label .escala-title,
+.criterio.numeric-scale .escala input[value="5"]:checked + label .escala-desc{color:#116B2C}
 .just-label{display:block;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#9AA0A6;margin:10px 0 4px}
 textarea{width:100%;box-sizing:border-box;font-family:inherit;font-size:12.5px;color:#202124;background:#F8F9FA;border:1px solid #DADCE0;border-radius:6px;padding:8px 10px;resize:vertical;min-height:64px;outline:none;line-height:1.55}
 textarea:focus{border-color:#1A73E8;background:#fff}
@@ -2634,9 +2649,54 @@ textarea::placeholder{color:#BDC1C6}
   padding-right:0;
 }
 #view-avaliacao.banca-evaluation-mode .split-hero{
-  background:#DEE2E6;
+  background:#E2E6E9;
   border-bottom-color:#CDD2D8;
   box-shadow:none;
+  padding:22px 18px 20px;
+  position:relative;
+  flex:0 0 auto;
+}
+#view-avaliacao.banca-evaluation-mode .split-reference-grid{
+  height:100%;
+  min-height:100%;
+  background:#E2E6E9;
+}
+#view-avaliacao.banca-evaluation-mode .aval-side-card,
+#view-avaliacao.banca-evaluation-mode .aval-side-scroll{
+  background:#E2E6E9;
+}
+#view-avaliacao.banca-evaluation-mode .aval-side-card,
+#view-avaliacao.banca-evaluation-mode .aval-main-card,
+#view-avaliacao.banca-evaluation-mode .criterio,
+#view-avaliacao.banca-evaluation-mode .criterio:focus-within,
+#view-avaliacao.banca-evaluation-mode .criterio.is-missing,
+#view-avaliacao.banca-evaluation-mode .escala label{
+  box-shadow:none !important;
+}
+#view-avaliacao.banca-evaluation-mode .aval-side-card,
+#view-avaliacao.banca-evaluation-mode .aval-main-card,
+#view-avaliacao.banca-evaluation-mode .aval-side-card.is-active,
+#view-avaliacao.banca-evaluation-mode .aval-main-card.is-active{
+  border:0 !important;
+}
+#view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="1"]:checked + label{border-color:#D93025}
+#view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="2"]:checked + label{border-color:#E67C1F}
+#view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="3"]:checked + label{border-color:#D9A400}
+#view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="4"]:checked + label{border-color:#6AA84F}
+#view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="5"]:checked + label{border-color:#188038}
+#view-avaliacao.banca-evaluation-mode .split-side-panel-head{
+  flex:0 0 auto;
+  padding:16px 18px 12px;
+  border-bottom:1px solid var(--border-light);
+  background:#E2E6E9;
+}
+#view-avaliacao.banca-evaluation-mode .split-side-panel-title{
+  font-size:calc(15px * var(--aval-scale));
+  font-weight:700;
+  line-height:1.25;
+  letter-spacing:.02em;
+  text-transform:uppercase;
+  color:#202124;
 }
 #view-avaliacao.banca-evaluation-mode .split-kicker-id,
 #view-avaliacao.banca-evaluation-mode .split-kicker-dot,
@@ -2666,6 +2726,9 @@ textarea::placeholder{color:#BDC1C6}
 #view-avaliacao.banca-evaluation-mode .split-leader-line .split-leader{
   max-width:100%;
 }
+#view-avaliacao.banca-evaluation-mode .split-leader-line{
+  margin-top:0;
+}
 #view-avaliacao.banca-evaluation-mode .split-ia-note .ia-note-k,
 #view-avaliacao.banca-evaluation-mode .split-ia-note .ia-note-v{
   font-size:13.2px;
@@ -2694,14 +2757,14 @@ textarea::placeholder{color:#BDC1C6}
   font-weight:600;
 }
 #view-avaliacao.banca-evaluation-mode .split-hero-members{
-  margin-top:8px;
-  margin-bottom:8px;
-  padding-bottom:8px;
+  margin-top:14px;
+  margin-bottom:14px;
+  padding-bottom:12px;
   border-bottom:1px solid rgba(32,33,36,.16);
   text-transform:uppercase;
 }
 #view-avaliacao.banca-evaluation-mode .split-hero-members .split-meta-row{
-  padding:1px 0;
+  padding:2px 0;
 }
 #view-avaliacao.banca-evaluation-mode .split-hero-members .split-person-line{
   gap:0;
@@ -2739,9 +2802,10 @@ textarea::placeholder{color:#BDC1C6}
   gap:22px;
 }
 #view-avaliacao.banca-evaluation-mode .split-materials-wrap{
-  padding-top:16px;
-  padding-bottom:18px;
-  gap:18px;
+  padding:22px 18px;
+  gap:22px;
+  flex:0 0 auto;
+  background:#E2E6E9;
 }
 #view-avaliacao.banca-evaluation-mode .split-materials-list .mat-btn{
   flex:0 0 auto;
@@ -2773,7 +2837,10 @@ textarea::placeholder{color:#BDC1C6}
   font-size:13.2px;
 }
 #view-avaliacao.banca-evaluation-mode .banca-project-summary{
-  padding-top:18px;
+  padding:24px 18px 20px;
+  flex:1 1 auto;
+  min-height:0;
+  background:#E2E6E9;
 }
 #view-avaliacao.banca-evaluation-mode #layoutSplit:not(.legacy-view) .criterio.numeric-scale{
   grid-template-columns:minmax(0,28%) minmax(0,72%);
@@ -6471,6 +6538,7 @@ function renderAttachmentViewerContent() {
     helper.textContent = viewer.note || '';
   }
   if (viewer.kind === 'video') {
+    const shouldAutoplay = !isInline || bancaReviewerBootMode;
     const loading = document.createElement('div');
     loading.className = 'attachment-viewer-loading';
     loading.innerHTML = `<div class="attachment-viewer-loading-card"><span class="attachment-viewer-spinner"></span><span>Carregando vídeo...</span></div>`;
@@ -6480,7 +6548,7 @@ function renderAttachmentViewerContent() {
     video.controls = true;
     video.playsInline = true;
     video.preload = 'auto';
-    video.autoplay = !isInline;
+    video.autoplay = shouldAutoplay;
     video.muted = false;
     video.defaultMuted = false;
     video.volume = 1;
@@ -6493,7 +6561,7 @@ function renderAttachmentViewerContent() {
     video.addEventListener('error', clearLoading, { once:true });
     stage.appendChild(video);
     try { video.load(); } catch {}
-    if (!isInline) {
+    if (shouldAutoplay) {
       try {
         const playRequest = video.play();
         if (playRequest?.catch) playRequest.catch(() => {});
@@ -8612,7 +8680,7 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
     const instituicaoResumo = compactInstitutionLabel(e.inst);
     const cursoResumo = compactCourseLabel(curso);
     const localResumo = compactInstitutionLocation(e.inst, e.uf);
-    const bancaHeroNameStyle = bancaReviewerBootMode ? ' style="font-size:13.2px!important;font-weight:600!important"' : '';
+    const bancaHeroNameStyle = bancaReviewerBootMode ? ' style="font-size:15.2px!important;font-weight:600!important"' : '';
     const bancaHeroFontStyle = bancaReviewerBootMode ? ' style="font-size:13.2px!important"' : '';
     const marker = teamMarker(e.mod);
     const kicker = `
@@ -8647,6 +8715,10 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
         ${!bancaReviewerBootMode && e.me ? `<div class="split-meta-subline">${e.me}</div>` : ''}
       </div>` : '';
     return `
+      ${bancaReviewerBootMode ? `
+        <div class="split-side-panel-head">
+          <div class="split-side-panel-title">Informações do time</div>
+        </div>` : ''}
       <div class="split-hero">
         ${context === 'modal' ? '<button class="close-btn split-hero-close" type="button" onclick="closeModal()" aria-label="Fechar"><i class="ti ti-x"></i></button>' : ''}
         ${bancaReviewerBootMode ? '' : `
