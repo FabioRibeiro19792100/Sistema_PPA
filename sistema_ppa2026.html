@@ -851,6 +851,29 @@ tr:hover td.sticky{background:#FAFAFA}
 :is(#view-resultados,#view-portal,#view-banca) thead tr:first-child th + th,
 :is(#view-resultados,#view-portal,#view-banca) thead tr:nth-child(2) th + th{border-left:1px solid #D3D8E0}
 :is(#view-resultados,#view-portal,#view-banca) thead th{background:#F3F4F6}
+:is(#view-resultados,#view-portal,#view-banca) thead th.crit{
+  white-space:normal;
+  line-height:1.25;
+  overflow-wrap:normal;
+  word-break:normal;
+}
+:is(#view-resultados,#view-portal,#view-banca) thead th.crit .peso{
+  font-size:var(--font-size-label);
+  line-height:1.2;
+}
+#view-banca thead th.banca-model-group,
+#view-portal thead th.banca-model-group{
+  font-size:var(--font-size-label);
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+#view-banca thead th.banca-model-criterion,
+#view-portal thead th.banca-model-criterion{
+  font-size:var(--font-size-label);
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  text-align:center;
+}
 :is(#view-resultados,#view-portal,#view-banca) thead th.sticky{
   border-left:none !important;
   border-right:none !important;
@@ -993,6 +1016,10 @@ tr:hover td.sticky{background:#FAFAFA}
 .banca-head-actions{display:flex;align-items:center;gap:14px}
 .banca-count{font-size:12px;color:#7A828E}
 #view-banca .tbl-scroll{max-height:none;overflow-x:auto;overflow-y:visible;overscroll-behavior-x:contain;overscroll-behavior-y:auto}
+.banca-allocation-card{margin-bottom:16px}
+.banca-allocation-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px;flex-wrap:wrap}
+.banca-allocation-copy{font-size:12px;color:#7A828E;margin-top:5px;max-width:760px;line-height:1.5}
+.banca-reviewer-actions{display:flex;align-items:center;gap:6px;justify-content:flex-end}
 .res-cut-label{display:block;margin-top:3px;color:#2563B8;font-size:9px;font-weight:600;line-height:1.2;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap}
 .res-cut-label.rank-top-label{margin:0 0 5px}
 .res-near-label{color:#B77908}
@@ -1786,6 +1813,9 @@ tr:hover td.sticky{background:#FAFAFA}
 .escala input[value="Bom"]:checked + label .escala-desc{color:#9A6700}
 .escala input[value="Ótimo"]:checked + label .escala-title,
 .escala input[value="Ótimo"]:checked + label .escala-desc{color:#166534}
+.criterio.numeric-scale .escala{grid-template-columns:repeat(5,minmax(0,1fr))}
+.criterio.numeric-scale .escala input:checked + label{background:#E8F0FE;box-shadow:inset 0 0 0 1px #1A73E8;z-index:1}
+.criterio.numeric-scale .escala input:checked + label .escala-title{color:#1558B0}
 .just-label{display:block;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#9AA0A6;margin:10px 0 4px}
 textarea{width:100%;box-sizing:border-box;font-family:inherit;font-size:12.5px;color:#202124;background:#F8F9FA;border:1px solid #DADCE0;border-radius:6px;padding:8px 10px;resize:vertical;min-height:64px;outline:none;line-height:1.55}
 textarea:focus{border-color:#1A73E8;background:#fff}
@@ -2038,6 +2068,11 @@ textarea::placeholder{color:#BDC1C6}
 }
 .split-leader-line .split-leader{
   margin-top:0;
+  min-width:0;
+  max-width:calc(100% - 40px);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:clip;
 }
 .split-inst{
   font-size:14px;
@@ -2517,6 +2552,138 @@ textarea::placeholder{color:#BDC1C6}
 #layoutSplit.legacy-view .escala-desc{
   display:none;
 }
+#layoutSplit.legacy-view .criterio.numeric-scale .escala{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:7px;
+  width:100%;
+}
+#layoutSplit.legacy-view .criterio.numeric-scale .escala label{
+  display:grid;
+  grid-template-rows:auto 1fr;
+  align-content:start;
+  align-items:start;
+  justify-content:stretch;
+  justify-items:start;
+  gap:4px;
+  min-width:0;
+  height:calc(68px * var(--aval-scale));
+  min-height:calc(68px * var(--aval-scale));
+  max-height:calc(68px * var(--aval-scale));
+  box-sizing:border-box;
+  overflow:hidden;
+  padding:8px 9px;
+  text-align:left;
+}
+#layoutSplit.legacy-view .criterio.numeric-scale .escala-title{
+  font-size:calc(12px * var(--aval-scale));
+  font-weight:700;
+  line-height:1.3;
+}
+#layoutSplit.legacy-view .criterio.numeric-scale .escala-desc{
+  display:block;
+  min-height:0;
+  max-width:none;
+  overflow:visible;
+  font-size:calc(10px * var(--aval-scale));
+  font-weight:400;
+  line-height:1.3;
+  color:#5F6368;
+}
+#layoutSplit.legacy-view .criterio.numeric-scale .crit-desc{
+  font-size:calc(12px * var(--aval-scale));
+  line-height:1.35;
+}
+#view-avaliacao.banca-evaluation-mode #layoutSplit.legacy-view .criterio.numeric-scale .crit-nome{
+  font-size:calc(15px * var(--aval-scale));
+  line-height:1.25;
+}
+#view-avaliacao.banca-evaluation-mode{
+  --crit-card-h:calc(136px * var(--aval-scale));
+}
+#view-avaliacao.banca-evaluation-mode .aval-action-group-scale{
+  display:none;
+}
+#view-avaliacao.banca-evaluation-mode .parecer-box{
+  display:none;
+}
+#view-avaliacao.banca-evaluation-mode .aval-side-card,
+#view-avaliacao.banca-evaluation-mode .aval-main-card{
+  height:calc(100% - 20px);
+  min-height:0;
+  max-height:calc(100% - 20px);
+}
+#view-avaliacao.banca-evaluation-mode .aval-side-scroll,
+#view-avaliacao.banca-evaluation-mode .aval-main-scroll{
+  height:100%;
+  max-height:100%;
+  box-sizing:border-box;
+  overflow:hidden;
+  scrollbar-gutter:auto;
+  padding-bottom:12px;
+}
+#view-avaliacao.banca-evaluation-mode .crit-num{
+  display:none;
+}
+#view-avaliacao.banca-evaluation-mode .criterio-main{
+  grid-template-columns:minmax(0,1fr);
+  padding-left:14px;
+}
+#view-avaliacao.banca-evaluation-mode .aval-panel-head{
+  padding-left:0;
+  padding-right:0;
+}
+#view-avaliacao.banca-evaluation-mode .split-hero{
+  background:#DEE2E6;
+  border-bottom-color:#CDD2D8;
+  box-shadow:none;
+}
+#view-avaliacao.banca-evaluation-mode .split-kicker-id,
+#view-avaliacao.banca-evaluation-mode .split-kicker-dot,
+#view-avaliacao.banca-evaluation-mode .split-kicker-meta,
+#view-avaliacao.banca-evaluation-mode .split-kicker .team-marker-stack,
+#view-avaliacao.banca-evaluation-mode .split-kicker .team-marker-stack i,
+#view-avaliacao.banca-evaluation-mode .split-leader,
+#view-avaliacao.banca-evaluation-mode .split-inst,
+#view-avaliacao.banca-evaluation-mode .split-hero-course,
+#view-avaliacao.banca-evaluation-mode .split-hero-location{
+  color:#202124;
+  opacity:1;
+}
+#view-avaliacao.banca-evaluation-mode .split-leader,
+#view-avaliacao.banca-evaluation-mode .split-inst,
+#view-avaliacao.banca-evaluation-mode .split-hero-course,
+#view-avaliacao.banca-evaluation-mode .split-hero-location{
+  font-size:10px !important;
+}
+#view-avaliacao.banca-evaluation-mode #layoutSplit:not(.legacy-view) .criterio.numeric-scale{
+  grid-template-columns:minmax(0,28%) minmax(0,72%);
+}
+#view-avaliacao.banca-evaluation-mode #layoutSplit:not(.legacy-view) .criterio.numeric-scale .crit-desc{
+  font-size:calc(10px * var(--aval-scale));
+  line-height:1.3;
+}
+#view-avaliacao.banca-evaluation-mode #layoutSplit.legacy-view .criterio-main{
+  padding-left:0;
+}
+#view-avaliacao.banca-evaluation-mode #layoutSplit.legacy-view .criterio.numeric-scale{
+  height:calc(138px * var(--aval-scale));
+  min-height:calc(138px * var(--aval-scale));
+  max-height:calc(138px * var(--aval-scale));
+  box-sizing:border-box;
+  overflow:hidden;
+  margin-bottom:2px;
+  padding:4px 0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+}
+#view-avaliacao.banca-evaluation-mode #layoutSplit.legacy-view .criterio.numeric-scale:focus-within,
+#view-avaliacao.banca-evaluation-mode #layoutSplit.legacy-view .criterio.numeric-scale.is-missing{
+  border:0;
+  box-shadow:none;
+}
 #layoutSplit.legacy-view .escala input[value="Insuficiente"]:checked+label{background:#FEE2E2;border-color:#DC2626;color:#991B1B}
 #layoutSplit.legacy-view .escala input[value="Regular"]:checked+label{background:#FEF3C7;border-color:#D97706;color:#92400E}
 #layoutSplit.legacy-view .escala input[value="Bom"]:checked+label{background:#DBEAFE;border-color:#2563EB;color:#1E40AF}
@@ -2887,7 +3054,6 @@ textarea::placeholder{color:#BDC1C6}
 <div class="subnav" id="mainSubnav" style="display:none">
   <div class="snav" data-view="resultados"><span class="icon icon-sm"><i class="ti ti-chart-histogram"></i></span>Resultados</div>
   <div class="snav" data-view="banca" style="display:none"><span class="icon icon-sm"><i class="ti ti-users-group"></i></span>Banca</div>
-  <div class="snav" data-view="calibracao" style="display:none"><span class="icon icon-sm"><i class="ti ti-adjustments-alt"></i></span>Calibração</div>
   <div class="snav" data-view="dashboard"><span class="icon icon-sm"><i class="ti ti-chart-bar"></i></span>Dashboard</div>
   <div class="snav" data-view="pareceristas" style="display:none"><span class="icon icon-sm"><i class="ti ti-arrows-left-right"></i></span>Pareceristas e atribuições</div>
   <div class="snav" data-view="auditoria" style="display:none"><span class="icon icon-sm"><i class="ti ti-shield-check"></i></span>Auditoria</div>
@@ -3057,6 +3223,29 @@ textarea::placeholder{color:#BDC1C6}
 
   <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px">
     <div><div class="page-title">Pareceristas e atribuições</div><div class="page-sub">Cadastre os pareceristas, aplique as regras e gere a distribuição automática equilibrada.</div></div>
+  </div>
+
+  <div class="card banca-allocation-card">
+    <div class="banca-allocation-head">
+      <div>
+        <div class="section-label">Alocação da banca</div>
+        <div class="banca-allocation-copy">Cadastre os pareceristas da segunda rodada. Cada pessoa ativa recebe automaticamente todas as equipes selecionadas para a banca, sem limite ou distribuição por cota.</div>
+      </div>
+      <span class="badge b-pend" id="bancaReviewerRoundStatus">Rodada separada</span>
+    </div>
+    <div class="form-row cols-3">
+      <div><label class="fl">Nome completo</label><input id="bancaReviewerName" type="text" autocomplete="off" placeholder="Ex: Ana Paula Ribeiro"></div>
+      <div><label class="fl">E-mail</label><input id="bancaReviewerEmail" type="email" autocomplete="off" placeholder="ana@email.com"></div>
+      <div><label class="fl">Instituição (opcional)</label><input id="bancaReviewerInstitution" type="text" autocomplete="off" placeholder="Instituição"></div>
+    </div>
+    <button class="btn btn-secondary btn-sm" type="button" onclick="addBancaReviewer()"><i class="ti ti-plus"></i>Adicionar parecerista à banca</button>
+  </div>
+
+  <div class="tbl-card" style="margin-bottom:20px">
+    <table>
+      <thead><tr><th>#</th><th>Nome</th><th>E-mail</th><th>Instituição</th><th>Progresso</th><th>Link da banca</th><th></th></tr></thead>
+      <tbody id="bancaReviewerList"></tbody>
+    </table>
   </div>
 
   <div class="kpi-row" id="kpiAtrib"></div>
@@ -3423,35 +3612,6 @@ textarea::placeholder{color:#BDC1C6}
 </div>
 
 <!-- ═══════════════════════════════════════════════
-     VIEW: CALIBRAÇÃO DOS PESOS
-════════════════════════════════════════════════ -->
-<div class="view" id="view-calibracao">
-<div style="max-width:760px;margin:0 auto">
-  <div style="margin-bottom:20px">
-    <div class="page-title">Calibração dos critérios</div>
-    <div class="page-sub">Ajuste os pesos usados no cálculo e consulte o efeito diretamente na tela de Resultados.</div>
-  </div>
-  <div class="calibration-layout">
-    <section class="card calibration-card">
-      <div class="calibration-head">
-        <div>
-          <div class="section-label" style="margin-bottom:4px">Pesos dos critérios</div>
-          <div class="calibration-helper">As avaliações originais permanecem intactas. A soma precisa ser exatamente 100%.</div>
-        </div>
-        <div class="calibration-total" id="calibrationTotal">100,0%</div>
-      </div>
-      <div id="calibrationInputs" class="calibration-inputs"></div>
-      <div class="calibration-actions">
-        <button class="btn btn-secondary" type="button" onclick="resetCalibrationDraft()">Restaurar pesos iguais</button>
-        <button class="btn btn-primary" id="applyCalibrationBtn" type="button" onclick="applyCalibrationWeights()"><i class="ti ti-check"></i>Aplicar novos pesos</button>
-      </div>
-      <div class="calibration-message" id="calibrationMessage"></div>
-    </section>
-  </div>
-</div>
-</div>
-
-<!-- ═══════════════════════════════════════════════
      VIEW 3: PORTAL DO PARECERISTA
 ════════════════════════════════════════════════ -->
 <div class="view" id="view-portal">
@@ -3595,8 +3755,7 @@ textarea::placeholder{color:#BDC1C6}
     <div id="critGridSeq"></div>
     <div class="parecer-box">
       <div class="section-label" style="margin-bottom:8px">Parecer geral (opcional)</div>
-      <p style="font-size:12px;color:#5F6368;margin-bottom:10px;line-height:1.55">Campo opcional para registrar a síntese da avaliação, com pontos fortes, limitações e recomendação final.</p>
-      <textarea id="parecerGeralSeq" placeholder="Escreva o parecer geral sobre a proposta desta equipe…"></textarea>
+      <textarea id="parecerGeralSeq" placeholder="Campo opcional para registrar a síntese da avaliação, com pontos fortes, limitações e recomendação final."></textarea>
     </div>
   </div>
 
@@ -3645,8 +3804,7 @@ textarea::placeholder{color:#BDC1C6}
             <div id="critGridSplit"></div>
             <div class="parecer-box">
               <div class="section-label" style="margin-bottom:8px">Parecer geral (opcional)</div>
-              <p style="font-size:12px;color:#5F6368;margin-bottom:10px;line-height:1.55">Campo opcional para registrar a síntese da avaliação, com pontos fortes, limitações e recomendação final.</p>
-              <textarea id="parecerGeralSplit" placeholder="Escreva o parecer geral sobre a proposta desta equipe…"></textarea>
+              <textarea id="parecerGeralSplit" placeholder="Campo opcional para registrar a síntese da avaliação, com pontos fortes, limitações e recomendação final."></textarea>
             </div>
           </div>
         </div>
@@ -3667,6 +3825,46 @@ textarea::placeholder{color:#BDC1C6}
   <div class="page-title">Configurações</div>
   <div class="page-sub">Personalize a aparência e o comportamento do sistema.</div>
 </div>
+
+  <section class="card calibration-card">
+    <div class="calibration-head">
+      <div>
+        <div class="section-label" style="margin-bottom:4px">Pesos dos critérios da avaliação inicial</div>
+        <div class="calibration-helper">Controla o cálculo da tela de Resultados. As notas originais permanecem intactas e a soma precisa ser exatamente 100%.</div>
+      </div>
+      <div class="calibration-total" id="calibrationTotal">100,0%</div>
+    </div>
+    <div id="calibrationInputs" class="calibration-inputs"></div>
+    <div class="calibration-actions">
+      <button class="btn btn-secondary" type="button" onclick="resetCalibrationDraft()">Restaurar pesos iguais</button>
+      <button class="btn btn-primary" id="applyCalibrationBtn" type="button" onclick="applyCalibrationWeights()"><i class="ti ti-check"></i>Aplicar novos pesos</button>
+    </div>
+    <div class="calibration-message" id="calibrationMessage"></div>
+  </section>
+
+  <div class="card">
+    <div class="section-label" style="margin-bottom:5px">Modelo de avaliação da banca</div>
+    <div style="font-size:12px;color:#7A828E;line-height:1.5;margin-bottom:16px">Define a grade exibida para todos os pareceristas da segunda rodada. Avaliações de modelos anteriores são preservadas e não entram no ranking do modelo ativo.</div>
+    <div class="form-row cols-2">
+      <div>
+        <label class="fl">Modelo ativo</label>
+        <select class="finput" id="bancaModelSelect" onchange="renderBancaModelSettings()">
+          <option value="grade_completa">Grade completa · 8 critérios</option>
+          <option value="grade_banca">Grade da banca · 4 critérios</option>
+          <option value="nota_direta">Nota direta · 1 a 5</option>
+        </select>
+      </div>
+      <div>
+        <label class="fl">Soma dos pesos</label>
+        <div id="bancaWeightsTotal" style="min-height:36px;display:flex;align-items:center;padding:0 12px;border:1px solid #DADCE0;border-radius:6px;background:#F8F9FA;font-size:12px;font-weight:600;color:#5F6368">100%</div>
+      </div>
+    </div>
+    <div id="bancaModelWeights" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px;margin:14px 0"></div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-primary" type="button" onclick="saveBancaModelSettings()"><i class="ti ti-check"></i>Aplicar modelo e pesos</button>
+      <span id="bancaModelStatus" style="font-size:11px;color:#9AA0A6">Pesos iguais inicialmente.</span>
+    </div>
+  </div>
 
   <div class="card">
     <div class="section-label" style="margin-bottom:16px">Persistência e ambientes</div>
@@ -4109,12 +4307,86 @@ const CRITERIOS = [
   { nome:'Exploração dos formatos', desc:'A proposta usa as características específicas de cada formato para ampliar o impacto?' },
   { nome:'Estratégia de distribuição', desc:'A ideia demonstra potencial de circulação no ecossistema Globo?' },
 ];
+const CRITERIOS_ORIGINAIS = CRITERIOS.map(item => ({ ...item }));
+const BANCA_MODEL_DEFS = {
+  grade_completa: { label:'Grade completa · 8 critérios', criterios:CRITERIOS_ORIGINAIS },
+  grade_banca: { label:'Grade da banca · 4 critérios', criterios:[
+    { nome:'Impacto potencial da campanha', desc:'O potencial da campanha para gerar resultados relevantes junto ao público e aos objetivos da iniciativa.', escala:[
+      'Muito baixo potencial de impacto.',
+      'Baixo potencial de impacto.',
+      'Bom potencial de impacto.',
+      'Alto potencial de impacto.',
+      'Excelente potencial de impacto.'
+    ]},
+    { nome:'Viabilidade de execução', desc:'A consistência da proposta para ser desenvolvida e executada nas condições previstas pelo programa.', escala:[
+      'Muito baixa viabilidade.',
+      'Baixa viabilidade.',
+      'Boa viabilidade.',
+      'Alta viabilidade.',
+      'Excelente viabilidade.'
+    ]},
+    { nome:'Integração ao ecossistema Globo', desc:'O quanto a proposta aproveita as características, plataformas e oportunidades do ecossistema Globo.', escala:[
+      'Muito baixa integração.',
+      'Baixa integração.',
+      'Boa integração.',
+      'Alta integração.',
+      'Excelente integração.'
+    ]},
+    { nome:'Defesa da proposta', desc:'O domínio demonstrado pelo time sobre a proposta durante a apresentação e as respostas à banca.', escala:[
+      'Muito baixo domínio.',
+      'Baixo domínio.',
+      'Bom domínio.',
+      'Alto domínio.',
+      'Excelente domínio.'
+    ]}
+  ]},
+  nota_direta: { label:'Nota direta · 1 a 5', criterios:[{ nome:'Nota do projeto', desc:'Avaliação global do projeto nesta etapa.', escala:[
+    'Muito abaixo do esperado.', 'Abaixo do esperado.', 'Atende ao esperado.', 'Acima do esperado.', 'Excelente.'
+  ]}]}
+};
+let bancaModeloAtivo = 'grade_completa';
+let bancaModelosConfig = {
+  grade_completa:{ pesos:[12.5,12.5,12.5,12.5,12.5,12.5,12.5,12.5] },
+  grade_banca:{ pesos:[25,25,25,25] },
+  nota_direta:{ pesos:[100] },
+};
 const CRITERIO_PESOS_PADRAO = CRITERIOS.map(() => 100 / CRITERIOS.length);
 let CRITERIO_PESOS = [...CRITERIO_PESOS_PADRAO];
 
 const NC = { 'Insuficiente':'b-ins','Regular':'b-reg','Bom':'b-bom','Ótimo':'b-oti' };
 const CRITERIOS_PORTAL_ABREV = ['ORIG','CLAR','ENG','TEMA','NARR','ENTR','FORM','DIST'];
-const NV = { 'Insuficiente':1,'Regular':2,'Bom':3,'Ótimo':4 };
+const NV = { 'Insuficiente':1,'Regular':2,'Bom':3,'Ótimo':4,'1':1,'2':2,'3':3,'4':4,'5':5 };
+
+function normalizeBancaModelId(value) {
+  return Object.prototype.hasOwnProperty.call(BANCA_MODEL_DEFS, value) ? value : 'grade_completa';
+}
+
+function defaultBancaModelWeights(modelId) {
+  const length = BANCA_MODEL_DEFS[normalizeBancaModelId(modelId)].criterios.length;
+  return Array.from({ length }, () => 100 / length);
+}
+
+function normalizeBancaModelsConfig(raw) {
+  const source = raw && typeof raw === 'object' ? raw : {};
+  return Object.fromEntries(Object.keys(BANCA_MODEL_DEFS).map(modelId => {
+    const expected = BANCA_MODEL_DEFS[modelId].criterios.length;
+    const candidate = Array.isArray(source[modelId]?.pesos) ? source[modelId].pesos.map(Number) : [];
+    const valid = candidate.length === expected && candidate.every(value => Number.isFinite(value) && value >= 0);
+    return [modelId, { pesos: valid ? candidate : defaultBancaModelWeights(modelId) }];
+  }));
+}
+
+function applyBancaModelFromConfig(modelId = bancaModeloAtivo) {
+  bancaModeloAtivo = normalizeBancaModelId(modelId);
+  bancaModelosConfig = normalizeBancaModelsConfig(bancaModelosConfig);
+  const definition = BANCA_MODEL_DEFS[bancaModeloAtivo];
+  CRITERIOS.splice(0, CRITERIOS.length, ...definition.criterios.map(item => ({ ...item, escala:Array.isArray(item.escala) ? [...item.escala] : undefined })));
+  CRITERIO_PESOS = [...bancaModelosConfig[bancaModeloAtivo].pesos];
+}
+
+function bancaModelDefinition() {
+  return BANCA_MODEL_DEFS[normalizeBancaModelId(bancaModeloAtivo)];
+}
 const PARECERISTAS_DEFAULT = [
   { id:'p1', nome:'Ana Paula Ribeiro', email:'ana@parecerista.com', inst:'Estácio', cota:null, cotaManual:false, isTest:false },
   { id:'p2', nome:'Carlos Eduardo Lima', email:'carlos@parecerista.com', inst:'Uninove', cota:null, cotaManual:false, isTest:false },
@@ -4125,11 +4397,16 @@ const ADMIN_PASSWORD = 'fabio';
 const ACCESS_ROLE_KEY = 'ppa2026_access_role_v1';
 const AVALIACAO_SCALE_KEY = 'ppa2026_avaliacao_scale_v1';
 const BANCA_SELECTION_KEY = 'ppa2026_banca_selection_v1';
-const ADMIN_VIEWS = ['calibracao', 'pareceristas', 'auditoria', 'config'];
+const ADMIN_VIEWS = ['pareceristas', 'auditoria', 'config'];
 const VIEWER_VIEWS = ['dashboard', 'resultados', 'banca', 'portal', 'avaliacao'];
 
 // ═══ ESTADO ═══════════════════════════════════════════════
 let pareceristas = PARECERISTAS_DEFAULT.map(p => ({ ...p }));
+let bancaPareceristas = [];
+let bancaAvaliacoes = {};
+let bancaReviewerBootMode = false;
+let requestedBancaParId = null;
+let bancaRoundSchemaAvailable = null;
 
 // atribuicoes[inscId] = [parId, parId, parId]
 let atribuicoes = {};
@@ -4441,7 +4718,7 @@ function submitViewerLogin() {
   const afterSuccess = viewerLoginAfterSuccess;
   viewerLoginAfterSuccess = null;
   if (typeof afterSuccess === 'function') afterSuccess();
-  else showView(requestedParId ? 'portal' : 'resultados');
+  else showView((requestedParId || requestedBancaParId) ? 'portal' : 'resultados');
 }
 
 // ═══ NAV ══════════════════════════════════════════════════
@@ -4488,8 +4765,10 @@ function showView(v, opts = {}) {
   if (v === 'dashboard') renderDashboard();
   if (v === 'resultados') renderResultados();
   if (v === 'banca') renderBanca();
-  if (v === 'calibracao') renderCalibration();
-  if (v === 'pareceristas') renderPareceristas();
+  if (v === 'pareceristas') {
+    renderPareceristas();
+    renderBancaReviewers();
+  }
   if (v === 'portal') {
     const portalParId = currentParId || document.getElementById('simParecerista')?.value || '';
     if (portalParId) {
@@ -4500,7 +4779,10 @@ function showView(v, opts = {}) {
   if (v === 'auditoria') {
     ensureAuditDataLoaded();
   }
-  if (v === 'config') {} // static view
+  if (v === 'config') {
+    renderCalibration();
+    renderBancaModelSettings();
+  }
 
   if (!reviewerBootMode && !adminImportInFlight && ['dashboard','resultados','banca','pareceristas'].includes(v)) {
     refreshStateFromSupabaseInBackground();
@@ -5737,6 +6019,12 @@ function formatResultadoMemberName(value) {
   const text = displayPersonName(value);
   return text.length > 25 ? `${text.slice(0, 25).trimEnd()}...` : text;
 }
+function formatEvaluationPersonName(value, max = 40) {
+  const text = displayPersonName(value);
+  if (text.length <= max) return text;
+  const visibleLength = Math.max(0, max - 3);
+  return `${text.slice(0, visibleLength).trimEnd()}...`;
+}
 function compactCourseLabel(value) {
   const text = String(value || '').trim();
   if (!text) return 'N/D';
@@ -6909,29 +7197,215 @@ function toggleAnyTopResults(field) {
   renderResultados();
 }
 
+function getBancaReviewerLink(parId) {
+  return `${getAppBaseUrl()}?banca_par=${encodeURIComponent(parId)}`;
+}
+
+function copyBancaReviewerLink(parId, nome) {
+  navigator.clipboard?.writeText(getBancaReviewerLink(parId)).catch(() => {});
+  notify(`Link da banca de ${nome} copiado.`);
+}
+
+function openBancaReviewerLink(parId) {
+  window.open(getBancaReviewerLink(parId), '_blank', 'noopener');
+}
+
+async function addBancaReviewer() {
+  if (!hasAdminAccess()) return requestAdminAccess('banca');
+  const nome = String(document.getElementById('bancaReviewerName')?.value || '').trim();
+  const email = String(document.getElementById('bancaReviewerEmail')?.value || '').trim().toLowerCase();
+  const instituicao = String(document.getElementById('bancaReviewerInstitution')?.value || '').trim();
+  if (!nome || !email || !email.includes('@')) {
+    notify('Informe nome e um e-mail válido.');
+    return;
+  }
+  const client = getSupabaseClient();
+  if (!client) {
+    notify('Configure o Supabase antes de criar a banca.');
+    return;
+  }
+  const existing = bancaPareceristas.find(p => String(p.email || '').toLowerCase() === email);
+  const id = existing?.id || `bp_${crypto.randomUUID().replace(/-/g, '').slice(0, 16)}`;
+  const { error } = await client.from('banca_pareceristas').upsert({
+    environment: activeEnvironment,
+    id_externo: id,
+    nome,
+    email,
+    instituicao: instituicao || null,
+    ativo: true,
+    updated_at: new Date().toISOString(),
+  }, { onConflict:'environment,id_externo' });
+  if (error) {
+    bancaRoundSchemaAvailable = !isMissingBancaRoundSchemaError(error);
+    notify(isMissingBancaRoundSchemaError(error) ? 'Aplique primeiro a migration da rodada da banca no Supabase.' : `Não foi possível adicionar: ${error.message || error}`);
+    renderBancaReviewers();
+    return;
+  }
+  ['bancaReviewerName','bancaReviewerEmail','bancaReviewerInstitution'].forEach(fieldId => {
+    const field = document.getElementById(fieldId);
+    if (field) field.value = '';
+  });
+  await loadBancaRoundStateFromSupabase();
+  renderBanca();
+  notify(`${nome} adicionado à banca. O link individual já está disponível.`);
+}
+
+async function deactivateBancaReviewer(parId) {
+  if (!hasAdminAccess()) return requestAdminAccess('banca');
+  const reviewer = bancaPareceristas.find(p => p.id === parId);
+  if (!reviewer || !confirm(`Retirar ${reviewer.nome} da banca? As avaliações já salvas serão preservadas.`)) return;
+  const client = getSupabaseClient();
+  if (!client) return;
+  const { error } = await client.from('banca_pareceristas')
+    .update({ ativo:false, updated_at:new Date().toISOString() })
+    .eq('environment', activeEnvironment)
+    .eq('id_externo', parId);
+  if (error) {
+    notify(`Não foi possível retirar: ${error.message || error}`);
+    return;
+  }
+  await loadBancaRoundStateFromSupabase();
+  renderBanca();
+  notify(`${reviewer.nome} retirado da banca. Os dados anteriores foram preservados.`);
+}
+
+function bancaReviewerCompletedCount(parId, selectedIds = new Set(getBancaSelectionIds())) {
+  return Object.entries(bancaAvaliacoes[parId] || {}).filter(([inscId, av]) => selectedIds.has(String(inscId)) && av?.done).length;
+}
+
+function renderBancaReviewers() {
+  const list = document.getElementById('bancaReviewerList');
+  const status = document.getElementById('bancaReviewerRoundStatus');
+  if (!list) return;
+  const selectedIds = new Set(getBancaSelectionIds());
+  if (status) status.textContent = bancaRoundSchemaAvailable === false
+    ? 'Configuração pendente'
+    : `${bancaPareceristas.length} ${bancaPareceristas.length === 1 ? 'parecerista ativo' : 'pareceristas ativos'} · ${selectedIds.size} equipes cada · ${bancaModelDefinition().label}`;
+  if (bancaRoundSchemaAvailable === false) {
+    list.innerHTML = '<tr><td colspan="7" style="padding:24px;text-align:center;color:#9AA0A6">Aplique <strong>20260722_add_banca_review_round.sql</strong> no Supabase para habilitar o cadastro e os links da banca.</td></tr>';
+    return;
+  }
+  list.innerHTML = bancaPareceristas.length ? bancaPareceristas.map(p => {
+    const done = bancaReviewerCompletedCount(p.id, selectedIds);
+    return `<tr><td>${bancaPareceristas.indexOf(p) + 1}</td><td style="font-weight:500">${escapeHtmlAttr(p.nome)}</td><td>${escapeHtmlAttr(p.email)}</td><td>${escapeHtmlAttr(p.inst || '—')}</td><td><strong>${done}</strong> de ${selectedIds.size} concluídas</td><td><button class="btn btn-secondary btn-sm" type="button" onclick="openBancaReviewerLink('${p.id}')"><i class="ti ti-external-link"></i>Abrir portal</button></td><td><div class="banca-reviewer-actions"><button class="icon-btn" type="button" onclick="copyBancaReviewerLink('${p.id}','${escapeHtmlAttr(p.nome)}')" title="Copiar link"><i class="ti ti-copy"></i></button><button class="icon-btn" type="button" onclick="deactivateBancaReviewer('${p.id}')" title="Retirar da banca"><i class="ti ti-trash"></i></button></div></td></tr>`;
+  }).join('') : '<tr><td colspan="7" style="padding:24px;text-align:center;color:#9AA0A6">Nenhum parecerista foi designado para a banca.</td></tr>';
+}
+
+function bancaTeamMetrics(inscId) {
+  const definition = bancaModelDefinition();
+  const weights = normalizeBancaModelsConfig(bancaModelosConfig)[bancaModeloAtivo].pesos;
+  const completed = bancaPareceristas.map(p => bancaAvaliacoes[p.id]?.[String(inscId)]).filter(av => av?.done);
+  const criteria = definition.criterios.map((_, index) => {
+    const values = completed.map(av => NV[av.notas?.[index]]).filter(Number.isFinite);
+    return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null;
+  });
+  const total = criteria.every(Number.isFinite)
+    ? criteria.reduce((sum, value, index) => sum + value * ((weights[index] || 0) / 100), 0)
+    : null;
+  return { completed:completed.length, expected:bancaPareceristas.length, criteria, total };
+}
+
+function bancaReviewerProgressHTML(inscId, rowIdx) {
+  const done = bancaPareceristas.filter(p => bancaAvaliacoes[p.id]?.[String(inscId)]?.done).length;
+  const total = bancaPareceristas.length;
+  const title = `${done} de ${total} pareceres da banca concluídos`;
+  return `<button class="nota-progress-btn" id="exp-banca-${rowIdx}" onclick="toggleBancaRes(${rowIdx})" title="${title}" aria-label="${title}" aria-expanded="false">
+    <i class="ti ti-chevron-down nota-progress-arrow" aria-hidden="true"></i>
+  </button>`;
+}
+
+function toggleBancaRes(rowIdx) {
+  const button = document.getElementById(`exp-banca-${rowIdx}`);
+  if (button) {
+    const isOpen = button.classList.toggle('open');
+    button.setAttribute('aria-expanded', String(isOpen));
+  }
+  document.querySelectorAll(`.sub-banca-${rowIdx}`).forEach(row => row.classList.toggle('open'));
+}
+
+function bancaTableHeaderHTML() {
+  const definition = bancaModelDefinition();
+  const weights = normalizeBancaModelsConfig(bancaModelosConfig)[bancaModeloAtivo].pesos;
+  if (bancaModeloAtivo === 'grade_completa') {
+    const resultLabels = ['Originalidade','Clareza','Engajamento','Temática','Narrativa','Coerência','Formatos','Distribuição'];
+    return `<tr>
+    <th class="sticky s0 rank-col-head" rowspan="2">Ranking</th><th class="sticky s3 id-col" rowspan="2">Identificação</th><th class="sticky s5" rowspan="2">Time (leader-first)</th><th class="sticky s7" rowspan="2" style="text-align:center;min-width:90px">Nota geral</th>
+    <th class="crit crit-group" colspan="2" style="text-align:center;border-left:1px solid #E0E0E0">Proposta</th><th class="crit crit-group" colspan="2" style="text-align:center;border-left:1px solid #E0E0E0">Impacto</th><th class="crit crit-group" colspan="2" style="text-align:center;border-left:1px solid #E0E0E0">Execução</th><th class="crit crit-group" colspan="2" style="text-align:center;border-left:1px solid #E0E0E0">Estratégia</th></tr>
+    <tr>${definition.criterios.map((criterion, index) => `<th class="crit">${resultLabels[index]}<span class="peso">${index === 0 ? 'Peso ' : ''}${formatCriterionWeight(weights[index])}%</span></th>`).join('')}</tr>`;
+  }
+  return `<tr><th class="sticky s0 rank-col-head" rowspan="2">Ranking</th><th class="sticky s3 id-col" rowspan="2">Identificação</th><th class="sticky s5" rowspan="2">Time (leader-first)</th><th class="sticky s7" rowspan="2" style="text-align:center;min-width:90px">Nota geral</th><th class="crit crit-group banca-model-group" colspan="${definition.criterios.length}">${bancaModeloAtivo === 'nota_direta' ? 'AVALIAÇÃO' : 'GRADE DA BANCA'}</th></tr><tr>${definition.criterios.map((criterion, index) => `<th class="crit banca-model-criterion">${escapeHtmlAttr(criterion.nome)}<span class="peso">${index === 0 ? 'Peso ' : ''}${formatCriterionWeight(weights[index])}%</span></th>`).join('')}</tr>`;
+}
+
+function syncBancaTableStructure() {
+  const table = document.querySelector('#view-banca .results-table');
+  if (!table) return;
+  const definition = bancaModelDefinition();
+  const colgroup = table.querySelector('colgroup');
+  const thead = table.querySelector('thead');
+  const criterionWidth = bancaModeloAtivo === 'grade_completa' ? 104 : bancaModeloAtivo === 'grade_banca' ? 160 : 180;
+  if (colgroup) colgroup.innerHTML = '<col style="width:86px"><col style="width:108px"><col style="width:262px"><col style="width:96px">' + definition.criterios.map(() => `<col style="width:${criterionWidth}px">`).join('');
+  if (thead) thead.innerHTML = bancaTableHeaderHTML();
+}
+
 function renderBanca() {
-  syncCriterionWeightLabels();
+  syncBancaTableStructure();
   const body = document.getElementById('tblBanca');
   if (!body) return;
   const selectedIds = new Set(getBancaSelectionIds());
   const rows = INSCRICOES.map((e, idx) => ({ e, idx }))
     .filter(({ e }) => selectedIds.has(String(e.id)))
     .sort((a, b) => displayPersonName(a.e.lider).localeCompare(displayPersonName(b.e.lider), 'pt-BR', { sensitivity:'base', numeric:true }) || String(a.e.id).localeCompare(String(b.e.id), 'pt-BR', { numeric:true }));
-  window.currentBancaRows = rows;
+  renderBancaReviewers();
   const summary = document.getElementById('bancaSummary');
-  if (summary) summary.textContent = `${rows.length} ${rows.length === 1 ? 'equipe selecionada' : 'equipes selecionadas'}`;
+  if (summary) summary.textContent = `${rows.length} ${rows.length === 1 ? 'equipe selecionada' : 'equipes selecionadas'} · ${bancaModelDefinition().label}`;
 
-  body.innerHTML = rows.length ? rows.map(({ e, idx }) => {
+  const metricRows = rows.map(row => ({ ...row, metrics:bancaTeamMetrics(row.e.id) }));
+  const hasRankedResults = metricRows.some(row => row.metrics.total !== null);
+  if (hasRankedResults) {
+    metricRows.sort((a, b) => {
+      const aScored = a.metrics.total !== null;
+      const bScored = b.metrics.total !== null;
+      if (aScored !== bScored) return aScored ? -1 : 1;
+      if (aScored && bScored && Math.abs(b.metrics.total - a.metrics.total) > 1e-9) return b.metrics.total - a.metrics.total;
+      return displayPersonName(a.e.lider).localeCompare(displayPersonName(b.e.lider), 'pt-BR', { sensitivity:'base', numeric:true })
+        || String(a.e.id).localeCompare(String(b.e.id), 'pt-BR', { numeric:true });
+    });
+  }
+  window.currentBancaRows = metricRows;
+  const ranked = metricRows.filter(row => row.metrics.total !== null).sort((a,b) => b.metrics.total - a.metrics.total);
+  const rankById = new Map();
+  ranked.forEach((row, index) => {
+    const previous = ranked[index - 1];
+    rankById.set(String(row.e.id), previous && Math.abs(previous.metrics.total - row.metrics.total) < 1e-9 ? rankById.get(String(previous.e.id)) : index + 1);
+  });
+  body.innerHTML = metricRows.length ? metricRows.map(({ e, idx, metrics }, rowIdx) => {
+    const rank = rankById.get(String(e.id));
+    const weights = normalizeBancaModelsConfig(bancaModelosConfig)[bancaModeloAtivo].pesos;
+    const subRows = bancaPareceristas.map(reviewer => {
+      const evaluation = bancaAvaliacoes[reviewer.id]?.[String(e.id)];
+      const completed = !!evaluation?.done;
+      const criteria = bancaModelDefinition().criterios.map((_, criterionIndex) => completed ? NV[evaluation.notas?.[criterionIndex]] : null);
+      const total = completed && criteria.every(Number.isFinite)
+        ? criteria.reduce((sum, value, criterionIndex) => sum + value * ((weights[criterionIndex] || 0) / 100), 0)
+        : null;
+      return `<tr class="sub-row sub-banca-${rowIdx}">
+        <td class="sticky s0"></td>
+        <td class="sticky s3 id-col"></td>
+        <td class="sticky s5" style="padding-left:22px"><div style="font-size:11px;font-weight:500;color:#5F6368">${escapeHtmlAttr(reviewer.nome)}</div><div class="res-faint" style="font-size:10px">Parecerista da banca</div></td>
+        <td class="sticky s7" style="text-align:center">${total !== null ? `<span style="font-size:13px;font-weight:600;color:#202124">${fmtResultadoFinal(total)}</span>` : '<span style="color:#D5D9E0">—</span>'}</td>
+        ${criteria.map(value => `<td class="crit-td">${Number.isFinite(value) ? `<span class="criterion-score-main">${value.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</span>` : '<span style="color:#D5D9E0">—</span>'}</td>`).join('')}
+      </tr>`;
+    }).join('');
     return `<tr>
-      <td class="sticky s0"><div class="res-rank-line"><span style="color:#D5D9E0;font-size:13px">—</span></div></td>
+      <td class="sticky s0"><div class="res-rank-line"><span class="res-primary-rank">${rank || '—'}</span></div></td>
       <td class="sticky s3 id-col" style="text-align:center">
         <div class="res-id-hub"><div class="res-id-meta"><div class="res-muted res-id" style="font-family:monospace;font-size:11px">ID ${shortInscId(e.id)}</div><div class="team-marker-stack">${teamMarker(e.mod)}</div><div class="res-uf">${compactUfLabel(e.uf) || '—'}</div></div><div class="res-id-actions"><button class="icon-btn" onclick="openModal(${idx})" title="Ver inscrição"><i class="ti ti-eye"></i></button><button class="icon-btn" onclick="openModalPar(${idx})" title="Ver notas dos pareceristas"><i class="ti ti-notes"></i></button></div></div>
       </td>
       <td class="sticky s5"><div class="leader-cell"><div style="font-size:12.5px;font-weight:600;color:#202124">${formatResultadoLeaderName(e.lider)}</div>${e.p2 ? `<div class="team-members"><div class="team-member-line" title="${escapeHtmlAttr(displayPersonName(e.p2))}">${formatResultadoMemberName(e.p2)}</div>${e.p3 ? `<div class="team-member-line" title="${escapeHtmlAttr(displayPersonName(e.p3))}">${formatResultadoMemberName(e.p3)}</div>` : ''}</div>` : ''}<div class="res-muted" style="font-size:11px;margin-top:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-school" style="font-size:11px"></i>${displayPersonName(e.mentor)}</div></div></td>
-      <td class="sticky s7" style="text-align:center;vertical-align:top"><div class="nota-cell"><div class="nota-main"><span style="color:#D5D9E0;font-size:15px">—</span></div></div></td>
-      ${Array(8).fill(0).map(() => '<td class="crit-td"><span style="color:#D5D9E0">—</span></td>').join('')}
-    </tr>`;
-  }).join('') : '<tr><td colspan="12" style="padding:38px 14px;text-align:center;color:#9AA0A6">Nenhuma equipe foi selecionada para a banca.</td></tr>';
+      <td class="sticky s7" style="text-align:center;vertical-align:top"><div class="nota-cell"><div class="nota-main">${metrics.total !== null ? fmtResultadoFinal(metrics.total) : '<span style="color:#D5D9E0;font-size:15px">—</span>'}</div><div class="nota-actions">${bancaReviewerProgressHTML(e.id, rowIdx)}</div></div></td>
+      ${metrics.criteria.map((value, ci) => `<td class="crit-td">${value !== null ? `<div class="criterion-score-main">${value.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</div><div class="res-faint" style="font-size:8.5px">peso ${formatCriterionWeight(normalizeBancaModelsConfig(bancaModelosConfig)[bancaModeloAtivo].pesos[ci])}%</div>` : '<span style="color:#D5D9E0">—</span>'}</td>`).join('')}
+    </tr>${subRows}`;
+  }).join('') : `<tr><td colspan="${4 + bancaModelDefinition().criterios.length}" style="padding:38px 14px;text-align:center;color:#9AA0A6">Nenhuma equipe foi selecionada para a banca.</td></tr>`;
 }
 
 function resultadoParticipantRows(e) {
@@ -7060,7 +7534,9 @@ function openModalPar(idx) {
   document.getElementById('parTitle').textContent = fullInscId(e.id) + ' · ' + e.lider;
   document.getElementById('parSub').textContent = e.mod + ' · ' + e.uf + ' · ' + e.inst;
 
-  const atribPars = getOfficialPareceristas().filter(p => atribuicoes[e.id]?.includes(p.id));
+  const atribPars = getOfficialPareceristas()
+    .filter(p => atribuicoes[e.id]?.includes(p.id))
+    .sort((a, b) => String(a.nome || '').localeCompare(String(b.nome || ''), 'pt-BR', { sensitivity:'base', numeric:true }));
 
   if (!atribPars.length) {
     document.getElementById('parBody').innerHTML = '<div class="par-vazio">Nenhum parecerista atribuído a esta inscrição ainda.</div>';
@@ -7162,20 +7638,38 @@ function setPortalQuickFiltersState(filter, counts = {}) {
   if (pendingCountEl) pendingCountEl.textContent = String(pendingCount);
 }
 
+function syncBancaPortalTableStructure() {
+  if (!bancaReviewerBootMode) return;
+  const table = document.querySelector('#view-portal .results-table');
+  if (!table) return;
+  const definition = bancaModelDefinition();
+  const weights = normalizeBancaModelsConfig(bancaModelosConfig)[bancaModeloAtivo].pesos;
+  const colgroup = table.querySelector('colgroup');
+  if (colgroup) colgroup.innerHTML = '<col style="width:268px"><col style="width:96px">' + definition.criterios.map(() => '<col style="width:130px">').join('');
+  const thead = table.querySelector('thead');
+  const alternativeModel = bancaModeloAtivo !== 'grade_completa';
+  if (thead) thead.innerHTML = `<tr><th class="sticky s5" rowspan="2">Time (leader-first)</th><th class="sticky s7" rowspan="2" style="text-align:center;min-width:90px">Nota geral</th><th class="crit crit-group${alternativeModel ? ' banca-model-group' : ''}" colspan="${definition.criterios.length}">${bancaModeloAtivo === 'grade_completa' ? 'Critérios' : bancaModeloAtivo === 'nota_direta' ? 'AVALIAÇÃO' : 'GRADE DA BANCA'}</th></tr><tr>${definition.criterios.map((criterion,index) => `<th class="crit${alternativeModel ? ' banca-model-criterion' : ''}">${escapeHtmlAttr(criterion.nome)}<span class="peso">${index === 0 ? 'Peso ' : ''}${formatCriterionWeight(weights[index])}%</span></th>`).join('')}</tr>`;
+}
+
 function renderPortal() {
-  syncCriterionWeightLabels();
+  if (bancaReviewerBootMode) syncBancaPortalTableStructure();
+  else syncCriterionWeightLabels();
   const sel = document.getElementById('simParecerista');
   const parId = currentParId || sel.value;
   if (!parId) return;
   if (portalStateLoading) {
+    const portalResultsScroll = document.getElementById('portalResultsScroll');
+    if (portalResultsScroll) portalResultsScroll.style.visibility = 'hidden';
     document.getElementById('portalNome').textContent = 'Carregando portal';
     document.getElementById('portalSub').textContent = 'Buscando inscrições atribuídas...';
     document.getElementById('portalProgBar').style.width = '0%';
     document.getElementById('portalProgLabel').textContent = 'carregando...';
     setPortalQuickFiltersState(currentPortalFilter, { total:0, done:0, pending:0 });
-    document.getElementById('portalList').innerHTML = `<tr><td colspan="10" style="text-align:center;padding:32px;color:#9AA0A6;font-size:12px">Carregando suas inscrições...</td></tr>`;
+    document.getElementById('portalList').innerHTML = `<tr><td colspan="${2 + CRITERIOS.length}" style="text-align:center;padding:32px;color:#9AA0A6;font-size:12px">Carregando suas inscrições...</td></tr>`;
     return;
   }
+  const portalResultsScroll = document.getElementById('portalResultsScroll');
+  if (portalResultsScroll) portalResultsScroll.style.visibility = '';
   const par = pareceristas.find(p => p.id === parId);
   if (!par) {
     document.getElementById('portalNome').textContent = 'Parecerista';
@@ -7189,12 +7683,14 @@ function renderPortal() {
 
   currentParId = parId;
   if (sel && sel.value !== parId) sel.value = parId;
-  document.getElementById('portalNome').textContent = par.nome;
+  document.getElementById('portalNome').textContent = bancaReviewerBootMode ? `${par.nome} · Banca` : par.nome;
 
   const minhasAtivas = getAtribAtivas(parId);
   const minhasVisiveis = getAtribVisiveisNoPortal(parId);
   const pendenciasTecnicas = getVideoIssueReportsByReviewer(parId).length;
-  document.getElementById('portalSub').textContent = `${par.email} · ${isTestParecerista(parId) ? 'perfil de teste · ' : ''}${minhasAtivas.length} inscrições ativas${pendenciasTecnicas ? ` · ${pendenciasTecnicas} pendência${pendenciasTecnicas === 1 ? '' : 's'} técnica${pendenciasTecnicas === 1 ? '' : 's'}` : ''}`;
+  document.getElementById('portalSub').textContent = bancaReviewerBootMode
+    ? `${par.email} · segunda rodada · ${BANCA_MODEL_DEFS[bancaModeloAtivo].label} · ${minhasAtivas.length} equipes da banca`
+    : `${par.email} · ${isTestParecerista(parId) ? 'perfil de teste · ' : ''}${minhasAtivas.length} inscrições ativas${pendenciasTecnicas ? ` · ${pendenciasTecnicas} pendência${pendenciasTecnicas === 1 ? '' : 's'} técnica${pendenciasTecnicas === 1 ? '' : 's'}` : ''}`;
 
   const done = minhasVisiveis.filter(id => isEvaluationConcluded(parId, id)).length;
   const pending = Math.max(0, minhasVisiveis.length - done);
@@ -7204,7 +7700,7 @@ function renderPortal() {
   setPortalQuickFiltersState(currentPortalFilter, { total:minhasVisiveis.length, done, pending });
 
   if (!INSCRICOES.length) {
-    document.getElementById('portalList').innerHTML = `<tr><td colspan="10" style="text-align:center;padding:32px;color:#9AA0A6;font-size:12px">A base deste ambiente ainda não foi persistida para o portal do parecerista. Primeiro o admin precisa carregar a base, sincronizar e gerar a distribuição.</td></tr>`;
+    document.getElementById('portalList').innerHTML = `<tr><td colspan="10" style="text-align:center;padding:32px;color:#9AA0A6;font-size:12px">${bancaReviewerBootMode ? 'Nenhuma equipe está selecionada para esta banca.' : 'A base deste ambiente ainda não foi persistida para o portal do parecerista. Primeiro o admin precisa carregar a base, sincronizar e gerar a distribuição.'}</td></tr>`;
     return;
   }
 
@@ -7248,8 +7744,8 @@ function renderPortal() {
         ${e.p2 ? `<div class="team-members"><div class="team-member-line portal-team-name" title="${escapeHtmlAttr(displayPersonName(e.p2))}">${formatResultadoMemberName(e.p2)}</div>${e.p3 ? `<div class="team-member-line portal-team-name" title="${escapeHtmlAttr(displayPersonName(e.p3))}">${formatResultadoMemberName(e.p3)}</div>` : ''}</div>` : ''}
         <div class="res-muted" style="font-size:11px;margin-top:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-school"></i>${displayPersonName(e.mentor)}</div></div></td>
       <td class="sticky s7" style="text-align:center"><div class="nota-cell"><div class="nota-main">${isDone ? fmtNotaGeral(notaGeralParecerista) : '—'}</div>${isDone && !resolvedVideoIssue ? '' : `<span class="badge ${statusClass}" style="margin-top:8px">${statusLabel}</span>`}</div></td>
-      ${Array(8).fill(0).map((_,ci) => `<td class="crit-td">${nc(isDone ? av?.notas?.[ci] : null)}</td>`).join('')}
-    </tr>${isDone && parecerResumo ? `<tr class="portal-observation-row" onclick="abrirFicha('${parId}','${inscId}', true)"><td colspan="10"><div class="portal-observation"><i class="ti ti-corner-down-right" aria-hidden="true"></i><strong>Observação</strong><span class="portal-observation-text" title="${escapeHtmlAttr(parecerResumo)}">${escapeHtmlAttr(parecerResumo)}</span></div></td></tr>` : ''}`;
+      ${CRITERIOS.map((_,ci) => `<td class="crit-td">${bancaReviewerBootMode && bancaModeloAtivo !== 'grade_completa' ? (isDone && av?.notas?.[ci] ? `<span style="font-size:13px;font-weight:600;color:#3C4043">${av.notas[ci]}</span>` : '<span style="color:#E0E0E0">—</span>') : nc(isDone ? av?.notas?.[ci] : null)}</td>`).join('')}
+    </tr>${isDone && parecerResumo ? `<tr class="portal-observation-row" onclick="abrirFicha('${parId}','${inscId}', true)"><td colspan="${2 + CRITERIOS.length}"><div class="portal-observation"><i class="ti ti-corner-down-right" aria-hidden="true"></i><strong>Observação</strong><span class="portal-observation-text" title="${escapeHtmlAttr(parecerResumo)}">${escapeHtmlAttr(parecerResumo)}</span></div></td></tr>` : ''}`;
   }).join('');
   requestAnimationFrame(syncPortalTableScrollHeight);
 }
@@ -7987,12 +8483,17 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
 
   const objetivos = e._raw?.['Objetivos da campanha'] || e._raw?.['Objetivos'] || e._raw?.['objetivos'] || 'Aumentar o reconhecimento do papel da educação como motor de transformação social, atingindo jovens de 16 a 25 anos em plataformas digitais e TV aberta.';
   const estrategia = e._raw?.['Estratégia de distribuição'] || e._raw?.['Estrategia de distribuicao'] || e._raw?.['estrategia'] || 'Distribuição integrada via Globoplay, Instagram, TikTok e inserções no Jornal Nacional, com peça de 30s e campanha multiplataforma ativada em sequência.';
+  const projectSummary = projectSummaries.get(String(shortInscId(e.id)))
+    || e._raw?.['Resumo do projeto']
+    || e._raw?.['Resumo']
+    || 'Resumo não disponível.';
 
   if (isSplit) {
     const curso = e._raw?.['Curso no qual você tem matrícula ativa?'] || e._raw?.['Curso'] || 'Publicidade e Propaganda';
     const instituicaoResumo = compactInstitutionLabel(e.inst);
     const cursoResumo = compactCourseLabel(curso);
     const localResumo = compactInstitutionLocation(e.inst, e.uf);
+    const bancaHeroFontStyle = bancaReviewerBootMode ? ' style="font-size:10px!important"' : '';
     const marker = teamMarker(e.mod);
     const kicker = `
       <span class="split-kicker-id">PPA2026-${e.id}</span>
@@ -8002,7 +8503,7 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
       <div class="split-meta-row">
         <div class="split-person-line">
           <span class="split-person-badge">P2</span>
-          <div class="split-meta-value">${e.p2}</div>
+          <div class="split-meta-value" title="${escapeHtmlAttr(displayPersonName(e.p2))}">${escapeHtmlAttr(formatEvaluationPersonName(e.p2))}</div>
         </div>
         ${e.p2e ? `<div class="split-meta-subline">${e.p2e}</div>` : ''}
       </div>` : '';
@@ -8010,7 +8511,7 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
       <div class="split-meta-row">
         <div class="split-person-line">
           <span class="split-person-badge">P3</span>
-          <div class="split-meta-value">${e.p3}</div>
+          <div class="split-meta-value" title="${escapeHtmlAttr(displayPersonName(e.p3))}">${escapeHtmlAttr(formatEvaluationPersonName(e.p3))}</div>
         </div>
         ${e.p3e ? `<div class="split-meta-subline">${e.p3e}</div>` : ''}
       </div>` : '';
@@ -8019,7 +8520,7 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
         <div class="split-meta-value-line">
           <div class="split-person-line">
             <span class="split-person-badge">M</span>
-            <div class="split-meta-value">${e.mentor || ''}</div>
+            <div class="split-meta-value" title="${escapeHtmlAttr(displayPersonName(e.mentor))}">${escapeHtmlAttr(formatEvaluationPersonName(e.mentor))}</div>
           </div>
           <span class="split-mentor-badge">Mentor(a)</span>
         </div>
@@ -8033,11 +8534,11 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
         </div>
         <div class="split-leader-line">
           <span class="split-person-badge">P1</span>
-          <div class="split-leader">${e.lider}</div>
+          <div class="split-leader"${bancaHeroFontStyle} title="${escapeHtmlAttr(displayPersonName(e.lider))}">${escapeHtmlAttr(formatEvaluationPersonName(e.lider))}</div>
         </div>
-        <div class="split-inst">${instituicaoResumo}</div>
-        <div class="split-hero-course">${cursoResumo}</div>
-        <div class="split-hero-location">${localResumo}</div>
+        <div class="split-inst"${bancaHeroFontStyle}>${instituicaoResumo}</div>
+        <div class="split-hero-course"${bancaHeroFontStyle}>${cursoResumo}</div>
+        <div class="split-hero-location"${bancaHeroFontStyle}>${localResumo}</div>
       </div>
 
       <div class="split-meta-rows">
@@ -8071,32 +8572,39 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
         <div class="ia-note split-ia-note" id="avalIASplit"></div>
       </div>
 
-      <div class="split-copy-section">
-        <div class="split-copy-title">Defesa conceitual</div>
-        <div class="split-copy-body">${e.defesa}</div>
-      </div>
-      <div class="split-copy-section">
-        <div class="split-copy-title">Objetivos da campanha</div>
-        <div class="split-copy-body">${objetivos}</div>
-      </div>
-      <div class="split-copy-section last">
-        <div class="split-copy-title">Estratégia de distribuição</div>
-        <div class="split-copy-body">${estrategia}</div>
-      </div>`;
+      ${bancaReviewerBootMode ? `
+        <div class="split-copy-section last banca-project-summary">
+          <div class="split-copy-title">Resumo do projeto</div>
+          <div class="split-copy-body">${escapeHtmlAttr(projectSummary)}</div>
+        </div>
+      ` : `
+        <div class="split-copy-section">
+          <div class="split-copy-title">Defesa conceitual</div>
+          <div class="split-copy-body">${e.defesa}</div>
+        </div>
+        <div class="split-copy-section">
+          <div class="split-copy-title">Objetivos da campanha</div>
+          <div class="split-copy-body">${objetivos}</div>
+        </div>
+        <div class="split-copy-section last">
+          <div class="split-copy-title">Estratégia de distribuição</div>
+          <div class="split-copy-body">${estrategia}</div>
+        </div>
+      `}`;
   }
 
   // modo sequencial — grid 3 colunas
-  const p2 = e.p2 ? `<div class="field"><div class="mfl">Participante 2</div><div class="mfv">${e.p2}</div><div class="mfv-sub">${e.p2e||''}</div></div>` : '<div class="field"></div>';
-  const p3 = e.p3 ? `<div class="field"><div class="mfl">Participante 3</div><div class="mfv">${e.p3}</div><div class="mfv-sub">${e.p3e||''}</div></div>` : '<div class="field"></div>';
+  const p2 = e.p2 ? `<div class="field"><div class="mfl">Participante 2</div><div class="mfv" title="${escapeHtmlAttr(displayPersonName(e.p2))}">${escapeHtmlAttr(formatEvaluationPersonName(e.p2))}</div><div class="mfv-sub">${e.p2e||''}</div></div>` : '<div class="field"></div>';
+  const p3 = e.p3 ? `<div class="field"><div class="mfl">Participante 3</div><div class="mfv" title="${escapeHtmlAttr(displayPersonName(e.p3))}">${escapeHtmlAttr(formatEvaluationPersonName(e.p3))}</div><div class="mfv-sub">${e.p3e||''}</div></div>` : '<div class="field"></div>';
   return `
     <div class="field"><div class="mfl">ID</div><div class="mfv mono">PPA2026-${e.id}</div></div>
     <div class="field"><div class="mfl">Modalidade</div><div class="mfv">${e.mod}</div></div>
     <div class="field"><div class="mfl">UF</div><div class="mfv">${e.uf}</div></div>
     <div class="field s2"><div class="mfl">Instituição</div><div class="mfv">${e.inst}</div></div>
     <div class="field"><div class="mfl">Curso</div><div class="mfv">${e._raw?.['Curso no qual você tem matrícula ativa?'] || e._raw?.['Curso'] || 'Publicidade e Propaganda'}</div></div>
-    <div class="field"><div class="mfl">Líder</div><div class="mfv">${e.lider}</div><div class="mfv-sub">${e.le||''}</div></div>
+    <div class="field"><div class="mfl">Líder</div><div class="mfv" title="${escapeHtmlAttr(displayPersonName(e.lider))}">${escapeHtmlAttr(formatEvaluationPersonName(e.lider))}</div><div class="mfv-sub">${e.le||''}</div></div>
     ${p2}${p3}
-    <div class="field s3"><div class="mfl">Mentor</div><div class="mfv">${e.mentor}</div><div class="mfv-sub">${e.me||''}</div></div>
+    <div class="field s3"><div class="mfl">Mentor</div><div class="mfv" title="${escapeHtmlAttr(displayPersonName(e.mentor))}">${escapeHtmlAttr(formatEvaluationPersonName(e.mentor))}</div><div class="mfv-sub">${e.me||''}</div></div>
     <div class="field s3">
       <div class="mfl">Materiais</div>
       <div class="materiais">
@@ -8105,13 +8613,16 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
         ${materialButtonHTML({ url: links.campanha, label: 'Campanha', icon: 'ti-file', tipo: 'campanha_multiplataforma', inscricaoId: e.id, openInModal: useAttachmentViewer })}
       </div>
     </div>
-    <div class="field s3"><div class="mfl">Defesa conceitual</div><div class="mfv-light">${e.defesa}</div></div>
-    <div class="field s3"><div class="mfl">Objetivos da campanha</div><div class="mfv-light">${objetivos}</div></div>
-    <div class="field s3 last"><div class="mfl">Estratégia de distribuição</div><div class="mfv-light">${estrategia}</div></div>`;
+    ${bancaReviewerBootMode
+      ? `<div class="field s3 last"><div class="mfl">Resumo do projeto</div><div class="mfv-light">${escapeHtmlAttr(projectSummary)}</div></div>`
+      : `<div class="field s3"><div class="mfl">Defesa conceitual</div><div class="mfv-light">${e.defesa}</div></div>
+         <div class="field s3"><div class="mfl">Objetivos da campanha</div><div class="mfv-light">${objetivos}</div></div>
+         <div class="field s3 last"><div class="mfl">Estratégia de distribuição</div><div class="mfv-light">${estrategia}</div></div>`}`;
 }
 
 function critGridHTML(av, prefix) {
-  const ESCALA = ['Insuficiente','Regular','Bom','Ótimo'];
+  const numericBancaScale = bancaReviewerBootMode && bancaModeloAtivo !== 'grade_completa';
+  const ESCALA = numericBancaScale ? ['1','2','3','4','5'] : ['Insuficiente','Regular','Bom','Ótimo'];
   const ESCALA_DESC = {
     'Insuficiente': 'Abaixo do esperado',
     'Regular': 'Atende parcialmente',
@@ -8120,7 +8631,7 @@ function critGridHTML(av, prefix) {
   };
   return CRITERIOS.map((c,i) => {
     const nota = av?.notas[i] || null;
-    return `<div class="criterio" id="${prefix}crit-card-${i}">
+    return `<div class="criterio${numericBancaScale ? ' numeric-scale' : ''}" id="${prefix}crit-card-${i}">
       <div class="criterio-main">
         <div class="crit-num">${String(i+1).padStart(2,'0')}</div>
         <div class="criterio-copy">
@@ -8133,7 +8644,7 @@ function critGridHTML(av, prefix) {
           <input type="radio" name="${prefix}crit_${i}" id="${prefix}cr_${i}_${v}" value="${v}" ${nota===v?'checked':''} onchange="updateFooter()">
           <label for="${prefix}cr_${i}_${v}">
             <span class="escala-title">${v}</span>
-            <span class="escala-desc">${ESCALA_DESC[v]}</span>
+            <span class="escala-desc">${numericBancaScale ? escapeHtmlAttr(c.escala?.[Number(v) - 1] || '') : ESCALA_DESC[v]}</span>
           </label>`).join('')}
       </div>
     </div>`;
@@ -8232,6 +8743,9 @@ function updateAvaliacaoStatus(done) {
 function abrirFicha(parId, inscId, abrirEmEdicao = false) {
   if (currentAttachmentViewer?.inline) closeAttachmentViewer();
   scrollAppTop();
+  document.getElementById('view-avaliacao')?.classList.toggle('banca-evaluation-mode', bancaReviewerBootMode);
+  if (bancaReviewerBootMode) applyAvaliacaoScale(1.1);
+  else hydrateAvaliacaoScale();
   currentParId = parId;
   currentInscId = inscId;
   queueSystemEvent('ficha_aberta', { parecerista_id: parId, inscricao_id: fullInscId(inscId) });
@@ -8254,8 +8768,12 @@ function abrirFicha(parId, inscId, abrirEmEdicao = false) {
   document.getElementById('critGridSplit').innerHTML = critGridHTML(av, 'spl_');
   document.getElementById('parecerGeralSplit').value = av?.parecer || '';
 
-  // se já foi concluída, não reinicia o timer
-  if (!effectiveDone) iniciarTimer();
+  // A banca não usa controle de tempo; a primeira etapa mantém o timer invisível.
+  if (bancaReviewerBootMode) {
+    clearTimeout(fichaTimer);
+    fichaTempoOk = true;
+    fichaStartTime = null;
+  } else if (!effectiveDone) iniciarTimer();
   else { fichaTempoOk = true; fichaStartTime = fichaStartTime || new Date(); }
 
   avaliacaoEmEdicao = !effectiveDone || abrirEmEdicao;
@@ -8272,8 +8790,8 @@ function updateFooter() {
   const prefix = currentLayout === 'split' ? 'spl_' : 'seq_';
   const notas = CRITERIOS.map((_,i) => document.querySelector(`input[name="${prefix}crit_${i}"]:checked`)?.value || null);
   const n = notas.filter(Boolean).length;
-  const progressText = `${n} de 8 critérios avaliados`;
-  const progressWidth = Math.round(n/8*100) + '%';
+  const progressText = `${n} de ${CRITERIOS.length} ${CRITERIOS.length === 1 ? 'critério avaliado' : 'critérios avaliados'}`;
+  const progressWidth = Math.round(n/Math.max(CRITERIOS.length, 1)*100) + '%';
   ['avalProgressLabelSeq', 'avalProgressLabelSplit'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.textContent = progressText;
@@ -8364,26 +8882,28 @@ async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
 
   if (!done) {
     destacarCriteriosPendentes(prefix, notas);
-    notify('Preencha todos os 8 critérios antes de concluir a avaliação.');
+    notify(`Preencha ${CRITERIOS.length === 1 ? 'o critério' : `todos os ${CRITERIOS.length} critérios`} antes de concluir a avaliação.`);
     return;
   }
 
-  const anexosPendentes = anexosPendentesDaAvaliacao(parId, inscId);
-  if (anexosPendentes.length) {
-    openMissingAttachmentsModal(anexosPendentes);
-    return;
+  if (!bancaReviewerBootMode) {
+    const anexosPendentes = anexosPendentesDaAvaliacao(parId, inscId);
+    if (anexosPendentes.length) {
+      openMissingAttachmentsModal(anexosPendentes);
+      return;
+    }
   }
 
   // trava 1: ≥N Insuficientes obriga parecer geral
   const numInsuf = notas.filter(n => n === 'Insuficiente').length;
-  if (numInsuf >= INSUF_OBRIGA_PARECER && !parecer) {
+  if (!bancaReviewerBootMode && numInsuf >= INSUF_OBRIGA_PARECER && !parecer) {
       document.getElementById('requiredParecerSub').textContent = 'Como você marcou 3 ou mais critérios como "Insuficiente", o preenchimento do campo PARECER GERAL deixa de ser opcional.';
     openRequiredParecerModal();
     return;
   }
 
   // trava 2: tempo mínimo invisível
-  if (!editingConcluded && !fichaTempoOk && !forcarAntesDoTempo) {
+  if (!bancaReviewerBootMode && !editingConcluded && !fichaTempoOk && !forcarAntesDoTempo) {
     openEarlySaveModal();
     return;
   }
@@ -8400,13 +8920,13 @@ async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
   };
   lastReviewedPortalInscId = inscId;
 
-  if (editingConcluded) {
+  if (editingConcluded && !bancaReviewerBootMode) {
     queueSystemEvent('avaliacao_editada', {
       parecerista_id: parId,
       inscricao_id: fullInscId(inscId),
       parecer_geral: parecer || '',
     });
-  } else {
+  } else if (!bancaReviewerBootMode) {
     registrarAuditoria({ saida: 'normal', motivoSaida: motivoCurtaDuracao || '', notas, parecer });
   }
   saveAppState();
@@ -8447,6 +8967,10 @@ async function executarSalvarAvaliacao(forcarAntesDoTempo = false) {
 
   if (proximaInscId) {
     hideLoadingNudge(150);
+    if (bancaReviewerBootMode) {
+      abrirFicha(parId, proximaInscId);
+      return;
+    }
     openNextEvaluationModal(parId, proximaInscId);
     return;
   }
@@ -8845,7 +9369,7 @@ function startRemoteBootWatchdog(timeoutMs = 30000) {
     portalStateLoading = false;
     updateSupabaseStatus('A restauração remota demorou além do esperado.', 'danger');
     renderDashboard();
-    if (requestedParId) renderPortal();
+    if (requestedParId || requestedBancaParId) renderPortal();
   }, timeoutMs);
 }
 
@@ -8856,18 +9380,91 @@ function stopRemoteBootWatchdog() {
   }
 }
 
+function selectedBancaModelId() {
+  return normalizeBancaModelId(document.getElementById('bancaModelSelect')?.value || bancaModeloAtivo);
+}
+
+function bancaModelDraftWeights(modelId = selectedBancaModelId()) {
+  const definition = BANCA_MODEL_DEFS[modelId];
+  const inputs = Array.from(document.querySelectorAll('#bancaModelWeights input[data-banca-weight]'));
+  if (inputs.length === definition.criterios.length) return inputs.map(input => Number(String(input.value).replace(',', '.')) || 0);
+  return [...normalizeBancaModelsConfig(bancaModelosConfig)[modelId].pesos];
+}
+
+function updateBancaWeightsTotal() {
+  const total = bancaModelDraftWeights().reduce((sum, value) => sum + value, 0);
+  const totalEl = document.getElementById('bancaWeightsTotal');
+  if (!totalEl) return;
+  totalEl.textContent = `${formatCriterionWeight(total)}%`;
+  totalEl.style.color = Math.abs(total - 100) < .01 ? '#137333' : '#B3261E';
+  totalEl.style.background = Math.abs(total - 100) < .01 ? '#F0F8F2' : '#FCE8E6';
+}
+
+function renderBancaModelSettings() {
+  const select = document.getElementById('bancaModelSelect');
+  const container = document.getElementById('bancaModelWeights');
+  if (!select || !container) return;
+  if (!select.value) select.value = bancaModeloAtivo;
+  const modelId = normalizeBancaModelId(select.value);
+  const definition = BANCA_MODEL_DEFS[modelId];
+  const weights = normalizeBancaModelsConfig(bancaModelosConfig)[modelId].pesos;
+  container.innerHTML = definition.criterios.map((criterion, index) => `<label style="display:grid;grid-template-columns:minmax(0,1fr) 92px;align-items:center;gap:12px;padding:11px 12px;border:1px solid #E2E5EA;border-radius:7px;background:#FBFCFE"><span style="font-size:12px;font-weight:500;color:#3C4043;line-height:1.35">${escapeHtmlAttr(criterion.nome)}</span><span style="display:flex;align-items:center;gap:5px"><input class="finput" data-banca-weight="${index}" type="number" min="0" max="100" step="0.1" value="${Number(weights[index].toFixed(2))}" oninput="updateBancaWeightsTotal()" style="width:70px;text-align:right"><span style="font-size:11px;color:#9AA0A6">%</span></span></label>`).join('');
+  const status = document.getElementById('bancaModelStatus');
+  if (status) status.textContent = modelId === bancaModeloAtivo ? 'Este é o modelo ativo da banca.' : 'A aplicação muda somente as próximas avaliações deste modelo.';
+  updateBancaWeightsTotal();
+}
+
+async function saveBancaModelSettings() {
+  if (!hasAdminAccess()) return requestAdminAccess('config');
+  const client = getSupabaseClient();
+  if (!client) return notify('Configure o Supabase antes de aplicar o modelo da banca.');
+  const modelId = selectedBancaModelId();
+  const weights = bancaModelDraftWeights(modelId);
+  const total = weights.reduce((sum, value) => sum + value, 0);
+  if (Math.abs(total - 100) >= .01) return notify('A soma dos pesos da banca precisa ser exatamente 100%.');
+  if (modelId !== bancaModeloAtivo) {
+    const savedCount = Object.values(bancaAvaliacoes).reduce((sum, reviewerRows) => sum + Object.values(reviewerRows || {}).filter(av => av?.done || av?.notas?.some(Boolean)).length, 0);
+    const warning = savedCount ? `Existem ${savedCount} avaliações no modelo atual. Elas serão preservadas, mas o ranking passará a usar somente o novo modelo. Continuar?` : `Ativar ${BANCA_MODEL_DEFS[modelId].label}?`;
+    if (!confirm(warning)) return;
+  }
+  const nextConfig = normalizeBancaModelsConfig(bancaModelosConfig);
+  nextConfig[modelId] = { pesos:[...weights] };
+  const status = document.getElementById('bancaModelStatus');
+  if (status) status.textContent = 'Salvando no Supabase…';
+  const { error } = await client.from('configuracoes_sistema').update({
+    banca_modelo_ativo:modelId,
+    banca_modelos_config:nextConfig,
+    updated_at:new Date().toISOString(),
+  }).eq('id', activeEnvironment);
+  if (error) {
+    if (status) status.textContent = 'Não foi possível salvar.';
+    return notify(String(error.message || '').toLowerCase().includes('banca_modelo_ativo') ? 'Aplique primeiro a migração de modelos da banca no Supabase.' : `Não foi possível salvar: ${error.message || error}`);
+  }
+  bancaModeloAtivo = modelId;
+  bancaModelosConfig = nextConfig;
+  await loadBancaRoundStateFromSupabase();
+  renderBancaModelSettings();
+  renderBanca();
+  renderBancaReviewers();
+  notify(`${BANCA_MODEL_DEFS[modelId].label} aplicado à banca. Avaliações anteriores foram preservadas.`);
+}
+
 function refreshRuntimeControls() {
   document.getElementById('paramTempo').value = Math.max(1, Math.round(TEMPO_MINIMO / 60000));
   document.getElementById('paramInsuf').value = INSUF_OBRIGA_PARECER;
   document.getElementById('paramPareceresEquipe').value = NUM_PARECERES_POR_EQUIPE;
   document.getElementById('paramConflitoToggle')?.classList.toggle('on', EVITAR_CONFLITO_INSTITUCIONAL);
   updateSimSelect();
+  const bancaSelect = document.getElementById('bancaModelSelect');
+  if (bancaSelect) bancaSelect.value = bancaModeloAtivo;
+  renderBancaModelSettings();
 }
 
 function refreshRuntimeViews() {
   updateBancaNavVisibility();
   renderPareceristas();
   renderResultados();
+  renderBanca();
   renderDashboard();
   renderAuditoria();
 }
@@ -9092,6 +9689,8 @@ function resetRuntimeStateForEnvironment() {
     : PARECERISTAS_DEFAULT.map(p => ({ ...p }));
   atribuicoes = {};
   avaliacoes = {};
+  bancaPareceristas = [];
+  bancaAvaliacoes = {};
   logAuditoria = [];
   logAuditoriaEventos = [];
   rawRows = [];
@@ -9463,6 +10062,8 @@ function auditoriaPayloadForEvaluation(parId, inscId) {
 async function persistReviewerEvaluationToSupabase(parId, inscId, options = {}) {
   const client = getSupabaseClient();
   if (!client) return { ok:false, reason:'unconfigured' };
+  const evaluationTable = bancaReviewerBootMode ? 'banca_avaliacoes' : 'avaliacoes';
+  const criteriaTable = bancaReviewerBootMode ? 'banca_avaliacao_criterios' : 'avaliacao_criterios';
   const fullId = fullInscId(inscId);
   const av = avaliacoes[parId]?.[inscId] || null;
   const deleteWhenMissing = options.deleteWhenMissing === true;
@@ -9470,30 +10071,33 @@ async function persistReviewerEvaluationToSupabase(parId, inscId, options = {}) 
   try {
     if (!av) {
       if (deleteWhenMissing) {
-        const { error: critDeleteError } = await client
-          .from('avaliacao_criterios')
+        let critDeleteQuery = client
+          .from(criteriaTable)
           .delete()
           .eq('environment', activeEnvironment)
           .eq('parecerista_id_externo', parId)
           .eq('inscricao_id_externo', fullId);
+        if (bancaReviewerBootMode) critDeleteQuery = critDeleteQuery.eq('modelo_id', bancaModeloAtivo);
+        const { error: critDeleteError } = await critDeleteQuery;
         if (critDeleteError) throw critDeleteError;
 
-        const { error: evalDeleteError } = await client
-          .from('avaliacoes')
+        let evalDeleteQuery = client
+          .from(evaluationTable)
           .delete()
           .eq('environment', activeEnvironment)
           .eq('parecerista_id_externo', parId)
           .eq('inscricao_id_externo', fullId);
+        if (bancaReviewerBootMode) evalDeleteQuery = evalDeleteQuery.eq('modelo_id', bancaModeloAtivo);
+        const { error: evalDeleteError } = await evalDeleteQuery;
         if (evalDeleteError) throw evalDeleteError;
       }
     } else {
       const status = av.done ? 'concluida' : (av.notas?.some(Boolean) ? 'em_andamento' : 'nao_iniciada');
-      const isTest = isTestParecerista(parId);
+      const isTest = bancaReviewerBootMode ? false : isTestParecerista(parId);
       const row = {
         environment: activeEnvironment,
         inscricao_id_externo: fullId,
         parecerista_id_externo: parId,
-        is_teste: isTest,
         status,
         parecer_geral: av.parecer || '',
         concluida: !!av.done,
@@ -9502,17 +10106,21 @@ async function persistReviewerEvaluationToSupabase(parId, inscId, options = {}) 
         justificativas_json: av.justificativas || [],
         updated_at: av.updatedAt || new Date().toISOString(),
       };
+      if (!bancaReviewerBootMode) row.is_teste = isTest;
+      if (bancaReviewerBootMode) row.modelo_id = bancaModeloAtivo;
       const { error: evalUpsertError } = await client
-        .from('avaliacoes')
-        .upsert(row, { onConflict:'environment,inscricao_id_externo,parecerista_id_externo' });
+        .from(evaluationTable)
+        .upsert(row, { onConflict:bancaReviewerBootMode ? 'environment,inscricao_id_externo,parecerista_id_externo,modelo_id' : 'environment,inscricao_id_externo,parecerista_id_externo' });
       if (evalUpsertError) throw evalUpsertError;
 
-      const { error: critDeleteError } = await client
-        .from('avaliacao_criterios')
+      let critDeleteQuery = client
+        .from(criteriaTable)
         .delete()
         .eq('environment', activeEnvironment)
         .eq('parecerista_id_externo', parId)
         .eq('inscricao_id_externo', fullId);
+      if (bancaReviewerBootMode) critDeleteQuery = critDeleteQuery.eq('modelo_id', bancaModeloAtivo);
+      const { error: critDeleteError } = await critDeleteQuery;
       if (critDeleteError) throw critDeleteError;
 
       const criterios = (av.notas || []).map((nota, idx) => ({
@@ -9521,17 +10129,20 @@ async function persistReviewerEvaluationToSupabase(parId, inscId, options = {}) 
         parecerista_id_externo: parId,
         criterio_ordem: idx + 1,
         criterio_nome: CRITERIOS[idx]?.nome || `Critério ${idx + 1}`,
-        criterio_grupo: idx < 2 ? 'Proposta' : idx < 4 ? 'Impacto' : idx < 6 ? 'Execução' : 'Estratégia',
+        criterio_grupo: bancaReviewerBootMode && bancaModeloAtivo !== 'grade_completa'
+          ? (bancaModeloAtivo === 'nota_direta' ? 'Avaliação' : 'Grade da banca')
+          : idx < 2 ? 'Proposta' : idx < 4 ? 'Impacto' : idx < 6 ? 'Execução' : 'Estratégia',
         nota: nota || null,
         justificativa: av.justificativas?.[idx] || '',
+        ...(bancaReviewerBootMode ? { modelo_id:bancaModeloAtivo } : {}),
       }));
       if (criterios.length) {
-        const { error: critInsertError } = await client.from('avaliacao_criterios').insert(criterios);
+        const { error: critInsertError } = await client.from(criteriaTable).insert(criterios);
         if (critInsertError) throw critInsertError;
       }
     }
 
-    const auditRows = auditoriaPayloadForEvaluation(parId, inscId);
+    const auditRows = bancaReviewerBootMode ? [] : auditoriaPayloadForEvaluation(parId, inscId);
     if (auditRows.length) {
       const { error: auditUpsertError } = await client
         .from('eventos_auditoria')
@@ -9539,10 +10150,12 @@ async function persistReviewerEvaluationToSupabase(parId, inscId, options = {}) 
       if (auditUpsertError) throw auditUpsertError;
     }
 
-    const eventFlush = await flushPendingReviewerEvents(parId, fullId, {
-      client,
-      syncReason: 'reviewer_evaluation',
-    });
+    const eventFlush = bancaReviewerBootMode
+      ? { ok:true, flushed:0 }
+      : await flushPendingReviewerEvents(parId, fullId, {
+          client,
+          syncReason: 'reviewer_evaluation',
+        });
     if (!eventFlush.ok) throw eventFlush.error || new Error(eventFlush.reason || 'Falha ao persistir eventos do parecerista');
 
     return { ok:true };
@@ -10031,6 +10644,8 @@ function enterAdminShell(viewName = 'pareceristas') {
   currentParId = null;
   currentInscId = null;
   requestedParId = null;
+  requestedBancaParId = null;
+  bancaReviewerBootMode = false;
   applyReviewerShellMode(false);
   showView(viewName);
 }
@@ -10278,8 +10893,8 @@ function hydrateRawBaseFromRemote(rows, participantProfileRows = []) {
   });
 }
 
-function avaliaçõesFromRemote(rows, criterios) {
-  avaliacoes = {};
+function evaluationMapFromRemote(rows, criterios) {
+  const result = {};
   const critMap = {};
   (criterios || []).forEach(c => {
     const key = `${c.parecerista_id_externo}::${shortInscId(c.inscricao_id_externo)}`;
@@ -10292,8 +10907,8 @@ function avaliaçõesFromRemote(rows, criterios) {
     const inscId = shortInscId(r.inscricao_id_externo);
     const key = `${parId}::${inscId}`;
     const crits = (critMap[key] || []).sort((a,b) => a.criterio_ordem - b.criterio_ordem);
-    if (!avaliacoes[parId]) avaliacoes[parId] = {};
-    avaliacoes[parId][inscId] = {
+    if (!result[parId]) result[parId] = {};
+    result[parId][inscId] = {
       notas: crits.length ? crits.map(c => c.nota) : (r.notas_json || []),
       justificativas: crits.length ? crits.map(c => c.justificativa || '') : (r.justificativas_json || []),
       parecer: r.parecer_geral || '',
@@ -10303,6 +10918,11 @@ function avaliaçõesFromRemote(rows, criterios) {
       updatedAt: r.updated_at || null,
     };
   });
+  return result;
+}
+
+function avaliaçõesFromRemote(rows, criterios) {
+  avaliacoes = evaluationMapFromRemote(rows, criterios);
 }
 
 async function fetchAllSupabaseRows(queryFactory, batchSize = 1000) {
@@ -10317,6 +10937,38 @@ async function fetchAllSupabaseRows(queryFactory, batchSize = 1000) {
     from += batchSize;
   }
   return rows;
+}
+
+function isMissingBancaRoundSchemaError(error) {
+  const text = `${error?.code || ''} ${error?.message || ''} ${error?.details || ''}`.toLowerCase();
+  return text.includes('pgrst205') || text.includes('42p01') || text.includes('banca_pareceristas') || text.includes('banca_avaliacoes');
+}
+
+async function loadBancaRoundStateFromSupabase() {
+  const client = getSupabaseClient();
+  if (!client) return false;
+  try {
+    const [reviewers, evaluations, criteria] = await Promise.all([
+      fetchAllSupabaseRows(() => client.from('banca_pareceristas').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('nome')),
+      fetchAllSupabaseRows(() => client.from('banca_avaliacoes').select('*').eq('environment', activeEnvironment).eq('modelo_id', bancaModeloAtivo).order('id')),
+      fetchAllSupabaseRows(() => client.from('banca_avaliacao_criterios').select('*').eq('environment', activeEnvironment).eq('modelo_id', bancaModeloAtivo).order('id')),
+    ]);
+    bancaPareceristas = (reviewers || []).map(row => ({
+      id: row.id_externo,
+      nome: row.nome,
+      email: row.email,
+      inst: row.instituicao || '',
+    }));
+    bancaAvaliacoes = evaluationMapFromRemote(evaluations || [], criteria || []);
+    bancaRoundSchemaAvailable = true;
+    return true;
+  } catch (error) {
+    if (!isMissingBancaRoundSchemaError(error)) console.warn('Falha ao carregar a rodada da banca:', error);
+    bancaRoundSchemaAvailable = false;
+    bancaPareceristas = [];
+    bancaAvaliacoes = {};
+    return false;
+  }
 }
 
 function buildRelevantAuditEventsQuery(client, options = {}) {
@@ -10530,6 +11182,8 @@ async function loadStateFromSupabase(options = {}) {
       NUM_PARECERES_POR_EQUIPE = Number(cfgRes.data.pareceres_por_equipe) || NUM_PARECERES_POR_EQUIPE;
       EVITAR_CONFLITO_INSTITUCIONAL = !!cfgRes.data.evitar_conflito_institucional;
       if (Array.isArray(cfgRes.data.criterios_pesos)) CRITERIO_PESOS = normalizeCriterionWeights(cfgRes.data.criterios_pesos);
+      bancaModeloAtivo = normalizeBancaModelId(cfgRes.data.banca_modelo_ativo);
+      bancaModelosConfig = normalizeBancaModelsConfig(cfgRes.data.banca_modelos_config);
       if (Array.isArray(cfgRes.data.banca_selecionados)) {
         applyRemoteBancaSelection(cfgRes.data.banca_selecionados);
       } else if (getBancaSelectionIds().length) {
@@ -10544,6 +11198,7 @@ async function loadStateFromSupabase(options = {}) {
       }
     }
 
+    await loadBancaRoundStateFromSupabase();
     baseConfirmada = true;
     remoteStateLoaded = true;
     environmentRemoteReady[activeEnvironment] = true;
@@ -10676,6 +11331,84 @@ async function loadReviewerPortalStateFromSupabase(parId) {
   } catch (err) {
     console.error('Falha ao carregar portal do parecerista no Supabase:', err);
     updateSupabaseStatus(`Falha ao carregar portal do parecerista: ${err.message || err}`, 'danger');
+    return false;
+  }
+}
+
+async function loadBancaReviewerPortalStateFromSupabase(parId) {
+  const client = getSupabaseClient();
+  if (!client || !parId) return false;
+  try {
+    const [cfgRes, parRes, evaluationRows, criteriaRows, allInscriptions] = await Promise.all([
+      client.from('configuracoes_sistema').select('*').eq('id', activeEnvironment).maybeSingle(),
+      client.from('banca_pareceristas').select('*').eq('environment', activeEnvironment).eq('id_externo', parId).eq('ativo', true).maybeSingle(),
+      fetchAllSupabaseRows(() => client.from('banca_avaliacoes').select('*').eq('environment', activeEnvironment).eq('parecerista_id_externo', parId).order('id')),
+      fetchAllSupabaseRows(() => client.from('banca_avaliacao_criterios').select('*').eq('environment', activeEnvironment).eq('parecerista_id_externo', parId).order('id')),
+      fetchAllSupabaseRows(() => client.from('inscricoes').select('*').eq('environment', activeEnvironment).eq('ativo', true).order('id_curto')),
+    ]);
+    if (cfgRes.error) throw cfgRes.error;
+    if (parRes.error) throw parRes.error;
+
+    bancaModeloAtivo = normalizeBancaModelId(cfgRes.data?.banca_modelo_ativo);
+    bancaModelosConfig = normalizeBancaModelsConfig(cfgRes.data?.banca_modelos_config);
+    bancaReviewerBootMode = true;
+    applyBancaModelFromConfig(bancaModeloAtivo);
+    const activeEvaluationRows = (evaluationRows || []).filter(row => normalizeBancaModelId(row.modelo_id) === bancaModeloAtivo);
+    const activeCriteriaRows = (criteriaRows || []).filter(row => normalizeBancaModelId(row.modelo_id) === bancaModeloAtivo);
+
+    INSCRICOES.length = 0;
+    atribuicoes = {};
+    avaliacoes = {};
+    logAuditoria = [];
+    logAuditoriaEventos = [];
+    videoIssueReports = [];
+
+    if (!parRes.data) {
+      pareceristas = [];
+      currentParId = parId;
+      remoteStateLoaded = true;
+      return false;
+    }
+
+    const selectedIds = new Set((cfgRes.data?.banca_selecionados || []).map(shortInscId));
+    const selectedInscriptions = (allInscriptions || []).filter(row => selectedIds.has(shortInscId(row.id_externo)));
+    const selectedFullIds = selectedInscriptions.map(row => row.id_externo);
+    const participantRows = selectedFullIds.length ? await fetchAllSupabaseRowsByIds('participantes', selectedFullIds, {
+      idColumn: 'inscricao_id_externo',
+      extraEq: { environment: activeEnvironment, ativo:true },
+      orderBy: 'id',
+      batchSize: 1000,
+    }) : [];
+
+    hydrateRawBaseFromRemote(selectedInscriptions);
+    inscricoesFromRemote(selectedInscriptions, participantRows || []);
+    pareceristas = [{
+      id: parRes.data.id_externo,
+      nome: parRes.data.nome,
+      email: parRes.data.email,
+      inst: parRes.data.instituicao || '',
+      cota: null,
+      cotaManual: false,
+      isTest: false,
+    }];
+    selectedInscriptions.forEach(row => {
+      atribuicoes[shortInscId(row.id_externo)] = [parId];
+    });
+    avaliaçõesFromRemote(activeEvaluationRows, activeCriteriaRows);
+
+    TEMPO_MINIMO = Number(cfgRes.data?.tempo_minimo_ms) || TEMPO_MINIMO;
+    INSUF_OBRIGA_PARECER = Number(cfgRes.data?.insuf_obriga_parecer) || INSUF_OBRIGA_PARECER;
+    currentParId = parId;
+    baseConfirmada = true;
+    remoteStateLoaded = true;
+    environmentRemoteReady[activeEnvironment] = true;
+    lastRemoteRefreshAt = Date.now();
+    persistSupabaseSettings();
+    updateSupabaseStatus(`Banca de ${parRes.data.nome} carregada com ${selectedInscriptions.length} equipes.`, 'ok');
+    return true;
+  } catch (error) {
+    console.error('Falha ao carregar portal da banca:', error);
+    updateSupabaseStatus(`Falha ao carregar a banca: ${error.message || error}`, 'danger');
     return false;
   }
 }
@@ -12261,15 +12994,18 @@ function applyReviewerShellMode(enabled) {
 }
 
 function applyStartupRouteState() {
-  if (requestedParId) {
+  const portalParId = requestedBancaParId || requestedParId;
+  if (portalParId) {
     if (!hasViewerAccess()) accessRole = 'viewer';
     reviewerBootMode = true;
-    currentParId = requestedParId;
+    bancaReviewerBootMode = !!requestedBancaParId;
+    currentParId = portalParId;
     currentInscId = null;
     applyReviewerShellMode(true);
     return 'portal';
   }
   reviewerBootMode = false;
+  bancaReviewerBootMode = false;
   currentParId = null;
   currentInscId = null;
   applyReviewerShellMode(false);
@@ -12300,7 +13036,9 @@ renderPareceristas();
 applyAccessUi();
 const __startupParams = new URLSearchParams(window.location.search);
 requestedParId = __startupParams.get('par') || null;
-if (requestedParId && !window.location.protocol.startsWith('http')) {
+requestedBancaParId = __startupParams.get('banca_par') || null;
+portalStateLoading = !!(requestedParId || requestedBancaParId);
+if ((requestedParId || requestedBancaParId) && !window.location.protocol.startsWith('http')) {
   notify('Abra o sistema via localhost para usar o portal do parecerista com estado persistido.');
 }
 showStartupRoute();
@@ -12331,11 +13069,13 @@ window.addEventListener('load', () => {
       startRemoteBootWatchdog();
       renderDashboard();
       try {
-        if (requestedParId) {
+        if (requestedParId || requestedBancaParId) {
           portalStateLoading = true;
           renderPortal();
           const reviewerLoaded = await withTimeout(
-            loadReviewerPortalStateFromSupabase(requestedParId),
+            requestedBancaParId
+              ? loadBancaReviewerPortalStateFromSupabase(requestedBancaParId)
+              : loadReviewerPortalStateFromSupabase(requestedParId),
             30000,
             'A restauração do portal do parecerista demorou além do esperado.'
           );
@@ -12382,7 +13122,7 @@ window.addEventListener('load', () => {
           showView('resultados');
           return;
         }
-        if (!requestedParId) {
+        if (!requestedParId && !requestedBancaParId) {
           clearLocalAppStateForEnvironment(activeEnvironment);
           resetRuntimeStateForEnvironment();
           remoteBootResolved[activeEnvironment] = true;
@@ -12398,11 +13138,11 @@ window.addEventListener('load', () => {
         carregandoEstadoRemoto = false;
         stopRemoteBootWatchdog();
         renderDashboard();
-        if (requestedParId) renderPortal();
+        if (requestedParId || requestedBancaParId) renderPortal();
       }
     }
     carregandoEstadoRemoto = false;
-    if (requestedParId) {
+    if (requestedParId || requestedBancaParId) {
       renderPortal();
       showStartupRoute();
       notify('O portal do parecerista só usa estado persistido. Configure e sincronize o Supabase antes.');

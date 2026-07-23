@@ -153,6 +153,57 @@ create table if not exists avaliacao_criterios (
 create unique index if not exists avaliacao_criterios_environment_unique_idx
   on avaliacao_criterios(environment, inscricao_id_externo, parecerista_id_externo, criterio_ordem);
 
+create table if not exists banca_pareceristas (
+  id uuid primary key default gen_random_uuid(),
+  environment text not null check (environment in ('homolog', 'producao')),
+  id_externo text not null,
+  nome text not null,
+  email text not null,
+  instituicao text,
+  ativo boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create unique index if not exists banca_pareceristas_environment_id_externo_idx
+  on banca_pareceristas(environment, id_externo);
+
+create table if not exists banca_avaliacoes (
+  id uuid primary key default gen_random_uuid(),
+  environment text not null check (environment in ('homolog', 'producao')),
+  inscricao_id_externo text not null,
+  parecerista_id_externo text not null,
+  modelo_id text not null default 'grade_completa',
+  status text not null default 'nao_iniciada',
+  parecer_geral text,
+  concluida boolean not null default false,
+  motivo_curta_duracao text,
+  notas_json jsonb not null default '[]'::jsonb,
+  justificativas_json jsonb not null default '[]'::jsonb,
+  updated_at timestamptz not null default now(),
+  created_at timestamptz not null default now()
+);
+
+create unique index if not exists banca_avaliacoes_environment_model_unique_idx
+  on banca_avaliacoes(environment, inscricao_id_externo, parecerista_id_externo, modelo_id);
+
+create table if not exists banca_avaliacao_criterios (
+  id uuid primary key default gen_random_uuid(),
+  environment text not null check (environment in ('homolog', 'producao')),
+  inscricao_id_externo text not null,
+  parecerista_id_externo text not null,
+  modelo_id text not null default 'grade_completa',
+  criterio_ordem integer not null,
+  criterio_nome text not null,
+  criterio_grupo text not null,
+  nota text,
+  justificativa text,
+  created_at timestamptz not null default now()
+);
+
+create unique index if not exists banca_avaliacao_criterios_environment_model_unique_idx
+  on banca_avaliacao_criterios(environment, inscricao_id_externo, parecerista_id_externo, modelo_id, criterio_ordem);
+
 create table if not exists distribuicoes (
   id uuid primary key default gen_random_uuid(),
   environment text not null check (environment in ('homolog', 'producao')),
@@ -172,6 +223,8 @@ create table if not exists configuracoes_sistema (
   evitar_conflito_institucional boolean not null default true,
   criterios_pesos jsonb not null default '[12.5,12.5,12.5,12.5,12.5,12.5,12.5,12.5]'::jsonb,
   banca_selecionados jsonb not null default '[]'::jsonb,
+  banca_modelo_ativo text not null default 'grade_completa' check (banca_modelo_ativo in ('grade_completa', 'grade_banca', 'nota_direta')),
+  banca_modelos_config jsonb not null default '{"grade_completa":{"pesos":[12.5,12.5,12.5,12.5,12.5,12.5,12.5,12.5]},"grade_banca":{"pesos":[25,25,25,25]},"nota_direta":{"pesos":[100]}}'::jsonb,
   theme_name text not null default 'default',
   theme_dark boolean not null default false,
   updated_at timestamptz not null default now(),
@@ -216,6 +269,9 @@ alter table pareceristas enable row level security;
 alter table atribuicoes enable row level security;
 alter table avaliacoes enable row level security;
 alter table avaliacao_criterios enable row level security;
+alter table banca_pareceristas enable row level security;
+alter table banca_avaliacoes enable row level security;
+alter table banca_avaliacao_criterios enable row level security;
 alter table distribuicoes enable row level security;
 alter table configuracoes_sistema enable row level security;
 alter table eventos_auditoria enable row level security;
@@ -237,6 +293,12 @@ drop policy if exists "prototype full access avaliacoes" on avaliacoes;
 create policy "prototype full access avaliacoes" on avaliacoes for all using (true) with check (true);
 drop policy if exists "prototype full access avaliacao_criterios" on avaliacao_criterios;
 create policy "prototype full access avaliacao_criterios" on avaliacao_criterios for all using (true) with check (true);
+drop policy if exists "prototype full access banca_pareceristas" on banca_pareceristas;
+create policy "prototype full access banca_pareceristas" on banca_pareceristas for all using (true) with check (true);
+drop policy if exists "prototype full access banca_avaliacoes" on banca_avaliacoes;
+create policy "prototype full access banca_avaliacoes" on banca_avaliacoes for all using (true) with check (true);
+drop policy if exists "prototype full access banca_avaliacao_criterios" on banca_avaliacao_criterios;
+create policy "prototype full access banca_avaliacao_criterios" on banca_avaliacao_criterios for all using (true) with check (true);
 drop policy if exists "prototype full access distribuicoes" on distribuicoes;
 create policy "prototype full access distribuicoes" on distribuicoes for all using (true) with check (true);
 drop policy if exists "prototype full access configuracoes_sistema" on configuracoes_sistema;
