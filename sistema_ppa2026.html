@@ -2691,10 +2691,16 @@ textarea::placeholder{color:#BDC1C6}
   border:0 !important;
 }
 #view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="1"]:checked + label{border-color:#D93025}
-#view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="2"]:checked + label{border-color:#E67C1F}
-#view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="3"]:checked + label{border-color:#D9A400}
-#view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="4"]:checked + label{border-color:#6AA84F}
-#view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="5"]:checked + label{border-color:#188038}
+#view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala{grid-template-columns:repeat(4,minmax(0,1fr))}
+#view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="2"]:checked + label{background-color:#FFF6D6 !important;border-color:#D9A400;box-shadow:inset 0 0 0 1px #D9A400}
+#view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="3"]:checked + label{background-color:#EAF4E3 !important;border-color:#6AA84F;box-shadow:inset 0 0 0 1px #6AA84F}
+#view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="4"]:checked + label{background-color:#E6F4EA !important;border-color:#188038;box-shadow:inset 0 0 0 1px #188038}
+#view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="2"]:checked + label .escala-title,
+#view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="2"]:checked + label .escala-desc{color:#7A5B00}
+#view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="3"]:checked + label .escala-title,
+#view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="3"]:checked + label .escala-desc{color:#3E6F2A}
+#view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="4"]:checked + label .escala-title,
+#view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="4"]:checked + label .escala-desc{color:#116B2C}
 #view-avaliacao.banca-evaluation-mode .split-side-panel-head{
   flex:0 0 auto;
   height:52px;
@@ -4060,7 +4066,7 @@ textarea::placeholder{color:#BDC1C6}
         <select class="finput" id="bancaModelSelect" onchange="renderBancaModelSettings()">
           <option value="grade_completa">Grade completa · 8 critérios</option>
           <option value="grade_banca">Grade da banca · 4 critérios</option>
-          <option value="nota_direta">Nota direta · 1 a 5</option>
+          <option value="nota_direta">Nota direta · 1 a 4</option>
         </select>
       </div>
       <div>
@@ -4521,36 +4527,32 @@ const BANCA_MODEL_DEFS = {
   grade_completa: { label:'Grade completa · 8 critérios', criterios:CRITERIOS_ORIGINAIS },
   grade_banca: { label:'Grade da banca · 4 critérios', criterios:[
     { nome:'Impacto potencial da campanha', desc:'O potencial da campanha para gerar resultados relevantes junto ao público e aos objetivos da iniciativa.', escala:[
-      'Muito baixo potencial de impacto.',
       'Baixo potencial de impacto.',
       'Bom potencial de impacto.',
       'Alto potencial de impacto.',
       'Excelente potencial de impacto.'
     ]},
     { nome:'Viabilidade de execução', desc:'A consistência da proposta para ser desenvolvida e executada nas condições previstas pelo programa.', escala:[
-      'Muito baixa viabilidade.',
       'Baixa viabilidade.',
       'Boa viabilidade.',
       'Alta viabilidade.',
       'Excelente viabilidade.'
     ]},
     { nome:'Integração ao ecossistema Globo', desc:'O quanto a proposta aproveita as características, plataformas e oportunidades do ecossistema Globo.', escala:[
-      'Muito baixa integração.',
       'Baixa integração.',
       'Boa integração.',
       'Alta integração.',
       'Excelente integração.'
     ]},
     { nome:'Defesa da proposta', desc:'O domínio demonstrado pelo time sobre a proposta durante a apresentação e as respostas à banca.', escala:[
-      'Muito baixo domínio.',
       'Baixo domínio.',
       'Bom domínio.',
       'Alto domínio.',
       'Excelente domínio.'
     ]}
   ]},
-  nota_direta: { label:'Nota direta · 1 a 5', criterios:[{ nome:'Nota do projeto', desc:'Avaliação global do projeto nesta etapa.', escala:[
-    'Muito abaixo do esperado.', 'Abaixo do esperado.', 'Atende ao esperado.', 'Acima do esperado.', 'Excelente.'
+  nota_direta: { label:'Nota direta · 1 a 4', criterios:[{ nome:'Nota do projeto', desc:'Avaliação global do projeto nesta etapa.', escala:[
+    'Abaixo do esperado.', 'Atende ao esperado.', 'Acima do esperado.', 'Excelente.'
   ]}]}
 };
 let bancaModeloAtivo = 'grade_completa';
@@ -8850,7 +8852,6 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
 
 function critGridHTML(av, prefix) {
   const numericBancaScale = bancaReviewerBootMode && bancaModeloAtivo !== 'grade_completa';
-  const ESCALA = numericBancaScale ? ['1','2','3','4','5'] : ['Insuficiente','Regular','Bom','Ótimo'];
   const ESCALA_DESC = {
     'Insuficiente': 'Abaixo do esperado',
     'Regular': 'Atende parcialmente',
@@ -8858,6 +8859,9 @@ function critGridHTML(av, prefix) {
     'Ótimo': 'Supera as expectativas',
   };
   return CRITERIOS.map((c,i) => {
+    const ESCALA = numericBancaScale
+      ? (c.escala || []).map((_, scaleIndex) => String(scaleIndex + 1))
+      : ['Insuficiente','Regular','Bom','Ótimo'];
     const nota = av?.notas[i] || null;
     return `<div class="criterio${numericBancaScale ? ' numeric-scale' : ''}" id="${prefix}crit-card-${i}">
       <div class="criterio-main">
