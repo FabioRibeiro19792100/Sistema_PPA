@@ -1015,7 +1015,37 @@ tr:hover td.sticky{background:#FAFAFA}
 .banca-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding:16px 0 14px}
 .banca-head-actions{display:flex;align-items:center;gap:14px}
 .banca-count{font-size:12px;color:#7A828E}
-#view-banca .tbl-scroll{max-height:none;overflow-x:auto;overflow-y:visible;overscroll-behavior-x:contain;overscroll-behavior-y:auto}
+#view-banca.active{
+  height:100%;
+  min-height:0;
+  overflow:hidden;
+  box-sizing:border-box;
+}
+#view-banca > div{
+  height:100%;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+}
+#view-banca .banca-head{flex:0 0 auto}
+#view-banca .tbl-card{
+  flex:1 1 auto;
+  min-height:0;
+  margin-bottom:0;
+}
+#view-banca .tbl-scroll{
+  height:100%;
+  max-height:100%;
+  overflow:auto;
+  overscroll-behavior:contain;
+}
+#view-banca .results-table tbody > tr:not(.sub-row) > td.id-col,
+#view-banca .results-table tr.sub-row > td.id-col{
+  background:#F3F4F6;
+}
+#view-banca .results-table tbody > tr:hover > td.id-col{
+  background:#ECEFF3;
+}
 .banca-allocation-card{margin-bottom:16px}
 .banca-allocation-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px;flex-wrap:wrap}
 .banca-allocation-copy{font-size:12px;color:#7A828E;margin-top:5px;max-width:760px;line-height:1.5}
