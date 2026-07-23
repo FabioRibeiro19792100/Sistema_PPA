@@ -2654,7 +2654,126 @@ textarea::placeholder{color:#BDC1C6}
 #view-avaliacao.banca-evaluation-mode .split-inst,
 #view-avaliacao.banca-evaluation-mode .split-hero-course,
 #view-avaliacao.banca-evaluation-mode .split-hero-location{
-  font-size:10px !important;
+  font-size:13.2px !important;
+}
+#view-avaliacao.banca-evaluation-mode .split-kicker-id,
+#view-avaliacao.banca-evaluation-mode .split-kicker-dot{
+  font-size:12px !important;
+}
+#view-avaliacao.banca-evaluation-mode .split-leader-line .split-person-badge{
+  font-size:12px;
+}
+#view-avaliacao.banca-evaluation-mode .split-leader-line .split-leader{
+  max-width:100%;
+}
+#view-avaliacao.banca-evaluation-mode .split-ia-note .ia-note-k,
+#view-avaliacao.banca-evaluation-mode .split-ia-note .ia-note-v{
+  font-size:13.2px;
+  font-weight:600;
+  letter-spacing:0;
+  line-height:1.3;
+}
+#view-avaliacao.banca-evaluation-mode .split-ia-note .ia-note-sub{
+  margin-top:3px;
+  padding-left:0;
+  border-left:0;
+  font-size:13.2px;
+  line-height:1.45;
+  font-weight:400;
+  overflow-wrap:anywhere;
+}
+#view-avaliacao.banca-evaluation-mode .split-ia-note{
+  min-height:0;
+  padding:2px 0 0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  color:#202124;
+}
+#view-avaliacao.banca-evaluation-mode .split-meta-value{
+  font-weight:600;
+}
+#view-avaliacao.banca-evaluation-mode .split-hero-members{
+  margin-top:8px;
+  margin-bottom:8px;
+  padding-bottom:8px;
+  border-bottom:1px solid rgba(32,33,36,.16);
+  text-transform:uppercase;
+}
+#view-avaliacao.banca-evaluation-mode .split-hero-members .split-meta-row{
+  padding:1px 0;
+}
+#view-avaliacao.banca-evaluation-mode .split-hero-members .split-person-line{
+  gap:0;
+}
+#view-avaliacao.banca-evaluation-mode .split-hero-members .split-meta-value{
+  color:#202124;
+  font-size:13.2px;
+  font-weight:400;
+  line-height:1.35;
+}
+#view-avaliacao.banca-evaluation-mode .split-hero-members .split-mentor-badge{
+  margin-left:6px;
+  min-height:14px;
+  padding:0 4px;
+  border:1px solid rgba(32,33,36,.28);
+  border-radius:0;
+  background:rgba(255,255,255,.34);
+  color:rgba(32,33,36,.72);
+  font-size:10px;
+  font-weight:600;
+  line-height:12px;
+  letter-spacing:0;
+}
+#view-avaliacao.banca-evaluation-mode .split-meta-group-label{
+  margin-bottom:3px;
+  font-size:13.2px;
+  font-weight:400;
+  letter-spacing:0;
+  text-transform:uppercase;
+  color:rgba(32,33,36,.46);
+}
+#view-avaliacao.banca-evaluation-mode .split-materials-list{
+  min-height:0;
+  justify-content:flex-start;
+  gap:22px;
+}
+#view-avaliacao.banca-evaluation-mode .split-materials-wrap{
+  padding-top:16px;
+  padding-bottom:18px;
+  gap:18px;
+}
+#view-avaliacao.banca-evaluation-mode .split-materials-list .mat-btn{
+  flex:0 0 auto;
+  min-height:0;
+  padding:2px 0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  justify-content:flex-start;
+  color:#1A73E8;
+  font-size:13.2px;
+  font-weight:400;
+  text-transform:uppercase;
+  text-align:left;
+}
+#view-avaliacao.banca-evaluation-mode .split-materials-list .mat-btn:hover{
+  background:transparent;
+  color:#1558B0;
+}
+#view-avaliacao.banca-evaluation-mode .split-materials-list .mat-btn i{
+  font-size:18.7px !important;
+}
+#view-avaliacao.banca-evaluation-mode .banca-project-summary .split-copy-title{
+  font-size:13.2px;
+  font-weight:600;
+  letter-spacing:0;
+}
+#view-avaliacao.banca-evaluation-mode .banca-project-summary .split-copy-body{
+  font-size:13.2px;
+}
+#view-avaliacao.banca-evaluation-mode .banca-project-summary{
+  padding-top:18px;
 }
 #view-avaliacao.banca-evaluation-mode #layoutSplit:not(.legacy-view) .criterio.numeric-scale{
   grid-template-columns:minmax(0,28%) minmax(0,72%);
@@ -8493,7 +8612,8 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
     const instituicaoResumo = compactInstitutionLabel(e.inst);
     const cursoResumo = compactCourseLabel(curso);
     const localResumo = compactInstitutionLocation(e.inst, e.uf);
-    const bancaHeroFontStyle = bancaReviewerBootMode ? ' style="font-size:10px!important"' : '';
+    const bancaHeroNameStyle = bancaReviewerBootMode ? ' style="font-size:13.2px!important;font-weight:600!important"' : '';
+    const bancaHeroFontStyle = bancaReviewerBootMode ? ' style="font-size:13.2px!important"' : '';
     const marker = teamMarker(e.mod);
     const kicker = `
       <span class="split-kicker-id">PPA2026-${e.id}</span>
@@ -8502,56 +8622,64 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
     const p2 = e.p2 ? `
       <div class="split-meta-row">
         <div class="split-person-line">
-          <span class="split-person-badge">P2</span>
+          ${bancaReviewerBootMode ? '' : '<span class="split-person-badge">P2</span>'}
           <div class="split-meta-value" title="${escapeHtmlAttr(displayPersonName(e.p2))}">${escapeHtmlAttr(formatEvaluationPersonName(e.p2))}</div>
         </div>
-        ${e.p2e ? `<div class="split-meta-subline">${e.p2e}</div>` : ''}
+        ${!bancaReviewerBootMode && e.p2e ? `<div class="split-meta-subline">${e.p2e}</div>` : ''}
       </div>` : '';
     const p3 = e.p3 ? `
       <div class="split-meta-row">
         <div class="split-person-line">
-          <span class="split-person-badge">P3</span>
+          ${bancaReviewerBootMode ? '' : '<span class="split-person-badge">P3</span>'}
           <div class="split-meta-value" title="${escapeHtmlAttr(displayPersonName(e.p3))}">${escapeHtmlAttr(formatEvaluationPersonName(e.p3))}</div>
         </div>
-        ${e.p3e ? `<div class="split-meta-subline">${e.p3e}</div>` : ''}
+        ${!bancaReviewerBootMode && e.p3e ? `<div class="split-meta-subline">${e.p3e}</div>` : ''}
       </div>` : '';
     const mentor = (e.mentor || e.me) ? `
       <div class="split-meta-row">
         <div class="split-meta-value-line">
           <div class="split-person-line">
-            <span class="split-person-badge">M</span>
+            ${bancaReviewerBootMode ? '' : '<span class="split-person-badge">M</span>'}
             <div class="split-meta-value" title="${escapeHtmlAttr(displayPersonName(e.mentor))}">${escapeHtmlAttr(formatEvaluationPersonName(e.mentor))}</div>
           </div>
           <span class="split-mentor-badge">Mentor(a)</span>
         </div>
-        ${e.me ? `<div class="split-meta-subline">${e.me}</div>` : ''}
+        ${!bancaReviewerBootMode && e.me ? `<div class="split-meta-subline">${e.me}</div>` : ''}
       </div>` : '';
     return `
       <div class="split-hero">
         ${context === 'modal' ? '<button class="close-btn split-hero-close" type="button" onclick="closeModal()" aria-label="Fechar"><i class="ti ti-x"></i></button>' : ''}
-        <div class="split-hero-top">
-          <div class="split-kicker">${kicker}</div>
-        </div>
+        ${bancaReviewerBootMode ? '' : `
+          <div class="split-hero-top">
+            <div class="split-kicker">${kicker}</div>
+          </div>`}
         <div class="split-leader-line">
-          <span class="split-person-badge">P1</span>
-          <div class="split-leader"${bancaHeroFontStyle} title="${escapeHtmlAttr(displayPersonName(e.lider))}">${escapeHtmlAttr(formatEvaluationPersonName(e.lider))}</div>
+          ${bancaReviewerBootMode ? '' : '<span class="split-person-badge">P1</span>'}
+          <div class="split-leader"${bancaHeroNameStyle} title="${escapeHtmlAttr(displayPersonName(e.lider))}">${escapeHtmlAttr(bancaReviewerBootMode ? displayPersonName(e.lider) : formatEvaluationPersonName(e.lider))}</div>
         </div>
+        ${bancaReviewerBootMode && (e.p2 || e.p3 || e.mentor) ? `
+          <div class="split-hero-members">
+            ${p2}
+            ${p3}
+            ${mentor}
+          </div>` : ''}
         <div class="split-inst"${bancaHeroFontStyle}>${instituicaoResumo}</div>
         <div class="split-hero-course"${bancaHeroFontStyle}>${cursoResumo}</div>
         <div class="split-hero-location"${bancaHeroFontStyle}>${localResumo}</div>
       </div>
 
-      <div class="split-meta-rows">
-        ${p2}
-        ${p3}
-        ${mentor}
-      </div>
+      ${bancaReviewerBootMode ? '' : `
+        <div class="split-meta-rows">
+          ${p2}
+          ${p3}
+          ${mentor}
+        </div>`}
 
       <div class="split-materials-wrap">
         <div class="split-materials-list">
-          ${materialButtonHTML({ url: links.video, label: 'Vídeo', icon: 'ti-player-play', tipo: 'video_criativo', inscricaoId: e.id, openInModal: useAttachmentViewer })}
-          ${materialButtonHTML({ url: links.roteiro30, label: 'Roteiro 30s', icon: 'ti-file', tipo: 'roteiro_30s', inscricaoId: e.id, openInModal: useAttachmentViewer })}
-          ${materialButtonHTML({ url: links.campanha, label: 'Campanha', icon: 'ti-file', tipo: 'campanha_multiplataforma', inscricaoId: e.id, openInModal: useAttachmentViewer })}
+          ${materialButtonHTML({ url: links.video, label: 'Vídeo', icon: bancaReviewerBootMode ? 'ti-video' : 'ti-player-play', tipo: 'video_criativo', inscricaoId: e.id, openInModal: useAttachmentViewer })}
+          ${materialButtonHTML({ url: links.roteiro30, label: 'Roteiro 30s', icon: bancaReviewerBootMode ? 'ti-file-text' : 'ti-file', tipo: 'roteiro_30s', inscricaoId: e.id, openInModal: useAttachmentViewer })}
+          ${materialButtonHTML({ url: links.campanha, label: 'Campanha', icon: bancaReviewerBootMode ? 'ti-presentation' : 'ti-file', tipo: 'campanha_multiplataforma', inscricaoId: e.id, openInModal: useAttachmentViewer })}
         </div>
         ${showVideoSupport ? `
           ${activeVideoIssue ? `
@@ -8744,7 +8872,10 @@ function abrirFicha(parId, inscId, abrirEmEdicao = false) {
   if (currentAttachmentViewer?.inline) closeAttachmentViewer();
   scrollAppTop();
   document.getElementById('view-avaliacao')?.classList.toggle('banca-evaluation-mode', bancaReviewerBootMode);
-  if (bancaReviewerBootMode) applyAvaliacaoScale(1.1);
+  if (bancaReviewerBootMode) {
+    currentAvaliacaoView = 'seq';
+    applyAvaliacaoScale(1.1);
+  }
   else hydrateAvaliacaoScale();
   currentParId = parId;
   currentInscId = inscId;
@@ -12999,6 +13130,7 @@ function applyStartupRouteState() {
     if (!hasViewerAccess()) accessRole = 'viewer';
     reviewerBootMode = true;
     bancaReviewerBootMode = !!requestedBancaParId;
+    if (bancaReviewerBootMode) currentAvaliacaoView = 'seq';
     currentParId = portalParId;
     currentInscId = null;
     applyReviewerShellMode(true);
