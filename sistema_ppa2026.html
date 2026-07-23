@@ -2615,9 +2615,13 @@ textarea::placeholder{color:#BDC1C6}
 }
 #view-avaliacao.banca-evaluation-mode{
   --crit-card-h:calc(136px * var(--aval-scale));
+  --banca-panel-divider:rgba(32,33,36,.20);
 }
 #view-avaliacao.banca-evaluation-mode .aval-action-group-scale{
   display:none;
+}
+#view-avaliacao.banca-evaluation-mode #btnReportarVideo{
+  display:none !important;
 }
 #view-avaliacao.banca-evaluation-mode .parecer-box{
   display:none;
@@ -2645,12 +2649,19 @@ textarea::placeholder{color:#BDC1C6}
   padding-left:14px;
 }
 #view-avaliacao.banca-evaluation-mode .aval-panel-head{
+  height:52px;
+  min-height:52px;
+  box-sizing:border-box;
   padding-left:0;
   padding-right:0;
+  border-bottom:1px solid var(--banca-panel-divider);
+}
+#view-avaliacao.banca-evaluation-mode .aval-panel-head .aval-progress-card{
+  gap:1px;
 }
 #view-avaliacao.banca-evaluation-mode .split-hero{
   background:#E2E6E9;
-  border-bottom-color:#CDD2D8;
+  border-bottom:1px solid var(--banca-panel-divider);
   box-shadow:none;
   padding:22px 18px 20px;
   position:relative;
@@ -2686,17 +2697,27 @@ textarea::placeholder{color:#BDC1C6}
 #view-avaliacao.banca-evaluation-mode .criterio.numeric-scale .escala input[value="5"]:checked + label{border-color:#188038}
 #view-avaliacao.banca-evaluation-mode .split-side-panel-head{
   flex:0 0 auto;
+  height:52px;
+  min-height:52px;
+  box-sizing:border-box;
   padding:16px 18px 12px;
-  border-bottom:1px solid var(--border-light);
+  border-bottom:1px solid var(--banca-panel-divider);
   background:#E2E6E9;
 }
-#view-avaliacao.banca-evaluation-mode .split-side-panel-title{
+#view-avaliacao.banca-evaluation-mode #critGridSplit{
+  padding-top:11px;
+}
+#view-avaliacao.banca-evaluation-mode .split-side-panel-title,
+#view-avaliacao.banca-evaluation-mode .aval-criteria-title{
   font-size:calc(15px * var(--aval-scale));
   font-weight:700;
   line-height:1.25;
   letter-spacing:.02em;
   text-transform:uppercase;
   color:#202124;
+}
+#view-avaliacao.banca-evaluation-mode .aval-criteria-title{
+  margin:0;
 }
 #view-avaliacao.banca-evaluation-mode .split-kicker-id,
 #view-avaliacao.banca-evaluation-mode .split-kicker-dot,
@@ -2760,7 +2781,7 @@ textarea::placeholder{color:#BDC1C6}
   margin-top:14px;
   margin-bottom:14px;
   padding-bottom:12px;
-  border-bottom:1px solid rgba(32,33,36,.16);
+  border-bottom:1px solid var(--banca-panel-divider);
   text-transform:uppercase;
 }
 #view-avaliacao.banca-evaluation-mode .split-hero-members .split-meta-row{
@@ -2806,6 +2827,7 @@ textarea::placeholder{color:#BDC1C6}
   gap:22px;
   flex:0 0 auto;
   background:#E2E6E9;
+  border-bottom:1px solid var(--banca-panel-divider);
 }
 #view-avaliacao.banca-evaluation-mode .split-materials-list .mat-btn{
   flex:0 0 auto;
@@ -2832,6 +2854,7 @@ textarea::placeholder{color:#BDC1C6}
   font-size:13.2px;
   font-weight:600;
   letter-spacing:0;
+  border-bottom:0;
 }
 #view-avaliacao.banca-evaluation-mode .banca-project-summary .split-copy-body{
   font-size:13.2px;
@@ -6211,6 +6234,11 @@ function formatEvaluationPersonName(value, max = 40) {
   const visibleLength = Math.max(0, max - 3);
   return `${text.slice(0, visibleLength).trimEnd()}...`;
 }
+function formatBancaPersonName(value, maxParts = 4) {
+  const text = displayPersonName(value);
+  const parts = text.split(/\s+/).filter(Boolean);
+  return parts.length > maxParts ? parts.slice(0, maxParts).join(' ') : text;
+}
 function compactCourseLabel(value) {
   const text = String(value || '').trim();
   if (!text) return 'N/D';
@@ -8691,7 +8719,7 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
       <div class="split-meta-row">
         <div class="split-person-line">
           ${bancaReviewerBootMode ? '' : '<span class="split-person-badge">P2</span>'}
-          <div class="split-meta-value" title="${escapeHtmlAttr(displayPersonName(e.p2))}">${escapeHtmlAttr(formatEvaluationPersonName(e.p2))}</div>
+          <div class="split-meta-value" title="${escapeHtmlAttr(displayPersonName(e.p2))}">${escapeHtmlAttr(bancaReviewerBootMode ? formatBancaPersonName(e.p2) : formatEvaluationPersonName(e.p2))}</div>
         </div>
         ${!bancaReviewerBootMode && e.p2e ? `<div class="split-meta-subline">${e.p2e}</div>` : ''}
       </div>` : '';
@@ -8699,7 +8727,7 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
       <div class="split-meta-row">
         <div class="split-person-line">
           ${bancaReviewerBootMode ? '' : '<span class="split-person-badge">P3</span>'}
-          <div class="split-meta-value" title="${escapeHtmlAttr(displayPersonName(e.p3))}">${escapeHtmlAttr(formatEvaluationPersonName(e.p3))}</div>
+          <div class="split-meta-value" title="${escapeHtmlAttr(displayPersonName(e.p3))}">${escapeHtmlAttr(bancaReviewerBootMode ? formatBancaPersonName(e.p3) : formatEvaluationPersonName(e.p3))}</div>
         </div>
         ${!bancaReviewerBootMode && e.p3e ? `<div class="split-meta-subline">${e.p3e}</div>` : ''}
       </div>` : '';
@@ -8708,7 +8736,7 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
         <div class="split-meta-value-line">
           <div class="split-person-line">
             ${bancaReviewerBootMode ? '' : '<span class="split-person-badge">M</span>'}
-            <div class="split-meta-value" title="${escapeHtmlAttr(displayPersonName(e.mentor))}">${escapeHtmlAttr(formatEvaluationPersonName(e.mentor))}</div>
+            <div class="split-meta-value" title="${escapeHtmlAttr(displayPersonName(e.mentor))}">${escapeHtmlAttr(bancaReviewerBootMode ? formatBancaPersonName(e.mentor) : formatEvaluationPersonName(e.mentor))}</div>
           </div>
           <span class="split-mentor-badge">Mentor(a)</span>
         </div>
@@ -8727,7 +8755,7 @@ function avalGridHTML(e, mode, context = 'avaliacao') {
           </div>`}
         <div class="split-leader-line">
           ${bancaReviewerBootMode ? '' : '<span class="split-person-badge">P1</span>'}
-          <div class="split-leader"${bancaHeroNameStyle} title="${escapeHtmlAttr(displayPersonName(e.lider))}">${escapeHtmlAttr(bancaReviewerBootMode ? displayPersonName(e.lider) : formatEvaluationPersonName(e.lider))}</div>
+          <div class="split-leader"${bancaHeroNameStyle} title="${escapeHtmlAttr(displayPersonName(e.lider))}">${escapeHtmlAttr(bancaReviewerBootMode ? formatBancaPersonName(e.lider) : formatEvaluationPersonName(e.lider))}</div>
         </div>
         ${bancaReviewerBootMode && (e.p2 || e.p3 || e.mentor) ? `
           <div class="split-hero-members">
