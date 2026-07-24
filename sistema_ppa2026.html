@@ -1016,28 +1016,39 @@ tr:hover td.sticky{background:#FAFAFA}
 .banca-head-actions{display:flex;align-items:center;gap:14px}
 .banca-count{font-size:12px;color:#7A828E}
 #view-banca.active{
-  height:100%;
-  min-height:0;
-  overflow:hidden;
+  height:auto;
+  min-height:100%;
+  overflow:visible;
   box-sizing:border-box;
 }
 #view-banca > div{
-  height:100%;
-  min-height:0;
-  display:flex;
-  flex-direction:column;
+  height:auto;
+  min-height:100%;
+  display:block;
+  padding-bottom:48px;
 }
-#view-banca .banca-head{flex:0 0 auto}
 #view-banca .tbl-card{
-  flex:1 1 auto;
-  min-height:0;
+  min-height:auto;
   margin-bottom:0;
+  overflow:visible;
 }
 #view-banca .tbl-scroll{
-  height:100%;
-  max-height:100%;
-  overflow:auto;
-  overscroll-behavior:contain;
+  height:auto;
+  max-height:none;
+  overflow:visible;
+  padding-right:0;
+  overscroll-behavior:auto;
+}
+#view-banca .results-table thead{
+  position:sticky;
+  top:0;
+  z-index:20;
+}
+#view-banca .results-table thead tr:first-child th,
+#view-banca .results-table thead tr:nth-child(2) th,
+#view-banca .results-table thead th[rowspan="2"]{
+  position:static;
+  top:auto;
 }
 #view-banca .results-table tbody > tr:not(.sub-row) > td.id-col,
 #view-banca .results-table tr.sub-row > td.id-col{
@@ -1107,6 +1118,7 @@ tr:hover td.sticky{background:#FAFAFA}
   width:calc(100% + 56px);
   margin-left:-28px;
   margin-right:-28px;
+  margin-bottom:36px;
   overflow:hidden;
   border-bottom:none;
   border-bottom-left-radius:0;
@@ -1136,6 +1148,9 @@ tr:hover td.sticky{background:#FAFAFA}
   overscroll-behavior-y:contain;
   scroll-behavior:auto;
   padding-right:0;
+}
+#view-portal .results-table tbody > tr:last-child > td{
+  border-bottom:1px solid #B8C1CC;
 }
 #view-portal .results-table thead tr:first-child th{top:0}
 #view-portal .results-table thead tr:nth-child(2) th{top:42px}
