@@ -7983,6 +7983,15 @@ function renderPortal() {
     if (currentPortalFilter === 'done' && !isEvaluationConcluded(parId, inscId)) return false;
     if (currentPortalFilter === 'pending' && isEvaluationConcluded(parId, inscId)) return false;
     return true;
+  }).sort((aId, bId) => {
+    const a = INSCRICOES.find(x => x.id === aId);
+    const b = INSCRICOES.find(x => x.id === bId);
+    const byLeader = displayPersonName(a?.lider).localeCompare(
+      displayPersonName(b?.lider),
+      'pt-BR',
+      { sensitivity:'base' }
+    );
+    return byLeader || String(aId).localeCompare(String(bId), 'pt-BR', { numeric:true });
   });
   const summary = document.getElementById('portalSummaryBar');
   if (summary) {
